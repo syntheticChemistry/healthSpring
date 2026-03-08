@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V3 — 17 experiments, 4 tracks complete (Tier 0+1)
+**Status**: V4 — 24 experiments, 4 tracks + validation (Tier 0+1)
 **Last Updated**: March 8, 2026
 
 ---
@@ -21,8 +21,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V3** | [HEALTHSPRING_V3_BARRACUDA_TOADSTOOL_EVOLUTION_HANDOFF_MAR08_2026.md](handoffs/HEALTHSPRING_V3_BARRACUDA_TOADSTOOL_EVOLUTION_HANDOFF_MAR08_2026.md) | Mar 8 | Full V3 handoff: 17 experiments across 4 tracks (192 Python, 179 binary, 103 lib). GPU workload candidates, absorption candidates, cross-track testosterone-gut axis discovery, evolution guidance for barraCuda + toadStool. |
-| | *V1 → `handoffs/archive/`* | | Fossil record: initial 5-experiment PK/PD handoff |
+| **V4** | [HEALTHSPRING_V4_BARRACUDA_TOADSTOOL_METALFORGE_HANDOFF_MAR08_2026.md](handoffs/HEALTHSPRING_V4_BARRACUDA_TOADSTOOL_METALFORGE_HANDOFF_MAR08_2026.md) | Mar 8 | Full V4 handoff: 24 experiments (280 binary, 185 lib tests, 104 cross-validation). GPU dispatch layer, metalForge NUCLEUS, toadStool pipeline. New: PBPK, FMT, HRV, PPG SpO2, biosignal fusion, HRV×TRT, exp040 parity. |
+| | *V1, V3 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

@@ -1,7 +1,7 @@
 # healthSpring baseCamp: Gonzales PK/PD → Human Therapeutics
 
 **Faculty**: Andrea J. Gonzales (MSU Pharmacology & Toxicology), Erika Lisabeth (ADDRC), Richard Neubig (Drug Discovery)
-**Status**: Complete — 5 experiments validated (Exp001–005), 55 Python + 43 Rust binary + 39 lib unit tests
+**Status**: Complete — 6 experiments validated (Exp001–006), 84 Python + 84 Rust binary + 46 lib unit tests
 **Parent**: gen3/baseCamp Paper 12 (Immunological Anderson), gen3/baseCamp Paper 13 (healthSpring)
 
 ---
@@ -84,23 +84,34 @@ Lokivetmab → nemolizumab/dupilumab via allometric scaling.
 - Rust module: `pkpd::population_pk_cpu`, `pkpd::LognormalParam`, `pkpd::pop_baricitinib`
 - **GPU target**: Scale to 100K–1M patients via BarraCUDA (embarrassingly parallel, each patient = independent ODE)
 
+### Extension 6: PBPK Compartments (Gabrielsson & Weiner) — COMPLETE
+
+5-tissue physiologically-based PK model (liver, kidney, muscle, fat, rest) connected by blood flow with tissue-plasma partition coefficients.
+
+**Completed (Exp006)**:
+- 13/13 Rust checks
+- Standard 70 kg adult model, cardiac output ~330 L/hr
+- Mass conservation validated, hepatic clearance dominates elimination
+- Fat compartment accumulates most (Kp=5.0), liver clears fastest
+- Euler integration with dt=0.01 hr, verified deterministic
+- Rust module: `pkpd::pbpk` (TissueCompartment, PbpkState, pbpk_iv_simulate, cardiac_output)
+- **GPU target**: Parallel across patients (each patient = independent PBPK ODE system)
+
 ## Human Extensions — Planned
 
-### Extension 6: Human Monoclonal Antibody PK (from nS-603)
-
-### Extension 6: Population PK GPU Scale-Up
+### Extension 7: Population PK GPU Scale-Up
 
 - Scale Exp005 to 100K → 1M virtual patients
 - GPU dispatch via BarraCUDA (each patient = independent ODE, embarrassingly parallel)
 - Dosing optimization: trough above EC90
 - Hardware target: Northgate RTX 5090 (32GB VRAM, ~100MB for 100K patients)
 
-### Extension 7: Human Monoclonal Antibody PK (from nS-603)
+### Extension 8: Human Monoclonal Antibody PK (from nS-603)
 
 - Refit nS-603 PK model with human nemolizumab parameters
 - Validate against published nemolizumab Phase III data (Kabashima 2020, Silverberg 2021)
 
-### Extension 3: Human Tissue Lattice (from nS-604)
+### Extension 9: Human Tissue Lattice (from nS-604)
 
 The three-compartment tissue lattice (immune/skin/neural) validated for canine AD extends to human AD. The compartment structure is identical; tissue parameters differ.
 
@@ -110,7 +121,7 @@ The three-compartment tissue lattice (immune/skin/neural) validated for canine A
 - Barrier disruption dynamics (TEWL correlation)
 - Dimensional promotion: 2D surface → 3D tissue penetration
 
-### Extension 4: Drug Repurposing via ADDRC (from nS-605)
+### Extension 10: Drug Repurposing via ADDRC (from nS-605)
 
 The Fajgenbaum MATRIX with Anderson geometry scoring identifies candidate molecules. Lisabeth's ADDRC provides the HTS infrastructure to screen them. Gonzales provides iPSC-derived skin models for validation.
 

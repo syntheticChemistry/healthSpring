@@ -3,7 +3,8 @@
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
 
-pub mod pkpd;
-pub mod microbiome;
 pub mod biosignal;
 pub mod endocrine;
+pub mod gpu;
+pub mod microbiome;
+pub mod pkpd;

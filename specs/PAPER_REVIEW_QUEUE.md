@@ -1,7 +1,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 8, 2026
-**Status**: 17 experiments complete — 192 Python checks, 179 Rust binary checks, 103 Rust unit tests
+**Status**: 24 experiments complete — 280 Rust binary checks, 185 unit tests (145 barracuda + 27 forge + 13 toadStool), 104 cross-validation checks, 96.84% coverage
 
 ---
 
@@ -9,11 +9,12 @@
 
 | Track | Papers Queued | Started | Complete |
 |-------|:------------:|:-------:|:--------:|
-| Track 1: PK/PD | 7 | 5 | 5 |
-| Track 2: Microbiome | 7 | 3 | 3 |
-| Track 3: Biosignal | 6 | 1 | 1 |
-| Track 4: Endocrinology | 8 | 8 | 8 |
-| **Total** | **28** | **17** | **17** |
+| Track 1: PK/PD | 7 | 6 | 6 |
+| Track 2: Microbiome | 7 | 4 | 4 |
+| Track 3: Biosignal | 6 | 4 | 4 |
+| Track 4: Endocrinology | 9 | 9 | 9 |
+| Validation | 1 | 1 | 1 |
+| **Total** | **30** | **24** | **24** |
 
 ---
 
@@ -38,16 +39,22 @@
 | EN-006 | Kapoor 2006 + Dhindsa 2016 — TRT diabetes | Exp035 | 10 | 10 | 0,1 |
 | EN-007 | Composite registries — Population TRT Monte Carlo | Exp036 | 12 | 10 | 0,1 |
 | EN-008 | Cross-track D1/D2 — Testosterone-gut axis | Exp037 | 12 | 10 | 0,1 |
+| MB-002 | McGill synthetic microbiota for rCDI | Exp013 | 12 | 12 | 0,1 |
+| BS-002 | MIT-BIH HRV metrics (SDNN, RMSSD, pNN50) | Exp021 | 10 | 10 | 0,1 |
+| BS-003 | Wearable PPG → SpO2 via R-value calibration | Exp022 | 11 | 11 | 0,1 |
+| VAL-001 | barraCuda CPU parity — analytical contracts | Exp040 | 15 | 15 | 0,1 |
+| PK-004 | Gabrielsson & Weiner PBPK compartments | Exp006 | 13 | 13 | 0,1 |
+| BS-004 | Multi-channel biosignal fusion (ECG + PPG + EDA) | Exp023 | 11 | 11 | 0,1 |
+| EN-D3 | Mok D3: HRV × TRT cardiovascular cross-track | Exp038 | 10 | 10 | 0,1 |
 
 ---
 
 ## Next Papers (Remaining Queue)
 
-1. **PK-004**: Gabrielsson & Weiner PBPK compartments
-2. **MB-002**: McGill synthetic microbiota for rCDI
-3. **BS-002**: MIT-BIH HRV metrics (SDNN, RMSSD, pNN50)
-4. **BS-003**: Wearable PPG → SpO2 via R-value calibration
-5. **BS-004**: Multi-channel biosignal fusion (ECG + PPG + EDA)
+All queued papers complete. Next evolution targets:
+1. **GPU Tier 2**: Population PK (Exp005/036) → barraCuda WGSL shaders
+2. **GPU Tier 2**: Hill vectorized sweep (Exp001) → `batched_elementwise_f64.wgsl`
+3. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
 
 ---
 
@@ -74,5 +81,12 @@ All experiments use publicly accessible data. No proprietary dependencies.
 | Exp035 | Kapoor 2006 (RCT), Dhindsa 2016, Hackett 2014 | Peer-reviewed RCTs |
 | Exp036 | Composite registries (simulation) | Literature parameters |
 | Exp037 | Cross-track (ecoPrimals thesis) | Internal + Ridaura 2013, Tremellen 2012 |
+| Exp013 | McGill FMT parameters (literature) | Peer-reviewed transplant studies |
+| Exp021 | Synthetic ECG (internal) | Generated from Gaussian P-QRS-T model |
+| Exp022 | Beer-Lambert PPG calibration | Published SpO2 calibration curves |
+| Exp040 | Analytical identities (textbook) | Mathematical definitions |
+| Exp006 | Gabrielsson & Weiner PBPK model | Published tissue parameters |
+| Exp023 | Synthetic multi-channel (ECG+PPG+EDA) | Internal generated signals |
+| Exp038 | Kleiger 1987 HRV mortality + Mok TRT claims | Peer-reviewed + clinical |
 
 See `specs/README.md` for full provenance table.

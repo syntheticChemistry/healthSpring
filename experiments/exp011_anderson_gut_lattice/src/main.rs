@@ -1,9 +1,12 @@
-#![expect(clippy::too_many_lines, reason = "validation binary — linear check sequence")]
+#![expect(
+    clippy::too_many_lines,
+    reason = "validation binary — linear check sequence"
+)]
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Exp011 validation: Anderson Localization in Gut Lattice
 //!
 //! Cross-validates `healthspring_barracuda::microbiome` Anderson lattice
-//! functions against the Python control (exp011_anderson_gut_lattice.py).
+//! functions against the Python control (`exp011_anderson_gut_lattice.py`).
 
 use healthspring_barracuda::microbiome;
 
@@ -20,6 +23,7 @@ fn main() {
     println!("{}", "=".repeat(72));
 
     // Build Hamiltonian with known disorder
+    #[expect(clippy::cast_precision_loss, reason = "i < 50")]
     let disorder: Vec<f64> = (0..L).map(|i| (i as f64 - 25.0) * 0.2).collect();
     let h = microbiome::anderson_hamiltonian_1d(&disorder, T_HOP);
 
@@ -93,10 +97,12 @@ fn main() {
 
     // Check 6: IPR of uniform state = 1/L
     println!("\n--- Check 6: IPR(uniform) = 1/L ---");
-    let val = 1.0 / (L as f64).sqrt();
+    #[expect(clippy::cast_precision_loss, reason = "L = 50")]
+    let l_f64 = L as f64;
+    let val = 1.0 / l_f64.sqrt();
     let uniform: Vec<f64> = vec![val; L];
     let ipr = microbiome::inverse_participation_ratio(&uniform);
-    let expected = 1.0 / L as f64;
+    let expected = 1.0 / l_f64;
     if (ipr - expected).abs() < 1e-10 {
         println!("  [PASS] IPR = {ipr:.8}, expected = {expected:.8}");
         passed += 1;
@@ -153,7 +159,7 @@ fn main() {
 
     // Check 11: Uniform spacing → r ≈ 1
     println!("\n--- Check 11: Uniform spacing → r ≈ 1 ---");
-    let uniform_eigs: Vec<f64> = (0..50).map(|i| i as f64).collect();
+    let uniform_eigs: Vec<f64> = (0..50).map(f64::from).collect();
     let r_u = microbiome::level_spacing_ratio(&uniform_eigs);
     if (r_u - 1.0).abs() < 0.02 {
         println!("  [PASS] <r> = {r_u:.4}");

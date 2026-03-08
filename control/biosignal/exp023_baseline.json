@@ -1,0 +1,48 @@
+{
+  "_method": "ECG+PPG+EDA fusion, stress index, overall score",
+  "_provenance": {
+    "date": "2026-03-08",
+    "script": "control/biosignal/exp023_fusion.py",
+    "source": "Rust exp023_biosignal_fusion --write-baseline",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "git_commit": "4138375e3973a6a95d25758ccfc5436b5e8d0ee1",
+    "command": "python3 control/biosignal/exp023_fusion.py"
+  },
+  "_source": "healthSpring Exp023: Multi-Channel Biosignal Fusion",
+  "ecg": {
+    "duration_s": 10.0,
+    "fs": 360.0,
+    "heart_rate_bpm": 72,
+    "n_peaks": 12,
+    "noise": 0.05
+  },
+  "eda": {
+    "duration_s": 30.0,
+    "fs": 32.0,
+    "mean_scl": 2.0772186172893794,
+    "n_samples": 960,
+    "scl_baseline": 2.0,
+    "scr_count": 4,
+    "scr_times": [
+      5.0,
+      12.0,
+      20.0,
+      25.0
+    ]
+  },
+  "fusion": {
+    "heart_rate_bpm": 73.49211258892669,
+    "hrv_rmssd_ms": 41.57397096415488,
+    "hrv_sdnn_ms": 26.81290252208839,
+    "overall_score": 51.068971438186935,
+    "scr_rate_per_min": 8.0,
+    "spo2_percent": 96.63940117924724,
+    "stress_index": 0.4893102856181306
+  },
+  "ppg": {
+    "duration_s": 5.0,
+    "fs": 256.0,
+    "spo2": 96.63940117924724
+  },
+  "seed": 42
+}

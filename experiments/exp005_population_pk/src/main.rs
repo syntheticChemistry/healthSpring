@@ -1,9 +1,12 @@
-#![expect(clippy::too_many_lines, reason = "validation binary — linear check sequence")]
+#![expect(
+    clippy::too_many_lines,
+    reason = "validation binary — linear check sequence"
+)]
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Exp005 validation: Population PK Monte Carlo
 //!
 //! Cross-validates `healthspring_barracuda::pkpd::population_pk_cpu`
-//! against the Python control (exp005_population_pk.py).
+//! against the Python control (`exp005_population_pk.py`).
 
 use healthspring_barracuda::pkpd::{self, pop_baricitinib};
 
@@ -24,7 +27,10 @@ fn main() {
     let recovered = mu.exp();
     let err = (recovered - 10.0).abs() / 10.0;
     if err < 0.05 {
-        println!("  [PASS] exp(μ) = {recovered:.4}, typical = 10.0, err = {:.4}%", err * 100.0);
+        println!(
+            "  [PASS] exp(μ) = {recovered:.4}, typical = 10.0, err = {:.4}%",
+            err * 100.0
+        );
         passed += 1;
     } else {
         println!("  [FAIL] err = {:.4}%", err * 100.0);
@@ -68,16 +74,34 @@ fn main() {
     }
 
     // Generate deterministic cohort for CPU validation
-    let n = 20;
-    let times: Vec<f64> = (0..500).map(|i| 24.0 * (i as f64) / 499.0).collect();
+    let n: usize = 20;
+    let times: Vec<f64> = (0..500).map(|i| 24.0 * f64::from(i) / 499.0).collect();
 
     // Deterministic PK params (not random — that's GPU's job)
-    let cl_vals: Vec<f64> = (0..n).map(|i| 8.0 + 0.2 * (i as f64)).collect();
-    let vd_vals: Vec<f64> = (0..n).map(|i| 70.0 + 1.0 * (i as f64)).collect();
-    let ka_vals: Vec<f64> = (0..n).map(|i| 1.0 + 0.05 * (i as f64)).collect();
+    let cl_vals: Vec<f64> = (0..n)
+        .map(|i| {
+            #[expect(clippy::cast_precision_loss, reason = "i < 20")]
+            let fi = i as f64;
+            8.0 + 0.2 * fi
+        })
+        .collect();
+    let vd_vals: Vec<f64> = (0..n)
+        .map(|i| {
+            #[expect(clippy::cast_precision_loss, reason = "i < 20")]
+            let fi = i as f64;
+            70.0 + 1.0 * fi
+        })
+        .collect();
+    let ka_vals: Vec<f64> = (0..n)
+        .map(|i| {
+            #[expect(clippy::cast_precision_loss, reason = "i < 20")]
+            let fi = i as f64;
+            1.0 + 0.05 * fi
+        })
+        .collect();
 
     let results = pkpd::population_pk_cpu(
-        n as usize,
+        n,
         &cl_vals,
         &vd_vals,
         &ka_vals,
@@ -88,7 +112,7 @@ fn main() {
 
     // Check 5: Correct cohort size
     println!("\n--- Check 5: Correct cohort size ---");
-    if results.len() == n as usize {
+    if results.len() == n {
         println!("  [PASS] {} patients", results.len());
         passed += 1;
     } else {
@@ -130,9 +154,12 @@ fn main() {
     // Check 9: Higher CL → lower AUC
     println!("\n--- Check 9: Higher CL → lower AUC ---");
     let first = &results[0];
-    let last = &results[n as usize - 1];
+    let last = &results[n - 1];
     if first.auc > last.auc {
-        println!("  [PASS] AUC(CL=8.0)={:.6} > AUC(CL=11.8)={:.6}", first.auc, last.auc);
+        println!(
+            "  [PASS] AUC(CL=8.0)={:.6} > AUC(CL=11.8)={:.6}",
+            first.auc, last.auc
+        );
         passed += 1;
     } else {
         println!("  [FAIL]");
@@ -144,7 +171,11 @@ fn main() {
     let theoretical = pop_baricitinib::F_BIOAVAIL * pop_baricitinib::DOSE_MG / cl_vals[0];
     let err = (first.auc - theoretical).abs() / theoretical;
     if err < 0.10 {
-        println!("  [PASS] AUC={:.6}, F*D/CL={theoretical:.6}, err={:.3}%", first.auc, err * 100.0);
+        println!(
+            "  [PASS] AUC={:.6}, F*D/CL={theoretical:.6}, err={:.3}%",
+            first.auc,
+            err * 100.0
+        );
         passed += 1;
     } else {
         println!("  [FAIL] err={:.3}%", err * 100.0);

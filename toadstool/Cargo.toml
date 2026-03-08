@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-toadstool"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "toadStool compute dispatch for healthSpring — sovereign hardware abstraction"
+
+[dependencies]
+healthspring-barracuda = { path = "../barracuda" }
+healthspring-forge = { path = "../metalForge/forge" }

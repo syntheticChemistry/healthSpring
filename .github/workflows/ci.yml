@@ -11,19 +11,58 @@ env:
   RUSTFLAGS: "-D warnings"
 
 jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        components: clippy, rustfmt, llvm-tools-preview
+    - name: Format check
+      run: cargo fmt --check --all
+    - name: Clippy (pedantic)
+      run: cargo clippy --workspace -- -D warnings -W clippy::pedantic
+    - name: Doc check
+      run: cargo doc --workspace --no-deps
+
   test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@stable
       with:
-        components: clippy
+        components: llvm-tools-preview
+    - name: Install cargo-llvm-cov
+      uses: taiki-e/install-action@cargo-llvm-cov
     - name: Build
       run: cargo build --workspace
-    - name: Test
+    - name: Unit tests
       run: cargo test --workspace
-    - name: Clippy
-      run: cargo clippy --workspace -- -D warnings
+    - name: Coverage (library, fail below 90%)
+      run: |
+        cargo llvm-cov --workspace --lib --fail-under-lines 90
+
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Build workspace
+      run: cargo build --workspace --release
+    - name: Run all validation binaries
+      run: |
+        set -e
+        for toml in experiments/exp*/Cargo.toml; do
+          bin=$(grep 'name = "exp' "$toml" 2>/dev/null | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          if [ -n "$bin" ]; then
+            echo "=== $bin ==="
+            cargo run --release --bin "$bin"
+            echo
+          fi
+        done
+    - name: Python cross-validation
+      run: |
+        python3 control/pkpd/cross_validate.py
 
   test-gpu:
     runs-on: ubuntu-latest

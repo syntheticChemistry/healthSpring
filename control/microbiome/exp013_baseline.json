@@ -1,0 +1,60 @@
+{
+  "_source": "healthSpring Exp013: FMT for rCDI",
+  "_method": "fmt_blend, Bray-Curtis, Shannon/Simpson/Pielou, CR",
+  "donor": {
+    "shannon": 1.9868643500048115,
+    "simpson": 0.8406,
+    "pielou": 0.8628842234973807,
+    "cr": 0.3405115593705981
+  },
+  "recipient": "dysbiotic_gut",
+  "engraftment_levels": {
+    "0.3": {
+      "shannon": 1.2557818677451065,
+      "simpson": 0.5316363799999999,
+      "pielou": 0.5453791356358588,
+      "cr": 0.1975676024934709,
+      "bray_curtis_to_donor": 0.42000000000000004,
+      "bray_curtis_to_recipient": 0.17999999999999983
+    },
+    "0.5": {
+      "shannon": 1.539381277917237,
+      "simpson": 0.6619655,
+      "pielou": 0.668544794544632,
+      "cr": 0.2429803306829895,
+      "bray_curtis_to_donor": 0.30000000000000004,
+      "bray_curtis_to_recipient": 0.2999999999999998
+    },
+    "0.7": {
+      "shannon": 1.7639522986189933,
+      "simpson": 0.75865158,
+      "pielou": 0.7660747496307858,
+      "cr": 0.32422297458069155,
+      "bray_curtis_to_donor": 0.17999999999999994,
+      "bray_curtis_to_recipient": 0.41999999999999993
+    },
+    "0.9": {
+      "shannon": 1.9290166767011139,
+      "simpson": 0.8216946199999999,
+      "pielou": 0.8377612981906428,
+      "cr": 0.35128385909719134,
+      "bray_curtis_to_donor": 0.05999999999999994,
+      "bray_curtis_to_recipient": 0.5399999999999999
+    }
+  },
+  "pre_fmt": {
+    "shannon": 0.698056996607822,
+    "simpson": 0.27306200000000014,
+    "pielou": 0.30316230168073405,
+    "cr": 0.07268174095355592,
+    "bray_curtis_to_donor": 0.6
+  },
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3",
+    "git_commit": "4138375e3973a6a95d25758ccfc5436b5e8d0ee1",
+    "command": "python3 control/microbiome/exp013_fmt_rcdi.py",
+    "script": "control/microbiome/exp013_fmt_rcdi.py"
+  }
+}

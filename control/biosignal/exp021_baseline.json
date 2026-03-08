@@ -1,0 +1,22 @@
+{
+  "_method": "Synthetic ECG \u2192 Pan-Tompkins \u2192 SDNN, RMSSD, pNN50, HR",
+  "_provenance": {
+    "date": "2026-03-08",
+    "script": "control/biosignal/exp021_hrv_metrics.py",
+    "source": "Rust exp021_hrv_metrics --write-baseline",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "git_commit": "4138375e3973a6a95d25758ccfc5436b5e8d0ee1",
+    "command": "python3 control/biosignal/exp021_hrv_metrics.py"
+  },
+  "_source": "healthSpring Exp021: HRV Metrics (RMSSD, pNN50)",
+  "fs": 360.0,
+  "heart_rate_bpm": 72,
+  "hr_detected": 73.49211258892669,
+  "mean_rr_ms": 816.4141414141413,
+  "n_detected": 12,
+  "n_samples": 3600,
+  "pnn50": 10.0,
+  "rmssd_ms": 41.57397096415488,
+  "sdnn_ms": 26.81290252208839,
+  "seed": 42
+}

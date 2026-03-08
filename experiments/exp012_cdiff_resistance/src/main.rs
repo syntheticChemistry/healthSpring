@@ -1,9 +1,12 @@
-#![expect(clippy::too_many_lines, reason = "validation binary — linear check sequence")]
+#![expect(
+    clippy::too_many_lines,
+    reason = "validation binary — linear check sequence"
+)]
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Exp012 validation: C. diff Colonization Resistance Score
 //!
 //! Cross-validates microbiome diversity → Anderson → CR pipeline
-//! against the Python control (exp012_cdiff_resistance.py).
+//! against the Python control (`exp012_cdiff_resistance.py`).
 
 use healthspring_barracuda::microbiome::{self, communities};
 
@@ -41,7 +44,10 @@ fn main() {
 
     // Check 2: All Pielou in [0, 1]
     println!("\n--- Check 2: All Pielou in [0, 1] ---");
-    if [j_h, j_d, j_c, j_e].iter().all(|&j| (0.0..=1.0 + 1e-10).contains(&j)) {
+    if [j_h, j_d, j_c, j_e]
+        .iter()
+        .all(|&j| (0.0..=1.0 + 1e-10).contains(&j))
+    {
         println!("  [PASS]");
         passed += 1;
     } else {
@@ -64,11 +70,13 @@ fn main() {
 
     // Check 4: Shannon ordering
     println!("\n--- Check 4: Shannon ordering ---");
-    let sh_h = microbiome::shannon_index(healthy);
-    let sh_d = microbiome::shannon_index(dysbiotic);
-    let sh_c = microbiome::shannon_index(cdiff);
-    if sh_h > sh_c && sh_c > sh_d {
-        println!("  [PASS] H': healthy({sh_h:.4}) > cdiff({sh_c:.4}) > dysbiotic({sh_d:.4})");
+    let shannon_healthy = microbiome::shannon_index(healthy);
+    let shannon_dysbiotic = microbiome::shannon_index(dysbiotic);
+    let shannon_cdiff = microbiome::shannon_index(cdiff);
+    if shannon_healthy > shannon_cdiff && shannon_cdiff > shannon_dysbiotic {
+        println!(
+            "  [PASS] H': healthy({shannon_healthy:.4}) > cdiff({shannon_cdiff:.4}) > dysbiotic({shannon_dysbiotic:.4})"
+        );
         passed += 1;
     } else {
         println!("  [FAIL]");
@@ -77,10 +85,10 @@ fn main() {
 
     // Check 5: Simpson ordering
     println!("\n--- Check 5: Simpson ordering ---");
-    let si_h = microbiome::simpson_index(healthy);
-    let si_d = microbiome::simpson_index(dysbiotic);
-    if si_h > si_d {
-        println!("  [PASS] D: healthy({si_h:.4}) > dysbiotic({si_d:.4})");
+    let simpson_healthy = microbiome::simpson_index(healthy);
+    let simpson_dysbiotic = microbiome::simpson_index(dysbiotic);
+    if simpson_healthy > simpson_dysbiotic {
+        println!("  [PASS] D: healthy({simpson_healthy:.4}) > dysbiotic({simpson_dysbiotic:.4})");
         passed += 1;
     } else {
         println!("  [FAIL]");
@@ -89,7 +97,8 @@ fn main() {
 
     // Check 6: IPR of uniform vs localized
     println!("\n--- Check 6: IPR physics ---");
-    let l = 50;
+    let l: usize = 50;
+    #[expect(clippy::cast_precision_loss, reason = "l = 50")]
     let val = 1.0 / (l as f64).sqrt();
     let psi_ext = vec![val; l];
     let mut psi_loc = vec![0.0; l];
@@ -118,7 +127,7 @@ fn main() {
 
     // Check 8: Anderson Hamiltonian builds correctly
     println!("\n--- Check 8: Hamiltonian structure ---");
-    let disorder: Vec<f64> = (0..20).map(|i| i as f64 * 0.5).collect();
+    let disorder: Vec<f64> = (0..20).map(|i| f64::from(i) * 0.5).collect();
     let h = microbiome::anderson_hamiltonian_1d(&disorder, 1.0);
     let sym = (0..20).all(|i| (0..20).all(|j| (h[i * 20 + j] - h[j * 20 + i]).abs() < 1e-14));
     if sym && h.len() == 400 {
@@ -131,10 +140,12 @@ fn main() {
 
     // Check 9: W values match Python baseline
     println!("\n--- Check 9: W values match Python ---");
-    let w_h_py = 8.63;
-    let w_d_py = 3.03;
-    if (w_h - w_h_py).abs() < 0.01 && (w_d - w_d_py).abs() < 0.01 {
-        println!("  [PASS] W(healthy)={w_h:.2}≈{w_h_py}, W(dysbiotic)={w_d:.2}≈{w_d_py}");
+    let w_healthy_py = 8.63;
+    let w_dysbiotic_py = 3.03;
+    if (w_h - w_healthy_py).abs() < 0.01 && (w_d - w_dysbiotic_py).abs() < 0.01 {
+        println!(
+            "  [PASS] W(healthy)={w_h:.2}≈{w_healthy_py}, W(dysbiotic)={w_d:.2}≈{w_dysbiotic_py}"
+        );
         passed += 1;
     } else {
         println!("  [FAIL] W_h={w_h:.4}, W_d={w_d:.4}");

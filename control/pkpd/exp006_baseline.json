@@ -1,0 +1,29 @@
+{
+  "_source": "healthSpring Exp006: PBPK Compartments",
+  "_method": "5-tissue PBPK, Euler integration, IV bolus",
+  "dose_mg": 100.0,
+  "blood_volume_l": 5.0,
+  "duration_hr": 48.0,
+  "dt": 0.01,
+  "c0_mg_per_L": 20.0,
+  "auc_mg_hr_per_L": 4.9821657063325535,
+  "c_24hr_mg_per_L": 0.038583335299961115,
+  "c_48hr_mg_per_L": 0.00455512718037444,
+  "tissue_concentrations_24hr": {
+    "liver": 0.09959410312052312,
+    "kidney": 0.0965508160286648,
+    "muscle": 0.032049683530977355,
+    "fat": 0.29500166367370134,
+    "rest": 0.03894431693937117
+  },
+  "cardiac_output_L_per_hr": 330.0,
+  "n_tissues": 5,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3",
+    "git_commit": "4138375e3973a6a95d25758ccfc5436b5e8d0ee1",
+    "command": "python3 control/pkpd/exp006_pbpk_compartments.py",
+    "script": "control/pkpd/exp006_pbpk_compartments.py"
+  }
+}

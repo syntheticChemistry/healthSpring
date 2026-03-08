@@ -59,8 +59,19 @@ pub struct ImRegimen {
 #[must_use]
 pub fn im_steady_state_metrics(regimen: &ImRegimen, times: &[f64]) -> (f64, f64) {
     let concs = pkpd::pk_multiple_dose(
-        |t| pk_im_depot(regimen.dose_mg, regimen.f, regimen.vd, regimen.ka, regimen.ke, t),
-        regimen.interval, regimen.n_doses, times,
+        |t| {
+            pk_im_depot(
+                regimen.dose_mg,
+                regimen.f,
+                regimen.vd,
+                regimen.ka,
+                regimen.ke,
+                t,
+            )
+        },
+        regimen.interval,
+        regimen.n_doses,
+        times,
     );
     #[expect(clippy::cast_precision_loss, reason = "n_doses always small")]
     let last_start = (regimen.n_doses - 1) as f64 * regimen.interval;
@@ -98,9 +109,7 @@ pub mod pellet_params {
 /// After infusion (t > duration):
 ///   `C(t) = C_plateau * exp(-ke*(t - duration))`
 #[must_use]
-pub fn pellet_concentration(
-    t: f64, release_rate: f64, ke: f64, vd: f64, duration: f64,
-) -> f64 {
+pub fn pellet_concentration(t: f64, release_rate: f64, ke: f64, vd: f64, duration: f64) -> f64 {
     let c_ss = release_rate / (vd * ke);
     if t <= duration {
         c_ss * (1.0 - (-ke * t).exp())
@@ -299,6 +308,55 @@ pub mod gut_axis_params {
     pub const BASE_RESPONSE_KG: f64 = -16.0;
 }
 
+// ═══════════════════════════════════════════════════════════════════════
+// Cross-Track: HRV × TRT Cardiovascular (Exp038 — Mok D3)
+// ═══════════════════════════════════════════════════════════════════════
+
+/// Model HRV improvement from TRT-induced cardiovascular benefit.
+///
+/// As TRT normalizes testosterone → reduced inflammation → improved
+/// autonomic balance → increased HRV.
+///
+/// `SDNN(months) = sdnn_base + delta_sdnn * (1 - exp(-months / tau))`
+///
+/// Published correlation: SDNN < 50ms associated with ~5× cardiac mortality risk
+/// (Kleiger 1987, NEJM). TRT normalization → expected +10-20ms SDNN improvement.
+#[must_use]
+pub fn hrv_trt_response(
+    sdnn_base_ms: f64,
+    delta_sdnn_ms: f64,
+    tau_months: f64,
+    months: f64,
+) -> f64 {
+    sdnn_base_ms + delta_sdnn_ms * (1.0 - (-months / tau_months).exp())
+}
+
+/// Composite cardiac risk score from HRV + testosterone level.
+///
+/// Risk = `baseline_risk` * `hrv_factor` * `testosterone_factor`
+/// - HRV factor: SDNN < 50ms doubles risk, SDNN > 100ms halves risk
+/// - T factor: T < 300 ng/dL doubles risk, T > 500 ng/dL halves risk
+#[must_use]
+pub fn cardiac_risk_composite(sdnn_ms: f64, testosterone_ng_dl: f64, baseline_risk: f64) -> f64 {
+    let hrv_factor = if sdnn_ms < 50.0 {
+        2.0 - sdnn_ms / 50.0
+    } else if sdnn_ms > 100.0 {
+        0.5
+    } else {
+        1.0 - 0.5 * (sdnn_ms - 50.0) / 50.0
+    };
+
+    let t_factor = if testosterone_ng_dl < 300.0 {
+        2.0 - testosterone_ng_dl / 300.0
+    } else if testosterone_ng_dl > 500.0 {
+        0.5
+    } else {
+        1.0 - 0.5 * (testosterone_ng_dl - 300.0) / 200.0
+    };
+
+    baseline_risk * hrv_factor * t_factor
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -318,8 +376,18 @@ mod tests {
     fn im_cmax_positive() {
         use testosterone_cypionate as tc;
         let times: Vec<f64> = (0..2000).map(|i| 56.0 * f64::from(i) / 1999.0).collect();
-        let concs: Vec<f64> = times.iter()
-            .map(|&t| pk_im_depot(tc::DOSE_WEEKLY_MG, tc::F_IM, tc::VD_L, tc::K_A_IM, tc::K_E, t))
+        let concs: Vec<f64> = times
+            .iter()
+            .map(|&t| {
+                pk_im_depot(
+                    tc::DOSE_WEEKLY_MG,
+                    tc::F_IM,
+                    tc::VD_L,
+                    tc::K_A_IM,
+                    tc::K_E,
+                    t,
+                )
+            })
             .collect();
         let (cmax, tmax) = pkpd::find_cmax_tmax(&times, &concs);
         assert!(cmax > 0.0, "Cmax > 0");
@@ -330,8 +398,18 @@ mod tests {
     fn im_nonneg() {
         let times: Vec<f64> = (0..2000).map(|i| 56.0 * f64::from(i) / 1999.0).collect();
         use testosterone_cypionate as tc;
-        let concs: Vec<f64> = times.iter()
-            .map(|&t| pk_im_depot(tc::DOSE_WEEKLY_MG, tc::F_IM, tc::VD_L, tc::K_A_IM, tc::K_E, t))
+        let concs: Vec<f64> = times
+            .iter()
+            .map(|&t| {
+                pk_im_depot(
+                    tc::DOSE_WEEKLY_MG,
+                    tc::F_IM,
+                    tc::VD_L,
+                    tc::K_A_IM,
+                    tc::K_E,
+                    t,
+                )
+            })
             .collect();
         assert!(concs.iter().all(|&c| c >= -1e-12));
     }
@@ -340,21 +418,47 @@ mod tests {
     fn im_weekly_accumulates() {
         use testosterone_cypionate as tc;
         let times: Vec<f64> = (0..2000).map(|i| 56.0 * f64::from(i) / 1999.0).collect();
-        let concs_single: Vec<f64> = times.iter()
-            .map(|&t| pk_im_depot(tc::DOSE_WEEKLY_MG, tc::F_IM, tc::VD_L, tc::K_A_IM, tc::K_E, t))
+        let concs_single: Vec<f64> = times
+            .iter()
+            .map(|&t| {
+                pk_im_depot(
+                    tc::DOSE_WEEKLY_MG,
+                    tc::F_IM,
+                    tc::VD_L,
+                    tc::K_A_IM,
+                    tc::K_E,
+                    t,
+                )
+            })
             .collect();
         let (cmax_single, _) = pkpd::find_cmax_tmax(&times, &concs_single);
 
         let concs_multi = pkpd::pk_multiple_dose(
-            |t| pk_im_depot(tc::DOSE_WEEKLY_MG, tc::F_IM, tc::VD_L, tc::K_A_IM, tc::K_E, t),
-            tc::INTERVAL_WEEKLY, 8, &times,
+            |t| {
+                pk_im_depot(
+                    tc::DOSE_WEEKLY_MG,
+                    tc::F_IM,
+                    tc::VD_L,
+                    tc::K_A_IM,
+                    tc::K_E,
+                    t,
+                )
+            },
+            tc::INTERVAL_WEEKLY,
+            8,
+            &times,
         );
         let threshold_t = 5.0 * tc::INTERVAL_WEEKLY;
-        let cmax_ss = times.iter().zip(concs_multi.iter())
+        let cmax_ss = times
+            .iter()
+            .zip(concs_multi.iter())
             .filter(|(t, _)| **t >= threshold_t)
             .map(|(_, c)| *c)
             .fold(f64::NEG_INFINITY, f64::max);
-        assert!(cmax_ss > cmax_single, "steady-state Cmax > single-dose Cmax");
+        assert!(
+            cmax_ss > cmax_single,
+            "steady-state Cmax > single-dose Cmax"
+        );
     }
 
     // ── Pellet PK (Exp031) ─────────────────────────────────────────────
@@ -362,7 +466,13 @@ mod tests {
     #[test]
     fn pellet_c0_is_zero() {
         use testosterone_cypionate as tc;
-        let c = pellet_concentration(0.0, pellet_params::RELEASE_RATE, tc::K_E, tc::VD_L, pellet_params::DURATION_DAYS);
+        let c = pellet_concentration(
+            0.0,
+            pellet_params::RELEASE_RATE,
+            tc::K_E,
+            tc::VD_L,
+            pellet_params::DURATION_DAYS,
+        );
         assert!(c.abs() < TOL, "Pellet C(0) = 0");
     }
 
@@ -371,7 +481,11 @@ mod tests {
         use testosterone_cypionate as tc;
         let c_ss = pellet_params::RELEASE_RATE / (tc::VD_L * tc::K_E);
         let c_5hl = pellet_concentration(
-            5.0 * tc::T_HALF_DAYS, pellet_params::RELEASE_RATE, tc::K_E, tc::VD_L, pellet_params::DURATION_DAYS,
+            5.0 * tc::T_HALF_DAYS,
+            pellet_params::RELEASE_RATE,
+            tc::K_E,
+            tc::VD_L,
+            pellet_params::DURATION_DAYS,
         );
         assert!(c_5hl / c_ss > 0.95, "reaches 95% of C_ss by 5 half-lives");
     }
@@ -380,12 +494,23 @@ mod tests {
     fn pellet_washout_decays() {
         use testosterone_cypionate as tc;
         let c_end = pellet_concentration(
-            pellet_params::DURATION_DAYS, pellet_params::RELEASE_RATE, tc::K_E, tc::VD_L, pellet_params::DURATION_DAYS,
+            pellet_params::DURATION_DAYS,
+            pellet_params::RELEASE_RATE,
+            tc::K_E,
+            tc::VD_L,
+            pellet_params::DURATION_DAYS,
         );
         let c_post = pellet_concentration(
-            pellet_params::DURATION_DAYS + 30.0, pellet_params::RELEASE_RATE, tc::K_E, tc::VD_L, pellet_params::DURATION_DAYS,
+            pellet_params::DURATION_DAYS + 30.0,
+            pellet_params::RELEASE_RATE,
+            tc::K_E,
+            tc::VD_L,
+            pellet_params::DURATION_DAYS,
         );
-        assert!(c_post < c_end, "washout: C decreases after pellet exhaustion");
+        assert!(
+            c_post < c_end,
+            "washout: C decreases after pellet exhaustion"
+        );
     }
 
     #[test]
@@ -394,7 +519,13 @@ mod tests {
         for i in 0..3000 {
             #[expect(clippy::cast_precision_loss, reason = "loop index fits f64")]
             let t = 180.0 * (i as f64) / 2999.0;
-            let c = pellet_concentration(t, pellet_params::RELEASE_RATE, tc::K_E, tc::VD_L, pellet_params::DURATION_DAYS);
+            let c = pellet_concentration(
+                t,
+                pellet_params::RELEASE_RATE,
+                tc::K_E,
+                tc::VD_L,
+                pellet_params::DURATION_DAYS,
+            );
             assert!(c >= -1e-12, "non-negative at t={t}");
         }
     }
@@ -512,7 +643,9 @@ mod tests {
 
     #[test]
     fn hba1c_monotonic() {
-        let vals: Vec<f64> = (0..=12).map(|m| hba1c_trajectory(f64::from(m), 7.60, -0.37, 3.0)).collect();
+        let vals: Vec<f64> = (0..=12)
+            .map(|m| hba1c_trajectory(f64::from(m), 7.60, -0.37, 3.0))
+            .collect();
         for w in vals.windows(2) {
             assert!(w[0] >= w[1] - 1e-12, "monotonically decreasing");
         }
@@ -531,7 +664,10 @@ mod tests {
         let (mu, sigma) = lognormal_params(70.0, 0.25);
         // Lognormal mean = exp(mu + σ²/2) should equal typical
         let recovered_mean = (mu + sigma * sigma / 2.0).exp();
-        assert!((recovered_mean - 70.0).abs() < 0.01, "mean ≈ typical: got {recovered_mean}");
+        assert!(
+            (recovered_mean - 70.0).abs() < 0.01,
+            "mean ≈ typical: got {recovered_mean}"
+        );
         assert!(sigma > 0.0);
     }
 
@@ -581,6 +717,60 @@ mod tests {
     fn gut_response_scales_with_xi() {
         let r_low = gut_metabolic_response(10.0, 50.0, -16.0);
         let r_high = gut_metabolic_response(40.0, 50.0, -16.0);
-        assert!(r_high < r_low, "higher ξ → more weight loss (more negative)");
+        assert!(
+            r_high < r_low,
+            "higher ξ → more weight loss (more negative)"
+        );
+    }
+
+    #[test]
+    fn im_pk_deterministic() {
+        let times: Vec<f64> = (0..100).map(|i| 56.0 * f64::from(i) / 99.0).collect();
+        let c1 = pkpd::pk_multiple_dose(
+            |t| pk_im_depot(100.0, 1.0, 70.0, 0.462, 0.0866, t),
+            7.0,
+            8,
+            &times,
+        );
+        let c2 = pkpd::pk_multiple_dose(
+            |t| pk_im_depot(100.0, 1.0, 70.0, 0.462, 0.0866, t),
+            7.0,
+            8,
+            &times,
+        );
+        for (a, b) in c1.iter().zip(c2.iter()) {
+            assert_eq!(a.to_bits(), b.to_bits(), "IM PK must be bit-identical");
+        }
+    }
+
+    // ── HRV × TRT Cardiovascular (Exp038) ────────────────────────────────
+
+    #[test]
+    fn hrv_trt_response_at_zero() {
+        let s = hrv_trt_response(40.0, 20.0, 6.0, 0.0);
+        assert!((s - 40.0).abs() < 1e-10, "at t=0, SDNN=base");
+    }
+
+    #[test]
+    fn hrv_trt_response_improves() {
+        let s0 = hrv_trt_response(40.0, 20.0, 6.0, 0.0);
+        let s12 = hrv_trt_response(40.0, 20.0, 6.0, 12.0);
+        let s_inf = hrv_trt_response(40.0, 20.0, 6.0, 120.0);
+        assert!(s12 > s0, "SDNN improves with TRT");
+        assert!((s_inf - 60.0).abs() < 1.0, "approaches base + delta");
+    }
+
+    #[test]
+    fn cardiac_risk_low_sdnn_high() {
+        let risk_low = cardiac_risk_composite(30.0, 400.0, 1.0);
+        let risk_high = cardiac_risk_composite(120.0, 400.0, 1.0);
+        assert!(risk_low > risk_high, "low SDNN → higher risk");
+    }
+
+    #[test]
+    fn cardiac_risk_low_testosterone_high() {
+        let risk_low_t = cardiac_risk_composite(80.0, 200.0, 1.0);
+        let risk_high_t = cardiac_risk_composite(80.0, 600.0, 1.0);
+        assert!(risk_low_t > risk_high_t, "low T → higher risk");
     }
 }

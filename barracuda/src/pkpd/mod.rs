@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+//! Pharmacokinetic / pharmacodynamic modeling pipelines.
+//!
+//! Extends neuralSpring nS-601–605 (veterinary PK/PD) to human therapeutics.
+//!
+//! ## Tier 1 (CPU)
+//!
+//! - [`hill_dose_response`]: Generalized Hill equation for dose-response
+//! - [`pk_iv_bolus`]: One-compartment IV bolus decay
+//! - [`pk_oral_one_compartment`]: Bateman equation for oral absorption
+//! - [`auc_trapezoidal`]: AUC by trapezoidal rule
+//! - [`find_cmax_tmax`]: Peak concentration and time from PK curve
+//! - [`pk_multiple_dose`]: Superposition for repeated dosing
+//! - [`compute_ec_values`]: EC10/EC50/EC90 from Hill parameters
+//!
+//! ## Human JAK Inhibitor Reference Data
+//!
+//! Published IC50 values from Phase III trial literature:
+//! - Baricitinib (Olumiant): JAK1/JAK2, IC50 ≈ 5.9 nM
+//! - Upadacitinib (Rinvoq): JAK1, IC50 ≈ 8 nM
+//! - Abrocitinib (Cibinqo): JAK1, IC50 ≈ 29 nM
+//! - Oclacitinib (Apoquel): JAK1, IC50 = 10 nM (canine reference, Gonzales 2014)
+
+mod allometry;
+mod compartment;
+mod dose_response;
+mod pbpk;
+mod population;
+mod util;
+
+// Re-export submodules for public API
+pub use allometry::{allometric_exp, lokivetmab_canine};
+pub use allometry::{allometric_scale, mab_pk_sc};
+pub use compartment::{
+    micro_to_macro, oral_tmax, pk_iv_bolus, pk_oral_one_compartment, pk_two_compartment_iv,
+    two_compartment_ab,
+};
+pub use dose_response::{
+    ABROCITINIB, ALL_INHIBITORS, BARICITINIB, EcValues, JakInhibitor, OCLACITINIB, UPADACITINIB,
+    compute_ec_values, hill_dose_response, hill_sweep,
+};
+pub use pbpk::{
+    PbpkState, TissueCompartment, cardiac_output, pbpk_auc, pbpk_iv_simulate,
+    standard_human_tissues,
+};
+pub use population::{LognormalParam, PatientExposure, pop_baricitinib, population_pk_cpu};
+pub use util::{auc_trapezoidal, find_cmax_tmax, pk_multiple_dose};

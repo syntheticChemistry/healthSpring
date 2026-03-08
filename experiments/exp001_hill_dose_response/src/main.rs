@@ -8,9 +8,7 @@
 //! Cross-validates the Rust Hill dose-response implementation against the
 //! Python control baseline (`control/pkpd/exp001_baseline.json`).
 
-use healthspring_barracuda::pkpd::{
-    self, compute_ec_values, hill_dose_response, ALL_INHIBITORS,
-};
+use healthspring_barracuda::pkpd::{self, ALL_INHIBITORS, compute_ec_values, hill_dose_response};
 
 fn main() {
     let mut passed = 0_u32;

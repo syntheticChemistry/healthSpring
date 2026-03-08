@@ -2,8 +2,14 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
-#![expect(clippy::too_many_lines, reason = "validation binary — linear check sequence")]
-#![expect(clippy::similar_names, reason = "iv/oral parameter variants are intentionally parallel")]
+#![expect(
+    clippy::too_many_lines,
+    reason = "validation binary — linear check sequence"
+)]
+#![expect(
+    clippy::similar_names,
+    reason = "iv/oral parameter variants are intentionally parallel"
+)]
 
 //! healthSpring Exp002 — Rust validation binary
 //!
@@ -71,7 +77,10 @@ fn main() {
 
     // Check 3: IV monotonically decreasing
     print!("\n--- Check 3: IV monotonically decreasing --- ");
-    let c_iv: Vec<f64> = times.iter().map(|&t| pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, t)).collect();
+    let c_iv: Vec<f64> = times
+        .iter()
+        .map(|&t| pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, t))
+        .collect();
     let mono_dec = c_iv.windows(2).all(|w| w[0] >= w[1] - 1e-15);
     if mono_dec {
         println!("[PASS]");
@@ -167,12 +176,7 @@ fn main() {
 
     // Check 11: Multiple doses accumulate
     print!("\n--- Check 11: Multiple IV doses accumulate --- ");
-    let c_multi = pk_multiple_dose(
-        |t| pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, t),
-        8.0,
-        6,
-        &times,
-    );
+    let c_multi = pk_multiple_dose(|t| pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, t), 8.0, 6, &times);
     let peak_after_first = times
         .iter()
         .zip(c_multi.iter())

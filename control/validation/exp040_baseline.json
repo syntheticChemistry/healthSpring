@@ -1,0 +1,25 @@
+{
+  "_source": "healthSpring Exp040: barraCuda CPU Parity \u2014 Analytical Contract",
+  "_method": "Analytical known-values (textbook identities)",
+  "checks": {
+    "hill_e_at_ec50": 0.5,
+    "hill_e_at_zero": 0.0,
+    "hill_e_at_inf": 0.99999999999,
+    "one_comp_c0": 4.0,
+    "one_comp_c_at_half_life": 2.0,
+    "two_comp_auc_analytical": 45.714285714285715,
+    "shannon_uniform": 2.3025850929940455,
+    "simpson_uniform": 0.8999999999999999,
+    "pielou_uniform": 0.9999999999999998,
+    "chao1_no_singletons": 5.0,
+    "bray_curtis_identical": 0.0,
+    "ppg_r_value": 0.5
+  },
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12",
+    "numpy": "2.1.3",
+    "command": "python3 control/validation/exp040_barracuda_cpu.py",
+    "script": "control/validation/exp040_barracuda_cpu.py"
+  }
+}

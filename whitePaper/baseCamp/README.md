@@ -3,7 +3,7 @@
 Faculty-linked sub-theses documenting how healthSpring extends validated science into human health applications.
 
 **Last Updated:** March 8, 2026
-**Status:** V3 — 4 tracks active, 17 experiments complete (103 Rust lib tests, 179 binary checks, 192 Python checks)
+**Status:** V4 — 4 tracks active, 24 experiments complete (139 lib + 27 forge unit tests, 280 binary checks, 104 cross-validation checks)
 
 ---
 
@@ -11,10 +11,10 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 
 | Track | Domain | Experiments | Status |
 |-------|--------|-------------|--------|
-| 1 — PK/PD | Pharmacokinetics, dose-response, population modeling | Exp001-005 | **Complete** (Tier 0+1) |
-| 2 — Microbiome | Gut diversity, Anderson lattice, colonization resistance | Exp010-012 | **Complete** (Tier 0+1) |
-| 3 — Biosignal | ECG detection, HRV, wearable fusion | Exp020 | **Complete** (Tier 0+1) |
-| 4 — Endocrinology | Testosterone PK, TRT outcomes, gut axis, population MC | Exp030-037 | **Complete** (Tier 0+1) |
+| 1 — PK/PD | Pharmacokinetics, dose-response, population modeling, PBPK | Exp001-006 | **Complete** (Tier 0+1) |
+| 2 — Microbiome | Gut diversity, Anderson lattice, colonization resistance, FMT | Exp010-013 | **Complete** (Tier 0+1) |
+| 3 — Biosignal | ECG detection, HRV, PPG SpO2, EDA, multi-channel fusion | Exp020-023 | **Complete** (Tier 0+1) |
+| 4 — Endocrinology | Testosterone PK, TRT outcomes, gut axis, HRV cross-track | Exp030-038 | **Complete** (Tier 0+1) |
 
 ---
 
@@ -22,10 +22,10 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 
 | # | File | Faculty | Domain | Status | Python | Rust |
 |---|------|---------|--------|--------|:------:|:----:|
-| 01 | [gonzales.md](gonzales.md) | Gonzales, Lisabeth, Neubig | PK/PD + immunology → human therapeutics | **Complete** | 73 | 66 |
-| 02 | cdiff_colonization.md | TBD | Anderson localization → gut colonization resistance | **Complete** | 36 | 36 |
-| 03 | biosignal_sovereign.md | TBD | Edge biosignal processing on sovereign hardware | **Complete** | 12 | 12 |
-| 04 | [mok_testosterone.md](mok_testosterone.md) | Dr. Charles Mok | Testosterone PK, TRT outcomes, clinical claim verification | **Complete** | 86 | 76 |
+| 01 | [gonzales.md](gonzales.md) | Gonzales, Lisabeth, Neubig | PK/PD + immunology → human therapeutics | **Complete** | 73 | 79 |
+| 02 | cdiff_colonization.md | TBD | Anderson localization → gut colonization resistance, FMT | **Complete** | 36 | 48 |
+| 03 | biosignal_sovereign.md | TBD | Edge biosignal processing, PPG SpO2, fusion | **Complete** | 44 | 44 |
+| 04 | [mok_testosterone.md](mok_testosterone.md) | Dr. Charles Mok | Testosterone PK, TRT outcomes, HRV cross-track | **Complete** | 96 | 86 |
 
 ---
 
@@ -33,12 +33,14 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 
 | Sub-thesis | Upstream Checks | Tier 0 (Python) | Tier 1 (Rust) | Total |
 |------------|:---------------:|:---------------:|:-------------:|:-----:|
-| Gonzales PK/PD (Exp001-005) | 688 | 73 | 66 | 827 |
-| Microbiome / C. diff (Exp010-012) | wetSpring Anderson | 36 | 36 | 72+ |
-| Biosignal / QRS (Exp020) | — | 12 | 12 | 24 |
-| Mok Testosterone (Exp030-037) | — | 86 | 76 | 162 |
-| **Lib unit tests** | — | — | **103** | 103 |
-| **Total** | **688** | **192** (Tier 0) | **179** (binary) + **103** (lib) = **282** | **1,162+** |
+| Gonzales PK/PD (Exp001-006) | 688 | 84 | 84 | 856 |
+| Microbiome / C. diff / FMT (Exp010-013) | wetSpring Anderson | 48 | 51 | 99+ |
+| Biosignal / ECG+PPG+EDA (Exp020-023) | — | 44 | 44 | 88 |
+| Mok Testosterone + D3 (Exp030-038) | — | 96 | 86 | 182 |
+| Validation / Parity (Exp040) | — | 15 | 15 | 30 |
+| **Lib unit tests** | — | — | **139** | 139 |
+| **metalForge tests** | — | — | **27** | 27 |
+| **Total** | **688** | **287** (Tier 0) | **280** (binary) + **166** (lib+forge) = **446** | **1,421+** |
 
 ---
 
@@ -53,6 +55,7 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 | 003 | Two-compartment PK (biexponential) | 15 | 11 |
 | 004 | mAb PK cross-species transfer (allometric) | 12 | 7 |
 | 005 | Population PK Monte Carlo (1000 patients) | 15 | 12 |
+| 006 | PBPK compartments (5-tissue physiological) | 13 | 13 |
 
 ### Track 2 — Microbiome
 
@@ -61,12 +64,16 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 | 010 | Diversity indices (Shannon/Simpson/Pielou/Chao1) | 14 | 12 |
 | 011 | Anderson gut lattice (localization → resistance) | 12 | 14 |
 | 012 | C. diff colonization resistance score | 10 | 10 |
+| 013 | FMT microbiota transplant for rCDI | 12 | 12 |
 
 ### Track 3 — Biosignal
 
 | Exp | Title | Python | Rust Binary |
 |-----|-------|:------:|:-----------:|
 | 020 | Pan-Tompkins QRS detection | 12 | 12 |
+| 021 | HRV metrics (SDNN, RMSSD, pNN50) | 10 | 10 |
+| 022 | PPG SpO2 R-value calibration | 11 | 11 |
+| 023 | Multi-channel fusion (ECG + PPG + EDA) | 11 | 11 |
 
 ### Track 4 — Endocrinology
 
@@ -80,6 +87,7 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 | 035 | TRT diabetes: HbA1c + insulin sensitivity | 10 | 10 |
 | 036 | Population TRT Monte Carlo (10K patients) | 12 | 10 |
 | 037 | Testosterone–gut axis: microbiome stratification | 12 | 10 |
+| 038 | HRV × TRT cardiovascular cross-track (Mok D3) | 10 | 10 |
 
 ---
 
@@ -124,16 +132,18 @@ hotSpring → planned lattice tissue finite-size scaling
 
 ## Next Steps: Tier 2 (GPU) and Beyond
 
-All 17 experiments are Tier 0 (Python control) and Tier 1 (Rust CPU) validated.
-The path forward:
+All 24 experiments are Tier 0 (Python control) and Tier 1 (Rust CPU) validated.
+Exp040 establishes analytical CPU parity contracts. The path forward:
 
-1. **barraCuda CPU** — already proving pure Rust math matches Python (Tier 1 complete)
-2. **barraCuda GPU** — WGSL shaders for embarrassingly parallel workloads:
-   - `population_pk_sample.wgsl` (Exp005/036 — first GPU experiment)
-   - `hill_equation_gpu.wgsl` (Exp001 vectorized)
-   - `anderson_xi_1d_gut.wgsl` (Exp011/037 eigensolve)
-3. **toadStool** — unidirectional streaming dispatch (CPU→GPU, no round-trips)
-4. **metalForge** — cross-substrate (GPU→NPU→CPU) heterogeneous deployment
+1. **barraCuda CPU** — Tier 1 complete. Pure Rust matches Python f64-canonical (280 binary + 104 cross-validation checks)
+2. **barraCuda GPU** — WGSL shaders via `gpu.rs` dispatch layer:
+   - `batched_elementwise_f64.wgsl` (Exp001 Hill sweep)
+   - `population_pk_f64.wgsl` (Exp005/036 Monte Carlo)
+   - `anderson_lyapunov_f64.wgsl` (Exp011/037 eigensolve)
+   - `fft_radix2_f64.wgsl` (Exp020-023 biosignal FFT)
+   - `mean_variance_f64.wgsl` (Exp010/013 diversity batch)
+3. **toadStool** — pipeline skeleton wired (Stage/StageOp/Pipeline, 13 tests). Next: GPU stage execution
+4. **metalForge** — NUCLEUS atomics (Tower→Node→Nest), PCIe P2P transfer planning (27 tests). Next: live dispatch
 
 ---
 

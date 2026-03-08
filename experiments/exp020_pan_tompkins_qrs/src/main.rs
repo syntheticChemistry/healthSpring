@@ -1,9 +1,12 @@
-#![expect(clippy::too_many_lines, reason = "validation binary — linear check sequence")]
+#![expect(
+    clippy::too_many_lines,
+    reason = "validation binary — linear check sequence"
+)]
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Exp020 validation: Pan-Tompkins QRS Detection
 //!
 //! Cross-validates `healthspring_barracuda::biosignal` Pan-Tompkins
-//! pipeline against the Python control (exp020_pan_tompkins_qrs.py).
+//! pipeline against the Python control (`exp020_pan_tompkins_qrs.py`).
 
 use healthspring_barracuda::biosignal;
 
@@ -33,6 +36,11 @@ fn main() {
 
     // Check 2: Beat count
     println!("\n--- Check 2: Beat count ---");
+    #[expect(
+        clippy::cast_possible_truncation,
+        clippy::cast_possible_wrap,
+        reason = "beat count < 1000 fits in i32"
+    )]
     let diff = (true_peaks.len() as i32 - 12).abs();
     if diff <= 1 {
         println!("  [PASS] {} beats (expected ~12)", true_peaks.len());
@@ -58,7 +66,11 @@ fn main() {
     // Check 4: Bandpass reduces amplitude
     println!("\n--- Check 4: Bandpass reduces amplitude ---");
     let max_ecg = ecg.iter().copied().fold(0.0_f64, |a, b| a.max(b.abs()));
-    let max_bp = result.bandpass.iter().copied().fold(0.0_f64, |a, b| a.max(b.abs()));
+    let max_bp = result
+        .bandpass
+        .iter()
+        .copied()
+        .fold(0.0_f64, |a, b| a.max(b.abs()));
     if max_bp < max_ecg {
         println!("  [PASS] max|BP|={max_bp:.4} < max|ECG|={max_ecg:.4}");
         passed += 1;
@@ -89,15 +101,20 @@ fn main() {
 
     // Check 7: Detections > 0
     println!("\n--- Check 7: Peaks detected ---");
-    if !result.peaks.is_empty() {
-        println!("  [PASS] {} peaks detected", result.peaks.len());
-        passed += 1;
-    } else {
+    if result.peaks.is_empty() {
         println!("  [FAIL] no peaks");
         failed += 1;
+    } else {
+        println!("  [PASS] {} peaks detected", result.peaks.len());
+        passed += 1;
     }
 
     // Evaluate against truth
+    #[expect(
+        clippy::cast_possible_truncation,
+        clippy::cast_sign_loss,
+        reason = "tol_samples < 1000 fits in usize"
+    )]
     let tol_samples = (75.0 * fs / 1000.0) as usize;
     let metrics = biosignal::evaluate_detection(&result.peaks, &true_peaks, tol_samples);
 

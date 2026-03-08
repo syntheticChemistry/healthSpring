@@ -59,10 +59,7 @@ pub fn derivative_filter(signal: &[f64]) -> Vec<f64> {
     let n = signal.len();
     let mut d = vec![0.0; n];
     for i in 2..n.saturating_sub(2) {
-        d[i] = (-signal[i - 2] - 2.0 * signal[i - 1]
-            + 2.0 * signal[i + 1]
-            + signal[i + 2])
-            / 8.0;
+        d[i] = (-signal[i - 2] - 2.0 * signal[i - 1] + 2.0 * signal[i + 1] + signal[i + 2]) / 8.0;
     }
     d
 }
@@ -202,7 +199,13 @@ pub fn evaluate_detection(
         0.0
     };
 
-    DetectionMetrics { tp, fp, fn_count, sensitivity, ppv }
+    DetectionMetrics {
+        tp,
+        fp,
+        fn_count,
+        sensitivity,
+        ppv,
+    }
 }
 
 /// Compute heart rate from detected peak indices.
@@ -212,7 +215,10 @@ pub fn heart_rate_from_peaks(peaks: &[usize], fs: f64) -> f64 {
     if peaks.len() < 2 {
         return 0.0;
     }
-    let rr_intervals: Vec<f64> = peaks.windows(2).map(|w| (w[1] - w[0]) as f64 / fs).collect();
+    let rr_intervals: Vec<f64> = peaks
+        .windows(2)
+        .map(|w| (w[1] - w[0]) as f64 / fs)
+        .collect();
     let mean_rr = rr_intervals.iter().sum::<f64>() / rr_intervals.len() as f64;
     if mean_rr > 0.0 { 60.0 / mean_rr } else { 0.0 }
 }
@@ -224,10 +230,59 @@ pub fn sdnn_ms(peaks: &[usize], fs: f64) -> f64 {
     if peaks.len() < 3 {
         return 0.0;
     }
-    let rr_ms: Vec<f64> = peaks.windows(2).map(|w| (w[1] - w[0]) as f64 / fs * 1000.0).collect();
+    let rr_ms: Vec<f64> = peaks
+        .windows(2)
+        .map(|w| (w[1] - w[0]) as f64 / fs * 1000.0)
+        .collect();
     let mean = rr_ms.iter().sum::<f64>() / rr_ms.len() as f64;
     let var = rr_ms.iter().map(|&r| (r - mean) * (r - mean)).sum::<f64>() / rr_ms.len() as f64;
     var.sqrt()
+}
+
+/// RMSSD (root mean square of successive differences) in milliseconds.
+///
+/// Standard short-term HRV metric reflecting parasympathetic activity.
+/// `RMSSD = sqrt(mean(ΔRR²))` where `ΔRR = RR_{n+1} - RR_n`.
+#[must_use]
+#[expect(clippy::cast_precision_loss, reason = "sample diffs < 2^52")]
+pub fn rmssd_ms(peaks: &[usize], fs: f64) -> f64 {
+    if peaks.len() < 3 {
+        return 0.0;
+    }
+    let rr_ms: Vec<f64> = peaks
+        .windows(2)
+        .map(|w| (w[1] - w[0]) as f64 / fs * 1000.0)
+        .collect();
+    let successive_diffs_sq: f64 = rr_ms.windows(2).map(|w| (w[1] - w[0]).powi(2)).sum();
+    let n_diffs = rr_ms.len() - 1;
+    if n_diffs == 0 {
+        return 0.0;
+    }
+    (successive_diffs_sq / n_diffs as f64).sqrt()
+}
+
+/// pNN50: percentage of successive RR intervals differing by > 50 ms.
+///
+/// High pNN50 indicates strong vagal tone (parasympathetic).
+#[must_use]
+#[expect(clippy::cast_precision_loss, reason = "sample diffs < 2^52")]
+pub fn pnn50(peaks: &[usize], fs: f64) -> f64 {
+    if peaks.len() < 3 {
+        return 0.0;
+    }
+    let rr_ms: Vec<f64> = peaks
+        .windows(2)
+        .map(|w| (w[1] - w[0]) as f64 / fs * 1000.0)
+        .collect();
+    let nn50_count = rr_ms
+        .windows(2)
+        .filter(|w| (w[1] - w[0]).abs() > 50.0)
+        .count();
+    let n_diffs = rr_ms.len() - 1;
+    if n_diffs == 0 {
+        return 0.0;
+    }
+    nn50_count as f64 / n_diffs as f64 * 100.0
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -311,23 +366,33 @@ pub fn generate_synthetic_ecg(
 
         for (i, sample) in ecg.iter_mut().enumerate() {
             let t = idx_to_f64(i) / fs;
-            *sample += 0.15 * (-((t - (beat_time - 0.16)).powi(2)) / (2.0 * 0.01_f64.powi(2))).exp();
-            *sample -= 0.10 * (-((t - (beat_time - 0.04)).powi(2)) / (2.0 * 0.005_f64.powi(2))).exp();
+            *sample +=
+                0.15 * (-((t - (beat_time - 0.16)).powi(2)) / (2.0 * 0.01_f64.powi(2))).exp();
+            *sample -=
+                0.10 * (-((t - (beat_time - 0.04)).powi(2)) / (2.0 * 0.005_f64.powi(2))).exp();
             *sample += 1.0 * (-((t - beat_time).powi(2)) / (2.0 * 0.008_f64.powi(2))).exp();
-            *sample -= 0.25 * (-((t - (beat_time + 0.04)).powi(2)) / (2.0 * 0.008_f64.powi(2))).exp();
-            *sample += 0.30 * (-((t - (beat_time + 0.25)).powi(2)) / (2.0 * 0.04_f64.powi(2))).exp();
+            *sample -=
+                0.25 * (-((t - (beat_time + 0.04)).powi(2)) / (2.0 * 0.008_f64.powi(2))).exp();
+            *sample +=
+                0.30 * (-((t - (beat_time + 0.25)).powi(2)) / (2.0 * 0.04_f64.powi(2))).exp();
         }
 
-        rng_state = rng_state.wrapping_mul(6_364_136_223_846_793_005).wrapping_add(1);
+        rng_state = rng_state
+            .wrapping_mul(6_364_136_223_846_793_005)
+            .wrapping_add(1);
         let jitter = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.04;
         beat_time += rr + jitter;
     }
 
     if noise_std > 0.0 {
         for sample in &mut ecg {
-            rng_state = rng_state.wrapping_mul(6_364_136_223_846_793_005).wrapping_add(1);
+            rng_state = rng_state
+                .wrapping_mul(6_364_136_223_846_793_005)
+                .wrapping_add(1);
             let u1 = u64_to_f64(rng_state >> 33) / f64::from(u32::MAX);
-            rng_state = rng_state.wrapping_mul(6_364_136_223_846_793_005).wrapping_add(1);
+            rng_state = rng_state
+                .wrapping_mul(6_364_136_223_846_793_005)
+                .wrapping_add(1);
             let u2 = u64_to_f64(rng_state >> 33) / f64::from(u32::MAX);
             let z = (-2.0 * u1.max(1e-30).ln()).sqrt() * (2.0 * PI * u2).cos();
             *sample += noise_std * z;
@@ -335,6 +400,282 @@ pub fn generate_synthetic_ecg(
     }
 
     (ecg, r_peaks)
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// PPG SpO2 Estimation (Exp022)
+// ═══════════════════════════════════════════════════════════════════════
+
+/// PPG R-value: ratio of pulsatile-to-static components.
+///
+/// `R = (AC_red / DC_red) / (AC_ir / DC_ir)`
+/// R ≈ 0.4–0.6 for normal oxygenation, R > 0.8 for hypoxia.
+#[must_use]
+pub fn ppg_r_value(ac_red: f64, dc_red: f64, ac_ir: f64, dc_ir: f64) -> f64 {
+    if dc_red.abs() < 1e-15 || dc_ir.abs() < 1e-15 || ac_ir.abs() < 1e-15 {
+        return f64::NAN;
+    }
+    (ac_red / dc_red) / (ac_ir / dc_ir)
+}
+
+/// Standard empirical `SpO2` calibration from R-value.
+///
+/// `SpO2 = 110 - 25 * R` (Beer–Lambert empirical approximation).
+/// Returns percentage [0, 100], clamped.
+#[must_use]
+pub fn spo2_from_r(r_value: f64) -> f64 {
+    (110.0 - 25.0 * r_value).clamp(0.0, 100.0)
+}
+
+/// Generate synthetic PPG signal pair (red + IR) for testing.
+///
+/// Models pulsatile AC component + DC baseline for both wavelengths.
+/// `spo2_target` controls the ratio between AC components.
+#[must_use]
+#[expect(
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss,
+    reason = "fs * duration is small positive — safe truncation"
+)]
+pub fn generate_synthetic_ppg(
+    fs: f64,
+    duration_s: f64,
+    heart_rate_bpm: f64,
+    spo2_target: f64,
+    seed: u64,
+) -> SyntheticPpg {
+    let n_samples = (fs * duration_s) as usize;
+    let mut red = vec![0.0; n_samples];
+    let mut ir = vec![0.0; n_samples];
+
+    let rr = 60.0 / heart_rate_bpm;
+    let r_target = (110.0 - spo2_target) / 25.0;
+
+    let dc_red = 1.0;
+    let dc_ir = 1.0;
+    let ac_ir = 0.02;
+    let ac_red = r_target * ac_ir * (dc_red / dc_ir);
+
+    let mut rng_state = seed;
+
+    for i in 0..n_samples {
+        let t = idx_to_f64(i) / fs;
+        let phase = 2.0 * std::f64::consts::PI * t / rr;
+        let pulse = phase.sin().max(0.0).powi(2);
+
+        rng_state = rng_state
+            .wrapping_mul(6_364_136_223_846_793_005)
+            .wrapping_add(1);
+        let noise = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.001;
+
+        red[i] = dc_red + ac_red * pulse + noise;
+
+        rng_state = rng_state
+            .wrapping_mul(6_364_136_223_846_793_005)
+            .wrapping_add(1);
+        let noise_ir = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.001;
+
+        ir[i] = dc_ir + ac_ir * pulse + noise_ir;
+    }
+
+    SyntheticPpg {
+        red,
+        ir,
+        fs,
+        dc_red,
+        dc_ir,
+        ac_red,
+        ac_ir,
+        r_target,
+    }
+}
+
+/// Result of synthetic PPG generation.
+#[derive(Debug, Clone)]
+pub struct SyntheticPpg {
+    pub red: Vec<f64>,
+    pub ir: Vec<f64>,
+    pub fs: f64,
+    pub dc_red: f64,
+    pub dc_ir: f64,
+    pub ac_red: f64,
+    pub ac_ir: f64,
+    pub r_target: f64,
+}
+
+/// Extract AC and DC components from a PPG signal.
+///
+/// DC = mean(signal), AC = max(signal) - min(signal) as simple envelope.
+#[must_use]
+#[expect(clippy::cast_precision_loss, reason = "signal.len() < 2^52")]
+pub fn ppg_extract_ac_dc(signal: &[f64]) -> (f64, f64) {
+    if signal.is_empty() {
+        return (0.0, 0.0);
+    }
+    let dc = signal.iter().sum::<f64>() / signal.len() as f64;
+    let max = signal.iter().copied().fold(f64::NEG_INFINITY, f64::max);
+    let min = signal.iter().copied().fold(f64::INFINITY, f64::min);
+    let ac = max - min;
+    (ac, dc)
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// EDA — Electrodermal Activity (Exp023)
+// ═══════════════════════════════════════════════════════════════════════
+
+/// Tonic skin conductance level (SCL) — moving average of EDA signal.
+#[must_use]
+pub fn eda_scl(signal: &[f64], window_samples: usize) -> Vec<f64> {
+    moving_window_integration(signal, window_samples)
+}
+
+/// Phasic EDA: subtract tonic SCL to get SCR events.
+#[must_use]
+pub fn eda_phasic(signal: &[f64], window_samples: usize) -> Vec<f64> {
+    let tonic = eda_scl(signal, window_samples);
+    signal
+        .iter()
+        .zip(tonic.iter())
+        .map(|(&s, &t)| (s - t).max(0.0))
+        .collect()
+}
+
+/// Detect SCR peaks in phasic EDA signal.
+/// Returns indices of peaks above `threshold_us` (microsiemens).
+#[must_use]
+pub fn eda_detect_scr(
+    phasic: &[f64],
+    threshold_us: f64,
+    min_interval_samples: usize,
+) -> Vec<usize> {
+    let n = phasic.len();
+    if n < 3 {
+        return vec![];
+    }
+    let mut peaks = Vec::new();
+    let mut last_peak: usize = 0;
+    for i in 1..n - 1 {
+        if phasic[i] > phasic[i - 1]
+            && phasic[i] > phasic[i + 1]
+            && phasic[i] > threshold_us
+            && (peaks.is_empty() || i - last_peak > min_interval_samples)
+        {
+            peaks.push(i);
+            last_peak = i;
+        }
+    }
+    peaks
+}
+
+/// Generate synthetic EDA signal for testing.
+///
+/// Produces tonic baseline + phasic SCR events at known times.
+#[must_use]
+#[expect(
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss,
+    reason = "fs * duration is small positive"
+)]
+pub fn generate_synthetic_eda(
+    fs: f64,
+    duration_s: f64,
+    scl_baseline: f64,
+    scr_times: &[f64],
+    scr_amplitude: f64,
+    seed: u64,
+) -> Vec<f64> {
+    let n_samples = (fs * duration_s) as usize;
+    let mut eda = vec![scl_baseline; n_samples];
+
+    // Add SCR events (Gaussian-shaped responses)
+    for &t_event in scr_times {
+        let center = (t_event * fs) as usize;
+        let rise_width = (0.5 * fs) as usize; // 0.5s rise
+        let decay_width = (2.0 * fs) as usize; // 2s decay
+
+        let start = center.saturating_sub(rise_width);
+        let end = n_samples.min(center + decay_width);
+        for (i, sample) in eda.iter_mut().enumerate().skip(start).take(end - start) {
+            let t_rel = idx_to_f64(i) / fs - t_event;
+            if t_rel < 0.0 {
+                *sample += scr_amplitude * (-(t_rel * t_rel) / (2.0 * 0.3 * 0.3)).exp();
+            } else {
+                *sample += scr_amplitude * (-t_rel / 1.5).exp();
+            }
+        }
+    }
+
+    // Add noise
+    let mut rng_state = seed;
+    for sample in &mut eda {
+        rng_state = rng_state
+            .wrapping_mul(6_364_136_223_846_793_005)
+            .wrapping_add(1);
+        let noise = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.01;
+        *sample += noise;
+    }
+
+    eda
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Multi-Channel Biosignal Fusion (Exp023)
+// ═══════════════════════════════════════════════════════════════════════
+
+/// Fused health assessment from ECG + PPG + EDA channels.
+#[derive(Debug, Clone)]
+pub struct FusedHealthAssessment {
+    pub heart_rate_bpm: f64,
+    pub hrv_sdnn_ms: f64,
+    pub hrv_rmssd_ms: f64,
+    pub spo2_percent: f64,
+    pub scr_rate_per_min: f64,
+    pub stress_index: f64,
+    pub overall_score: f64,
+}
+
+/// Fuse ECG, PPG, and EDA channels into a unified health assessment.
+///
+/// Stress index combines HRV (low SDNN = stress), `SpO2`, and SCR rate.
+/// Overall score: weighted combination (higher = healthier).
+#[must_use]
+#[expect(clippy::cast_precision_loss, reason = "scr_count small — safe f64")]
+pub fn fuse_channels(
+    ecg_peaks: &[usize],
+    ecg_fs: f64,
+    ppg_spo2: f64,
+    scr_count: usize,
+    eda_duration_s: f64,
+) -> FusedHealthAssessment {
+    let hr = heart_rate_from_peaks(ecg_peaks, ecg_fs);
+    let sdnn = sdnn_ms(ecg_peaks, ecg_fs);
+    let rmssd = rmssd_ms(ecg_peaks, ecg_fs);
+
+    let scr_rate = if eda_duration_s > 0.0 {
+        scr_count as f64 / eda_duration_s * 60.0
+    } else {
+        0.0
+    };
+
+    // Stress index: normalized [0, 1], higher = more stressed
+    // Low SDNN (<20ms) = stress, high SCR rate (>10/min) = stress
+    let sdnn_stress = (1.0 - (sdnn / 100.0).min(1.0)).max(0.0);
+    let scr_stress = (scr_rate / 20.0).min(1.0);
+    let spo2_stress = (1.0 - (ppg_spo2 - 90.0) / 10.0).clamp(0.0, 1.0);
+    let stress_index = (sdnn_stress + scr_stress + spo2_stress) / 3.0;
+
+    // Overall health score [0, 100]
+    let overall_score = (100.0 * (1.0 - stress_index)).clamp(0.0, 100.0);
+
+    FusedHealthAssessment {
+        heart_rate_bpm: hr,
+        hrv_sdnn_ms: sdnn,
+        hrv_rmssd_ms: rmssd,
+        spo2_percent: ppg_spo2,
+        scr_rate_per_min: scr_rate,
+        stress_index,
+        overall_score,
+    }
 }
 
 #[cfg(test)]
@@ -373,14 +714,20 @@ mod tests {
         let peaks = detect_peaks(&mwi, 360.0, 200.0);
         assert!(peaks.contains(&100));
         assert!(peaks.contains(&400));
-        assert!(!peaks.contains(&120), "refractory should suppress close peak");
+        assert!(
+            !peaks.contains(&120),
+            "refractory should suppress close peak"
+        );
     }
 
     #[test]
     fn synthetic_ecg_beat_count() {
         let (ecg, r_peaks) = generate_synthetic_ecg(360.0, 10.0, 72.0, 0.0, 42);
         assert_eq!(ecg.len(), 3600);
-        assert!((r_peaks.len() as i32 - 12).abs() <= 1, "~12 beats at 72bpm in 10s");
+        assert!(
+            (r_peaks.len() as i32 - 12).abs() <= 1,
+            "~12 beats at 72bpm in 10s"
+        );
     }
 
     #[test]
@@ -416,6 +763,30 @@ mod tests {
     }
 
     #[test]
+    fn rmssd_synthetic() {
+        let (ecg, _) = generate_synthetic_ecg(FS, 10.0, 72.0, 0.05, 42);
+        let result = pan_tompkins(&ecg, FS);
+        let r = rmssd_ms(&result.peaks, FS);
+        assert!(r > 0.0 && r < 200.0, "RMSSD={r} should be reasonable");
+    }
+
+    #[test]
+    fn pnn50_synthetic() {
+        let (ecg, _) = generate_synthetic_ecg(FS, 10.0, 72.0, 0.05, 42);
+        let result = pan_tompkins(&ecg, FS);
+        let p = pnn50(&result.peaks, FS);
+        assert!((0.0..=100.0).contains(&p), "pNN50={p} should be 0-100%");
+    }
+
+    #[test]
+    fn rmssd_constant_rr_is_zero() {
+        // Perfectly regular peaks → RMSSD = 0
+        let peaks: Vec<usize> = (0..10).map(|i| i * 360).collect();
+        let r = rmssd_ms(&peaks, 360.0);
+        assert!(r.abs() < 1e-10, "constant RR → RMSSD=0");
+    }
+
+    #[test]
     fn bandpass_reduces_amplitude() {
         let (ecg, _) = generate_synthetic_ecg(FS, 5.0, 72.0, 0.0, 42);
         let bp = bandpass_filter(&ecg, FS, 5.0, 15.0);
@@ -433,5 +804,141 @@ mod tests {
         assert_eq!(m.fp, 0);
         assert_eq!(m.fn_count, 0);
         assert!((m.sensitivity - 1.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn synthetic_ecg_deterministic() {
+        // Same seed must produce identical ECG
+        let (ecg1, _) = generate_synthetic_ecg(360.0, 5.0, 72.0, 0.05, 42);
+        let (ecg2, _) = generate_synthetic_ecg(360.0, 5.0, 72.0, 0.05, 42);
+        assert_eq!(ecg1.len(), ecg2.len());
+        for (a, b) in ecg1.iter().zip(ecg2.iter()) {
+            assert_eq!(
+                a.to_bits(),
+                b.to_bits(),
+                "ECG must be bit-identical with same seed"
+            );
+        }
+    }
+
+    #[test]
+    fn ppg_r_value_normal() {
+        let r = ppg_r_value(0.02, 1.0, 0.04, 1.0);
+        assert!((r - 0.5).abs() < 1e-10, "R = 0.5 for normal SpO2");
+    }
+
+    #[test]
+    fn spo2_from_r_normal() {
+        let spo2 = spo2_from_r(0.4);
+        assert!((spo2 - 100.0).abs() < 1e-10, "SpO2 = 100% at R=0.4");
+    }
+
+    #[test]
+    fn spo2_from_r_clamped() {
+        let spo2 = spo2_from_r(-1.0);
+        assert!((spo2 - 100.0).abs() < 1e-10, "clamped to 100%");
+        let spo2_low = spo2_from_r(10.0);
+        assert!(spo2_low.abs() < 1e-10, "clamped to 0%");
+    }
+
+    #[test]
+    fn synthetic_ppg_roundtrip() {
+        let ppg = generate_synthetic_ppg(256.0, 5.0, 72.0, 97.0, 42);
+        assert_eq!(ppg.red.len(), 1280);
+        let (ac_red, dc_red) = ppg_extract_ac_dc(&ppg.red);
+        let (ac_ir, dc_ir) = ppg_extract_ac_dc(&ppg.ir);
+        let r = ppg_r_value(ac_red, dc_red, ac_ir, dc_ir);
+        let spo2 = spo2_from_r(r);
+        assert!((spo2 - 97.0).abs() < 5.0, "SpO2={spo2} should be ~97%");
+    }
+
+    #[test]
+    fn ppg_deterministic() {
+        let ppg1 = generate_synthetic_ppg(256.0, 2.0, 72.0, 97.0, 42);
+        let ppg2 = generate_synthetic_ppg(256.0, 2.0, 72.0, 97.0, 42);
+        for (a, b) in ppg1.red.iter().zip(ppg2.red.iter()) {
+            assert_eq!(a.to_bits(), b.to_bits(), "PPG must be bit-identical");
+        }
+    }
+
+    // ─── EDA (Exp023) ───────────────────────────────────────────────────
+
+    #[test]
+    fn eda_scl_near_baseline() {
+        let eda = generate_synthetic_eda(32.0, 30.0, 2.0, &[5.0, 12.0, 20.0, 25.0], 0.5, 42);
+        let scl = eda_scl(&eda, 32);
+        let mean_scl: f64 = scl.iter().sum::<f64>() / scl.len() as f64;
+        assert!(
+            (mean_scl - 2.0).abs() < 0.5,
+            "SCL mean={mean_scl} should be near baseline 2.0 µS"
+        );
+    }
+
+    #[test]
+    fn eda_phasic_non_negative() {
+        let eda = generate_synthetic_eda(32.0, 30.0, 2.0, &[5.0, 12.0], 0.5, 42);
+        let phasic = eda_phasic(&eda, 32);
+        assert!(
+            phasic.iter().all(|&x| x >= 0.0),
+            "phasic EDA must be non-negative"
+        );
+    }
+
+    #[test]
+    fn eda_detect_scr_finds_peaks() {
+        let eda = generate_synthetic_eda(32.0, 30.0, 2.0, &[5.0, 12.0, 20.0, 25.0], 0.5, 42);
+        let phasic = eda_phasic(&eda, 32);
+        let peaks = eda_detect_scr(&phasic, 0.05, 32);
+        assert!(
+            peaks.len() >= 3 && peaks.len() <= 7,
+            "should find ~4 SCR peaks (noise may add extras), got {}",
+            peaks.len()
+        );
+    }
+
+    #[test]
+    fn eda_signal_length() {
+        let eda = generate_synthetic_eda(32.0, 30.0, 2.0, &[], 0.0, 42);
+        assert_eq!(eda.len(), 960, "fs=32 * 30s = 960 samples");
+    }
+
+    #[test]
+    fn eda_deterministic() {
+        let eda1 = generate_synthetic_eda(32.0, 10.0, 2.0, &[3.0, 7.0], 0.5, 42);
+        let eda2 = generate_synthetic_eda(32.0, 10.0, 2.0, &[3.0, 7.0], 0.5, 42);
+        for (a, b) in eda1.iter().zip(eda2.iter()) {
+            assert_eq!(a.to_bits(), b.to_bits(), "EDA must be bit-identical");
+        }
+    }
+
+    #[test]
+    fn fuse_channels_stress_index_range() {
+        let peaks: Vec<usize> = (0..12).map(|i| i * 300).collect();
+        let fused = fuse_channels(&peaks, 360.0, 97.0, 4, 30.0);
+        assert!(
+            (0.0..=1.0).contains(&fused.stress_index),
+            "stress_index={} must be in [0,1]",
+            fused.stress_index
+        );
+    }
+
+    #[test]
+    fn fuse_channels_overall_score_range() {
+        let peaks: Vec<usize> = (0..12).map(|i| i * 300).collect();
+        let fused = fuse_channels(&peaks, 360.0, 97.0, 2, 30.0);
+        assert!(
+            (0.0..=100.0).contains(&fused.overall_score),
+            "overall_score={} must be in [0,100]",
+            fused.overall_score
+        );
+    }
+
+    #[test]
+    fn fuse_channels_deterministic() {
+        let peaks: Vec<usize> = (0..12).map(|i| i * 300).collect();
+        let f1 = fuse_channels(&peaks, 360.0, 97.0, 4, 30.0);
+        let f2 = fuse_channels(&peaks, 360.0, 97.0, 4, 30.0);
+        assert_eq!(f1.heart_rate_bpm.to_bits(), f2.heart_rate_bpm.to_bits());
+        assert_eq!(f1.overall_score.to_bits(), f2.overall_score.to_bits());
     }
 }

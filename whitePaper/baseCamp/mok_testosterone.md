@@ -1,7 +1,7 @@
 # Sub-Thesis 04: Testosterone Replacement Therapy — Clinical Claim Verification Pipeline
 
 **Source**: Dr. Charles Mok, *If Your Testosterone Is Low, You're Gonna Get Fat* (Allure Medical Publishing, 2018, 196 pages)
-**Status**: Complete — 8 experiments validated (Exp030–037), 93 Python + 99 Rust binary + 47 lib unit tests
+**Status**: Complete — 9 experiments validated (Exp030–038), 96 Python + 86 Rust binary + 51 lib unit tests
 **Last Updated**: March 8, 2026
 
 ---
@@ -131,14 +131,17 @@ All 6 experiments validated at Tier 0 (Python) + Tier 1 (Rust CPU):
 | 034 | TRT cardiovascular: lipids + CRP + BP | 10 | 10 |
 | 035 | TRT diabetes: HbA1c + insulin sensitivity | 10 | 10 |
 
-### Phase 2: Population Modeling + Cross-Track (Exp036-037) — COMPLETE
+### Phase 2: Population Modeling + Cross-Track (Exp036-038) — COMPLETE
 
 | Exp | Title | Python | Rust Binary |
 |-----|-------|:------:|:-----------:|
 | 036 | Population TRT Monte Carlo (10K virtual patients, IIV + age) | 12 | 10 |
 | 037 | Testosterone–gut axis: microbiome stratification (cross-track) | 12 | 10 |
+| 038 | HRV × TRT cardiovascular (cross-track D3, Kleiger 1987) | 10 | 10 |
 
 Exp037 validates cross-track hypotheses D1/D2: Pielou evenness → Anderson disorder → gut metabolic response, stratified by high/low microbiome diversity.
+
+Exp038 validates cross-track hypothesis D3: SDNN improvement correlates with TRT cardiovascular benefit. Composite cardiac risk score combines HRV and testosterone level factors (Kleiger 1987, Mok Ch. 6).
 
 ### Phase 3: GPU + LAN HPC (Tier 2+3) — PENDING
 

@@ -168,14 +168,77 @@ pub fn level_spacing_ratio(eigenvalues: &[f64]) -> f64 {
 /// Higher `CR` → pathogen more confined → healthier gut.
 #[must_use]
 pub fn colonization_resistance(xi: f64) -> f64 {
-    if xi > 0.0 && xi.is_finite() { 1.0 / xi } else { 0.0 }
+    if xi > 0.0 && xi.is_finite() {
+        1.0 / xi
+    } else {
+        0.0
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// FMT Microbiota Transplant Modeling (Exp013)
+// ═══════════════════════════════════════════════════════════════════════
+
+/// Simulate post-FMT community as weighted blend of donor and recipient.
+///
+/// `blended_i = (1 - engraftment) * recipient_i + engraftment * donor_i`
+/// then re-normalized so abundances sum to 1.0.
+#[must_use]
+pub fn fmt_blend(donor: &[f64], recipient: &[f64], engraftment: f64) -> Vec<f64> {
+    let n = donor.len().max(recipient.len());
+    let mut blended = vec![0.0; n];
+    for i in 0..n {
+        let d = if i < donor.len() { donor[i] } else { 0.0 };
+        let r = if i < recipient.len() {
+            recipient[i]
+        } else {
+            0.0
+        };
+        blended[i] = (1.0 - engraftment) * r + engraftment * d;
+    }
+    let total: f64 = blended.iter().sum();
+    if total > 0.0 {
+        for v in &mut blended {
+            *v /= total;
+        }
+    }
+    blended
+}
+
+/// Bray-Curtis dissimilarity between two communities.
+///
+/// `BC = 1 - 2*Σ min(a_i, b_i) / (Σ a_i + Σ b_i)`
+/// BC = 0 means identical, BC = 1 means completely different.
+#[must_use]
+pub fn bray_curtis(a: &[f64], b: &[f64]) -> f64 {
+    let n = a.len().max(b.len());
+    let mut sum_min = 0.0;
+    let mut sum_a = 0.0;
+    let mut sum_b = 0.0;
+    for i in 0..n {
+        let ai = if i < a.len() { a[i] } else { 0.0 };
+        let bi = if i < b.len() { b[i] } else { 0.0 };
+        sum_min += ai.min(bi);
+        sum_a += ai;
+        sum_b += bi;
+    }
+    let denom = sum_a + sum_b;
+    if denom > 0.0 {
+        1.0 - 2.0 * sum_min / denom
+    } else {
+        0.0
+    }
 }
 
 /// Synthetic gut microbiome community profiles for testing.
 pub mod communities {
     pub const HEALTHY_GUT: [f64; 10] = [0.25, 0.20, 0.15, 0.12, 0.10, 0.08, 0.05, 0.03, 0.01, 0.01];
-    pub const DYSBIOTIC_GUT: [f64; 10] = [0.85, 0.05, 0.03, 0.02, 0.02, 0.01, 0.01, 0.005, 0.003, 0.002];
-    pub const CDIFF_COLONIZED: [f64; 10] = [0.60, 0.15, 0.10, 0.05, 0.04, 0.03, 0.02, 0.005, 0.003, 0.002];
+    pub const DYSBIOTIC_GUT: [f64; 10] = [
+        0.85, 0.05, 0.03, 0.02, 0.02, 0.01, 0.01, 0.005, 0.003, 0.002,
+    ];
+    pub const CDIFF_COLONIZED: [f64; 10] = [
+        0.60, 0.15, 0.10, 0.05, 0.04, 0.03, 0.02, 0.005, 0.003, 0.002,
+    ];
     pub const PERFECTLY_EVEN: [f64; 10] = [0.1; 10];
     pub const MONOCULTURE: [f64; 1] = [1.0];
 }
@@ -274,7 +337,12 @@ mod tests {
 
     #[test]
     fn all_indices_valid_ranges() {
-        for ab in [&HEALTHY_GUT[..], &DYSBIOTIC_GUT[..], &CDIFF_COLONIZED[..], &PERFECTLY_EVEN[..]] {
+        for ab in [
+            &HEALTHY_GUT[..],
+            &DYSBIOTIC_GUT[..],
+            &CDIFF_COLONIZED[..],
+            &PERFECTLY_EVEN[..],
+        ] {
             let h = shannon_index(ab);
             let d = simpson_index(ab);
             let j = pielou_evenness(ab);
@@ -304,7 +372,10 @@ mod tests {
         let l = disorder.len();
         let h = anderson_hamiltonian_1d(&disorder, 1.0);
         for i in 0..l {
-            assert!((h[i * l + i] - disorder[i]).abs() < TOL, "diagonal = disorder");
+            assert!(
+                (h[i * l + i] - disorder[i]).abs() < TOL,
+                "diagonal = disorder"
+            );
         }
     }
 
@@ -366,5 +437,56 @@ mod tests {
         let cr_confined = colonization_resistance(2.0);
         let cr_extended = colonization_resistance(50.0);
         assert!(cr_confined > cr_extended, "shorter ξ → higher CR");
+    }
+
+    #[test]
+    fn diversity_indices_deterministic() {
+        let community = &HEALTHY_GUT[..];
+        let h1 = shannon_index(community);
+        let h2 = shannon_index(community);
+        assert_eq!(h1.to_bits(), h2.to_bits(), "Shannon must be bit-identical");
+
+        let s1 = simpson_index(community);
+        let s2 = simpson_index(community);
+        assert_eq!(s1.to_bits(), s2.to_bits(), "Simpson must be bit-identical");
+    }
+
+    // FMT tests (Exp013)
+
+    #[test]
+    fn bray_curtis_identical() {
+        let bc = bray_curtis(&HEALTHY_GUT, &HEALTHY_GUT);
+        assert!(bc.abs() < TOL, "identical communities → BC=0");
+    }
+
+    #[test]
+    fn bray_curtis_range() {
+        let bc = bray_curtis(&HEALTHY_GUT, &DYSBIOTIC_GUT);
+        assert!((0.0..=1.0).contains(&bc), "BC in [0,1]");
+        assert!(bc > 0.0, "different communities → BC > 0");
+    }
+
+    #[test]
+    fn fmt_blend_pure_donor() {
+        let blended = fmt_blend(&HEALTHY_GUT, &DYSBIOTIC_GUT, 1.0);
+        for (a, b) in blended.iter().zip(HEALTHY_GUT.iter()) {
+            assert!((a - b).abs() < TOL, "100% engraftment = donor");
+        }
+    }
+
+    #[test]
+    fn fmt_blend_zero_engraftment() {
+        let blended = fmt_blend(&HEALTHY_GUT, &DYSBIOTIC_GUT, 0.0);
+        for (a, b) in blended.iter().zip(DYSBIOTIC_GUT.iter()) {
+            assert!((a - b).abs() < TOL, "0% engraftment = recipient");
+        }
+    }
+
+    #[test]
+    fn fmt_improves_diversity() {
+        let post_fmt = fmt_blend(&HEALTHY_GUT, &DYSBIOTIC_GUT, 0.7);
+        let h_pre = shannon_index(&DYSBIOTIC_GUT);
+        let h_post = shannon_index(&post_fmt);
+        assert!(h_post > h_pre, "FMT should improve diversity");
     }
 }

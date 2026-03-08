@@ -5,7 +5,7 @@
 **Date:** March 8, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V3 — 103 lib tests, 17 experiments, 192 Python checks, 179 Rust binary checks. Tier 0+1 complete across all 4 tracks. Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**. Ecosystem: barraCuda `v0.3.3`, wetSpring V99, neuralSpring V90.
+**Status:** V4 — 185 unit tests (145 barraCuda + 27 forge + 13 toadStool), 24 experiments, 280 Rust binary checks, 104 cross-validation checks. 96.84% code coverage (llvm-cov). Tier 0+1 complete across all tracks. Paper queue: 24/30 complete (all queued papers done, remaining are GPU Tier 2 targets). Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**. Ecosystem: barraCuda `v0.3.3`, wetSpring V99, neuralSpring V90.
 
 ---
 
@@ -29,14 +29,16 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | V3 |
-| Rust lib tests | 103 |
-| Rust binary checks | 179 |
-| Python control checks | 192 |
-| Experiments complete | 17 (Tier 0+1) |
-| GPU validation | — (Write phase next) |
-| metalForge validation | — |
-| Paper queue | 17/28 complete |
+| Version | V4 |
+| Rust lib tests | 185 (145 barraCuda + 27 forge + 13 toadStool) |
+| Rust binary checks | 280 |
+| Python control checks | 104 (cross-validation) |
+| Experiments complete | 24 (Tier 0+1) |
+| Code coverage | 96.84% (llvm-cov) |
+| GPU validation | — (Tier 2 bridge in progress) |
+| metalForge validation | 27 tests |
+| toadStool validation | 13 tests |
+| Paper queue | 24/30 complete |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 | Unsafe blocks | 0 |
 | Clippy warnings | 0 |
@@ -45,7 +47,7 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 ## Domains
 
-### Track 1: Pharmacokinetic / Pharmacodynamic Modeling (Exp001-005)
+### Track 1: Pharmacokinetic / Pharmacodynamic Modeling (Exp001-006)
 
 Pure Rust PK/PD tools replacing Python/NONMEM dependency chains. Extends neuralSpring nS-601–605 (veterinary) to human therapeutics.
 
@@ -54,22 +56,27 @@ Pure Rust PK/PD tools replacing Python/NONMEM dependency chains. Extends neuralS
 - Two-compartment PK (biexponential α/β phases, peripheral compartment) — Exp003
 - mAb PK cross-species transfer (lokivetmab → nemolizumab/dupilumab) — Exp004
 - Population PK Monte Carlo (1,000 virtual patients, lognormal IIV) — Exp005
+- PBPK multi-compartment (liver, gut, systemic) — Exp006
 
-### Track 2: Gut Microbiome and Colonization Resistance (Exp010-012)
+### Track 2: Gut Microbiome and Colonization Resistance (Exp010-013)
 
 Extends wetSpring's Anderson localization framework from soil to gut.
 
 - Shannon/Simpson/Pielou diversity indices + Chao1 richness — Exp010
 - Anderson localization in gut lattice (1D localization length ξ) — Exp011
 - C. difficile colonization resistance score — Exp012
+- FMT RCDI (fecal microbiota transplant, recurrent C. difficile) — Exp013
 
-### Track 3: Biosignal Processing (Exp020)
+### Track 3: Biosignal Processing (Exp020-023)
 
 Real-time physiological signal analysis on sovereign hardware.
 
 - Pan-Tompkins QRS detection (ECG R-peak) — Exp020
+- HRV metrics (RMSSD, pNN50, LF/HF) — Exp021
+- PPG SpO₂ (pulse oximetry, reflectance) — Exp022
+- Biosignal fusion (ECG + PPG multi-modal) — Exp023
 
-### Track 4: Endocrinology — Testosterone PK and TRT Outcomes (Exp030-037)
+### Track 4: Endocrinology — Testosterone PK and TRT Outcomes (Exp030-038)
 
 Clinical claim verification pipeline: extracting quantifiable claims from Dr. Charles Mok's clinical reference and validating against published registry data.
 
@@ -81,6 +88,11 @@ Clinical claim verification pipeline: extracting quantifiable claims from Dr. Ch
 - TRT diabetes: HbA1c + insulin sensitivity (Kapoor 2006 RCT) — Exp035
 - Population TRT Monte Carlo (10K virtual patients, IIV + age-adjustment) — Exp036
 - Testosterone–gut axis: microbiome stratification (cross-track 2×4) — Exp037
+- HRV–TRT cardiovascular (cross-track 3×4) — Exp038
+
+### Validation Track (Exp040)
+
+- barraCuda CPU parity (Tier 0+1 baseline for GPU migration) — Exp040
 
 ---
 
@@ -93,7 +105,7 @@ Tier 2: Rust GPU (barraCuda WGSL shaders, math parity with CPU)
 Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 ```
 
-**Current state**: Tier 0+1 validated for all 17 experiments. Next: barraCuda GPU shaders.
+**Current state**: Tier 0+1 complete for 24 experiments. metalForge dispatch skeleton (Tier 3 foundation). toadStool pipeline (compute dispatch foundation). barraCuda GPU integration layer (Tier 2 bridge).
 
 ---
 
@@ -103,23 +115,33 @@ Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 healthSpring/
 ├── barracuda/           # Rust library — PK/PD, microbiome, biosignal, endocrine
 │   └── src/
-│       ├── lib.rs       # 103 tests, #![forbid(unsafe_code)]
-│       ├── pkpd.rs      # Track 1: Hill, 1/2-compartment, allometric, pop PK
-│       ├── microbiome.rs # Track 2: Shannon, Simpson, Pielou, Chao1, Anderson W
-│       ├── biosignal.rs  # Track 3: Pan-Tompkins, IIR bandpass, HRV
-│       └── endocrine.rs  # Track 4: testosterone PK, decline, TRT outcomes, gut axis
-├── control/             # Python baselines (Tier 0) — 192 checks
-│   ├── pkpd/            # exp001–exp005 + cross_validate.py
-│   ├── microbiome/      # exp010–exp012
-│   ├── biosignal/       # exp020
-│   └── endocrine/       # exp030–exp037
-├── experiments/         # Validation binaries (Tier 1) — 179 checks
+│       ├── lib.rs       # 145 tests, #![forbid(unsafe_code)]
+│       ├── pkpd/        # Track 1: Hill, 1/2-compartment, allometric, pop PK, PBPK
+│       ├── microbiome.rs # Track 2: Shannon, Simpson, Pielou, Chao1, Anderson W, FMT
+│       ├── biosignal.rs  # Track 3: Pan-Tompkins, IIR bandpass, HRV, PPG, fusion
+│       ├── endocrine.rs  # Track 4: testosterone PK, decline, TRT outcomes, gut axis
+│       └── gpu.rs       # Tier 2: GPU integration layer
+├── control/             # Python baselines (Tier 0) — 104 cross-validation checks
+│   ├── pkpd/            # exp001–exp006 + cross_validate.py
+│   ├── microbiome/      # exp010–exp013
+│   ├── biosignal/       # exp020–exp023
+│   ├── endocrine/       # exp030–exp038
+│   └── validation/     # Exp040 CPU parity
+├── experiments/         # Validation binaries (Tier 1) — 280 checks
 │   ├── exp001_hill_dose_response/
 │   ├── exp002_one_compartment_pk/
+│   ├── exp003_two_compartment_pk/
+│   ├── exp004_mab_pk_transfer/
 │   ├── exp005_population_pk/
+│   ├── exp006_pbpk_compartments/
+│   ├── exp010_diversity_indices/
 │   ├── exp011_anderson_gut_lattice/
 │   ├── exp012_cdiff_resistance/
+│   ├── exp013_fmt_rcdi/
 │   ├── exp020_pan_tompkins_qrs/
+│   ├── exp021_hrv_metrics/
+│   ├── exp022_ppg_spo2/
+│   ├── exp023_biosignal_fusion/
 │   ├── exp030_testosterone_im_pk/
 │   ├── exp031_testosterone_pellet_pk/
 │   ├── exp032_age_testosterone_decline/
@@ -127,16 +149,25 @@ healthSpring/
 │   ├── exp034_trt_cardiovascular/
 │   ├── exp035_trt_diabetes/
 │   ├── exp036_population_trt_montecarlo/
-│   └── exp037_testosterone_gut_axis/
-├── metalForge/          # Cross-substrate dispatch (Tier 3, scaffold)
+│   ├── exp037_testosterone_gut_axis/
+│   ├── exp038_hrv_trt_cardiovascular/
+│   └── exp040_barracuda_cpu_parity/
+├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
+│       └── src/
+│           ├── nucleus.rs
+│           └── transfer.rs
+├── toadstool/           # Compute dispatch pipeline
+│   └── src/
+│       ├── pipeline.rs
+│       └── stage.rs
 ├── specs/               # Paper queue, compute profile, integration plan
 ├── whitePaper/          # Scientific documentation
 │   ├── baseCamp/        # Faculty-linked sub-theses
 │   └── experiments/     # Experiment plan and status
 ├── wateringHole/        # Cross-spring handoffs
 │   └── handoffs/        # → barraCuda, toadStool, biomeOS
-├── Cargo.toml           # Workspace (16 crates)
+├── Cargo.toml           # Workspace
 └── README.md            # This file
 ```
 
@@ -145,8 +176,14 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 103 lib tests
+cargo test --workspace                  # 185 lib tests (barraCuda + forge + toadStool)
 cargo clippy --workspace -- -D warnings # Lint — zero warnings
+cargo llvm-cov report --workspace      # 96.84% coverage
+
+# Full validation (all 24 experiments + Python cross-checks)
+cargo build --workspace --release
+# Run each exp* binary (see .github/workflows/ci.yml validate job), then:
+python3 control/pkpd/cross_validate.py
 
 # Run individual validation binaries
 cargo run --bin exp030_testosterone_im_pk
