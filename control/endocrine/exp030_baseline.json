@@ -1,0 +1,37 @@
+{
+  "_source": "healthSpring Exp030: Testosterone IM Injection PK",
+  "_method": "IM depot Bateman equation + superposition",
+  "params": {
+    "t_half_days": 8.0,
+    "k_e": 0.08664339756999316,
+    "k_a_im": 0.46209812037329684,
+    "vd_L": 70.0,
+    "f_im": 1.0,
+    "dose_weekly_mg": 100.0,
+    "dose_biweekly_mg": 200.0
+  },
+  "single_c0": 0.0,
+  "single_cmax": 0.9708069160977671,
+  "single_tmax_days": 4.454227113556779,
+  "tmax_in_range": true,
+  "c_at_4_half_lives": 0.10969909533087666,
+  "single_nonneg": true,
+  "weekly_ss_cmax": 2.5125937342642306,
+  "biweekly_cmax": 2.967611104433714,
+  "biweekly_trough": 1.4440811057735283,
+  "biweekly_fluctuation": 1.0550169187651688,
+  "weekly_trough": 1.981732903385836,
+  "weekly_fluctuation": 0.2678770837237484,
+  "auc_analytical_weekly_14d": 32.975886648890594,
+  "auc_analytical_biweekly_14d": 32.975886648890594,
+  "accumulation_factor_analytical": 2.1990291416781136,
+  "accumulation_factor_observed": 2.588149808783598,
+  "t_half_observed_days": 10.36518259129565,
+  "weekly_nonneg": true,
+  "biweekly_nonneg": true,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

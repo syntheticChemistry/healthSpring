@@ -1,0 +1,13 @@
+[package]
+name = "healthspring-forge"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "metalForge dispatch validation for healthSpring"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+
+[dev-dependencies]
+approx = "0.5"

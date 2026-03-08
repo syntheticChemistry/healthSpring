@@ -1,0 +1,41 @@
+{
+  "_source": "healthSpring Exp003: Two-Compartment PK (IV Bolus)",
+  "_method": "Biexponential: C(t) = A*exp(-\u03b1t) + B*exp(-\u03b2t)",
+  "drug": {
+    "name": "Gentamicin-like",
+    "dose_mg": 240.0,
+    "v1_L": 15.0,
+    "k10_hr": 0.35,
+    "k12_hr": 0.6,
+    "k21_hr": 0.15
+  },
+  "alpha": 1.0499999999999998,
+  "beta": 0.04999999999999999,
+  "sum_macro": 1.0999999999999999,
+  "sum_micro": 1.0999999999999999,
+  "prod_macro": 0.05249999999999998,
+  "prod_micro": 0.0525,
+  "c0": 16.0,
+  "all_nonneg": true,
+  "monotonic_dec": true,
+  "t_half_alpha": 0.6601401719618528,
+  "t_half_beta": 13.862943611198908,
+  "auc_numerical": 45.716035338826636,
+  "auc_analytical": 45.714285714285715,
+  "A_coeff": 14.4,
+  "B_coeff": 1.6000000000000005,
+  "periph_peak_time": 3.0255127563781894,
+  "periph_peak_conc": 2.037095208826517,
+  "terminal_slope": -0.050000679985502554,
+  "terminal_slope_expected": -0.04999999999999999,
+  "terminal_slope_err": 1.3599710051298567e-05,
+  "reduction_max_diff": 0.0,
+  "v2_L": 60.0,
+  "vss_L": 75.0,
+  "clearance": 5.25,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

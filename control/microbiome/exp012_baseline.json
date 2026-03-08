@@ -1,0 +1,50 @@
+{
+  "_source": "healthSpring Exp012: C. diff Colonization Resistance",
+  "_method": "Pielou \u2192 Anderson disorder \u2192 IPR \u2192 CR composite",
+  "lattice_size": 100,
+  "n_samples": 30,
+  "w_scale": 10.0,
+  "seed": 42,
+  "scores": {
+    "healthy": {
+      "pielou": 0.8628842234973807,
+      "disorder_W": 8.628842234973806,
+      "mean_xi": 3.1027158333052376,
+      "cr": 0.32229828760525825,
+      "composite": 0.5385326619621073
+    },
+    "dysbiotic": {
+      "pielou": 0.30316230168073405,
+      "disorder_W": 3.0316230168073406,
+      "mean_xi": 14.56404066853593,
+      "cr": 0.06866226363679376,
+      "composite": 0.16246227885436987
+    },
+    "cdiff": {
+      "pielou": 0.5818021497095056,
+      "disorder_W": 5.818021497095057,
+      "mean_xi": 4.772210332837893,
+      "cr": 0.2095465057604302,
+      "composite": 0.3584487633400604
+    },
+    "post_fmt": {
+      "pielou": 0.8919555666657487,
+      "disorder_W": 8.919555666657487,
+      "mean_xi": 2.9136781012812096,
+      "cr": 0.3432088121060036,
+      "composite": 0.5627075139299017
+    },
+    "even": {
+      "pielou": 0.9999999999999998,
+      "disorder_W": 9.999999999999998,
+      "mean_xi": 2.2279254225882372,
+      "cr": 0.448848058315289,
+      "composite": 0.6693088349891734
+    }
+  },
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

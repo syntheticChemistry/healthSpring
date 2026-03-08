@@ -1,0 +1,31 @@
+{
+  "_source": "healthSpring Exp031: Testosterone Pellet Depot PK",
+  "_method": "Zero-order release + first-order elimination",
+  "params": {
+    "body_weight_lb": 200.0,
+    "dose_mg": 2000.0,
+    "duration_days": 150.0,
+    "release_rate_mg_day": 13.333333333333334,
+    "t_half_days": 8.0,
+    "vd_L": 70.0
+  },
+  "c0": 0.0,
+  "c_at_5_half_lives": 2.1298908718311798,
+  "c_ss_theoretical": 2.1983924432593733,
+  "plateau_cv": 0.001254021450223437,
+  "c_mean_plateau": 2.1966407000680666,
+  "c_at_pellet_end": 2.1888811065238167,
+  "c_at_6_months": 0.16339612532201336,
+  "washout_t_half_obs": 8.042680893631228,
+  "pellet_fluctuation_plateau": 0.005539844193339863,
+  "auc_numerical": 327.87296837803484,
+  "auc_analytical": 329.75886648890594,
+  "plateau_150lb": 1.6474805250510496,
+  "dose_scaling_ratio": 1.3333333333333337,
+  "all_nonneg": true,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

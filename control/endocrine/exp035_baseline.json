@@ -1,0 +1,28 @@
+{
+  "_source": "healthSpring Exp035: TRT and Type 2 Diabetes",
+  "_method": "Exponential approach + published RCT deltas",
+  "params": {
+    "hba1c_baseline": 7.6,
+    "hba1c_delta_kapoor": -0.37,
+    "homa_baseline": 4.5,
+    "homa_endpoint": 3.2,
+    "fg_baseline": 140.0,
+    "fg_endpoint": 120.0,
+    "tau_months": 3.0
+  },
+  "hba1c_0": 7.6,
+  "hba1c_12mo": 7.236776786388831,
+  "hba1c_delta_3mo": -0.23388460676656653,
+  "homa_12mo": 3.223810330555355,
+  "fg_12mo": 120.36631277777468,
+  "hba1c_monotonic": true,
+  "hba1c_frac_improvement_6mo": 0.8807970779778833,
+  "hba1c_total_delta": 0.3632232136111684,
+  "all_improve": true,
+  "homa_pct_improvement": 0.28359770432103226,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "_source": "healthSpring Exp034: TRT Cardiovascular Response",
+  "_method": "Exponential approach to setpoint + Sharma hazard ratio",
+  "params": {
+    "LDL": {
+      "baseline": 165.0,
+      "endpoint": 130.0
+    },
+    "HDL": {
+      "baseline": 38.0,
+      "endpoint": 55.0
+    },
+    "CRP": {
+      "baseline": 1.4,
+      "endpoint": 0.9
+    },
+    "SBP": {
+      "baseline": 135.0,
+      "endpoint": 123.0
+    },
+    "DBP": {
+      "baseline": 82.0,
+      "endpoint": 76.0
+    },
+    "tau_months": 12.0
+  },
+  "baselines_correct": "True",
+  "ldl_60mo": 130.235828144968,
+  "hdl_60mo": 54.88545490101555,
+  "crp_60mo": 0.9033689734995427,
+  "sbp_60mo": 123.08085536398903,
+  "dbp_60mo": 76.04042768199452,
+  "sbp_in_range": true,
+  "ldl_frac_improvement_12mo": 0.6364086465588311,
+  "hr_at_200": 0.6266666666666667,
+  "hr_at_300": 0.44,
+  "hr_at_600": 0.44,
+  "all_smooth": true,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

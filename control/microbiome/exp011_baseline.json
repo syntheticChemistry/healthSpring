@@ -1,0 +1,42 @@
+{
+  "_source": "healthSpring Exp011: Anderson Localization in Gut Lattice",
+  "_method": "1D tight-binding, uniform disorder, eigh, IPR, level spacing",
+  "lattice_size": 200,
+  "n_samples": 50,
+  "w_values": [
+    1.0,
+    3.0,
+    6.0,
+    10.0
+  ],
+  "seed": 42,
+  "ipr_means": {
+    "dysbiotic": 0.017248107134383475,
+    "recovering": 0.08552521406295291,
+    "moderate": 0.23420447325112673,
+    "healthy": 0.4405811458516959
+  },
+  "xi_means": {
+    "dysbiotic": 67.13023216550556,
+    "recovering": 13.469187818354214,
+    "moderate": 5.12470983631884,
+    "healthy": 2.7395926953120497
+  },
+  "r_means": {
+    "dysbiotic": 0.476456151843121,
+    "recovering": 0.4032612118594129,
+    "moderate": 0.3903225884908924,
+    "healthy": 0.38625168726734155
+  },
+  "xi_ratio_weak_strong": 24.503727243972367,
+  "pielou_w_healthy": 8.629999999999999,
+  "pielou_w_dysbiotic": 3.03,
+  "cr_healthy": 0.3650177640315603,
+  "cr_dysbiotic": 0.01489641801825681,
+  "xi_W0": 134.00000000000088,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

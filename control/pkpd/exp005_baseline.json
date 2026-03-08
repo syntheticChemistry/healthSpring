@@ -1,0 +1,38 @@
+{
+  "_source": "healthSpring Exp005: Population PK Monte Carlo",
+  "_method": "Lognormal IIV on CL/Vd/k_a, one-compartment oral Bateman",
+  "pop_params": {
+    "cl_typical_L_hr": 10.0,
+    "cl_cv": 0.3,
+    "vd_typical_L": 80.0,
+    "vd_cv": 0.25,
+    "ka_typical_hr": 1.5,
+    "ka_cv": 0.4,
+    "f_bioavail": 0.79,
+    "dose_mg": 4.0
+  },
+  "n_patients": 1000,
+  "seed": 42,
+  "cl_mean": 9.904447063890293,
+  "cl_std": 2.9227543460435634,
+  "vd_mean": 78.46962636116122,
+  "ka_mean": 1.52298497057331,
+  "cmax_median": 0.03227759172639681,
+  "cmax_mean": 0.033213789555334224,
+  "cmax_cv": 0.22964788668883473,
+  "tmax_median": 1.875751503006012,
+  "auc_median": 0.305809437059233,
+  "auc_mean": 0.31578103049611334,
+  "auc_cv": 0.24176237440435544,
+  "pct_c24_below_0.01": 99.3,
+  "auc_theoretical": 0.316,
+  "cl_auc_corr": -0.920691780430672,
+  "auc_p5": 0.20309848920396323,
+  "auc_p50": 0.305809437059233,
+  "auc_p95": 0.4490898288073381,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

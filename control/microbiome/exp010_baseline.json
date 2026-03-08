@@ -1,0 +1,107 @@
+{
+  "_source": "healthSpring Exp010: Microbiome Diversity Indices",
+  "_method": "Shannon, Simpson, Pielou, Chao1",
+  "communities": {
+    "healthy_gut": {
+      "name": "healthy_gut",
+      "abundances": [
+        0.25,
+        0.2,
+        0.15,
+        0.12,
+        0.1,
+        0.08,
+        0.05,
+        0.03,
+        0.01,
+        0.01
+      ],
+      "description": "Diverse healthy adult gut"
+    },
+    "dysbiotic_gut": {
+      "name": "dysbiotic_gut",
+      "abundances": [
+        0.85,
+        0.05,
+        0.03,
+        0.02,
+        0.02,
+        0.01,
+        0.01,
+        0.005,
+        0.003,
+        0.002
+      ],
+      "description": "Post-antibiotic dysbiosis (single-species dominance)"
+    },
+    "cdiff_colonized": {
+      "name": "cdiff_colonized",
+      "abundances": [
+        0.6,
+        0.15,
+        0.1,
+        0.05,
+        0.04,
+        0.03,
+        0.02,
+        0.005,
+        0.003,
+        0.002
+      ],
+      "description": "C. difficile colonization (reduced diversity)"
+    },
+    "perfectly_even": {
+      "name": "perfectly_even",
+      "abundances": [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ],
+      "description": "Theoretical maximum evenness (10 species)"
+    },
+    "monoculture": {
+      "name": "monoculture",
+      "abundances": [
+        1.0
+      ],
+      "description": "Single species (minimum diversity)"
+    }
+  },
+  "seed": 42,
+  "shannon_even": 2.3025850929940455,
+  "shannon_mono": -0.0,
+  "shannon_all": {
+    "healthy_gut": 1.9868643500048115,
+    "dysbiotic_gut": 0.6980569966078221,
+    "cdiff_colonized": 1.339648956992998,
+    "perfectly_even": 2.3025850929940455,
+    "monoculture": -0.0
+  },
+  "simpson_even": 0.8999999999999999,
+  "simpson_mono": 0.0,
+  "simpson_healthy": 0.8406,
+  "simpson_dysbiotic": 0.27306200000000014,
+  "inv_simpson_even": 9.999999999999996,
+  "pielou_even": 0.9999999999999998,
+  "pielou_healthy": 0.8628842234973807,
+  "pielou_dysbiotic": 0.30316230168073405,
+  "pielou_cdiff": 0.5818021497095056,
+  "chao1_healthy": 19.5,
+  "chao1_depleted": 14.0,
+  "anderson_w_healthy": 8.628842234973806,
+  "anderson_w_dysbiotic": 3.0316230168073406,
+  "all_ranges_valid": true,
+  "all_normalized": true,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

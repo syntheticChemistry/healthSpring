@@ -1,0 +1,36 @@
+{
+  "_source": "healthSpring Exp004: mAb PK Cross-Species Transfer",
+  "_method": "Allometric scaling (canine lokivetmab \u2192 human mAbs)",
+  "lokivetmab": {
+    "name": "lokivetmab",
+    "species": "canine",
+    "target": "IL-31",
+    "bw_kg": 15.0,
+    "half_life_days": 14.0,
+    "vd_L_kg": 0.07,
+    "cl_mL_day_kg": 3.5
+  },
+  "allometric_exponents": {
+    "clearance": 0.75,
+    "volume": 1.0,
+    "half_life": 0.25
+  },
+  "hl_scaled_days": 20.576889762449042,
+  "hl_in_range": true,
+  "vd_scaled_L": 4.9,
+  "vd_in_range": true,
+  "cl_scaled_mL_day": 166.69185866269444,
+  "loki_cmax": 20.657710988267706,
+  "loki_tmax": 6.55527763881941,
+  "nemo_cmax": 4.7635961793815405,
+  "nemo_tmax": 7.4517258629314655,
+  "all_nonneg": true,
+  "dupi_cmax": 45.35254829827493,
+  "dur_canine_2mgkg": 40.27385505184985,
+  "dur_scaled_human": 59.193619693626125,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

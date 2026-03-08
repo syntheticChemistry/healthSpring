@@ -1,0 +1,29 @@
+{
+  "_source": "healthSpring Exp033: TRT Weight/Waist Trajectory",
+  "_method": "Logarithmic trajectory + interrupted rebound",
+  "params": {
+    "baseline_weight_kg": 113.0,
+    "baseline_waist_cm": 112.0,
+    "weight_loss_5yr_kg": -16.0,
+    "waist_loss_5yr_cm": -12.0,
+    "tau_months": 6.0
+  },
+  "dw_at_0": -0.0,
+  "dw_at_60mo": -16.0,
+  "weight_mono_dec": true,
+  "frac_loss_by_24mo": 0.6711877414712396,
+  "dwc_at_60mo": -12.0,
+  "dbmi_at_60mo": -5.6,
+  "w_30_interrupted": -6.513535098009335,
+  "w_30_continuous": -11.955547780947425,
+  "w_48_interrupted": -9.471147699143476,
+  "w_36_interrupted": -3.950658740056994,
+  "w_60_interrupted": -12.03802888653436,
+  "rate_yr1_kg": -7.33051055986122,
+  "rate_yr5_kg": -1.3389788802775602,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

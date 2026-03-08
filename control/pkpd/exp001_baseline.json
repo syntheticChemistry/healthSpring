@@ -1,0 +1,74 @@
+{
+  "_source": "healthSpring Exp001: Hill Dose-Response (Human JAK Inhibitors)",
+  "_method": "Generalized Hill equation",
+  "seed": 42,
+  "drugs": {
+    "baricitinib": {
+      "ic50_jak1_nm": 5.9,
+      "hill_n": 1.0,
+      "selectivity": "JAK1/JAK2"
+    },
+    "upadacitinib": {
+      "ic50_jak1_nm": 8.0,
+      "hill_n": 1.0,
+      "selectivity": "JAK1"
+    },
+    "abrocitinib": {
+      "ic50_jak1_nm": 29.0,
+      "hill_n": 1.0,
+      "selectivity": "JAK1"
+    },
+    "oclacitinib": {
+      "ic50_jak1_nm": 10.0,
+      "hill_n": 1.0,
+      "selectivity": "JAK1 (canine)"
+    }
+  },
+  "baricitinib_at_ic50": 0.5,
+  "upadacitinib_at_ic50": 0.5,
+  "abrocitinib_at_ic50": 0.5,
+  "oclacitinib_at_ic50": 0.5,
+  "baricitinib_monotonic": true,
+  "upadacitinib_monotonic": true,
+  "abrocitinib_monotonic": true,
+  "oclacitinib_monotonic": true,
+  "responses_at_10nm": {
+    "baricitinib": 0.6289308176100629,
+    "upadacitinib": 0.5555555555555556,
+    "abrocitinib": 0.2564102564102564,
+    "oclacitinib": 0.5
+  },
+  "baricitinib_ec_values": {
+    "ec10": 0.6555555555555557,
+    "ec50": 5.9,
+    "ec90": 53.1
+  },
+  "upadacitinib_ec_values": {
+    "ec10": 0.888888888888889,
+    "ec50": 8.0,
+    "ec90": 72.0
+  },
+  "abrocitinib_ec_values": {
+    "ec10": 3.2222222222222223,
+    "ec50": 29.0,
+    "ec90": 261.0
+  },
+  "oclacitinib_ec_values": {
+    "ec10": 1.1111111111111112,
+    "ec50": 10.0,
+    "ec90": 90.0
+  },
+  "cooperativity": {
+    "n1": 0.3333333333333333,
+    "n2": 0.2
+  },
+  "cooperativity_above": {
+    "n1": 0.6666666666666666,
+    "n2": 0.8
+  },
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

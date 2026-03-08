@@ -1,0 +1,25 @@
+{
+  "_source": "healthSpring Exp020: Pan-Tompkins QRS Detection",
+  "_method": "Bandpass \u2192 derivative \u2192 squaring \u2192 MWI \u2192 threshold",
+  "fs": 360,
+  "seed": 42,
+  "n_samples": 3600,
+  "n_true_peaks": 12,
+  "heart_rate_bpm": 72,
+  "n_detected": 12,
+  "detection_metrics": {
+    "tp": 12,
+    "fp": 0,
+    "fn": 0,
+    "sensitivity": 1.0,
+    "ppv": 1.0
+  },
+  "hr_detected": 73.04027051952045,
+  "sdnn_ms": 30.7293247377298,
+  "mwi_peak_ratio": 3.4807422176046603,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

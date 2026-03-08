@@ -1,0 +1,33 @@
+{
+  "_source": "healthSpring Exp032: Age-Related Testosterone Decline",
+  "_method": "Exponential decay + lognormal population variability",
+  "params": {
+    "T0_mean_ngdl": 600.0,
+    "T0_cv": 0.25,
+    "decline_rates": [
+      0.01,
+      0.017,
+      0.03
+    ],
+    "threshold_clinical": 300.0
+  },
+  "t_at_30": 600.0,
+  "monotonic_dec": true,
+  "pct_remaining_1pct_age90": 0.5488116360940264,
+  "pct_remaining_3pct_age90": 0.16529888822158656,
+  "age_at_300_mid_rate": 70.77336356234972,
+  "age_at_300_1pct": 99.31471805599453,
+  "age_at_300_3pct": 53.10490601866485,
+  "pop_t0_mean": 598.7162604631658,
+  "pop_t0_median": 580.2013699164225,
+  "pop_t0_cv": 0.2517423358616004,
+  "frac_hypogonadal_age60": 0.2692,
+  "frac_hypogonadal_age50": 0.1005,
+  "frac_hypogonadal_age70": 0.5344,
+  "all_positive": true,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

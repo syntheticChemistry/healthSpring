@@ -1,0 +1,39 @@
+{
+  "_source": "healthSpring Exp002: One-Compartment PK Models",
+  "_method": "IV bolus + oral Bateman + multiple dosing",
+  "drug_iv": {
+    "name": "Drug-A (IV bolus)",
+    "dose_mg": 500.0,
+    "vd_L": 50.0,
+    "half_life_hr": 6.0
+  },
+  "drug_oral": {
+    "name": "Drug-B (oral)",
+    "dose_mg": 250.0,
+    "f_bioavail": 0.8,
+    "vd_L": 35.0,
+    "half_life_hr": 4.0,
+    "k_a_hr": 1.5
+  },
+  "iv_c0": 10.0,
+  "iv_at_half_life": 5.0,
+  "iv_monotonic_dec": true,
+  "iv_auc_numerical": 86.22379218622461,
+  "iv_auc_analytical": 86.56170245333782,
+  "oral_c0": 0.0,
+  "oral_cmax": 4.310541298825648,
+  "oral_tmax": 1.6336336336336337,
+  "oral_tmax_analytical": 1.6267814188503886,
+  "oral_c_48hr": 0.00157730692730403,
+  "oral_auc": 32.965135455258384,
+  "oral_auc_analytical": 32.975886648890594,
+  "multi_dose_cmax_after_first": 16.4690954660676,
+  "nonneg_iv": true,
+  "nonneg_oral": true,
+  "nonneg_multi": true,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

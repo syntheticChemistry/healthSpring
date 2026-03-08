@@ -1,0 +1,23 @@
+{
+  "_source": "healthSpring Exp037: Testosterone-Gut Axis",
+  "_method": "Pielou \u2192 Anderson disorder \u2192 \u03be \u2192 TRT response stratification",
+  "n_patients": 1000,
+  "seed": 42,
+  "pielou_mean_healthy": 0.9874326861599158,
+  "pielou_mean_dysbiotic": 0.9230798455018421,
+  "xi_mean_healthy": 49.0613136632104,
+  "xi_mean_dysbiotic": 44.365618267041036,
+  "response_mean_healthy": -15.750772916995421,
+  "response_mean_dysbiotic": -14.309134968327827,
+  "pielou_disorder_corr": 1.0,
+  "pielou_response_corr": -0.5235642092823544,
+  "xi_response_corr": -0.5229683221255491,
+  "cohens_d": 0.898804788339948,
+  "p90_dysbiotic": 0.9593679170488724,
+  "p50_healthy": 0.9883981404249704,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

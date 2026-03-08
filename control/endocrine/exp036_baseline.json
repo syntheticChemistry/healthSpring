@@ -1,0 +1,47 @@
+{
+  "_source": "healthSpring Exp036: Population TRT Monte Carlo",
+  "_method": "10K virtual patients, IM depot PK + metabolic response",
+  "n_patients": 10000,
+  "seed": 42,
+  "pop_params": {
+    "vd": {
+      "typical": 70.0,
+      "cv": 0.25
+    },
+    "ka": {
+      "typical": 0.462,
+      "cv": 0.3
+    },
+    "ke": {
+      "typical": 0.0866,
+      "cv": 0.2
+    },
+    "t0": {
+      "typical": 600.0,
+      "cv": 0.25
+    },
+    "decline_rate": 0.017
+  },
+  "vd_mean": 69.85023038736938,
+  "ka_mean": 0.46489766463084486,
+  "ke_mean": 0.08685919062864703,
+  "t0_adj_mean": 381.0757626051371,
+  "age_mean": 57.4789125717199,
+  "cmax_median": 2.6269162945962528,
+  "cmax_cv": 0.3092895137890145,
+  "auc_median": 112.13746729822199,
+  "auc_cv": 0.2948470361350509,
+  "trough_median": 2.1267822572621546,
+  "auc_p5": 69.60999192211267,
+  "auc_p50": 112.13746729822199,
+  "auc_p95": 179.5702974813808,
+  "ke_auc_corr": -0.48808911978164427,
+  "frac_hypogonadal": 0.2592,
+  "age_t0_corr": -0.5514359709548771,
+  "weight_loss_mean": -15.975832043542532,
+  "_provenance": {
+    "date": "2026-03-08",
+    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "numpy": "2.1.3"
+  }
+}

@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-D warnings"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        components: clippy
+    - name: Build
+      run: cargo build --workspace
+    - name: Test
+      run: cargo test --workspace
+    - name: Clippy
+      run: cargo clippy --workspace -- -D warnings
+
+  test-gpu:
+    runs-on: ubuntu-latest
+    if: false  # Enable when GPU runners available
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Test GPU
+      run: cargo test --workspace --features gpu

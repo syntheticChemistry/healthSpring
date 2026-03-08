@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# healthSpring workspace — human health applications of sovereign
+# scientific computing.  Each sub-crate retains its own [workspace]
+# root so that `cargo test` works both from sub-crate directories
+# and from this root via `--manifest-path`.
+
+[workspace]
+resolver = "2"
+members = [
+    "barracuda",
+    "metalForge/forge",
+    "experiments/exp001_hill_dose_response",
+    "experiments/exp002_one_compartment_pk",
+    "experiments/exp005_population_pk",
+    "experiments/exp011_anderson_gut_lattice",
+    "experiments/exp012_cdiff_resistance",
+    "experiments/exp020_pan_tompkins_qrs",
+    "experiments/exp030_testosterone_im_pk",
+    "experiments/exp031_testosterone_pellet_pk",
+    "experiments/exp032_age_testosterone_decline",
+    "experiments/exp033_trt_weight_trajectory",
+    "experiments/exp034_trt_cardiovascular",
+    "experiments/exp035_trt_diabetes",
+    "experiments/exp036_population_trt_montecarlo",
+    "experiments/exp037_testosterone_gut_axis",
+]
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.87"
+license = "AGPL-3.0-or-later"
