@@ -1,0 +1,149 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# biomeOS deployment graph for healthSpring diagnostic pipeline.
+#
+# Defines the DAG of stages that biomeOS orchestrates when running a
+# patient diagnostic. Each stage declares capabilities it requires and
+# which primal provides them. biomeOS discovers primals at runtime via
+# capability matching — no hardcoded endpoints.
+
+[graph]
+name = "healthspring-diagnostic"
+description = "Human health diagnostic pipeline: PK/PD + microbiome + biosignal + endocrine → composite risk"
+
+# --- Infrastructure ---
+
+[[stages]]
+name = "beardog"
+primal = "beardog"
+capabilities = ["crypto.identity", "crypto.verify"]
+
+[[stages]]
+name = "songbird"
+primal = "songbird"
+depends_on = ["beardog"]
+capabilities = ["net.http", "net.discovery"]
+
+# --- Data ---
+
+[[stages]]
+name = "nestgate"
+primal = "nestgate"
+depends_on = ["songbird"]
+capabilities = [
+    "data.ncbi_search",
+    "data.ncbi_fetch",
+    "storage.store",
+    "storage.retrieve",
+]
+
+# --- Compute ---
+
+[[stages]]
+name = "toadstool"
+primal = "toadstool"
+depends_on = ["songbird"]
+capabilities = [
+    "compute.execute",
+    "compute.submit",
+    "compute.gpu.dispatch",
+    "compute.npu.dispatch",
+]
+
+# --- Science: PK/PD ---
+
+[[stages]]
+name = "pkpd"
+primal = "healthspring"
+depends_on = ["toadstool"]
+capabilities = [
+    "science.pkpd.hill_dose_response",
+    "science.pkpd.one_compartment_pk",
+    "science.pkpd.two_compartment_pk",
+    "science.pkpd.pbpk_simulate",
+    "science.pkpd.population_pk",
+    "science.pkpd.allometric_scale",
+    "science.pkpd.auc_trapezoidal",
+]
+
+# --- Science: Microbiome ---
+
+[[stages]]
+name = "microbiome"
+primal = "healthspring"
+depends_on = ["toadstool", "nestgate"]
+capabilities = [
+    "science.microbiome.shannon_index",
+    "science.microbiome.simpson_index",
+    "science.microbiome.pielou_evenness",
+    "science.microbiome.chao1",
+    "science.microbiome.anderson_gut",
+    "science.microbiome.colonization_resistance",
+    "science.microbiome.fmt_blend",
+    "science.microbiome.bray_curtis",
+]
+
+# --- Science: Biosignal ---
+
+[[stages]]
+name = "biosignal"
+primal = "healthspring"
+depends_on = ["toadstool"]
+capabilities = [
+    "science.biosignal.pan_tompkins",
+    "science.biosignal.hrv_metrics",
+    "science.biosignal.ppg_spo2",
+    "science.biosignal.eda_analysis",
+    "science.biosignal.fuse_channels",
+]
+
+# --- Science: Endocrine ---
+
+[[stages]]
+name = "endocrine"
+primal = "healthspring"
+depends_on = ["toadstool"]
+capabilities = [
+    "science.endocrine.testosterone_pk",
+    "science.endocrine.trt_outcomes",
+    "science.endocrine.population_trt",
+    "science.endocrine.hrv_trt_response",
+    "science.endocrine.cardiac_risk",
+]
+
+# --- Diagnostic pipeline (composes all tracks) ---
+
+[[stages]]
+name = "diagnostic"
+primal = "healthspring"
+depends_on = ["pkpd", "microbiome", "biosignal", "endocrine"]
+capabilities = [
+    "science.diagnostic.assess_patient",
+    "science.diagnostic.population_montecarlo",
+    "science.diagnostic.composite_risk",
+]
+
+# --- Visualization ---
+
+[[stages]]
+name = "petaltongue"
+primal = "petaltongue"
+depends_on = ["diagnostic"]
+capabilities = [
+    "ui.scenario.render",
+    "ui.graph.display",
+    "ui.tui.display",
+    "ui.web.serve",
+    "ui.audio.sonify",
+]
+
+# --- Storage (results) ---
+
+[[stages]]
+name = "results"
+primal = "nestgate"
+depends_on = ["diagnostic", "petaltongue"]
+capabilities = [
+    "storage.store",
+    "storage.snapshot",
+]

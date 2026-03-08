@@ -35,6 +35,8 @@ members = [
     "experiments/exp037_testosterone_gut_axis",
     "experiments/exp038_hrv_trt_cardiovascular",
     "experiments/exp040_barracuda_cpu_parity",
+    "experiments/exp050_diagnostic_pipeline",
+    "experiments/exp051_population_diagnostic",
 ]
 
 [workspace.package]

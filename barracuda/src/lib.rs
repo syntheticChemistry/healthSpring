@@ -4,7 +4,9 @@
 #![warn(clippy::pedantic)]
 
 pub mod biosignal;
+pub mod diagnostic;
 pub mod endocrine;
 pub mod gpu;
 pub mod microbiome;
 pub mod pkpd;
+pub mod visualization;

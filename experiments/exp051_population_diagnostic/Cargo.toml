@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+[package]
+name = "healthspring-exp051"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "exp051_population_diagnostic"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
