@@ -1,16 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 [package]
-name = "healthspring-exp050"
+name = "healthspring-exp052"
 version = "0.1.0"
 edition = "2024"
 
 [[bin]]
-name = "exp050_diagnostic_pipeline"
+name = "exp052_petaltongue_render"
 path = "src/main.rs"
-
-[[bin]]
-name = "exp050_scenario_dump"
-path = "src/dump_scenario.rs"
 
 [dependencies]
 healthspring-barracuda = { path = "../../barracuda" }
+serde_json = "1"

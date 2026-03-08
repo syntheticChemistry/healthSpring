@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp053"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Exp053: Live GPU vs CPU parity validation"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda", features = ["gpu"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[[bin]]
+name = "exp053_gpu_parity"
+path = "src/main.rs"

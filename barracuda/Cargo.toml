@@ -14,7 +14,7 @@ categories = ["science", "command-line-utilities"]
 
 [features]
 default = []
-gpu = ["dep:wgpu", "dep:tokio"]
+gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck"]
 npu = ["dep:akida-driver"]
 
 [dependencies]
@@ -23,7 +23,8 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
 wgpu = { version = "28", optional = true }
-tokio = { version = "1", features = ["rt-multi-thread", "macros"], optional = true }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"], optional = true }
+bytemuck = { version = "1", features = ["derive"], optional = true }
 akida-driver = { path = "../../phase1/toadstool/crates/neuromorphic/akida-driver", optional = true }
 
 [dev-dependencies]

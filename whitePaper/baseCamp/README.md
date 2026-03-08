@@ -3,7 +3,7 @@
 Faculty-linked sub-theses documenting how healthSpring extends validated science into human health applications.
 
 **Last Updated:** March 8, 2026
-**Status:** V4 — 4 tracks active, 24 experiments complete (139 lib + 27 forge unit tests, 280 binary checks, 104 cross-validation checks)
+**Status:** V6 — 4 tracks + diagnostics + GPU pipeline, 30 experiments complete (200 unit tests, 346 binary checks, 104 cross-validation checks). Tier 2 GPU live.
 
 ---
 
@@ -130,26 +130,58 @@ hotSpring → planned lattice tissue finite-size scaling
 
 ---
 
-## Next Steps: Tier 2 (GPU) and Beyond
+## GPU Pipeline (Tier 2) — LIVE
 
-All 24 experiments are Tier 0 (Python control) and Tier 1 (Rust CPU) validated.
-Exp040 establishes analytical CPU parity contracts. The path forward:
+All 24 Tier 0+1 experiments validated. GPU pipeline now live with 3 additional experiments:
 
-1. **barraCuda CPU** — Tier 1 complete. Pure Rust matches Python f64-canonical (280 binary + 104 cross-validation checks)
-2. **barraCuda GPU** — WGSL shaders via `gpu.rs` dispatch layer:
-   - `batched_elementwise_f64.wgsl` (Exp001 Hill sweep)
-   - `population_pk_f64.wgsl` (Exp005/036 Monte Carlo)
-   - `anderson_lyapunov_f64.wgsl` (Exp011/037 eigensolve)
-   - `fft_radix2_f64.wgsl` (Exp020-023 biosignal FFT)
-   - `mean_variance_f64.wgsl` (Exp010/013 diversity batch)
-3. **toadStool** — pipeline skeleton wired (Stage/StageOp/Pipeline, 13 tests). Next: GPU stage execution
-4. **metalForge** — NUCLEUS atomics (Tower→Node→Nest), PCIe P2P transfer planning (27 tests). Next: live dispatch
+### WGSL Shaders (f64 precision, compiled into binary)
+
+| Shader | Operation | Pattern | Status |
+|--------|-----------|---------|--------|
+| `hill_dose_response_f64.wgsl` | E(c) = Emax·c^n / (c^n + EC50^n) | Element-wise | **Validated** (Exp053) |
+| `population_pk_f64.wgsl` | AUC = F·Dose / CL(random) | Embarrassingly parallel MC | **Validated** (Exp053) |
+| `diversity_f64.wgsl` | Shannon + Simpson indices | Workgroup reduction | **Validated** (Exp053) |
+
+### GPU Architecture
+
+| Component | Purpose | Location |
+|-----------|---------|----------|
+| `GpuContext` | Persistent device/queue, shader reuse | `barracuda/src/gpu.rs` |
+| `execute_fused()` | All ops in one encoder, no CPU roundtrips | `barracuda/src/gpu.rs` |
+| `Pipeline::execute_gpu()` | toadStool dispatches stages via `GpuContext` | `toadstool/src/pipeline.rs` |
+| `Stage::to_gpu_op()` | Stage → GpuOp conversion | `toadstool/src/stage.rs` |
+
+### Scaling Results (RTX 4070, release build)
+
+| Operation | Crossover | Peak Speedup | Peak Throughput |
+|-----------|-----------|:------------:|:---------------:|
+| Hill dose-response | 100K | 2.0x at 5M | 207 M/s |
+| Population PK | 5M | 1.15x at 5M | 365 M/s |
+| Fused pipeline (small) | — | 31.7x vs individual | — |
+
+### Learnings for toadStool/barraCuda Team
+
+1. `enable f64;` in WGSL must be stripped — wgpu/naga handles f64 via device features, not shader directives
+2. `pow(f64, f64)` is unsupported on NVIDIA via NVVM — use `exp(n * log(c))` cast through f32
+3. u64 PRNG not portable — use u32-only xorshift32 + Wang hash for GPU Monte Carlo
+4. Fused pipeline (single encoder) eliminates ~30x overhead at small sizes vs individual dispatches
+5. At 10M+ elements, memory bandwidth dominates — buffer streaming needed for next tier
+
+---
+
+## Next Steps: Tier 3 (metalForge Live Dispatch) and Field
+
+1. **metalForge** — wire `select_substrate()` to live GPU dispatch (currently routing-only)
+2. **Anderson eigensolve** — GPU shader for gut lattice localization length (Exp011/037)
+3. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG processing (Exp020-023)
+4. **Field deployment** — validate on Raspberry Pi + eGPU (same WGSL, portable pipeline)
+5. **TPU/NPU** — toadStool backend swap for Coral TPU, Akida NPU (Pan-Tompkins streaming)
 
 ---
 
 ## Integration Points
 
-- **NestGate**: `data.ncbi_search` / `data.ncbi_fetch` for PubMed literature, SRA androgen receptor expression data
-- **biomeOS NUCLEUS**: Atomic deployment (Nest for data storage, Node for GPU compute), population PK as distributed workload
-- **ToadStool/BarraCUDA**: GPU population PK Monte Carlo, Anderson gut eigensolve, FFT for biosignal
+- **NestGate**: `data.ncbi_search` / `data.ncbi_fetch` for PubMed literature
+- **biomeOS NUCLEUS**: Atomic deployment (Nest for data storage, Node for GPU compute)
+- **toadStool/barraCuda**: GPU population PK Monte Carlo, fused diagnostic pipeline
 - **wetSpring**: Diversity primitives (reuse `science.diversity`), Anderson lattice (cross-spring)

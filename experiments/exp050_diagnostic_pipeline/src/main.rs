@@ -124,17 +124,31 @@ fn main() {
     );
     check!("female_pk_auc_positive", result_f.pk.oral_auc > 0.0);
 
+    // --- Enriched data checks ---
+    check!("pk_curve_length", result.pk.curve_times_hr.len() == 101);
+    check!(
+        "pk_curve_concs_length",
+        result.pk.curve_concs_mg_l.len() == 101
+    );
+    check!("pk_hill_sweep_length", result.pk.hill_concs.len() == 50);
+    check!(
+        "microbiome_abundances_passed",
+        result.microbiome.abundances.len() == 7
+    );
+
     // --- Scenario export ---
     let scenario = assessment_to_scenario(&result, "Exp050 Male TRT");
-    check!("scenario_nodes_count", scenario.nodes.len() == 7);
-    check!("scenario_edges_count", scenario.edges.len() == 8);
+    check!(
+        "scenario_nodes_count",
+        scenario.ecosystem.primals.len() == 7
+    );
 
     let json = scenario_to_json(&scenario);
     check!("json_has_name", json.contains("Exp050 Male TRT"));
-    check!("json_has_topology", json.contains("topology"));
+    check!("json_has_version", json.contains("\"version\": \"2.0.0\""));
     check!("json_has_composite_risk", json.contains("composite_risk"));
-    check!("json_has_shannon", json.contains("shannon"));
-    check!("json_has_testosterone", json.contains("testosterone"));
+    check!("json_has_data_channels", json.contains("data_channels"));
+    check!("json_has_timeseries", json.contains("timeseries"));
 
     // --- Determinism ---
     let result2 = assess_patient(&male_trt);

@@ -8,6 +8,11 @@ rust-version.workspace = true
 license.workspace = true
 description = "toadStool compute dispatch for healthSpring — sovereign hardware abstraction"
 
+[features]
+default = []
+gpu = ["healthspring-barracuda/gpu", "dep:tokio"]
+
 [dependencies]
 healthspring-barracuda = { path = "../barracuda" }
 healthspring-forge = { path = "../metalForge/forge" }
+tokio = { version = "1", features = ["rt"], optional = true }

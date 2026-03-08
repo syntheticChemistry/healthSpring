@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp055"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Exp055: GPU scaling — single GPU handles population-scale workloads"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda", features = ["gpu"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[[bin]]
+name = "exp055_gpu_scaling"
+path = "src/main.rs"

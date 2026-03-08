@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V4 — 24 experiments, 4 tracks + validation (Tier 0+1)
+**Status**: V6 — 30 experiments, 4 tracks + diagnostics + petalTongue + GPU pipeline (Tier 0+1+2)
 **Last Updated**: March 8, 2026
 
 ---
@@ -21,8 +21,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V4** | [HEALTHSPRING_V4_BARRACUDA_TOADSTOOL_METALFORGE_HANDOFF_MAR08_2026.md](handoffs/HEALTHSPRING_V4_BARRACUDA_TOADSTOOL_METALFORGE_HANDOFF_MAR08_2026.md) | Mar 8 | Full V4 handoff: 24 experiments (280 binary, 185 lib tests, 104 cross-validation). GPU dispatch layer, metalForge NUCLEUS, toadStool pipeline. New: PBPK, FMT, HRV, PPG SpO2, biosignal fusion, HRV×TRT, exp040 parity. |
-| | *V1, V3 → `handoffs/archive/`* | | Fossil record |
+| **V6** | [V6 GPU Pipeline](handoffs/HEALTHSPRING_V6_GPU_PIPELINE_BARRACUDA_TOADSTOOL_HANDOFF_MAR08_2026.md) | Mar 8 | GPU Tier 2 live: 3 WGSL shaders, GpuContext, fused pipeline, toadStool GPU dispatch, scaling to 10M. 3 new experiments (Exp053-055). Critical learnings for barraCuda/toadStool/coralReef. |
+| | *V1, V3, V4, V5 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 
@@ -34,12 +34,13 @@ Superseded handoffs in `handoffs/archive/` — preserved as fossil record.
 
 | From | What | Version | Status |
 |------|------|---------|--------|
-| **barraCuda** | Core math (exp, log, pow), ODE solvers, fused ops | v0.3.3 | Available — not yet consumed (Tier 2 pending) |
+| **barraCuda** | Core math (exp, log, pow), ODE solvers, fused ops | v0.3.3 | **Live** — Tier 2 GPU via local shaders + GpuContext |
 | **wetSpring** | 16S pipeline, Anderson lattice, Gonzales immunology | V99 | Validated (8,886 checks) |
 | **neuralSpring** | Hill dose-response, PK decay, tissue lattice, MATRIX | V90 | Validated (2,279 checks) |
 | **groundSpring** | Uncertainty propagation, spectral methods | V100 | Validated |
 | **airSpring** | CytokineBrain, sensor fusion patterns | v0.7.5 | Validated |
 | **hotSpring** | Lattice methods, Anderson spectral theory | v0.6.17+ | Validated |
+| **petalTongue** | UI/visualization platform | v1.3.0 | healthSpring driving evolution — prototypes built |
 
 ---
 

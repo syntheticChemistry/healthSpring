@@ -60,6 +60,12 @@ pub struct PkAssessment {
     pub oral_auc: f64,
     pub allometric_cl: f64,
     pub allometric_vd: f64,
+    /// Full 0..24h concentration-time curve (101 points).
+    pub curve_times_hr: Vec<f64>,
+    pub curve_concs_mg_l: Vec<f64>,
+    /// Hill dose-response sweep (50 points, log-spaced).
+    pub hill_concs: Vec<f64>,
+    pub hill_responses: Vec<f64>,
 }
 
 #[derive(Debug, Clone)]
@@ -69,6 +75,8 @@ pub struct MicrobiomeAssessment {
     pub pielou_evenness: f64,
     pub colonization_resistance: f64,
     pub risk_level: RiskLevel,
+    /// Raw genus-level relative abundances (passthrough from profile).
+    pub abundances: Vec<f64>,
 }
 
 #[derive(Debug, Clone)]
@@ -79,6 +87,8 @@ pub struct BiosignalAssessment {
     pub spo2_percent: f64,
     pub stress_index: f64,
     pub overall_score: f64,
+    /// RR intervals in ms (when ECG peaks available).
+    pub rr_intervals_ms: Vec<f64>,
 }
 
 #[derive(Debug, Clone)]
@@ -125,45 +135,172 @@ pub struct PopulationResult {
     pub patient_percentile: f64,
 }
 
-const REF_BW_KG: f64 = 70.0;
-const REF_CL_L_HR: f64 = 0.15;
-const REF_VD_L: f64 = 15.0;
-const DEFAULT_F: f64 = 0.79;
-const DEFAULT_KA: f64 = 1.5;
-const DEFAULT_DOSE_MG: f64 = 4.0;
-const T_DECLINE_RATE: f64 = 0.016;
-const T_DECLINE_ONSET: f64 = 30.0;
-const DEFAULT_T0_MALE: f64 = 600.0;
-const DEFAULT_T0_FEMALE: f64 = 40.0;
-const SDNN_DELTA_TRT: f64 = 15.0;
-const SDNN_TAU_MONTHS: f64 = 6.0;
-const CARDIAC_BASELINE_RISK: f64 = 0.1;
-const TRT_GUT_XI_MAX: f64 = 100.0;
-const TRT_GUT_BASE_RESPONSE: f64 = 0.8;
-const DEFAULT_EMAX: f64 = 100.0;
-const DEFAULT_EC50: f64 = 10.0;
-const DEFAULT_HILL_N: f64 = 1.5;
-const GUT_W_SCALE: f64 = 8.0;
+/// Configurable pipeline parameters. All values have documented defaults
+/// sourced from published literature. Callers can override any parameter
+/// to adapt the pipeline to different drugs, populations, or clinical
+/// protocols without modifying library code.
+#[derive(Debug, Clone)]
+pub struct DiagnosticConfig {
+    // PK/PD
+    pub ref_bw_kg: f64,
+    pub ref_cl_l_hr: f64,
+    pub ref_vd_l: f64,
+    pub bioavailability: f64,
+    pub absorption_rate: f64,
+    pub dose_mg: f64,
+    pub emax: f64,
+    pub ec50: f64,
+    pub hill_n: f64,
+    pub pk_curve_points: u32,
+    pub pk_curve_hours: f64,
+    pub hill_sweep_points: u32,
 
-fn assess_pk(profile: &PatientProfile) -> PkAssessment {
-    let cl = pkpd::allometric_scale(REF_CL_L_HR, REF_BW_KG, profile.weight_kg, 0.75);
-    let vd = pkpd::allometric_scale(REF_VD_L, REF_BW_KG, profile.weight_kg, 1.0);
+    // Endocrine
+    pub t_decline_rate: f64,
+    pub t_decline_onset_years: f64,
+    pub baseline_t_male: f64,
+    pub baseline_t_female: f64,
+    pub sdnn_delta_trt: f64,
+    pub sdnn_tau_months: f64,
+    pub cardiac_baseline_risk: f64,
+
+    // Cross-track
+    pub gut_xi_max: f64,
+    pub gut_base_response: f64,
+    pub gut_w_scale: f64,
+    pub anderson_lattice_sites: usize,
+
+    // Biosignal fallback (used when ECG data insufficient)
+    pub fallback_hr_bpm: f64,
+    pub fallback_sdnn_ms: f64,
+    pub fallback_rmssd_ms: f64,
+    pub fallback_spo2: f64,
+    pub fallback_stress: f64,
+    pub fallback_overall_score: f64,
+
+    // Microbiome risk thresholds
+    pub resistance_low_threshold: f64,
+    pub resistance_moderate_threshold: f64,
+    pub resistance_high_threshold: f64,
+
+    // Composite risk weights
+    pub weight_microbiome: f64,
+    pub weight_biosignal: f64,
+    pub weight_endocrine: f64,
+    pub weight_cross_track: f64,
+
+    // Population Monte Carlo IIV
+    pub mc_age_cv: f64,
+    pub mc_weight_cv: f64,
+    pub mc_testosterone_cv: f64,
+}
+
+impl Default for DiagnosticConfig {
+    /// Published-literature defaults. Sources documented in whitePaper/baseCamp/.
+    fn default() -> Self {
+        Self {
+            // Rowland & Tozer Ch. 3 — reference adult oral PK
+            ref_bw_kg: 70.0,
+            ref_cl_l_hr: 0.15,
+            ref_vd_l: 15.0,
+            bioavailability: 0.79,
+            absorption_rate: 1.5,
+            dose_mg: 4.0,
+            emax: 100.0,
+            ec50: 10.0,
+            hill_n: 1.5,
+            pk_curve_points: 100,
+            pk_curve_hours: 24.0,
+            hill_sweep_points: 50,
+
+            // Harman 2001 (BLSA, n=890)
+            t_decline_rate: 0.016,
+            t_decline_onset_years: 30.0,
+            baseline_t_male: 600.0,
+            baseline_t_female: 40.0,
+
+            // Task Force 1996, Mok Ch. 6
+            sdnn_delta_trt: 15.0,
+            sdnn_tau_months: 6.0,
+            cardiac_baseline_risk: 0.1,
+
+            // wetSpring Anderson extension
+            gut_xi_max: 100.0,
+            gut_base_response: 0.8,
+            gut_w_scale: 8.0,
+            anderson_lattice_sites: 50,
+
+            // NICE clinical defaults when ECG is absent
+            fallback_hr_bpm: 72.0,
+            fallback_sdnn_ms: 50.0,
+            fallback_rmssd_ms: 35.0,
+            fallback_spo2: 97.0,
+            fallback_stress: 0.3,
+            fallback_overall_score: 70.0,
+
+            // Jenior 2021 colonization resistance thresholds
+            resistance_low_threshold: 0.7,
+            resistance_moderate_threshold: 0.4,
+            resistance_high_threshold: 0.2,
+
+            // Equal weighting (default)
+            weight_microbiome: 0.25,
+            weight_biosignal: 0.25,
+            weight_endocrine: 0.25,
+            weight_cross_track: 0.25,
+
+            // Mould & Upton 2013 typical IIV
+            mc_age_cv: 0.15,
+            mc_weight_cv: 0.20,
+            mc_testosterone_cv: 0.30,
+        }
+    }
+}
+
+impl DiagnosticConfig {
+    /// Default configuration sourced from published literature.
+    #[must_use]
+    pub fn published() -> Self {
+        Self::default()
+    }
+}
+
+fn assess_pk(profile: &PatientProfile, cfg: &DiagnosticConfig) -> PkAssessment {
+    let cl = pkpd::allometric_scale(cfg.ref_cl_l_hr, cfg.ref_bw_kg, profile.weight_kg, 0.75);
+    let vd = pkpd::allometric_scale(cfg.ref_vd_l, cfg.ref_bw_kg, profile.weight_kg, 1.0);
     let ke = cl / vd;
 
-    let hill_at_ec50 =
-        pkpd::hill_dose_response(DEFAULT_EC50, DEFAULT_EC50, DEFAULT_HILL_N, DEFAULT_EMAX);
+    let hill_at_ec50 = pkpd::hill_dose_response(cfg.ec50, cfg.ec50, cfg.hill_n, cfg.emax);
 
-    let n_points = 100;
-    let t_max = 24.0;
+    let n_points = cfg.pk_curve_points;
+    let t_max = cfg.pk_curve_hours;
     let dt = t_max / f64::from(n_points);
     let times: Vec<f64> = (0..=n_points).map(|i| f64::from(i) * dt).collect();
     let concs: Vec<f64> = times
         .iter()
-        .map(|&t| pkpd::pk_oral_one_compartment(DEFAULT_DOSE_MG, DEFAULT_F, vd, DEFAULT_KA, ke, t))
+        .map(|&t| {
+            pkpd::pk_oral_one_compartment(
+                cfg.dose_mg,
+                cfg.bioavailability,
+                vd,
+                cfg.absorption_rate,
+                ke,
+                t,
+            )
+        })
         .collect();
 
     let (cmax, tmax_hr) = pkpd::find_cmax_tmax(&times, &concs);
     let auc = pkpd::auc_trapezoidal(&times, &concs);
+
+    let hill_n_pts = cfg.hill_sweep_points;
+    let hill_concs: Vec<f64> = (0..hill_n_pts)
+        .map(|i| {
+            let frac = f64::from(i) / f64::from(hill_n_pts - 1);
+            0.1 * (cfg.ec50 * 100.0_f64).powf(frac)
+        })
+        .collect();
+    let hill_responses = pkpd::hill_sweep(cfg.ec50, cfg.hill_n, cfg.emax, &hill_concs);
 
     PkAssessment {
         hill_response_at_ec50: hill_at_ec50,
@@ -172,10 +309,14 @@ fn assess_pk(profile: &PatientProfile) -> PkAssessment {
         oral_auc: auc,
         allometric_cl: cl,
         allometric_vd: vd,
+        curve_times_hr: times,
+        curve_concs_mg_l: concs,
+        hill_concs,
+        hill_responses,
     }
 }
 
-fn assess_microbiome(profile: &PatientProfile) -> MicrobiomeAssessment {
+fn assess_microbiome(profile: &PatientProfile, cfg: &DiagnosticConfig) -> MicrobiomeAssessment {
     let abundances = profile
         .gut_abundances
         .as_deref()
@@ -185,10 +326,14 @@ fn assess_microbiome(profile: &PatientProfile) -> MicrobiomeAssessment {
     let simpson = microbiome::simpson_index(abundances);
     let evenness = microbiome::pielou_evenness(abundances);
 
-    let disorder = microbiome::evenness_to_disorder(evenness, GUT_W_SCALE);
-    let n_sites = 50;
+    let disorder = microbiome::evenness_to_disorder(evenness, cfg.gut_w_scale);
+    let n_sites = cfg.anderson_lattice_sites;
     let disorder_field: Vec<f64> = (0..n_sites)
-        .map(|i| disorder * (1.0 + 0.1 * ((f64::from(i) * 0.7).sin())))
+        .map(|i| {
+            #[expect(clippy::cast_precision_loss, reason = "lattice index fits f64")]
+            let fi = i as f64;
+            disorder * (1.0 + 0.1 * ((fi * 0.7).sin()))
+        })
         .collect();
     let eigenvalues = microbiome::anderson_hamiltonian_1d(&disorder_field, 1.0);
 
@@ -202,11 +347,11 @@ fn assess_microbiome(profile: &PatientProfile) -> MicrobiomeAssessment {
     let xi = microbiome::localization_length_from_ipr(ipr);
     let resistance = microbiome::colonization_resistance(xi);
 
-    let risk_level = if resistance > 0.7 {
+    let risk_level = if resistance > cfg.resistance_low_threshold {
         RiskLevel::Low
-    } else if resistance > 0.4 {
+    } else if resistance > cfg.resistance_moderate_threshold {
         RiskLevel::Moderate
-    } else if resistance > 0.2 {
+    } else if resistance > cfg.resistance_high_threshold {
         RiskLevel::High
     } else {
         RiskLevel::Critical
@@ -218,16 +363,28 @@ fn assess_microbiome(profile: &PatientProfile) -> MicrobiomeAssessment {
         pielou_evenness: evenness,
         colonization_resistance: resistance,
         risk_level,
+        abundances: abundances.to_vec(),
     }
 }
 
-fn assess_biosignal(profile: &PatientProfile) -> BiosignalAssessment {
+fn assess_biosignal(profile: &PatientProfile, cfg: &DiagnosticConfig) -> BiosignalAssessment {
     if let Some(ref peaks) = profile.ecg_peaks {
         if peaks.len() >= 3 {
             let spo2 = profile.ppg_spo2.unwrap_or(97.0);
             let scr = profile.scr_count.unwrap_or(0);
             let fused =
                 biosignal::fuse_channels(peaks, profile.ecg_fs, spo2, scr, profile.eda_duration_s);
+            let rr: Vec<f64> = peaks
+                .windows(2)
+                .map(|w| {
+                    #[expect(
+                        clippy::cast_precision_loss,
+                        reason = "peak indices fit in f64 mantissa"
+                    )]
+                    let diff = w[1] as f64 - w[0] as f64;
+                    diff / profile.ecg_fs * 1000.0
+                })
+                .collect();
             return BiosignalAssessment {
                 heart_rate_bpm: fused.heart_rate_bpm,
                 sdnn_ms: fused.hrv_sdnn_ms,
@@ -235,48 +392,51 @@ fn assess_biosignal(profile: &PatientProfile) -> BiosignalAssessment {
                 spo2_percent: fused.spo2_percent,
                 stress_index: fused.stress_index,
                 overall_score: fused.overall_score,
+                rr_intervals_ms: rr,
             };
         }
     }
 
     BiosignalAssessment {
-        heart_rate_bpm: 72.0,
-        sdnn_ms: 50.0,
-        rmssd_ms: 35.0,
-        spo2_percent: profile.ppg_spo2.unwrap_or(97.0),
-        stress_index: 0.3,
-        overall_score: 70.0,
+        heart_rate_bpm: cfg.fallback_hr_bpm,
+        sdnn_ms: cfg.fallback_sdnn_ms,
+        rmssd_ms: cfg.fallback_rmssd_ms,
+        spo2_percent: profile.ppg_spo2.unwrap_or(cfg.fallback_spo2),
+        stress_index: cfg.fallback_stress,
+        overall_score: cfg.fallback_overall_score,
+        rr_intervals_ms: Vec::new(),
     }
 }
 
-fn assess_endocrine(profile: &PatientProfile) -> EndocrineAssessment {
+fn assess_endocrine(profile: &PatientProfile, cfg: &DiagnosticConfig) -> EndocrineAssessment {
     let baseline_t = match profile.sex {
-        Sex::Male => DEFAULT_T0_MALE,
-        Sex::Female => DEFAULT_T0_FEMALE,
+        Sex::Male => cfg.baseline_t_male,
+        Sex::Female => cfg.baseline_t_female,
     };
 
     let predicted_t = profile.testosterone_ng_dl.unwrap_or_else(|| {
         endocrine::testosterone_decline(
             baseline_t,
-            T_DECLINE_RATE,
+            cfg.t_decline_rate,
             profile.age_years,
-            T_DECLINE_ONSET,
+            cfg.t_decline_onset_years,
         )
     });
 
-    let sdnn_base = 50.0;
+    let sdnn_base = cfg.fallback_sdnn_ms;
     let hrv_sdnn = if profile.on_trt {
         endocrine::hrv_trt_response(
             sdnn_base,
-            SDNN_DELTA_TRT,
-            SDNN_TAU_MONTHS,
+            cfg.sdnn_delta_trt,
+            cfg.sdnn_tau_months,
             profile.trt_months,
         )
     } else {
         sdnn_base
     };
 
-    let cardiac = endocrine::cardiac_risk_composite(hrv_sdnn, predicted_t, CARDIAC_BASELINE_RISK);
+    let cardiac =
+        endocrine::cardiac_risk_composite(hrv_sdnn, predicted_t, cfg.cardiac_baseline_risk);
 
     let metabolic = if profile.on_trt {
         endocrine::weight_trajectory(profile.trt_months, -12.0, 12.0, 60.0)
@@ -286,7 +446,7 @@ fn assess_endocrine(profile: &PatientProfile) -> EndocrineAssessment {
 
     EndocrineAssessment {
         predicted_testosterone: predicted_t,
-        age_decline_rate: T_DECLINE_RATE,
+        age_decline_rate: cfg.t_decline_rate,
         hrv_trt_sdnn: hrv_sdnn,
         cardiac_risk: cardiac,
         metabolic_response: metabolic,
@@ -297,15 +457,18 @@ fn assess_cross_track(
     microbiome: &MicrobiomeAssessment,
     endocrine: &EndocrineAssessment,
     biosignal: &BiosignalAssessment,
+    cfg: &DiagnosticConfig,
 ) -> CrossTrackAssessment {
-    let disorder = endocrine::evenness_to_disorder(microbiome.pielou_evenness, GUT_W_SCALE);
-    let xi = endocrine::anderson_localization_length(disorder, 50.0);
-    let gut_response = endocrine::gut_metabolic_response(xi, TRT_GUT_XI_MAX, TRT_GUT_BASE_RESPONSE);
+    let disorder = endocrine::evenness_to_disorder(microbiome.pielou_evenness, cfg.gut_w_scale);
+    #[expect(clippy::cast_precision_loss, reason = "lattice site count fits f64")]
+    let lattice_f = cfg.anderson_lattice_sites as f64;
+    let xi = endocrine::anderson_localization_length(disorder, lattice_f);
+    let gut_response = endocrine::gut_metabolic_response(xi, cfg.gut_xi_max, cfg.gut_base_response);
 
     let hrv_cardiac = endocrine::cardiac_risk_composite(
         biosignal.sdnn_ms,
         endocrine.predicted_testosterone,
-        CARDIAC_BASELINE_RISK,
+        cfg.cardiac_baseline_risk,
     );
 
     CrossTrackAssessment {
@@ -319,24 +482,38 @@ fn composite_risk(
     biosignal: &BiosignalAssessment,
     endocrine: &EndocrineAssessment,
     cross_track: &CrossTrackAssessment,
+    cfg: &DiagnosticConfig,
 ) -> f64 {
     let micro_risk = 1.0 - microbiome.colonization_resistance;
     let bio_risk = biosignal.stress_index;
     let endo_risk = endocrine.cardiac_risk;
     let cross_risk = cross_track.hrv_cardiac_composite;
 
-    (0.25 * micro_risk + 0.25 * bio_risk + 0.25 * endo_risk + 0.25 * cross_risk).clamp(0.0, 1.0)
+    (cfg.weight_microbiome * micro_risk
+        + cfg.weight_biosignal * bio_risk
+        + cfg.weight_endocrine * endo_risk
+        + cfg.weight_cross_track * cross_risk)
+        .clamp(0.0, 1.0)
 }
 
-/// Run the full diagnostic pipeline for a single patient.
+/// Run the full diagnostic pipeline with published-literature defaults.
 #[must_use]
 pub fn assess_patient(profile: &PatientProfile) -> DiagnosticAssessment {
-    let pk = assess_pk(profile);
-    let microbiome = assess_microbiome(profile);
-    let biosignal = assess_biosignal(profile);
-    let endocrine = assess_endocrine(profile);
-    let cross_track = assess_cross_track(&microbiome, &endocrine, &biosignal);
-    let risk = composite_risk(&microbiome, &biosignal, &endocrine, &cross_track);
+    assess_patient_with_config(profile, &DiagnosticConfig::default())
+}
+
+/// Run the full diagnostic pipeline with custom configuration.
+#[must_use]
+pub fn assess_patient_with_config(
+    profile: &PatientProfile,
+    cfg: &DiagnosticConfig,
+) -> DiagnosticAssessment {
+    let pk = assess_pk(profile, cfg);
+    let microbiome = assess_microbiome(profile, cfg);
+    let biosignal = assess_biosignal(profile, cfg);
+    let endocrine = assess_endocrine(profile, cfg);
+    let cross_track = assess_cross_track(&microbiome, &endocrine, &biosignal, cfg);
+    let risk = composite_risk(&microbiome, &biosignal, &endocrine, &cross_track, cfg);
 
     DiagnosticAssessment {
         pk,
@@ -348,17 +525,26 @@ pub fn assess_patient(profile: &PatientProfile) -> DiagnosticAssessment {
     }
 }
 
-/// Run population Monte Carlo: generate `n_patients` virtual patients with
-/// lognormal inter-individual variability around the base profile, assess each,
-/// and compute where the base patient falls in the distribution.
+/// Run population Monte Carlo with published-literature defaults.
 #[must_use]
-#[expect(clippy::cast_precision_loss, reason = "patient indices fit f64")]
 pub fn population_montecarlo(
     base_profile: &PatientProfile,
     n_patients: usize,
     seed: u64,
 ) -> PopulationResult {
-    let base_assessment = assess_patient(base_profile);
+    population_montecarlo_with_config(base_profile, n_patients, seed, &DiagnosticConfig::default())
+}
+
+/// Run population Monte Carlo with custom configuration.
+#[must_use]
+#[expect(clippy::cast_precision_loss, reason = "patient indices fit f64")]
+pub fn population_montecarlo_with_config(
+    base_profile: &PatientProfile,
+    n_patients: usize,
+    seed: u64,
+    cfg: &DiagnosticConfig,
+) -> PopulationResult {
+    let base_assessment = assess_patient_with_config(base_profile, cfg);
     let base_risk = base_assessment.composite_risk;
 
     let mut rng = seed;
@@ -373,8 +559,9 @@ pub fn population_montecarlo(
         let u1_safe = u1.max(1e-10);
         let z = (-2.0 * u1_safe.ln()).sqrt() * (std::f64::consts::TAU * u2).cos();
 
-        let age_var = (profile_cv_lognormal(base_profile.age_years, 0.15, z)).max(18.0);
-        let weight_var = profile_cv_lognormal(base_profile.weight_kg, 0.20, z).max(30.0);
+        let age_var = (profile_cv_lognormal(base_profile.age_years, cfg.mc_age_cv, z)).max(18.0);
+        let weight_var =
+            profile_cv_lognormal(base_profile.weight_kg, cfg.mc_weight_cv, z).max(30.0);
 
         rng = rng.wrapping_mul(6_364_136_223_846_793_005).wrapping_add(1);
         let z2_u1 = ((rng >> 33) as f64 / (1u64 << 31) as f64).max(1e-10);
@@ -384,7 +571,7 @@ pub fn population_montecarlo(
 
         let t_var = base_profile
             .testosterone_ng_dl
-            .map(|t| profile_cv_lognormal(t, 0.30, z2).max(10.0));
+            .map(|t| profile_cv_lognormal(t, cfg.mc_testosterone_cv, z2).max(10.0));
 
         let virtual_profile = PatientProfile {
             age_years: age_var,
@@ -393,7 +580,7 @@ pub fn population_montecarlo(
             ..base_profile.clone()
         };
 
-        let assessment = assess_patient(&virtual_profile);
+        let assessment = assess_patient_with_config(&virtual_profile, cfg);
         risks.push(assessment.composite_risk);
     }
 
@@ -453,11 +640,12 @@ mod tests {
 
     #[test]
     fn pk_assessment_allometric_scaling() {
+        let cfg = DiagnosticConfig::default();
         let light = PatientProfile::minimal(40.0, 50.0, Sex::Female);
         let heavy = PatientProfile::minimal(40.0, 100.0, Sex::Male);
 
-        let pk_light = assess_pk(&light);
-        let pk_heavy = assess_pk(&heavy);
+        let pk_light = assess_pk(&light, &cfg);
+        let pk_heavy = assess_pk(&heavy, &cfg);
 
         assert!(pk_heavy.allometric_cl > pk_light.allometric_cl);
         assert!(pk_heavy.allometric_vd > pk_light.allometric_vd);
@@ -465,15 +653,16 @@ mod tests {
 
     #[test]
     fn microbiome_risk_levels() {
+        let cfg = DiagnosticConfig::default();
         let healthy = vec![0.20, 0.18, 0.15, 0.12, 0.10, 0.08, 0.07, 0.05, 0.03, 0.02];
         let dysbiotic = vec![0.90, 0.05, 0.03, 0.02];
 
         let mut p = PatientProfile::minimal(40.0, 70.0, Sex::Male);
         p.gut_abundances = Some(healthy);
-        let a1 = assess_microbiome(&p);
+        let a1 = assess_microbiome(&p, &cfg);
 
         p.gut_abundances = Some(dysbiotic);
-        let a2 = assess_microbiome(&p);
+        let a2 = assess_microbiome(&p, &cfg);
 
         assert!(a1.shannon > a2.shannon);
         assert!(a1.pielou_evenness > a2.pielou_evenness);
@@ -481,6 +670,7 @@ mod tests {
 
     #[test]
     fn trt_improves_endocrine_metrics() {
+        let cfg = DiagnosticConfig::default();
         let mut off_trt = PatientProfile::minimal(55.0, 85.0, Sex::Male);
         off_trt.testosterone_ng_dl = Some(300.0);
 
@@ -488,11 +678,35 @@ mod tests {
         on_trt.on_trt = true;
         on_trt.trt_months = 24.0;
 
-        let e_off = assess_endocrine(&off_trt);
-        let e_on = assess_endocrine(&on_trt);
+        let e_off = assess_endocrine(&off_trt, &cfg);
+        let e_on = assess_endocrine(&on_trt, &cfg);
 
         assert!(e_on.hrv_trt_sdnn > e_off.hrv_trt_sdnn);
         assert!(e_on.metabolic_response < 0.0);
+    }
+
+    #[test]
+    fn custom_config_changes_output() {
+        let p = test_profile();
+        let default_result = assess_patient(&p);
+
+        let mut custom_cfg = DiagnosticConfig::default();
+        custom_cfg.dose_mg = 8.0;
+        custom_cfg.weight_microbiome = 0.5;
+        custom_cfg.weight_biosignal = 0.2;
+        custom_cfg.weight_endocrine = 0.2;
+        custom_cfg.weight_cross_track = 0.1;
+
+        let custom_result = assess_patient_with_config(&p, &custom_cfg);
+
+        assert!(
+            custom_result.pk.oral_cmax > default_result.pk.oral_cmax,
+            "doubled dose should increase Cmax"
+        );
+        assert!(
+            (custom_result.composite_risk - default_result.composite_risk).abs() > 1e-6,
+            "different weights should change composite risk"
+        );
     }
 
     #[test]

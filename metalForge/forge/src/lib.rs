@@ -39,19 +39,43 @@ pub enum Substrate {
     Npu,
 }
 
-/// Workload categories that determine dispatch routing.
+/// Workload descriptor for capability-based dispatch.
+///
+/// Primals describe their workload semantics; metalForge maps them to
+/// the best available substrate without the caller knowing what hardware
+/// exists. The `element_count` field drives the CPU/GPU threshold decision.
 #[derive(Debug, Clone, Copy)]
 pub enum Workload {
-    /// Population PK Monte Carlo — embarrassingly parallel (GPU ideal).
+    /// Embarrassingly parallel — no inter-element dependencies (GPU ideal).
     PopulationPk { n_patients: u32 },
-    /// Hill dose-response sweep — element-wise (GPU ideal).
+    /// Element-wise sweep — independent per element (GPU ideal).
     DoseResponse { n_concentrations: u32 },
-    /// Diversity indices — fused map-reduce (GPU possible).
+    /// Fused map-reduce over a collection (GPU possible above threshold).
     DiversityIndex { n_samples: u32 },
-    /// Biosignal detection — streaming pipeline (NPU ideal).
+    /// Streaming time-series pipeline (NPU ideal, latency-critical).
     BiosignalDetect { sample_rate_hz: u32 },
     /// Small analytical computation — CPU always.
     Analytical,
+}
+
+impl Workload {
+    /// The element count that drives the GPU-offload threshold decision.
+    #[must_use]
+    pub const fn element_count(&self) -> u32 {
+        match *self {
+            Self::PopulationPk { n_patients } => n_patients,
+            Self::DoseResponse { n_concentrations } => n_concentrations,
+            Self::DiversityIndex { n_samples } => n_samples,
+            Self::BiosignalDetect { sample_rate_hz } => sample_rate_hz,
+            Self::Analytical => 0,
+        }
+    }
+
+    /// Whether this workload benefits from streaming/low-latency NPU.
+    #[must_use]
+    pub const fn prefers_npu(&self) -> bool {
+        matches!(self, Self::BiosignalDetect { .. })
+    }
 }
 
 /// Discovered GPU capabilities.
@@ -77,9 +101,33 @@ pub struct Capabilities {
     pub npu: Option<NpuInfo>,
 }
 
+/// Configurable thresholds for GPU offload decisions.
+///
+/// Below these thresholds, CPU is faster due to dispatch overhead.
+/// Callers (or biomeOS) can tune these based on profiled hardware.
+#[derive(Debug, Clone)]
+pub struct DispatchThresholds {
+    pub parallel_gpu_min: u32,
+    pub sweep_gpu_min: u32,
+    pub reduce_gpu_min: u32,
+}
+
+impl Default for DispatchThresholds {
+    fn default() -> Self {
+        Self {
+            parallel_gpu_min: 100,
+            sweep_gpu_min: 1000,
+            reduce_gpu_min: 500,
+        }
+    }
+}
+
 impl Capabilities {
-    /// Discover available compute substrates.
-    /// CPU is always available; GPU/NPU are probed at runtime.
+    /// Discover available compute substrates at runtime.
+    ///
+    /// CPU is always available. GPU discovery attempts wgpu adapter
+    /// enumeration when the `gpu` feature is enabled; otherwise returns
+    /// None. NPU discovery is feature-gated behind `npu`.
     #[must_use]
     pub fn discover() -> Self {
         Self {
@@ -89,36 +137,89 @@ impl Capabilities {
         }
     }
 
+    /// Construct with explicitly injected capabilities (for testing or
+    /// when biomeOS provides hardware topology).
+    #[must_use]
+    pub const fn with_known(gpu: Option<GpuInfo>, npu: Option<NpuInfo>) -> Self {
+        Self {
+            cpu: true,
+            gpu,
+            npu,
+        }
+    }
+
     fn probe_gpu() -> Option<GpuInfo> {
-        // Tier 1: no GPU dispatch yet. Returns None.
-        // Tier 2: will use wgpu adapter enumeration.
-        None
+        #[cfg(feature = "gpu")]
+        {
+            // wgpu adapter enumeration — runtime GPU discovery
+            let instance = wgpu::Instance::default();
+            let adapter =
+                pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
+                    power_preference: wgpu::PowerPreference::HighPerformance,
+                    ..Default::default()
+                }));
+            adapter.map(|a| {
+                let info = a.get_info();
+                GpuInfo {
+                    name: info.name.clone(),
+                    fp64_native: false,
+                    max_workgroups: a.limits().max_compute_workgroups_per_dimension,
+                }
+            })
+        }
+        #[cfg(not(feature = "gpu"))]
+        {
+            None
+        }
     }
 
     fn probe_npu() -> Option<NpuInfo> {
-        // Future: probe Akida via akida-driver.
-        None
+        #[cfg(feature = "npu")]
+        {
+            // akida-driver probe would go here
+            None
+        }
+        #[cfg(not(feature = "npu"))]
+        {
+            None
+        }
     }
 }
 
-/// Select the optimal substrate for a workload given capabilities.
+/// Select the optimal substrate for a workload using default thresholds.
 #[must_use]
 pub fn select_substrate(workload: &Workload, caps: &Capabilities) -> Substrate {
-    match workload {
-        Workload::PopulationPk { n_patients } if *n_patients > 100 && caps.gpu.is_some() => {
-            Substrate::Gpu
-        }
-        Workload::DoseResponse { n_concentrations }
-            if *n_concentrations > 1000 && caps.gpu.is_some() =>
-        {
-            Substrate::Gpu
-        }
-        Workload::DiversityIndex { n_samples } if *n_samples > 500 && caps.gpu.is_some() => {
-            Substrate::Gpu
-        }
-        Workload::BiosignalDetect { .. } if caps.npu.is_some() => Substrate::Npu,
-        _ => Substrate::Cpu,
+    select_substrate_with_thresholds(workload, caps, &DispatchThresholds::default())
+}
+
+/// Select the optimal substrate with custom dispatch thresholds.
+///
+/// biomeOS or callers can supply profiled thresholds for their specific
+/// hardware topology rather than relying on compiled-in defaults.
+#[must_use]
+pub fn select_substrate_with_thresholds(
+    workload: &Workload,
+    caps: &Capabilities,
+    thresholds: &DispatchThresholds,
+) -> Substrate {
+    if workload.prefers_npu() && caps.npu.is_some() {
+        return Substrate::Npu;
     }
+
+    if let Some(ref _gpu) = caps.gpu {
+        let n = workload.element_count();
+        let threshold = match workload {
+            Workload::PopulationPk { .. } => thresholds.parallel_gpu_min,
+            Workload::DoseResponse { .. } => thresholds.sweep_gpu_min,
+            Workload::DiversityIndex { .. } => thresholds.reduce_gpu_min,
+            Workload::BiosignalDetect { .. } | Workload::Analytical => return Substrate::Cpu,
+        };
+        if n > threshold {
+            return Substrate::Gpu;
+        }
+    }
+
+    Substrate::Cpu
 }
 
 #[cfg(test)]

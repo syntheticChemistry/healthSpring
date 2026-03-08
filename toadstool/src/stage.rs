@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Pipeline stage: a single compute operation within a pipeline.
 
+use healthspring_barracuda::gpu::GpuOp;
 use healthspring_forge::Substrate;
 
 /// A single compute stage within a pipeline.
@@ -56,6 +57,32 @@ pub struct StageResult {
 }
 
 impl Stage {
+    /// Convert this stage into a [`GpuOp`] if the operation is GPU-mappable.
+    ///
+    /// Stages that require upstream data (transforms, reductions) need `input`
+    /// to construct the `GpuOp`. Generator stages are self-contained.
+    /// Returns `None` for operations that have no GPU kernel (e.g. filter).
+    #[must_use]
+    pub fn to_gpu_op(&self, input: Option<&[f64]>) -> Option<GpuOp> {
+        match &self.operation {
+            StageOp::ElementwiseTransform {
+                kind: TransformKind::Hill { emax, ec50, n },
+            } => {
+                let concentrations = input.unwrap_or(&[]).to_vec();
+                Some(GpuOp::HillSweep {
+                    emax: *emax,
+                    ec50: *ec50,
+                    n: *n,
+                    concentrations,
+                })
+            }
+            StageOp::Generate { .. }
+            | StageOp::ElementwiseTransform { .. }
+            | StageOp::Reduce { .. }
+            | StageOp::Filter { .. } => None,
+        }
+    }
+
     /// Execute this stage on CPU.
     #[must_use]
     #[expect(clippy::cast_precision_loss)]

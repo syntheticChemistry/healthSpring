@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![expect(
+    clippy::too_many_lines,
+    reason = "validation binary — linear check sequence"
+)]
 
 //! Exp051: Population diagnostic Monte Carlo.
 //!
@@ -92,17 +96,23 @@ fn main() {
     let scenario = assessment_to_scenario(&base_assessment, "Exp051 Population Base");
     let annotated = annotate_population(scenario, &pop);
 
-    check!("annotated_node_count", annotated.nodes.len() == 8);
-    check!("annotated_edge_count", annotated.edges.len() == 9);
+    check!(
+        "annotated_node_count",
+        annotated.ecosystem.primals.len() == 8
+    );
     check!(
         "annotated_has_population_node",
-        annotated.nodes.iter().any(|n| n.id == "population")
+        annotated
+            .ecosystem
+            .primals
+            .iter()
+            .any(|n| n.id == "population")
     );
 
     let json = scenario_to_json(&annotated);
     check!("json_has_population", json.contains("population"));
-    check!("json_has_percentile", json.contains("patient_percentile"));
-    check!("json_has_mean_risk", json.contains("mean_risk"));
+    check!("json_has_percentile", json.contains("patient_value"));
+    check!("json_has_distribution", json.contains("distribution"));
 
     // --- Lighter patient should have different CL ---
     let mut light = PatientProfile::minimal(55.0, 55.0, Sex::Male);

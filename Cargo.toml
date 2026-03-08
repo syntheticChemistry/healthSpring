@@ -37,6 +37,11 @@ members = [
     "experiments/exp040_barracuda_cpu_parity",
     "experiments/exp050_diagnostic_pipeline",
     "experiments/exp051_population_diagnostic",
+    "experiments/exp052_petaltongue_render",
+    "experiments/exp053_gpu_parity",
+    "experiments/exp054_gpu_pipeline",
+    "experiments/exp055_gpu_scaling",
+    "petaltongue-health",
 ]
 
 [workspace.package]

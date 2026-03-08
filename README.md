@@ -5,7 +5,7 @@
 **Date:** March 8, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V4 — 185 unit tests (145 barraCuda + 27 forge + 13 toadStool), 24 experiments, 280 Rust binary checks, 104 cross-validation checks. 96.84% code coverage (llvm-cov). Tier 0+1 complete across all tracks. Paper queue: 24/30 complete (all queued papers done, remaining are GPU Tier 2 targets). Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**. Ecosystem: barraCuda `v0.3.3`, wetSpring V99, neuralSpring V90.
+**Status:** V6 — 200 unit tests (160 barraCuda + 27 forge + 13 toadStool), 30 experiments, 346 Rust binary checks, 104 cross-validation checks. **Tier 2 (GPU) live**: 3 WGSL shaders (Hill, PopPK, Diversity), `GpuContext` persistent device, fused unidirectional pipeline (single encoder submission), toadStool GPU dispatch. GPU crossover at 100K elements, 207 M/s peak throughput (RTX 4070). Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**. Ecosystem: barraCuda `v0.3.3`, wetSpring V99, neuralSpring V90.
 
 ---
 
@@ -29,15 +29,16 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | V4 |
-| Rust lib tests | 185 (145 barraCuda + 27 forge + 13 toadStool) |
-| Rust binary checks | 280 |
+| Version | V6 |
+| Rust lib tests | 200 (160 barraCuda + 27 forge + 13 toadStool) |
+| Rust binary checks | 346 |
 | Python control checks | 104 (cross-validation) |
-| Experiments complete | 24 (Tier 0+1) |
-| Code coverage | 96.84% (llvm-cov) |
-| GPU validation | — (Tier 2 bridge in progress) |
+| Experiments complete | 30 (Tier 0+1 + diagnostic + petalTongue + GPU) |
+| GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity checks |
+| GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s |
 | metalForge validation | 27 tests |
-| toadStool validation | 13 tests |
+| toadStool validation | 13 tests + GPU dispatch (Pipeline::execute_gpu) |
+| petalTongue prototype | Interactive egui dashboard |
 | Paper queue | 24/30 complete |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 | Unsafe blocks | 0 |
@@ -90,6 +91,18 @@ Clinical claim verification pipeline: extracting quantifiable claims from Dr. Ch
 - Testosterone–gut axis: microbiome stratification (cross-track 2×4) — Exp037
 - HRV–TRT cardiovascular (cross-track 3×4) — Exp038
 
+### Integrated Diagnostics (Exp050-052)
+
+- Integrated patient diagnostic pipeline (4 tracks + cross-track + composite risk) — Exp050
+- Population diagnostic Monte Carlo (1,000 virtual patients) — Exp051
+- petalTongue scenario schema validation (DataChannel, ClinicalRange) — Exp052
+
+### GPU Pipeline (Exp053-055)
+
+- GPU parity: WGSL shader output vs CPU baseline (Hill, PopPK, Diversity) — Exp053
+- Fused pipeline: all ops in one GPU submission, toadStool dispatch — Exp054
+- GPU scaling: 1K→10M sweep, crossover analysis, field deployment thesis — Exp055
+
 ### Validation Track (Exp040)
 
 - barraCuda CPU parity (Tier 0+1 baseline for GPU migration) — Exp040
@@ -105,7 +118,7 @@ Tier 2: Rust GPU (barraCuda WGSL shaders, math parity with CPU)
 Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 ```
 
-**Current state**: Tier 0+1 complete for 24 experiments. metalForge dispatch skeleton (Tier 3 foundation). toadStool pipeline (compute dispatch foundation). barraCuda GPU integration layer (Tier 2 bridge).
+**Current state**: Tier 0+1 complete for 24 experiments. **Tier 2 live**: 3 WGSL shaders compiled and validated (Exp053), fused unidirectional pipeline (Exp054), scaling to 10M elements (Exp055). toadStool `Pipeline::execute_gpu()` dispatches stages via `GpuContext`. metalForge substrate routing (Tier 3 foundation).
 
 ---
 
@@ -120,7 +133,12 @@ healthSpring/
 │       ├── microbiome.rs # Track 2: Shannon, Simpson, Pielou, Chao1, Anderson W, FMT
 │       ├── biosignal.rs  # Track 3: Pan-Tompkins, IIR bandpass, HRV, PPG, fusion
 │       ├── endocrine.rs  # Track 4: testosterone PK, decline, TRT outcomes, gut axis
-│       └── gpu.rs       # Tier 2: GPU integration layer
+│       ├── gpu.rs       # Tier 2: GPU dispatch + GpuContext + fused pipeline
+│       └── visualization/ # petalTongue schema (DataChannel, ClinicalRange)
+│   └── shaders/health/  # WGSL compute kernels (f64)
+│       ├── hill_dose_response_f64.wgsl
+│       ├── population_pk_f64.wgsl
+│       └── diversity_f64.wgsl
 ├── control/             # Python baselines (Tier 0) — 104 cross-validation checks
 │   ├── pkpd/            # exp001–exp006 + cross_validate.py
 │   ├── microbiome/      # exp010–exp013
@@ -151,7 +169,18 @@ healthSpring/
 │   ├── exp036_population_trt_montecarlo/
 │   ├── exp037_testosterone_gut_axis/
 │   ├── exp038_hrv_trt_cardiovascular/
-│   └── exp040_barracuda_cpu_parity/
+│   ├── exp040_barracuda_cpu_parity/
+│   ├── exp050_diagnostic_pipeline/
+│   ├── exp051_population_diagnostic/
+│   ├── exp052_petaltongue_render/
+│   ├── exp053_gpu_parity/         # Tier 2: WGSL vs CPU validation
+│   ├── exp054_gpu_pipeline/       # Fused pipeline + toadStool GPU dispatch
+│   └── exp055_gpu_scaling/        # 1K→10M scaling, crossover, field thesis
+├── petaltongue-health/   # petalTongue UI evolution prototype (egui)
+│   └── src/
+│       ├── render.rs     # Chart/gauge/topology rendering (for absorption)
+│       ├── theme.rs      # Clinical color theme
+│       └── bin/healthspring_ui.rs  # Standalone interactive dashboard
 ├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
 │       └── src/
@@ -176,19 +205,27 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 185 lib tests (barraCuda + forge + toadStool)
+cargo test --workspace                  # 200 lib tests (barraCuda + forge + toadStool)
 cargo clippy --workspace -- -D warnings # Lint — zero warnings
 cargo llvm-cov report --workspace      # 96.84% coverage
 
-# Full validation (all 24 experiments + Python cross-checks)
+# Full validation (all experiments + Python cross-checks)
 cargo build --workspace --release
 # Run each exp* binary (see .github/workflows/ci.yml validate job), then:
 python3 control/pkpd/cross_validate.py
 
 # Run individual validation binaries
-cargo run --bin exp030_testosterone_im_pk
-cargo run --bin exp036_population_trt_montecarlo
-cargo run --bin exp037_testosterone_gut_axis
+cargo run --bin exp050_diagnostic_pipeline
+cargo run --bin exp051_population_diagnostic
+cargo run --bin exp052_petaltongue_render
+
+# GPU experiments (requires GPU)
+cargo run --release --bin exp053_gpu_parity    # 17 parity checks
+cargo run --release --bin exp054_gpu_pipeline  # Fused pipeline + toadStool
+cargo run --release --bin exp055_gpu_scaling   # 1K→10M scaling benchmark
+
+# Interactive diagnostic UI prototype
+cargo run -p petaltongue-health --bin healthspring-ui
 
 # Python controls
 python3 control/endocrine/exp030_testosterone_im_pk.py

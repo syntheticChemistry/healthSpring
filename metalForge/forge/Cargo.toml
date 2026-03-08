@@ -8,6 +8,11 @@ rust-version.workspace = true
 license.workspace = true
 description = "metalForge dispatch validation for healthSpring"
 
+[features]
+default = []
+gpu = []
+npu = []
+
 [dependencies]
 healthspring-barracuda = { path = "../../barracuda" }
 

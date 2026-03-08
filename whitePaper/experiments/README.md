@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V4 — 24 experiments complete (Tier 0+1), 185 Rust unit tests, 280 binary checks, 104 cross-validation checks, 96.84% coverage
+**Status**: V6 — 30 experiments (Tier 0+1 + diagnostic + petalTongue + GPU pipeline), 200 Rust unit tests, 346 binary checks, 104 cross-validation checks
 **Last Updated**: March 8, 2026
 
 ---
@@ -52,11 +52,27 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 037 | Testosterone–gut axis: microbiome stratification | Cross-track 2×4 hypothesis | 0,1 | 12 | 10 |
 | 038 | HRV × TRT cardiovascular (cross-track D3) | Kleiger 1987 / Mok Ch. 6 | 0,1 | 10 | 10 |
 
+### Integrated Diagnostics
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 050 | Integrated diagnostic pipeline (4 tracks + cross-track) | Physiological ranges | 1 | — | 35 |
+| 051 | Population diagnostic Monte Carlo (1000 patients) | Statistical validation | 1 | — | 21 |
+| 052 | petalTongue scenario schema validation | JSON round-trip | 1 | — | 31 |
+
 ### Validation
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
 |-----|------|---------|:-----:|:------:|:-----------:|
 | 040 | barraCuda CPU parity (15 analytical contracts) | Analytical identities | 0,1 | 15 | 15 |
+
+### GPU Pipeline (Tier 2)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 053 | GPU parity: WGSL shaders vs CPU (Hill, PopPK, Diversity) | CPU reference | 2 | — | 17 checks |
+| 054 | Fused pipeline: single encoder + toadStool GPU dispatch | Individual dispatch | 2,3 | — | 11 checks |
+| 055 | GPU scaling: 1K→10M sweep, crossover, field deployment | CPU baseline | 2 | — | Benchmark |
 
 ### Cross-Validation
 
@@ -93,7 +109,13 @@ experiments/
 ├── exp036_population_trt_montecarlo/
 ├── exp037_testosterone_gut_axis/
 ├── exp038_hrv_trt_cardiovascular/
-└── exp040_barracuda_cpu_parity/
+├── exp040_barracuda_cpu_parity/
+├── exp050_diagnostic_pipeline/
+├── exp051_population_diagnostic/
+├── exp052_petaltongue_render/
+├── exp053_gpu_parity/
+├── exp054_gpu_pipeline/
+└── exp055_gpu_scaling/
 ```
 
 Controls live in `control/`:
@@ -140,7 +162,9 @@ control/
 - **020–029**: Track 3 (Biosignal)
 - **030–039**: Track 4 (Endocrinology)
 - **040–049**: Validation and parity
-- **050+**: Extensions and cross-spring validations
+- **050–052**: Integrated diagnostics and visualization
+- **053–059**: GPU pipeline (Tier 2) and scaling
+- **060+**: Extensions and cross-spring validations
 
 ---
 

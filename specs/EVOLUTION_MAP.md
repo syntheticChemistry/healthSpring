@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 8, 2026
-**Status**: Tier 0+1 complete. GPU dispatch layer built (`gpu.rs`). No WGSL shaders executed yet.
+**Status**: V5. Tier 0+1 complete. GPU dispatch layer built (`gpu.rs`). petalTongue evolution prototypes built. No WGSL shaders executed yet.
 
 ---
 
@@ -101,6 +101,43 @@ Exp040 validates analytical CPU parity (15 contracts) between direct function ca
 | Exp020 Pan-Tompkins | — | Offline analysis | Real-time ECG (Akida) |
 | Exp023 Biosignal fusion | — | Multi-channel offline | Streaming 3-channel (Akida) |
 | Exp006 PBPK | 10K patients × tissues | Single patient | — |
+
+---
+
+## petalTongue Evolution (V5 — healthSpring Driving)
+
+healthSpring now drives petalTongue's evolution from topology viewer to universal data UI.
+
+### Schema Extensions (Built in healthSpring, Pending Absorption)
+
+| Extension | Location | Purpose | Status |
+|-----------|----------|---------|--------|
+| `DataChannel` enum | `visualization/types.rs` | Typed data channels: TimeSeries, Distribution, Bar, Gauge | Built + validated |
+| `ClinicalRange` | `visualization/types.rs` | Normal/warning/critical threshold coloring | Built |
+| Enhanced node fields | `visualization/nodes.rs` | `family`, `status`, `confidence`, `capabilities` | Built |
+| Full PK curves | `diagnostic.rs` | 101-point concentration-time curves | Built |
+| Hill dose-response sweep | `diagnostic.rs` | 50-point Hill curves | Built |
+| RR tachogram | `diagnostic.rs` | Beat-by-beat RR intervals from ECG | Built |
+| Gut abundances | `diagnostic.rs` | Genus-level relative abundance bars | Built |
+| Population distribution | `diagnostic.rs` | 1000-patient Monte Carlo risk histogram | Built |
+
+### Rendering Prototypes (Built, Ready for Absorption)
+
+| Renderer | Widget | Location |
+|----------|--------|----------|
+| Time-series chart | `egui_plot::Line` | `petaltongue-health/src/render.rs` |
+| Distribution histogram | `egui_plot::BarChart` + VLine | `render.rs` |
+| Bar chart | `egui_plot::BarChart` | `render.rs` |
+| Gauge widget | Custom painter | `render.rs` |
+| Node topology | Custom painter + click | `render.rs` |
+| Detail panel | ScrollArea + all channels | `render.rs` |
+| Clinical theme | Color constants | `theme.rs` |
+
+### petalTongue Bugs (Blocking Absorption)
+
+1. `DynamicData` version field: expects `{major, minor, patch}`, JSON has `"2.0.0"` string
+2. `add_node` ignores scenario positions — always `(0, 0)`
+3. ~96 clippy warnings masking potential issues
 
 ---
 
