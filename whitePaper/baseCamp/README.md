@@ -3,7 +3,7 @@
 Faculty-linked sub-theses documenting how healthSpring extends validated science into human health applications.
 
 **Last Updated:** March 9, 2026
-**Status:** V6.1 — 4 tracks + diagnostics + GPU pipeline, 30 experiments (201 unit tests, 371 binary checks, 104 cross-validation checks). Tier 2 GPU live. petalTongue absorption complete, healthSpring leaned.
+**Status:** V7 — 4 tracks + diagnostics + GPU pipeline + visualization, 31 experiments (201 unit tests, 418 binary checks, 104 cross-validation checks). Tier 2 GPU live. Full petalTongue visualization: 22 nodes, 62 data channels, 13 clinical ranges across all tracks.
 
 ---
 

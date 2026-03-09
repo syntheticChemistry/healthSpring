@@ -1,7 +1,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 9, 2026
-**Status**: V6.1 — 30 experiments, 161 Rust tests, 371 binary checks, 104 cross-validation checks. GPU Tier 2 live. petalTongue absorption complete, healthSpring leaned.
+**Status**: V7 — 31 experiments, 201 Rust tests, 418 binary checks, 104 cross-validation checks. GPU Tier 2 live. Full petalTongue visualization: 4 per-track scenario builders, 22 nodes, 62 data channels.
 **Domain**: Human health applications — PK/PD, gut microbiome, biosignal, endocrinology
 
 ---
@@ -12,8 +12,8 @@
 |--------|-------|
 | Rust lib tests | 201 (161 barraCuda + 27 forge + 13 toadStool) |
 | Python control checks | 104 (cross-validation) |
-| Rust binary checks | 371 |
-| Experiments | 30 (24 Tier 0+1 + 3 diagnostic + 3 GPU) |
+| Rust binary checks | 418 (371 + 47 scenario) |
+| Experiments | 31 (24 Tier 0+1 + 3 diagnostic + 3 GPU + 1 visualization) |
 | GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity |
 | metalForge validation (Tier 3) | 27 tests (substrate routing) |
 | Paper queue | 24/30 complete |

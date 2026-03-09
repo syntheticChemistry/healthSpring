@@ -41,6 +41,7 @@ members = [
     "experiments/exp053_gpu_parity",
     "experiments/exp054_gpu_pipeline",
     "experiments/exp055_gpu_scaling",
+    "experiments/exp056_study_scenarios",
 ]
 
 [workspace.package]

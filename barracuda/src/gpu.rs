@@ -17,6 +17,7 @@ use crate::microbiome;
 use crate::pkpd;
 
 /// Workgroup size used in Hill and `PopPK` shaders. Must match `@workgroup_size(N)`.
+#[cfg(feature = "gpu")]
 const WG_SIZE: u32 = 256;
 
 /// WGSL shader sources — compiled into the binary.

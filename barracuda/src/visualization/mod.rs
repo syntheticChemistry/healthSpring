@@ -8,6 +8,7 @@
 //!    these extensions to evolve from topology viewer to universal data UI.
 
 mod nodes;
+pub mod scenarios;
 mod types;
 
 pub use types::*;

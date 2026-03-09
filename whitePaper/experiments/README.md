@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V6 — 30 experiments (Tier 0+1 + diagnostic + petalTongue + GPU pipeline), 200 Rust unit tests, 346 binary checks, 104 cross-validation checks
-**Last Updated**: March 8, 2026
+**Status**: V7 — 31 experiments (Tier 0+1 + diagnostic + petalTongue + GPU pipeline + visualization), 201 Rust unit tests, 418 binary checks, 104 cross-validation checks
+**Last Updated**: March 9, 2026
 
 ---
 
@@ -115,7 +115,8 @@ experiments/
 ├── exp052_petaltongue_render/
 ├── exp053_gpu_parity/
 ├── exp054_gpu_pipeline/
-└── exp055_gpu_scaling/
+├── exp055_gpu_scaling/
+└── exp056_study_scenarios/   # V7: Full petalTongue visualization for all 4 tracks
 ```
 
 Controls live in `control/`:

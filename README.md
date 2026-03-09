@@ -5,7 +5,7 @@
 **Date:** March 9, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V6.1 — 201 unit tests (161 barraCuda + 27 forge + 13 toadStool), 30 experiments, 371 Rust binary checks, 104 cross-validation checks. **Tier 2 (GPU) live**: 3 WGSL shaders (Hill, PopPK, Diversity), `GpuContext` persistent device, fused unidirectional pipeline, toadStool GPU dispatch. **petalTongue absorption complete**: DataChannel, ClinicalRange, renderers, clinical theme absorbed upstream; `petaltongue-health` crate removed (lean phase). Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**.
+**Status:** V7 — 201 unit tests (161 barraCuda + 27 forge + 13 toadStool), 31 experiments, 418 Rust binary checks, 104 cross-validation checks. **Full petalTongue visualization**: per-track scenario builders for all 4 tracks (22 nodes, 62 data channels, 13 clinical ranges). Tier 2 GPU live. petalTongue absorption complete. Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**.
 
 ---
 
