@@ -26,4 +26,5 @@ pub mod endocrine;
 pub mod gpu;
 pub mod microbiome;
 pub mod pkpd;
+pub mod rng;
 pub mod visualization;

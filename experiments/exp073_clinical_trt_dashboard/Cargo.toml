@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp073"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Live TRT clinical dashboard: streams PK curves, population comparison, and outcome gauges to petalTongue"
+
+[[bin]]
+name = "exp073_clinical_trt_dashboard"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+serde_json = "1"

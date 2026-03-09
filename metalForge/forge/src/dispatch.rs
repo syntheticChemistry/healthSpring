@@ -192,10 +192,22 @@ mod tests {
         let tower = test_tower();
 
         let workloads = vec![
-            (0, Workload::DoseResponse { n_concentrations: 5000 }, 40_000),
+            (
+                0,
+                Workload::DoseResponse {
+                    n_concentrations: 5000,
+                },
+                40_000,
+            ),
             (1, Workload::PopulationPk { n_patients: 10_000 }, 80_000),
             (2, Workload::DiversityIndex { n_samples: 1000 }, 16_000),
-            (3, Workload::BiosignalDetect { sample_rate_hz: 256 }, 2048),
+            (
+                3,
+                Workload::BiosignalDetect {
+                    sample_rate_hz: 256,
+                },
+                2048,
+            ),
             (4, Workload::EndocrinePk { n_timepoints: 100 }, 800),
         ];
 
@@ -215,8 +227,20 @@ mod tests {
         let tower = test_tower();
 
         let workloads = vec![
-            (0, Workload::DoseResponse { n_concentrations: 5000 }, 40_000),
-            (1, Workload::BiosignalDetect { sample_rate_hz: 256 }, 2048),
+            (
+                0,
+                Workload::DoseResponse {
+                    n_concentrations: 5000,
+                },
+                40_000,
+            ),
+            (
+                1,
+                Workload::BiosignalDetect {
+                    sample_rate_hz: 256,
+                },
+                2048,
+            ),
             (2, Workload::EndocrinePk { n_timepoints: 100 }, 800),
         ];
 
@@ -231,7 +255,13 @@ mod tests {
         let tower = test_tower();
 
         let workloads = vec![
-            (0, Workload::DoseResponse { n_concentrations: 5000 }, 40_000),
+            (
+                0,
+                Workload::DoseResponse {
+                    n_concentrations: 5000,
+                },
+                40_000,
+            ),
             (1, Workload::PopulationPk { n_patients: 10_000 }, 80_000),
         ];
 
@@ -246,16 +276,25 @@ mod tests {
         let tower = test_tower();
 
         let workloads = vec![
-            (0, Workload::DoseResponse { n_concentrations: 5000 }, 40_000),
-            (1, Workload::BiosignalDetect { sample_rate_hz: 256 }, 2048),
+            (
+                0,
+                Workload::DoseResponse {
+                    n_concentrations: 5000,
+                },
+                40_000,
+            ),
+            (
+                1,
+                Workload::BiosignalDetect {
+                    sample_rate_hz: 256,
+                },
+                2048,
+            ),
         ];
 
         let plan = plan_dispatch(&workloads, &caps, &tower);
         let transfer = plan.assignments[1].transfer.as_ref().unwrap();
-        assert_eq!(
-            transfer.method,
-            crate::transfer::TransferMethod::PcieP2p,
-        );
+        assert_eq!(transfer.method, crate::transfer::TransferMethod::PcieP2p,);
     }
 
     #[test]
@@ -264,9 +303,21 @@ mod tests {
         let tower = test_tower();
 
         let workloads = vec![
-            (0, Workload::DoseResponse { n_concentrations: 5000 }, 40_000),
+            (
+                0,
+                Workload::DoseResponse {
+                    n_concentrations: 5000,
+                },
+                40_000,
+            ),
             (1, Workload::PopulationPk { n_patients: 10_000 }, 80_000),
-            (2, Workload::BiosignalDetect { sample_rate_hz: 256 }, 2048),
+            (
+                2,
+                Workload::BiosignalDetect {
+                    sample_rate_hz: 256,
+                },
+                2048,
+            ),
             (3, Workload::EndocrinePk { n_timepoints: 100 }, 800),
         ];
 
@@ -281,8 +332,20 @@ mod tests {
         let tower = test_tower();
 
         let workloads = vec![
-            (0, Workload::DoseResponse { n_concentrations: 5000 }, 40_000),
-            (1, Workload::BiosignalDetect { sample_rate_hz: 256 }, 2048),
+            (
+                0,
+                Workload::DoseResponse {
+                    n_concentrations: 5000,
+                },
+                40_000,
+            ),
+            (
+                1,
+                Workload::BiosignalDetect {
+                    sample_rate_hz: 256,
+                },
+                2048,
+            ),
             (2, Workload::EndocrinePk { n_timepoints: 100 }, 800),
         ];
 

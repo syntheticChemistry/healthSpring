@@ -34,7 +34,10 @@ fn main() {
 
     check!("pkpd scenario built", scenario.ecosystem.primals.len() == 6);
     check!("pkpd has edges", edges.len() == 5);
-    check!("JSON valid", serde_json::from_str::<serde_json::Value>(&json).is_ok());
+    check!(
+        "JSON valid",
+        serde_json::from_str::<serde_json::Value>(&json).is_ok()
+    );
 
     // Try IPC push
     match PetalTonguePushClient::discover() {
@@ -43,13 +46,11 @@ fn main() {
             match client.push_render(session_id, &scenario.name, &scenario) {
                 Ok(()) => {
                     check!("IPC push succeeded", true);
-                    println!("  Pushed to petalTongue session '{}'", session_id);
+                    println!("  Pushed to petalTongue session '{session_id}'");
                 }
                 Err(e) => {
-                    check!(
-                        &format!("IPC push failed: {e}"),
-                        false
-                    );
+                    checks += 1;
+                    println!("  [FAIL] IPC push failed: {e}");
                 }
             }
         }
@@ -72,5 +73,5 @@ fn main() {
 
     println!("\n====================================");
     println!("Exp064 IPC Push: {pass}/{checks} checks passed");
-    assert_eq!(pass, checks, "some checks failed");
+    std::process::exit(i32::from(pass != checks));
 }

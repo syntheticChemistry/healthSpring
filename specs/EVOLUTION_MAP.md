@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 9, 2026
-**Status**: V9. Tier 0+1+2+3 complete. 3 WGSL shaders live (Hill, PopPK, Diversity). CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS (22/22). PCIe P2P transfer (26/26). DispatchPlan wires topology to pipeline. Patient-parameterized clinical TRT scenarios (5 archetypes). petalTongue SAME DAVE motor channel + IPC bridge. 221 tests, 526+ binary checks.
+**Status**: V13. Tier 0+1+2+3 complete. Deep audit: Anderson eigensolver (QL algorithm), smart clinical.rs refactor (1177→374+819), LCG PRNG centralization, math deduplication, capability-based Songbird discovery, 4 doc-tests. 3 WGSL shaders live (Hill, PopPK, Diversity). CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS (22/22). PCIe P2P transfer (26/26). Patient-parameterized clinical TRT (5 archetypes, live dashboard). petalTongue: 7-type DataChannel, full stream ops, domain theming, capabilities query, interaction subscription. 317 tests, 630 binary checks across 47 experiments.
 
 ---
 
@@ -47,7 +47,7 @@ Python baseline → Rust CPU (Tier 1) → barraCuda CPU parity (Exp040)
 
 ---
 
-## GPU Dispatch Layer (`barracuda/src/gpu.rs`) — LIVE (V6+)
+## GPU Dispatch Layer (`barracuda/src/gpu/`) — LIVE (V6+)
 
 `GpuContext` holds persistent `wgpu::Device`/`Queue`. `execute_fused()` dispatches multiple ops in a single encoder submission.
 
@@ -118,20 +118,30 @@ petalTongue absorbed all healthSpring prototypes (commit `037caaa`). healthSprin
 | Clinical theme | ~~petaltongue-health/theme.rs~~ (removed) | `petal-tongue-graph/clinical_theme.rs` | **Absorbed** |
 | Version parsing fix | N/A | `dynamic_schema.rs` | **Fixed** |
 
-### Per-Track Scenario Builders (V7)
+### Per-Track Scenario Builders (V7 → V10)
 
-| Track | Builder | Nodes | Channels | Experiments |
-|-------|---------|-------|----------|-------------|
-| PK/PD | `scenarios::pkpd_study()` | 6 | 18 | Exp001-006 |
-| Microbiome | `scenarios::microbiome_study()` | 4 | 10 | Exp010-013 |
-| Biosignal | `scenarios::biosignal_study()` | 4 | 15 | Exp020-023 |
-| Endocrinology | `scenarios::endocrine_study()` | 8 | 19 | Exp030-038 |
-| Full Study | `scenarios::full_study()` | 22 | 62 | All 4 tracks |
-| Diagnostic | `full_scenario_json()` | 8 | 12 | Exp050 |
+| Track | Builder | Nodes | Channels | New in V10 | Experiments |
+|-------|---------|-------|----------|------------|-------------|
+| PK/PD | `scenarios::pkpd_study()` | 6 | 19 | `Scatter3D` (PopPK CL/Vd/AUC) | Exp001-006 |
+| Microbiome | `scenarios::microbiome_study()` | 4 | 11 | `Heatmap` (Bray-Curtis matrix) | Exp010-013 |
+| Biosignal | `scenarios::biosignal_study()` | 4 | 16 | `Spectrum` (HRV power spectrum) | Exp020-023 |
+| Endocrinology | `scenarios::endocrine_study()` | 8 | 19 | — | Exp030-038 |
+| Full Study | `scenarios::full_study()` | 22 | 65 | All 3 new types | All 4 tracks |
+| Diagnostic | `full_scenario_json()` | 8 | 12 | — | Exp050 |
+
+### V10: Node Positions Optional
+
+Node positions (`ScenarioNode.position`) changed from `Position { x, y }` to `Option<Position>`, defaulting to `None`. petalTongue handles graph layout via its force-directed layout engine. Hardcoded coordinates removed from all scenario builders.
+
+### V10: Streaming + Capability Discovery
+
+- `StreamSession` (`visualization/stream.rs`): backpressure-aware session manager for live data push to petalTongue.
+- `capabilities` (`visualization/capabilities.rs`): Songbird capability announcement (20 `health.*` capabilities) and discovery protocol.
+- `Exp065`: Live dashboard streamer pushing ECG, HRV, and PK data in real-time.
 
 ### Live + Storable Visualization (V7.1)
 
-`dump_scenarios` binary writes 6 petalTongue-compatible JSON files to `sandbox/scenarios/`. Local petalTongue evolution (3 non-invasive changes) wires `PrimalDefinition.data_channels` through `PrimalInfo.properties` to `draw_node_detail()`. Loading `healthspring-full-study.json` renders 22-node topology with 62 data channels and 13 clinical ranges on node click.
+`dump_scenarios` binary writes 6 petalTongue-compatible JSON files to `sandbox/scenarios/`. Local petalTongue evolution (3 non-invasive changes) wires `PrimalDefinition.data_channels` through `PrimalInfo.properties` to `draw_node_detail()`. Loading `healthspring-full-study.json` renders 22-node topology with 65 data channels and 13 clinical ranges on node click.
 
 | Local petalTongue Change | File | Effect |
 |--------------------------|------|--------|
@@ -161,3 +171,35 @@ All previous blocking items resolved:
 - **toadStool**: `StageOp::PopulationPk` + `StageOp::DiversityReduce` → GPU-native dispatch
 - **metalForge**: `dispatch.rs` module with `plan_dispatch()`, `StageAssignment`, `DispatchPlan`
 - **Workload**: Added `BiosignalFusion` and `EndocrinePk` variants for NPU and CPU routing
+
+### V11 additions
+
+- **Exp072**: Compute dashboard — `toadStool::execute_streaming()` wired to `petalTongue::StreamSession` for live per-stage progress gauges, timing bar charts, and NUCLEUS topology visualization (8/8)
+- **`dump_scenarios`**: Extended to 8 scenarios (6 clinical + topology + dispatch) with topology/dispatch JSON artifacts
+- **`topology.rs`**: NUCLEUS topology + dispatch plan scenario builders for petalTongue (tower/node/nest hierarchy, `PCIe` edges, stage assignment bar charts)
+- **`compute_dashboard.sh`**: Now includes exp072 in orchestration sequence
+
+### V12 additions
+
+- **petalTongue stream completeness**: Added `replace` stream operation to `ipc_push.rs` and `StreamSession` — enables live updates to all 7 channel types (Heatmap, Bar, Scatter3D, Distribution, Spectrum, TimeSeries, Gauge)
+- **Domain theming + protocol alignment**: `push_render_with_config()` passes `UiConfig` (panel visibility, zoom, theme) and explicit `domain` field to petalTongue. IPC response buffer increased from 4KB to 64KB for large capability responses
+- **Clinical TRT archetypes**: 5 patient-parameterized TRT scenarios (young hypogonadal, obese diabetic, senior sarcopenic, former athlete, metabolic syndrome) wired into `dump_scenarios` (13 total)
+- **Exp073**: Live TRT clinical dashboard — streams weekly PK troughs, HRV improvement, HbA1c trajectory, and cardiac risk comparison via `StreamSession` with `replace` for Bar channels (7/7)
+- **Interaction roundtrip**: `query_capabilities()` and `subscribe_interactions()` on both `PetalTonguePushClient` and `StreamSession` — enables bidirectional clinician↔healthSpring flow
+- **Exp074**: Interaction roundtrip validation with mock petalTongue — tests render, append, replace, gauge, HRV, capabilities, and subscribe (12/12)
+- **PBPK tissue profiles**: `pbpk_iv_tissue_profiles()` returns per-tissue concentration TimeSeries; PBPK scenario node now has 5 tissue concentration curves
+- **Pan-Tompkins intermediates**: QRS detection node now includes derivative, squared, and MWI (moving window integration) TimeSeries — 5 processing stages visible
+- **Anderson lattice spectra**: Eigenvalue spectrum and per-eigenstate IPR spectrum added to microbiome Anderson node
+
+### V13 additions (deep audit)
+
+- **Anderson eigensolver**: Implemented tridiagonal QL algorithm (`anderson_diagonalize` in `microbiome.rs`) for correct eigenvalue/eigenvector computation. Fixed IPR bug in `diagnostic.rs` and `scenarios/microbiome.rs` — was using Hamiltonian diagonal instead of true eigenvectors
+- **Smart clinical.rs refactor**: 1177 → 374 + 819 lines. Extracted 8 node-building functions to `clinical_nodes.rs` by domain responsibility
+- **LCG PRNG centralization**: New `rng.rs` module (37 lines) with `LCG_MULTIPLIER`, `lcg_step()`, `state_to_f64()`. Replaced hardcoded constant in `diagnostic.rs`, `gpu/mod.rs`, `biosignal.rs`, `toadstool/stage.rs`
+- **Math deduplication**: `endocrine::evenness_to_disorder` → delegates to `microbiome::evenness_to_disorder`. `endocrine::lognormal_params` → delegates to `pkpd::LognormalParam::to_normal_params()`
+- **Capability-based discovery**: `capabilities.rs` uses glob-based Songbird socket search instead of hardcoded `/tmp/songbird.sock`
+- **Flaky IPC test fix**: `AtomicU64` unique socket paths + refactored test harness eliminates race conditions
+- **Doc-tests**: 4 added (`shannon_index`, `hill_dose_response`, `auc_trapezoidal`, `state_to_f64`)
+- **Tolerance registry**: Added `exp067` and `exp069` CPU parity class entries at `1e-10`
+- **gpu.rs → gpu/**: Module split to `gpu/mod.rs`, `gpu/dispatch.rs`, `gpu/context.rs`
+- **scenarios.rs → scenarios/**: Module split to `scenarios/mod.rs`, `scenarios/{biosignal,endocrine,microbiome,pkpd,topology}.rs`

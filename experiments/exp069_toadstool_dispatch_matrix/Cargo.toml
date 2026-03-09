@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp069"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Exp069: toadStool dispatch matrix — all stage types x CPU validation"
+
+[dependencies]
+healthspring-toadstool = { path = "../../toadstool" }
+healthspring-forge = { path = "../../metalForge/forge" }
+
+[[bin]]
+name = "exp069_toadstool_dispatch_matrix"
+path = "src/main.rs"

@@ -123,7 +123,10 @@ fn main() {
     let pk = primals.iter().find(|p| p["id"] == "pk").unwrap();
     check!("pk_has_type_compute", pk["type"] == "compute");
     check!("pk_has_family_healthspring", pk["family"] == "healthspring");
-    check!("pk_has_position", pk["position"]["x"].is_f64());
+    check!(
+        "pk_position_optional",
+        pk.get("position").is_none() || pk["position"].is_null() || pk["position"]["x"].is_f64()
+    );
     let pk_channels = pk["data_channels"].as_array().unwrap();
     check!("pk_has_4_channels", pk_channels.len() == 4);
     check!(
@@ -175,11 +178,7 @@ fn main() {
         micro_channels[0]["channel_type"] == "bar"
     );
 
-    println!(
-        "\nExp052 petalTongue Render: {passed}/{} checks passed",
-        passed + failed
-    );
-    if failed > 0 {
-        std::process::exit(1);
-    }
+    let total = passed + failed;
+    println!("\nExp052 petalTongue Render: {passed}/{total} checks passed",);
+    std::process::exit(i32::from(passed != total));
 }

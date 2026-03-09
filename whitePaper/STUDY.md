@@ -1,7 +1,7 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.1 (scaffold)
-**Date**: March 8, 2026
+**Version**: 0.2
+**Date**: March 9, 2026
 
 ---
 
@@ -105,11 +105,11 @@ Same four-tier protocol as all ecoPrimals springs:
 
 ## References
 
-- wetSpring V99: 8,886+ checks, 52 papers, Anderson lattice validated
+- wetSpring V101: 9,060+ checks, Anderson lattice validated
 - neuralSpring V90: 4,100+ checks, nS-601–605 PK/PD modeling
 - groundSpring V100: 824+ checks, uncertainty quantification
-- airSpring v0.7.1: 2,591+ checks, CytokineBrain
-- hotSpring: 697+ checks, lattice methods
+- airSpring v0.7.5: CytokineBrain
+- hotSpring v0.6.17+: lattice methods
 - Ferrocene IEC 62304: https://ferrous-systems.com/ferrocene/
 - Jenior et al. 2021: doi:10.1371/journal.pcbi.1008782
 - McGill et al. 2025: Cell Host & Microbe

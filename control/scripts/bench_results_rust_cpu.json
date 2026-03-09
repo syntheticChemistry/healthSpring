@@ -1,0 +1,68 @@
+{
+  "tier": "rust_cpu",
+  "benchmarks": [
+    {
+      "name": "hill_sweep_50",
+      "n_iterations": 100,
+      "mean_us": 1.0637499999999986,
+      "min_us": 0.976,
+      "max_us": 9.267,
+      "p50_us": 0.98,
+      "p95_us": 0.984
+    },
+    {
+      "name": "hill_sweep_10K",
+      "n_iterations": 100,
+      "mean_us": 100.54227,
+      "min_us": 81.824,
+      "max_us": 307.968,
+      "p50_us": 82.343,
+      "p95_us": 186.598
+    },
+    {
+      "name": "pk_curve_101_points",
+      "n_iterations": 100,
+      "mean_us": 0.7020700000000005,
+      "min_us": 0.689,
+      "max_us": 0.887,
+      "p50_us": 0.7,
+      "p95_us": 0.708
+    },
+    {
+      "name": "diversity_indices_7_genera",
+      "n_iterations": 100,
+      "mean_us": 0.06769000000000008,
+      "min_us": 0.062,
+      "max_us": 0.461,
+      "p50_us": 0.063,
+      "p95_us": 0.065
+    },
+    {
+      "name": "auc_trapezoidal_101_points",
+      "n_iterations": 100,
+      "mean_us": 0.05513999999999996,
+      "min_us": 0.052,
+      "max_us": 0.187,
+      "p50_us": 0.054,
+      "p95_us": 0.055
+    },
+    {
+      "name": "population_montecarlo_500",
+      "n_iterations": 10,
+      "mean_us": 500.3245,
+      "min_us": 397.708,
+      "max_us": 682.659,
+      "p50_us": 401.673,
+      "p95_us": 682.659
+    },
+    {
+      "name": "population_montecarlo_5000",
+      "n_iterations": 5,
+      "mean_us": 4413.9784,
+      "min_us": 3942.827,
+      "max_us": 6252.446,
+      "p50_us": 3957.419,
+      "p95_us": 6252.446
+    }
+  ]
+}

@@ -1,0 +1,500 @@
+{
+  "name": "Mixed Clinical Pipeline — Execution",
+  "description": "Dispatch plan — stage assignments and timing across heterogeneous hardware",
+  "version": "2.0.0",
+  "mode": "live-ecosystem",
+  "sensory_config": {
+    "required_capabilities": {
+      "outputs": [
+        "visual"
+      ],
+      "inputs": []
+    },
+    "optional_capabilities": {
+      "outputs": [
+        "audio"
+      ],
+      "inputs": [
+        "pointer",
+        "keyboard"
+      ]
+    },
+    "complexity_hint": "standard"
+  },
+  "ui_config": {
+    "theme": "benchtop-dark",
+    "animations": {
+      "enabled": true,
+      "breathing_nodes": true,
+      "connection_pulses": true,
+      "smooth_transitions": true,
+      "celebration_effects": false
+    },
+    "performance": {
+      "target_fps": 60,
+      "vsync": true,
+      "hardware_acceleration": true
+    }
+  },
+  "ecosystem": {
+    "primals": [
+      {
+        "id": "dispatch_summary",
+        "name": "Dispatch Plan",
+        "type": "orchestrator",
+        "family": "healthspring",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 95,
+        "capabilities": [
+          "compute.dispatch"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "bar",
+            "id": "stage_timing",
+            "label": "Stage Timing",
+            "categories": [
+              "ECG Fusion (NPU)",
+              "Hill Dose-Response (GPU)",
+              "Hill Transform",
+              "Population PK (GPU)",
+              "AUC Trapezoidal",
+              "Diversity + Bray-Curtis",
+              "Diagnostic Reduce (CPU)"
+            ],
+            "values": [
+              0.0,
+              1.0,
+              18.0,
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "unit": "μs"
+          }
+        ]
+      },
+      {
+        "id": "stage_0",
+        "name": "ECG Fusion (NPU)",
+        "type": "npu",
+        "family": "healthspring",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 95,
+        "capabilities": [
+          "compute.execute"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "stage_0_time",
+            "label": "Time",
+            "value": 0.0,
+            "min": 0.0,
+            "max": 27.0,
+            "unit": "μs",
+            "normal_range": [
+              0.0,
+              0.0
+            ],
+            "warning_range": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "stage_0_elements",
+            "label": "Output Elements",
+            "value": 0.0,
+            "min": 0.0,
+            "max": 1.0,
+            "unit": "elements",
+            "normal_range": [
+              0.0,
+              0.0
+            ],
+            "warning_range": [
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stage_1",
+        "name": "Hill Dose-Response (GPU)",
+        "type": "gpu",
+        "family": "healthspring",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 95,
+        "capabilities": [
+          "compute.execute"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "stage_1_time",
+            "label": "Time",
+            "value": 1.0,
+            "min": 0.0,
+            "max": 27.0,
+            "unit": "μs",
+            "normal_range": [
+              0.0,
+              2.0
+            ],
+            "warning_range": [
+              2.0,
+              5.0
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "stage_1_elements",
+            "label": "Output Elements",
+            "value": 500.0,
+            "min": 0.0,
+            "max": 1000.0,
+            "unit": "elements",
+            "normal_range": [
+              0.0,
+              750.0
+            ],
+            "warning_range": [
+              750.0,
+              1500.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stage_2",
+        "name": "Hill Transform",
+        "type": "cpu",
+        "family": "healthspring",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 95,
+        "capabilities": [
+          "compute.execute"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "stage_2_time",
+            "label": "Time",
+            "value": 18.0,
+            "min": 0.0,
+            "max": 27.0,
+            "unit": "μs",
+            "normal_range": [
+              0.0,
+              36.0
+            ],
+            "warning_range": [
+              36.0,
+              90.0
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "stage_2_elements",
+            "label": "Output Elements",
+            "value": 500.0,
+            "min": 0.0,
+            "max": 1000.0,
+            "unit": "elements",
+            "normal_range": [
+              0.0,
+              750.0
+            ],
+            "warning_range": [
+              750.0,
+              1500.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stage_3",
+        "name": "Population PK (GPU)",
+        "type": "gpu",
+        "family": "healthspring",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 95,
+        "capabilities": [
+          "compute.execute"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "stage_3_time",
+            "label": "Time",
+            "value": 1.0,
+            "min": 0.0,
+            "max": 27.0,
+            "unit": "μs",
+            "normal_range": [
+              0.0,
+              2.0
+            ],
+            "warning_range": [
+              2.0,
+              5.0
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "stage_3_elements",
+            "label": "Output Elements",
+            "value": 200.0,
+            "min": 0.0,
+            "max": 400.0,
+            "unit": "elements",
+            "normal_range": [
+              0.0,
+              300.0
+            ],
+            "warning_range": [
+              300.0,
+              600.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stage_4",
+        "name": "AUC Trapezoidal",
+        "type": "cpu",
+        "family": "healthspring",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 95,
+        "capabilities": [
+          "compute.execute"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "stage_4_time",
+            "label": "Time",
+            "value": 0.0,
+            "min": 0.0,
+            "max": 27.0,
+            "unit": "μs",
+            "normal_range": [
+              0.0,
+              0.0
+            ],
+            "warning_range": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "stage_4_elements",
+            "label": "Output Elements",
+            "value": 1.0,
+            "min": 0.0,
+            "max": 2.0,
+            "unit": "elements",
+            "normal_range": [
+              0.0,
+              1.5
+            ],
+            "warning_range": [
+              1.5,
+              3.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stage_5",
+        "name": "Diversity + Bray-Curtis",
+        "type": "cpu",
+        "family": "healthspring",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 95,
+        "capabilities": [
+          "compute.execute"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "stage_5_time",
+            "label": "Time",
+            "value": 0.0,
+            "min": 0.0,
+            "max": 27.0,
+            "unit": "μs",
+            "normal_range": [
+              0.0,
+              0.0
+            ],
+            "warning_range": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "stage_5_elements",
+            "label": "Output Elements",
+            "value": 3.0,
+            "min": 0.0,
+            "max": 6.0,
+            "unit": "elements",
+            "normal_range": [
+              0.0,
+              4.5
+            ],
+            "warning_range": [
+              4.5,
+              9.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stage_6",
+        "name": "Diagnostic Reduce (CPU)",
+        "type": "cpu",
+        "family": "healthspring",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 95,
+        "capabilities": [
+          "compute.execute"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "stage_6_time",
+            "label": "Time",
+            "value": 0.0,
+            "min": 0.0,
+            "max": 27.0,
+            "unit": "μs",
+            "normal_range": [
+              0.0,
+              0.0
+            ],
+            "warning_range": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "stage_6_elements",
+            "label": "Output Elements",
+            "value": 1.0,
+            "min": 0.0,
+            "max": 2.0,
+            "unit": "elements",
+            "normal_range": [
+              0.0,
+              1.5
+            ],
+            "warning_range": [
+              1.5,
+              3.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "neural_api": {
+    "enabled": false
+  },
+  "edges": [
+    {
+      "from": "dispatch_summary",
+      "to": "stage_0",
+      "edge_type": "data-flow",
+      "label": "dispatch"
+    },
+    {
+      "from": "dispatch_summary",
+      "to": "stage_1",
+      "edge_type": "data-flow",
+      "label": "dispatch"
+    },
+    {
+      "from": "stage_0",
+      "to": "stage_1",
+      "edge_type": "data-flow",
+      "label": "data-flow"
+    },
+    {
+      "from": "dispatch_summary",
+      "to": "stage_2",
+      "edge_type": "data-flow",
+      "label": "dispatch"
+    },
+    {
+      "from": "stage_1",
+      "to": "stage_2",
+      "edge_type": "data-flow",
+      "label": "data-flow"
+    },
+    {
+      "from": "dispatch_summary",
+      "to": "stage_3",
+      "edge_type": "data-flow",
+      "label": "dispatch"
+    },
+    {
+      "from": "stage_2",
+      "to": "stage_3",
+      "edge_type": "data-flow",
+      "label": "data-flow"
+    },
+    {
+      "from": "dispatch_summary",
+      "to": "stage_4",
+      "edge_type": "data-flow",
+      "label": "dispatch"
+    },
+    {
+      "from": "stage_3",
+      "to": "stage_4",
+      "edge_type": "data-flow",
+      "label": "data-flow"
+    },
+    {
+      "from": "dispatch_summary",
+      "to": "stage_5",
+      "edge_type": "data-flow",
+      "label": "dispatch"
+    },
+    {
+      "from": "stage_4",
+      "to": "stage_5",
+      "edge_type": "data-flow",
+      "label": "data-flow"
+    },
+    {
+      "from": "dispatch_summary",
+      "to": "stage_6",
+      "edge_type": "data-flow",
+      "label": "dispatch"
+    },
+    {
+      "from": "stage_5",
+      "to": "stage_6",
+      "edge_type": "data-flow",
+      "label": "data-flow"
+    }
+  ]
+}

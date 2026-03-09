@@ -5,11 +5,16 @@
 //! structure, meaningful data ranges, and protocol-appropriate results
 //! for multiple patient archetypes.
 
+use healthspring_barracuda::visualization::DataChannel;
 use healthspring_barracuda::visualization::clinical::{
     PatientTrtProfile, TrtProtocol, trt_clinical_scenario,
 };
-use healthspring_barracuda::visualization::DataChannel;
 
+#[expect(
+    clippy::too_many_lines,
+    clippy::collapsible_if,
+    reason = "validation binary — patient archetype TRT scenario checks"
+)]
 fn main() {
     let mut passed = 0u32;
     let mut failed = 0u32;
@@ -21,21 +26,29 @@ fn main() {
     // Patient archetypes
     let patients = vec![
         {
-            let mut p = PatientTrtProfile::new("Young Low-T", 35.0, 180.0, 250.0, TrtProtocol::ImWeekly);
+            let mut p =
+                PatientTrtProfile::new("Young Low-T", 35.0, 180.0, 250.0, TrtProtocol::ImWeekly);
             p.gut_diversity = Some(0.85);
             p.hba1c = Some(5.8);
             p.sdnn_ms = Some(45.0);
             p
         },
         {
-            let mut p = PatientTrtProfile::new("Middle-Aged Obese", 52.0, 280.0, 220.0, TrtProtocol::Pellet);
+            let mut p = PatientTrtProfile::new(
+                "Middle-Aged Obese",
+                52.0,
+                280.0,
+                220.0,
+                TrtProtocol::Pellet,
+            );
             p.gut_diversity = Some(0.40);
             p.hba1c = Some(7.8);
             p.sdnn_ms = Some(28.0);
             p
         },
         {
-            let mut p = PatientTrtProfile::new("Senior Lean", 68.0, 170.0, 310.0, TrtProtocol::ImBiweekly);
+            let mut p =
+                PatientTrtProfile::new("Senior Lean", 68.0, 170.0, 310.0, TrtProtocol::ImBiweekly);
             p.gut_diversity = Some(0.70);
             p.sdnn_ms = Some(32.0);
             p
@@ -109,10 +122,17 @@ fn main() {
 
         // Check 6: assessment node baseline T matches patient
         print!("  baseline T correct: ");
-        let assess = scenario.ecosystem.primals.iter().find(|n| n.id == "assessment").unwrap();
+        let assess = scenario
+            .ecosystem
+            .primals
+            .iter()
+            .find(|n| n.id == "assessment")
+            .unwrap();
         let baseline_gauge = assess.data_channels.iter().find_map(|ch| {
             if let DataChannel::Gauge { id, value, .. } = ch {
-                if id == "baseline_t" { return Some(*value); }
+                if id == "baseline_t" {
+                    return Some(*value);
+                }
             }
             None
         });
@@ -131,7 +151,12 @@ fn main() {
 
         // Check 7: protocol node name matches protocol type
         print!("  protocol matches: ");
-        let prot = scenario.ecosystem.primals.iter().find(|n| n.id == "protocol").unwrap();
+        let prot = scenario
+            .ecosystem
+            .primals
+            .iter()
+            .find(|n| n.id == "protocol")
+            .unwrap();
         let matches = match patient.protocol {
             TrtProtocol::ImWeekly => prot.name.contains("Weekly"),
             TrtProtocol::ImBiweekly => prot.name.contains("Biweekly"),
@@ -147,7 +172,12 @@ fn main() {
 
         // Check 8: population distribution has 100 values
         print!("  population n=100: ");
-        let pop = scenario.ecosystem.primals.iter().find(|n| n.id == "population").unwrap();
+        let pop = scenario
+            .ecosystem
+            .primals
+            .iter()
+            .find(|n| n.id == "population")
+            .unwrap();
         let has_100 = pop.data_channels.iter().any(|ch| {
             if let DataChannel::Distribution { values, .. } = ch {
                 values.len() == 100
@@ -186,7 +216,10 @@ fn main() {
         print!("  timeseries valid: ");
         let ts_ok = scenario.ecosystem.primals.iter().all(|n| {
             n.data_channels.iter().all(|ch| {
-                if let DataChannel::TimeSeries { x_values, y_values, .. } = ch {
+                if let DataChannel::TimeSeries {
+                    x_values, y_values, ..
+                } = ch
+                {
                     !x_values.is_empty() && x_values.len() == y_values.len()
                 } else {
                     true
@@ -211,8 +244,18 @@ fn main() {
     let light = PatientTrtProfile::new("Light", 50.0, 150.0, 280.0, TrtProtocol::Pellet);
     let (sh, _) = trt_clinical_scenario(&heavy);
     let (sl, _) = trt_clinical_scenario(&light);
-    let ph = sh.ecosystem.primals.iter().find(|n| n.id == "protocol").unwrap();
-    let pl = sl.ecosystem.primals.iter().find(|n| n.id == "protocol").unwrap();
+    let ph = sh
+        .ecosystem
+        .primals
+        .iter()
+        .find(|n| n.id == "protocol")
+        .unwrap();
+    let pl = sl
+        .ecosystem
+        .primals
+        .iter()
+        .find(|n| n.id == "protocol")
+        .unwrap();
     if ph.name.contains("3000") && pl.name.contains("1500") {
         println!("[PASS] 300lb→3000mg, 150lb→1500mg");
         passed += 1;
@@ -225,7 +268,12 @@ fn main() {
     print!("  low T flags critical: ");
     let low_t = PatientTrtProfile::new("LowT", 60.0, 200.0, 180.0, TrtProtocol::ImWeekly);
     let (s_low, _) = trt_clinical_scenario(&low_t);
-    let a_low = s_low.ecosystem.primals.iter().find(|n| n.id == "assessment").unwrap();
+    let a_low = s_low
+        .ecosystem
+        .primals
+        .iter()
+        .find(|n| n.id == "assessment")
+        .unwrap();
     if a_low.status == "critical" && a_low.health <= 50 {
         println!("[PASS]");
         passed += 1;
@@ -246,20 +294,35 @@ fn main() {
         p.gut_diversity = Some(0.20);
         p
     };
-    let (s_hg, _) = trt_clinical_scenario(&high_gut);
-    let (s_lg, _) = trt_clinical_scenario(&low_gut);
-    let gh = s_hg.ecosystem.primals.iter().find(|n| n.id == "gut_health").unwrap();
-    let gl = s_lg.ecosystem.primals.iter().find(|n| n.id == "gut_health").unwrap();
+    let (scenario_high_gut, _) = trt_clinical_scenario(&high_gut);
+    let (scenario_low_gut, _) = trt_clinical_scenario(&low_gut);
+    let gut_high = scenario_high_gut
+        .ecosystem
+        .primals
+        .iter()
+        .find(|n| n.id == "gut_health")
+        .unwrap();
+    let gut_low = scenario_low_gut
+        .ecosystem
+        .primals
+        .iter()
+        .find(|n| n.id == "gut_health")
+        .unwrap();
     let get_resp = |n: &healthspring_barracuda::visualization::ScenarioNode| -> f64 {
-        n.data_channels.iter().find_map(|ch| {
-            if let DataChannel::Gauge { id, value, .. } = ch {
-                if id == "patient_response" { return Some(*value); }
-            }
-            None
-        }).unwrap_or(0.0)
+        n.data_channels
+            .iter()
+            .find_map(|ch| {
+                if let DataChannel::Gauge { id, value, .. } = ch {
+                    if id == "patient_response" {
+                        return Some(*value);
+                    }
+                }
+                None
+            })
+            .unwrap_or(0.0)
     };
-    let r_h = get_resp(gh);
-    let r_l = get_resp(gl);
+    let r_h = get_resp(gut_high);
+    let r_l = get_resp(gut_low);
     if r_h > r_l {
         println!("[PASS] high={r_h:.1}kg > low={r_l:.1}kg");
         passed += 1;

@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 9, 2026
-**Status:** V9 — 4 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC, 37 experiments (221 unit tests, 526+ binary checks, 104 cross-validation checks). Tier 2+3 GPU live. Patient-parameterized clinical scenarios (5 archetypes). petalTongue SAME DAVE integration (motor command channel, IPC bridge, clinical mode).
+**Status:** V13 — 4 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC + streaming + interaction, 47 experiments (317 tests, 630 binary checks, 104 cross-validation checks). Deep audit: Anderson eigensolver (QL algorithm), smart clinical.rs refactor, math deduplication, centralized RNG, 4 doc-tests, capability-based discovery. Tier 2+3 GPU live. Patient-parameterized clinical scenarios (5 archetypes, live streaming dashboard). petalTongue: 7-type DataChannel, full stream ops, domain theming, capabilities query, interaction subscription. 13 scenarios.
 
 ---
 
@@ -46,7 +46,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 
 ## Validation Summary
 
-| Sub-thesis | Upstream Checks | Tier 0 (Python) | Tier 1 (Rust) | Total |
+| Sub-thesis | Upstream Checks | Tier 0 (Python) | Tier 1+ (Rust) | Total |
 |------------|:---------------:|:---------------:|:-------------:|:-----:|
 | Gonzales PK/PD (Exp001-006) | 688 | 84 | 84 | 856 |
 | Microbiome / C. diff / FMT (Exp010-013) | wetSpring Anderson | 48 | 51 | 99+ |
@@ -55,12 +55,16 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | Validation / Parity (Exp040) | — | 15 | 15 | 30 |
 | Diagnostics (Exp050-052) | — | — | 87 | 87 |
 | GPU Pipeline (Exp053-055) | — | — | GPU live | — |
-| Visualization (Exp056) | — | — | 47 | 47 |
+| Visualization (Exp056) | — | — | 50 | 50 |
 | Mixed Dispatch (Exp060-062) | — | — | 75 | 75 |
-| Clinical TRT + IPC (Exp063-064) | — | — | Structural | — |
-| **Lib unit tests** | — | — | **221** | 221 |
+| Clinical TRT + IPC + streaming (Exp063-065) | — | — | Structural | — |
+| Compute + benchmark (Exp066-072) | — | — | Structural | — |
+| petalTongue evolution (Exp073-074) | — | — | 19 | 19 |
+| **Lib unit tests** | — | — | **250** | 250 |
 | **metalForge tests** | — | — | **33** | 33 |
-| **Total** | **688** | **287** (Tier 0) | **526+** (binary) + **254** (lib+forge) = **780+** | **1,755+** |
+| **toadStool tests** | — | — | **30** | 30 |
+| **Doc-tests** | — | — | **4** | 4 |
+| **Total** | **688** | **287** (Tier 0) | **630** (binary) + **317** (tests) = **947** | **1,922+** |
 
 ---
 
@@ -133,12 +137,12 @@ The challenge is to **extract quantifiable claims** and **validate them against 
 Every healthSpring experiment inherits validated primitives from upstream springs:
 
 ```
-wetSpring (V99, 8,886 checks)
+wetSpring (V101, 9,060+ checks)
     └─ 16S diversity → Exp010 (Shannon/Simpson/Pielou/Chao1)
     └─ Anderson lattice → Exp011 (gut colonization)
     └─ Gonzales immunology (Exp273-286) → baseline for all Track 1
 
-neuralSpring (V90, 2,279 checks)
+neuralSpring (V90)
     └─ nS-601 (Hill/IC50) → Exp001 (human JAK inhibitors)
     └─ nS-603 (lokivetmab PK) → Exp004 (mAb cross-species transfer)
     └─ nS-604 (tissue lattice) → planned tissue lattice extension
@@ -166,8 +170,8 @@ All 24 Tier 0+1 experiments validated. GPU pipeline live (Exp053-055). CPU vs GP
 
 | Component | Purpose | Location |
 |-----------|---------|----------|
-| `GpuContext` | Persistent device/queue, shader reuse | `barracuda/src/gpu.rs` |
-| `execute_fused()` | All ops in one encoder, no CPU roundtrips | `barracuda/src/gpu.rs` |
+| `GpuContext` | Persistent device/queue, shader reuse | `barracuda/src/gpu/context.rs` |
+| `execute_fused()` | All ops in one encoder, no CPU roundtrips | `barracuda/src/gpu/mod.rs` |
 | `Pipeline::execute_gpu()` | toadStool dispatches stages via `GpuContext` | `toadstool/src/pipeline.rs` |
 | `Stage::to_gpu_op()` | Stage → GpuOp conversion | `toadstool/src/stage.rs` |
 
@@ -189,14 +193,15 @@ All 24 Tier 0+1 experiments validated. GPU pipeline live (Exp053-055). CPU vs GP
 
 ---
 
-## Next Steps: Per-Person Depth and Field Deployment
+## Next Steps: Deeper Integration and Field Deployment
 
-1. **Multi-track patient scenarios** — extend Exp063 beyond TRT to full 4-track diagnostic scenarios (PK/PD + microbiome + biosignal + endocrine per patient)
-2. **Translation layer** — clinician-facing labels, units, language support for medical staff ↔ patient communication (SAME DAVE afferent channel for locale/context)
+1. **Full patient diagnostic scenarios** — extend beyond TRT to full 4-track diagnostic scenarios (PK/PD + microbiome + biosignal + endocrine per patient)
+2. **petalTongue interaction loop** — clinician selects node in petalTongue → healthSpring drills down (Exp074 validates the roundtrip; now wire to clinical scenarios)
 3. **Anderson eigensolve** — GPU shader for gut lattice localization length (Exp011/037)
 4. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG processing (Exp020-023)
 5. **Field deployment** — validate on Raspberry Pi + eGPU (same WGSL, portable pipeline)
-6. **TPU/NPU** — toadStool backend swap for Coral TPU, Akida NPU (Pan-Tompkins streaming)
+6. **NPU streaming** — toadStool backend swap for Akida NPU (Pan-Tompkins streaming via PCIe P2P bypass)
+7. **biomeOS atomic deployment** — healthspring_deploy.toml → live NUCLEUS orchestration across node/tower topologies
 
 ---
 

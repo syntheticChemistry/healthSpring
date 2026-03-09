@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp074"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Validates petalTongue interaction subscribe + capabilities roundtrip with a mock server"
+
+[[bin]]
+name = "exp074_interaction_roundtrip"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+serde_json = "1"

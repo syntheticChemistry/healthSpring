@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp070"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Exp070: PCIe P2P bypass validation — NPU-to-GPU transfer path"
+
+[dependencies]
+healthspring-forge = { path = "../../metalForge/forge" }
+
+[[bin]]
+name = "exp070_pcie_p2p_bypass"
+path = "src/main.rs"

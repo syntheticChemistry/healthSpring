@@ -25,6 +25,14 @@
 /// Shannon diversity index: `H' = -Σ p_i · ln(p_i)`.
 ///
 /// `H' = 0` for monoculture, `H' = ln(S)` for perfectly even community.
+///
+/// ```
+/// use healthspring_barracuda::microbiome::shannon_index;
+///
+/// let uniform = vec![0.25, 0.25, 0.25, 0.25];
+/// let h = shannon_index(&uniform);
+/// assert!((h - 4.0_f64.ln()).abs() < 1e-10);
+/// ```
 #[must_use]
 pub fn shannon_index(abundances: &[f64]) -> f64 {
     abundances
@@ -121,6 +129,114 @@ pub fn anderson_hamiltonian_1d(disorder: &[f64], t_hop: f64) -> Vec<f64> {
         }
     }
     h
+}
+
+/// Diagonalize a 1D Anderson Hamiltonian via the implicit QL algorithm
+/// for symmetric tridiagonal matrices.
+///
+/// Returns `(eigenvalues, eigenvectors)` where `eigenvectors` is a flat
+/// `L × L` matrix (row-major) with eigenvector `k` in row `k`.
+///
+/// The QL algorithm is O(L²) per eigenvalue and numerically stable for
+/// the small lattice sizes used in gut microbiome models (L ≤ 200).
+#[must_use]
+pub fn anderson_diagonalize(disorder: &[f64], t_hop: f64) -> (Vec<f64>, Vec<f64>) {
+    let n = disorder.len();
+    if n == 0 {
+        return (vec![], vec![]);
+    }
+    let mut d: Vec<f64> = disorder.to_vec();
+    let mut e = vec![0.0_f64; n];
+    for item in e.iter_mut().take(n.saturating_sub(1)) {
+        *item = t_hop;
+    }
+
+    let mut z = vec![0.0_f64; n * n];
+    for i in 0..n {
+        z[i * n + i] = 1.0;
+    }
+
+    tql2_symmetric_tridiagonal(&mut d, &mut e, &mut z, n);
+
+    (d, z)
+}
+
+/// Implicit QL shifts for a symmetric tridiagonal matrix.
+/// `d` = diagonal (eigenvalues on exit), `e` = sub-diagonal (destroyed),
+/// `z` = identity on entry, eigenvectors on exit (row-major, eigenvector k
+/// in row k).
+#[expect(
+    clippy::many_single_char_names,
+    reason = "classical numerical algorithm variables"
+)]
+fn tql2_symmetric_tridiagonal(d: &mut [f64], e: &mut [f64], z: &mut [f64], n: usize) {
+    if n <= 1 {
+        return;
+    }
+    for i in 1..n {
+        e[i - 1] = e[i];
+    }
+    e[n - 1] = 0.0;
+
+    for l in 0..n {
+        let mut iter_count = 0u32;
+        loop {
+            let mut m = l;
+            while m < n - 1 {
+                let dd = d[m].abs() + d[m + 1].abs();
+                #[expect(
+                    clippy::float_cmp,
+                    reason = "standard QL convergence test: e[m] is negligible when adding it to dd doesn't change dd at f64 precision"
+                )]
+                if (e[m].abs() + dd) == dd {
+                    break;
+                }
+                m += 1;
+            }
+            if m == l {
+                break;
+            }
+            iter_count += 1;
+            if iter_count > 200 {
+                break;
+            }
+
+            let mut g = (d[l + 1] - d[l]) / (2.0 * e[l]);
+            let mut r = g.hypot(1.0);
+            g = d[m] - d[l] + e[l] / (g + r.copysign(g));
+
+            let mut s = 1.0;
+            let mut c = 1.0;
+            let mut p = 0.0;
+
+            for i in (l..m).rev() {
+                let mut f = s * e[i];
+                let b = c * e[i];
+                r = f.hypot(g);
+                e[i + 1] = r;
+                if r.abs() < 1e-300 {
+                    d[i + 1] -= p;
+                    e[m] = 0.0;
+                    break;
+                }
+                s = f / r;
+                c = g / r;
+                g = d[i + 1] - p;
+                r = (d[i] - g) * s + 2.0 * c * b;
+                p = s * r;
+                d[i + 1] = g + p;
+                g = c * r - b;
+                for k in 0..n {
+                    f = z[(i + 1) * n + k];
+                    z[(i + 1) * n + k] = s * z[i * n + k] + c * f;
+                    z[i * n + k] = c * z[i * n + k] - s * f;
+                }
+            }
+            d[l] -= p;
+            e[l] = g;
+            e[m] = 0.0;
+        }
+    }
 }
 
 /// Inverse participation ratio: `IPR = Σ |ψ_i|⁴`.

@@ -6,6 +6,15 @@
 /// # Panics
 ///
 /// Panics if `times` and `concentrations` have different lengths.
+///
+/// ```
+/// use healthspring_barracuda::pkpd::auc_trapezoidal;
+///
+/// let times = vec![0.0, 1.0, 2.0];
+/// let concs = vec![0.0, 1.0, 0.0];
+/// let auc = auc_trapezoidal(&times, &concs);
+/// assert!((auc - 1.0).abs() < 1e-10); // triangle: base=2, height=1
+/// ```
 #[must_use]
 pub fn auc_trapezoidal(times: &[f64], concentrations: &[f64]) -> f64 {
     assert_eq!(times.len(), concentrations.len());
@@ -37,7 +46,7 @@ pub fn find_cmax_tmax(times: &[f64], concentrations: &[f64]) -> (f64, f64) {
         .iter()
         .enumerate()
         .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(core::cmp::Ordering::Equal))
-        .unwrap();
+        .expect("non-empty concentrations has max element");
     (cmax, times[idx])
 }
 

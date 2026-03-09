@@ -46,6 +46,37 @@ pub enum DataChannel {
         normal_range: [f64; 2],
         warning_range: [f64; 2],
     },
+    /// Frequency-domain spectrum (FFT, HRV power spectrum, noise analysis).
+    #[serde(rename = "spectrum")]
+    Spectrum {
+        id: String,
+        label: String,
+        frequencies: Vec<f64>,
+        amplitudes: Vec<f64>,
+        unit: String,
+    },
+    /// 2D matrix visualization (correlation, dissimilarity, concentration grid).
+    #[serde(rename = "heatmap")]
+    Heatmap {
+        id: String,
+        label: String,
+        x_labels: Vec<String>,
+        y_labels: Vec<String>,
+        values: Vec<f64>,
+        unit: String,
+    },
+    /// 3D scatter plot (`PCoA` ordination, phase space, population PK).
+    #[serde(rename = "scatter3d")]
+    Scatter3D {
+        id: String,
+        label: String,
+        x: Vec<f64>,
+        y: Vec<f64>,
+        z: Vec<f64>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        point_labels: Vec<String>,
+        unit: String,
+    },
 }
 
 /// Clinical reference range for threshold coloring.
@@ -71,7 +102,8 @@ pub struct ScenarioNode {
     pub status: String,
     pub health: u8,
     pub confidence: u8,
-    pub position: Position,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub position: Option<Position>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub capabilities: Vec<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -142,6 +174,14 @@ pub struct UiConfig {
 }
 
 /// Panel visibility for petalTongue scenario config.
+///
+/// Uses individual `bool` fields rather than a bitfield because this struct
+/// is serialized to JSON for petalTongue's upstream schema (which expects
+/// named boolean keys). The schema is owned by petalTongue.
+#[expect(
+    clippy::struct_excessive_bools,
+    reason = "matches petalTongue JSON schema — each field serializes as a named boolean key"
+)]
 #[derive(Debug, Clone, Serialize)]
 pub struct ShowPanels {
     pub left_sidebar: bool,

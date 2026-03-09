@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp066"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Exp066: Rust CPU benchmark — mirrors Python baseline for Tier 0 vs Tier 1 timing"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[[bin]]
+name = "exp066_barracuda_cpu_bench"
+path = "src/main.rs"

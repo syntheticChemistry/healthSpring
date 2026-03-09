@@ -1,0 +1,98 @@
+[
+  {
+    "operation": "HillSweep",
+    "crossover_n": 100000,
+    "scale_points": [
+      {
+        "n_elements": 10,
+        "cpu_mean_us": 0.31074999999999997,
+        "estimated_gpu_us": 200.01,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 100,
+        "cpu_mean_us": 1.9793000000000003,
+        "estimated_gpu_us": 200.1,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 1000,
+        "cpu_mean_us": 19.210500000000003,
+        "estimated_gpu_us": 201.0,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 10000,
+        "cpu_mean_us": 107.85274999999997,
+        "estimated_gpu_us": 210.0,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 100000,
+        "cpu_mean_us": 973.67045,
+        "estimated_gpu_us": 300.0,
+        "gpu_wins": true
+      }
+    ]
+  },
+  {
+    "operation": "PopulationPkBatch",
+    "crossover_n": null,
+    "scale_points": [
+      {
+        "n_elements": 10,
+        "cpu_mean_us": 0.05345000000000002,
+        "estimated_gpu_us": 200.05,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 100,
+        "cpu_mean_us": 0.19350000000000003,
+        "estimated_gpu_us": 200.5,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 1000,
+        "cpu_mean_us": 1.6701000000000001,
+        "estimated_gpu_us": 205.0,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 10000,
+        "cpu_mean_us": 16.438200000000002,
+        "estimated_gpu_us": 250.0,
+        "gpu_wins": false
+      }
+    ]
+  },
+  {
+    "operation": "DiversityBatch",
+    "crossover_n": null,
+    "scale_points": [
+      {
+        "n_elements": 10,
+        "cpu_mean_us": 0.31930000000000003,
+        "estimated_gpu_us": 200.1,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 100,
+        "cpu_mean_us": 2.4147000000000003,
+        "estimated_gpu_us": 201.0,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 1000,
+        "cpu_mean_us": 23.778599999999997,
+        "estimated_gpu_us": 210.0,
+        "gpu_wins": false
+      },
+      {
+        "n_elements": 5000,
+        "cpu_mean_us": 118.96439999999998,
+        "estimated_gpu_us": 250.0,
+        "gpu_wins": false
+      }
+    ]
+  }
+]

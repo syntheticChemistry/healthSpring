@@ -41,6 +41,7 @@ fn build_workload() -> Vec<GpuOp> {
             let n = 50;
             let mut abundances = Vec::with_capacity(n);
             let mut total = 0.0;
+            #[expect(clippy::cast_sign_loss, reason = "seed from 0..20 is non-negative")]
             let mut state = (seed as u64) + 1;
             for _ in 0..n {
                 state = state
@@ -75,6 +76,10 @@ fn build_workload() -> Vec<GpuOp> {
     ]
 }
 
+#[expect(
+    clippy::too_many_lines,
+    reason = "validation binary — sequential pipeline checks"
+)]
 #[tokio::main]
 async fn main() {
     println!("Exp054 GPU-Native Fused Pipeline");
@@ -339,5 +344,5 @@ async fn main() {
 
     println!("\n=================================");
     println!("Exp054 GPU Pipeline: {passed}/{total} checks passed");
-    std::process::exit(if passed == total { 0 } else { 1 });
+    std::process::exit(i32::from(passed != total));
 }

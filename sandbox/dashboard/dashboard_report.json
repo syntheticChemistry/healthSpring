@@ -1,0 +1,57 @@
+{
+  "pipeline_name": "Mixed Clinical Pipeline",
+  "stages": [
+    {
+      "index": 0,
+      "name": "ECG Fusion (NPU)",
+      "elapsed_us": 0.0,
+      "output_elements": 0,
+      "success": true
+    },
+    {
+      "index": 1,
+      "name": "Hill Dose-Response (GPU)",
+      "elapsed_us": 1.0,
+      "output_elements": 500,
+      "success": true
+    },
+    {
+      "index": 2,
+      "name": "Hill Transform",
+      "elapsed_us": 18.0,
+      "output_elements": 500,
+      "success": true
+    },
+    {
+      "index": 3,
+      "name": "Population PK (GPU)",
+      "elapsed_us": 1.0,
+      "output_elements": 200,
+      "success": true
+    },
+    {
+      "index": 4,
+      "name": "AUC Trapezoidal",
+      "elapsed_us": 0.0,
+      "output_elements": 1,
+      "success": true
+    },
+    {
+      "index": 5,
+      "name": "Diversity + Bray-Curtis",
+      "elapsed_us": 0.0,
+      "output_elements": 3,
+      "success": true
+    },
+    {
+      "index": 6,
+      "name": "Diagnostic Reduce (CPU)",
+      "elapsed_us": 0.0,
+      "output_elements": 1,
+      "success": true
+    }
+  ],
+  "total_time_us": 20.0,
+  "all_success": true,
+  "petaltongue_connected": false
+}

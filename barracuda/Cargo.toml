@@ -18,6 +18,9 @@ gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck"]
 npu = ["dep:akida-driver"]
 
 [dependencies]
+# Evolution bridge — unused at Tier 1 (CPU ground-truth). Activated at Tier 3
+# when healthSpring primitives absorb into barraCuda (lifecycle, health, discovery).
+# See specs/BARRACUDA_REQUIREMENTS.md for absorption roadmap.
 barracuda-core = { path = "../../barraCuda/crates/barracuda-core", default-features = false }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -29,3 +32,8 @@ akida-driver = { path = "../../phase1/toadstool/crates/neuromorphic/akida-driver
 
 [dev-dependencies]
 approx = "0.5"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "cpu_parity"
+harness = false

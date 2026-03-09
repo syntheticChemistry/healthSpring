@@ -40,8 +40,8 @@ pub use dose_response::{
     compute_ec_values, hill_dose_response, hill_sweep,
 };
 pub use pbpk::{
-    PbpkState, TissueCompartment, cardiac_output, pbpk_auc, pbpk_iv_simulate,
-    standard_human_tissues,
+    PbpkState, PbpkTissueProfiles, TissueCompartment, cardiac_output, pbpk_auc, pbpk_iv_simulate,
+    pbpk_iv_tissue_profiles, standard_human_tissues,
 };
 pub use population::{LognormalParam, PatientExposure, pop_baricitinib, population_pk_cpu};
 pub use util::{auc_trapezoidal, find_cmax_tmax, pk_multiple_dose};

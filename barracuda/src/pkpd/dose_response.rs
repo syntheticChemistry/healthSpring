@@ -9,6 +9,14 @@
 ///
 /// When `n = 1` this reduces to Michaelis-Menten. The Hill coefficient
 /// captures cooperativity: `n > 1` = positive (steeper), `n < 1` = negative.
+///
+/// ```
+/// use healthspring_barracuda::pkpd::hill_dose_response;
+///
+/// // At C = IC50, response is exactly E_max/2
+/// let r = hill_dose_response(10.0, 10.0, 1.0, 1.0);
+/// assert!((r - 0.5).abs() < 1e-10);
+/// ```
 #[must_use]
 pub fn hill_dose_response(concentration: f64, ic50: f64, hill_n: f64, e_max: f64) -> f64 {
     if ic50 <= 0.0 || concentration < 0.0 {

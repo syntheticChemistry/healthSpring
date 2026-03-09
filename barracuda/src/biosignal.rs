@@ -378,7 +378,7 @@ pub fn generate_synthetic_ecg(
         }
 
         rng_state = rng_state
-            .wrapping_mul(6_364_136_223_846_793_005)
+            .wrapping_mul(crate::rng::LCG_MULTIPLIER)
             .wrapping_add(1);
         let jitter = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.04;
         beat_time += rr + jitter;
@@ -387,11 +387,11 @@ pub fn generate_synthetic_ecg(
     if noise_std > 0.0 {
         for sample in &mut ecg {
             rng_state = rng_state
-                .wrapping_mul(6_364_136_223_846_793_005)
+                .wrapping_mul(crate::rng::LCG_MULTIPLIER)
                 .wrapping_add(1);
             let u1 = u64_to_f64(rng_state >> 33) / f64::from(u32::MAX);
             rng_state = rng_state
-                .wrapping_mul(6_364_136_223_846_793_005)
+                .wrapping_mul(crate::rng::LCG_MULTIPLIER)
                 .wrapping_add(1);
             let u2 = u64_to_f64(rng_state >> 33) / f64::from(u32::MAX);
             let z = (-2.0 * u1.max(1e-30).ln()).sqrt() * (2.0 * PI * u2).cos();
@@ -464,14 +464,14 @@ pub fn generate_synthetic_ppg(
         let pulse = phase.sin().max(0.0).powi(2);
 
         rng_state = rng_state
-            .wrapping_mul(6_364_136_223_846_793_005)
+            .wrapping_mul(crate::rng::LCG_MULTIPLIER)
             .wrapping_add(1);
         let noise = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.001;
 
         red[i] = dc_red + ac_red * pulse + noise;
 
         rng_state = rng_state
-            .wrapping_mul(6_364_136_223_846_793_005)
+            .wrapping_mul(crate::rng::LCG_MULTIPLIER)
             .wrapping_add(1);
         let noise_ir = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.001;
 
@@ -609,7 +609,7 @@ pub fn generate_synthetic_eda(
     let mut rng_state = seed;
     for sample in &mut eda {
         rng_state = rng_state
-            .wrapping_mul(6_364_136_223_846_793_005)
+            .wrapping_mul(crate::rng::LCG_MULTIPLIER)
             .wrapping_add(1);
         let noise = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.01;
         *sample += noise;

@@ -252,9 +252,7 @@ pub mod pop_trt {
 /// Returns (mu, sigma) for the normal distribution underlying the lognormal.
 #[must_use]
 pub fn lognormal_params(typical: f64, cv: f64) -> (f64, f64) {
-    let omega_sq = (1.0 + cv * cv).ln();
-    let mu = typical.ln() - omega_sq / 2.0;
-    (mu, omega_sq.sqrt())
+    crate::pkpd::LognormalParam { typical, cv }.to_normal_params()
 }
 
 /// Compute age-adjusted baseline testosterone.
@@ -284,10 +282,11 @@ pub fn anderson_localization_length(disorder_w: f64, lattice_size: f64) -> f64 {
 
 /// Pielou evenness → Anderson disorder (linear mapping).
 ///
-/// `W = scale * J` where J is Pielou evenness.
+/// Delegates to [`crate::microbiome::evenness_to_disorder`] — single
+/// source of truth for the `W = J × scale` relationship.
 #[must_use]
 pub fn evenness_to_disorder(pielou_j: f64, scale: f64) -> f64 {
-    scale * pielou_j
+    crate::microbiome::evenness_to_disorder(pielou_j, scale)
 }
 
 /// Metabolic response model: higher ξ → better TRT response.

@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Exp056: Generate petalTongue scenarios for all 4 healthSpring study tracks
-//! and validate that every DataChannel, ClinicalRange, and edge is well-formed.
+//! Exp056: Generate `petalTongue` scenarios for all 4 healthSpring study tracks
+//! and validate that every `DataChannel`, `ClinicalRange`, and edge is well-formed.
 
 use healthspring_barracuda::visualization::scenarios;
 
+#[expect(
+    clippy::too_many_lines,
+    reason = "validation binary — exercises all 6 study scenarios sequentially"
+)]
 fn main() {
     let mut checks = 0;
     let mut pass = 0;
@@ -80,8 +84,8 @@ fn main() {
         .find(|n| n.id == "pop_pk")
         .unwrap();
     check!(
-        "pkpd: pop_pk has 2 distributions",
-        pop_pk.data_channels.len() == 2
+        "pkpd: pop_pk has 3 channels (2 dist + scatter3d)",
+        pop_pk.data_channels.len() == 3
     );
 
     let pbpk = pkpd
@@ -91,8 +95,8 @@ fn main() {
         .find(|n| n.id == "pbpk")
         .unwrap();
     check!(
-        "pkpd: pbpk has 4 channels (venous, tissue, AUC, CO)",
-        pbpk.data_channels.len() == 4
+        "pkpd: pbpk has 9 channels (venous + 5 tissue TS + bar + AUC + CO)",
+        pbpk.data_channels.len() == 9
     );
 
     // Validate JSON has data_channels array with channel_type
@@ -111,6 +115,10 @@ fn main() {
     check!(
         "pkpd: JSON has gauge",
         pkpd_json.contains("\"channel_type\": \"gauge\"")
+    );
+    check!(
+        "pkpd: JSON has scatter3d",
+        pkpd_json.contains("\"channel_type\": \"scatter3d\"")
     );
     check!("pkpd: JSON has edges", pkpd_val["edges"].is_array());
 
@@ -133,8 +141,8 @@ fn main() {
         .find(|n| n.id == "diversity")
         .unwrap();
     check!(
-        "micro: diversity has 3 bar charts",
-        diversity.data_channels.len() == 3
+        "micro: diversity has 4 channels (3 bar + heatmap)",
+        diversity.data_channels.len() == 4
     );
     check!(
         "micro: diversity has 2 clinical ranges",
@@ -148,8 +156,8 @@ fn main() {
         .find(|n| n.id == "anderson")
         .unwrap();
     check!(
-        "micro: anderson has 4 channels (3 gauge + 1 bar)",
-        anderson.data_channels.len() == 4
+        "micro: anderson has 6 channels (2 spectrum + 3 gauge + 1 bar)",
+        anderson.data_channels.len() == 6
     );
 
     let fmt = micro
@@ -167,6 +175,10 @@ fn main() {
     check!(
         "micro: JSON has gauge",
         micro_json.contains("\"channel_type\": \"gauge\"")
+    );
+    check!(
+        "micro: JSON has heatmap",
+        micro_json.contains("\"channel_type\": \"heatmap\"")
     );
     check!(
         "micro: JSON has timeseries",
@@ -192,8 +204,8 @@ fn main() {
         .find(|n| n.id == "qrs")
         .unwrap();
     check!(
-        "bio: qrs has 5 channels (2 TS + 3 gauge)",
-        qrs.data_channels.len() == 5
+        "bio: qrs has 8 channels (5 TS + 3 gauge)",
+        qrs.data_channels.len() == 8
     );
 
     let hrv = bio
@@ -203,8 +215,8 @@ fn main() {
         .find(|n| n.id == "hrv")
         .unwrap();
     check!(
-        "bio: hrv has 4 channels (tachogram + 3 gauge)",
-        hrv.data_channels.len() == 4
+        "bio: hrv has 5 channels (tachogram + spectrum + 3 gauge)",
+        hrv.data_channels.len() == 5
     );
 
     let spo2 = bio
@@ -231,6 +243,11 @@ fn main() {
     check!(
         "bio: fusion has 4 channels (2 EDA + stress + score)",
         fusion.data_channels.len() == 4
+    );
+
+    check!(
+        "bio: JSON has spectrum",
+        bio_json.contains("\"channel_type\": \"spectrum\"")
     );
 
     // -----------------------------------------------------------------------
@@ -328,16 +345,19 @@ fn main() {
     let has_dist = full_json.contains("\"channel_type\": \"distribution\"");
     let has_bar = full_json.contains("\"channel_type\": \"bar\"");
     let has_gauge = full_json.contains("\"channel_type\": \"gauge\"");
+    let has_spectrum = full_json.contains("\"channel_type\": \"spectrum\"");
+    let has_heatmap = full_json.contains("\"channel_type\": \"heatmap\"");
+    let has_scatter3d = full_json.contains("\"channel_type\": \"scatter3d\"");
     check!(
-        "full: all 4 channel types present",
-        has_ts && has_dist && has_bar && has_gauge
+        "full: all 7 channel types present",
+        has_ts && has_dist && has_bar && has_gauge && has_spectrum && has_heatmap && has_scatter3d
     );
 
     // JSON size sanity
     let json_kb = full_json.len() / 1024;
     check!(
         &format!("full: JSON size reasonable ({json_kb} KB)"),
-        json_kb > 10 && json_kb < 1000
+        json_kb > 10 && json_kb < 2000
     );
 
     // Write scenarios to stdout summary
@@ -376,5 +396,5 @@ fn main() {
 
     println!("\n====================================");
     println!("Exp056 Study Scenarios: {pass}/{checks} checks passed");
-    assert_eq!(pass, checks, "some checks failed");
+    std::process::exit(i32::from(pass != checks));
 }

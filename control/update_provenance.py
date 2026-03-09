@@ -3,9 +3,21 @@
 
 import json
 import os
+import subprocess
 import sys
 
-GIT_COMMIT = "4138375e3973a6a95d25758ccfc5436b5e8d0ee1"
+
+def _git_commit():
+    """Resolve current HEAD commit at runtime — never hardcode."""
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], text=True
+        ).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return "unknown"
+
+
+GIT_COMMIT = _git_commit()
 
 FILES = [
     ("control/pkpd/exp001_baseline.json", "python3 control/pkpd/exp001_hill_dose_response.py"),

@@ -47,6 +47,16 @@ members = [
     "experiments/exp062_pcie_transfer_validation",
     "experiments/exp063_clinical_trt_scenarios",
     "experiments/exp064_ipc_push",
+    "experiments/exp065_live_dashboard",
+    "experiments/exp066_barracuda_cpu_bench",
+    "experiments/exp067_gpu_parity_extended",
+    "experiments/exp068_gpu_benchmark",
+    "experiments/exp069_toadstool_dispatch_matrix",
+    "experiments/exp070_pcie_p2p_bypass",
+    "experiments/exp071_mixed_system_pipeline",
+    "experiments/exp072_compute_dashboard",
+    "experiments/exp073_clinical_trt_dashboard",
+    "experiments/exp074_interaction_roundtrip",
 ]
 
 [workspace.package]

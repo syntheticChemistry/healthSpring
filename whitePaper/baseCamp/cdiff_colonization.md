@@ -4,7 +4,7 @@
 **Faculty**: TBD (extends wetSpring Anderson framework)
 **Track**: 2 — Microbiome
 **Experiments**: Exp010 (diversity indices), Exp011 (Anderson gut lattice), Exp012 (C. diff resistance), Exp013 (FMT engraftment)
-**Status**: Complete — 4 experiments, 48 binary checks, 48 Python cross-validation checks
+**Status**: Complete — 4 experiments, 48 binary checks, 48 Python cross-validation checks. Anderson eigenvalue spectrum and per-eigenstate IPR spectrum now visualized in petalTongue (6 channels on Anderson node). GPU Tier 2 validated for diversity indices. V13: Anderson eigensolver (QL algorithm) fixes IPR to use true eigenvectors; `shannon_index` doc-test added; `evenness_to_disorder` deduplicated.
 **Last Updated**: March 9, 2026
 
 ---
@@ -46,12 +46,13 @@ localized states are vulnerable. FMT engraftment models the transition from loca
 
 ---
 
-## petalTongue Visualization (V7)
+## petalTongue Visualization (V12)
 
 `scenarios::microbiome_study()` produces a 4-node scenario with:
 - Bar charts: Shannon, Simpson, Pielou across community types
 - Gauges: IPR, ξ, colonization resistance
 - TimeSeries: Shannon and Bray-Curtis vs FMT engraftment fraction
+- **V12**: Spectrum channels on Anderson node: eigenvalue distribution (Hamiltonian diagonal) and per-eigenstate IPR values — enabling direct visualization of the localization landscape
 
 ---
 

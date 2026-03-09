@@ -4,7 +4,7 @@
 **Faculty**: TBD
 **Track**: 3 — Biosignal
 **Experiments**: Exp020 (Pan-Tompkins QRS), Exp021 (HRV metrics), Exp022 (PPG SpO2), Exp023 (multi-channel fusion)
-**Status**: Complete — 4 experiments, 44 binary checks, 44 Python cross-validation checks
+**Status**: Complete — 4 experiments, 44 binary checks, 44 Python cross-validation checks. Pan-Tompkins 5-stage intermediates (raw, bandpass, derivative, squared, MWI) now visualized as individual TimeSeries channels in petalTongue (8 channels on QRS node). V13: LCG PRNG centralized to `rng.rs`.
 **Last Updated**: March 9, 2026
 
 ---
@@ -44,10 +44,11 @@ latency, enabling edge deployment on wearables and field devices without cloud d
 
 ---
 
-## petalTongue Visualization (V7)
+## petalTongue Visualization (V12)
 
 `scenarios::biosignal_study()` produces a 4-node scenario with:
 - TimeSeries: ECG raw + bandpass, RR tachogram, R-value calibration, EDA SCL + phasic
+- **V12**: Pan-Tompkins intermediates: derivative, squared, and MWI signals exposed as 3 additional TimeSeries channels on the QRS node (8 total channels) — making every processing stage visible
 - Gauges: HR, sensitivity, PPV, SDNN, RMSSD, pNN50, SpO2, stress index, overall score
 - Clinical ranges: Normal HR (60–100 bpm), normal SpO2 (95–100%), hypoxemia (< 90%)
 

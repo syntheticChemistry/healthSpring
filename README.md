@@ -5,7 +5,7 @@
 **Date:** March 9, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V9 — 221 unit tests (171 barraCuda + 33 forge + 17 toadStool), 37 experiments, 526+ Rust binary checks, 104 cross-validation checks. CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS topology (22/22). PCIe P2P transfer validation (26/26). Patient-parameterized clinical TRT scenarios with per-person translation (5 archetypes, 8 nodes/8 edges each). petalTongue SAME DAVE neuroanatomy integration (motor command channel, IPC bridge, clinical mode presets). Tier 2+3 live. Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**.
+**Status:** V13 — 317 tests (250 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 47 experiments, 630 Rust binary checks, 104 cross-validation checks. Deep audit complete: Anderson eigensolver fix (QL algorithm), smart `clinical.rs` refactor (1177→374+819 lines), LCG PRNG centralized (`rng.rs`), math deduplication (`evenness_to_disorder`, `lognormal_params`), capability-based Songbird discovery, flaky IPC test elimination, 4 doc-tests added. CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS (22/22). PCIe P2P transfer (26/26). Patient-parameterized clinical TRT (5 archetypes, live streaming dashboard). petalTongue: 7-type DataChannel, full stream ops, domain theming, capabilities query, interaction subscription. 13 scenarios. Zero unsafe code, zero clippy warnings, `cargo fmt` clean, `cargo doc` clean.
 
 ---
 
@@ -29,21 +29,43 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | **V9** |
-| Rust lib tests | 221 (171 barraCuda + 33 forge + 17 toadStool) |
-| Rust binary checks | 526+ |
+| Version | **V13** (post-deep-audit) |
+| Rust lib tests | 250 (barraCuda) |
+| Rust forge tests | 33 (metalForge) |
+| Rust toadStool tests | 30 |
+| Doc-tests | 4 (`shannon_index`, `hill_dose_response`, `auc_trapezoidal`, `state_to_f64`) |
+| **Total tests** | **317** |
+| Rust binary checks | 630 |
 | Python control checks | 104 (cross-validation) |
-| Experiments complete | 37 (Tier 0+1 + diagnostic + petalTongue + GPU + visualization + clinical TRT + IPC) |
+| Experiments complete | 47 (Tier 0+1+2+3 + diagnostic + visualization + clinical + streaming + interaction) |
 | GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity checks |
 | GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s |
-| petalTongue visualization | **Full** — 22 nodes, 62 data channels, 13 clinical ranges (4 tracks) |
-| Clinical TRT scenarios | 5 patient archetypes, 8 nodes + 8 edges each, clinical mode preset |
-| petalTongue SAME DAVE | Motor command channel, IPC bridge, clinical/developer/presentation modes |
-| metalForge validation | 33 tests |
-| toadStool validation | 17 tests + GPU dispatch (`Pipeline::execute_gpu`) |
+| petalTongue visualization | **Full** — 7 DataChannel types, 3 stream ops, domain theming, capabilities query, interaction subscription |
+| petalTongue scenarios | 13 scenarios (6 clinical + 5 TRT archetypes + topology + dispatch) |
+| Clinical TRT | 5 patient archetypes, live streaming dashboard (PK, HRV, HbA1c, cardiac risk) |
+| metalForge validation | 33 tests (NUCLEUS topology, dispatch planning, PCIe transfer) |
+| toadStool validation | 30 tests + GPU dispatch + streaming + auto-dispatch |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 | Unsafe blocks | 0 |
-| Clippy warnings | 0 |
+| Clippy warnings | 0 (`-D clippy::all -W clippy::pedantic`) |
+| Max file size | 819 lines (all files under 1000-line wateringHole limit) |
+
+---
+
+## V13 Deep Audit Evolution (from V12)
+
+V13 is a code quality and correctness evolution — no new experiments, but significant structural improvements:
+
+| Change | Impact |
+|--------|--------|
+| **Anderson eigensolver** | Fixed IPR bug: Hamiltonian diagonal was used instead of actual eigenvectors. Implemented tridiagonal QL algorithm in `microbiome.rs` for correct eigenvalue/eigenvector computation. Fixes `diagnostic.rs` and `scenarios/microbiome.rs`. |
+| **Smart clinical.rs refactor** | 1177 → 374 lines (clinical.rs) + 819 lines (clinical_nodes.rs). Eight node-building functions extracted by domain responsibility, not arbitrary split. Both files under 1000-line limit. |
+| **LCG PRNG centralization** | New `rng.rs` module (37 lines): `LCG_MULTIPLIER`, `lcg_step()`, `state_to_f64()`. Replaced hardcoded `6_364_136_223_846_793_005` in 4 files. |
+| **Math deduplication** | `endocrine::evenness_to_disorder` → delegates to `microbiome::evenness_to_disorder`. `endocrine::lognormal_params` → delegates to `pkpd::LognormalParam::to_normal_params`. |
+| **Capability-based discovery** | Replaced hardcoded `/tmp/songbird.sock` in `capabilities.rs` with glob-based `songbird*.sock` discovery. |
+| **Flaky IPC test fix** | `AtomicU64` unique socket paths + refactored test harness eliminates `Barrier` race conditions. |
+| **Doc-tests** | 4 added: `shannon_index`, `hill_dose_response`, `auc_trapezoidal`, `state_to_f64`. |
+| **Tolerance registry** | Added `exp067` and `exp069` CPU parity class entries. |
 
 ---
 
@@ -58,7 +80,7 @@ Pure Rust PK/PD tools replacing Python/NONMEM dependency chains. Extends neuralS
 - Two-compartment PK (biexponential α/β phases, peripheral compartment) — Exp003
 - mAb PK cross-species transfer (lokivetmab → nemolizumab/dupilumab) — Exp004
 - Population PK Monte Carlo (1,000 virtual patients, lognormal IIV) — Exp005
-- PBPK multi-compartment (liver, gut, systemic) — Exp006
+- PBPK multi-compartment (5-tissue: liver, kidney, muscle, fat, rest) — Exp006
 
 ### Track 2: Gut Microbiome and Colonization Resistance (Exp010-013)
 
@@ -73,10 +95,10 @@ Extends wetSpring's Anderson localization framework from soil to gut.
 
 Real-time physiological signal analysis on sovereign hardware.
 
-- Pan-Tompkins QRS detection (ECG R-peak) — Exp020
-- HRV metrics (RMSSD, pNN50, LF/HF) — Exp021
+- Pan-Tompkins QRS detection (ECG R-peak, 5-stage intermediates) — Exp020
+- HRV metrics (RMSSD, pNN50, LF/HF, power spectrum) — Exp021
 - PPG SpO₂ (pulse oximetry, reflectance) — Exp022
-- Biosignal fusion (ECG + PPG multi-modal) — Exp023
+- Biosignal fusion (ECG + PPG + EDA multi-modal) — Exp023
 
 ### Track 4: Endocrinology — Testosterone PK and TRT Outcomes (Exp030-038)
 
@@ -104,6 +126,10 @@ Clinical claim verification pipeline: extracting quantifiable claims from Dr. Ch
 - Fused pipeline: all ops in one GPU submission, toadStool dispatch — Exp054
 - GPU scaling: 1K→10M sweep, crossover analysis, field deployment thesis — Exp055
 
+### Visualization (Exp056)
+
+- Full petalTongue 4-track scenario generation (50 checks, 7 channel types) — Exp056
+
 ### Validation Track (Exp040)
 
 - barraCuda CPU parity (Tier 0+1 baseline for GPU migration) — Exp040
@@ -114,10 +140,26 @@ Clinical claim verification pipeline: extracting quantifiable claims from Dr. Ch
 - Mixed hardware dispatch via NUCLEUS topology (22 dispatch route checks) — Exp061
 - PCIe P2P transfer validation (DMA planning, 26 transfer checks) — Exp062
 
-### Clinical TRT Scenarios & petalTongue Integration (Exp063-064)
+### Clinical TRT Scenarios & petalTongue Integration (Exp063-065)
 
 - Patient-parameterized clinical TRT scenarios (5 archetypes, 8 nodes/8 edges each) — Exp063
 - IPC push to petalTongue (Unix socket discovery, JSON-RPC render push, fallback to file) — Exp064
+- Live streaming dashboard (ECG, HRV, PK via StreamSession with backpressure) — Exp065
+
+### Compute & Benchmark (Exp066-072)
+
+- barraCuda CPU benchmark (Hill, PopPK, Diversity timing) — Exp066
+- GPU parity extended (additional kernel validation) — Exp067
+- GPU benchmark (throughput at scale) — Exp068
+- toadStool dispatch matrix (stage assignment validation) — Exp069
+- PCIe P2P bypass (NPU→GPU direct transfer) — Exp070
+- Mixed system pipeline (CPU+GPU+NPU coordinated execution) — Exp071
+- Compute dashboard (toadStool streaming → petalTongue live gauges) — Exp072
+
+### petalTongue Evolution (Exp073-074)
+
+- Clinical TRT live dashboard (PK trough streaming, HRV improvement, cardiac risk replace) — Exp073
+- Interaction roundtrip (mock petalTongue: render, append, replace, gauge, capabilities, subscribe — 12/12) — Exp074
 
 ---
 
@@ -130,7 +172,7 @@ Tier 2: Rust GPU (barraCuda WGSL shaders, math parity with CPU)
 Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 ```
 
-**Current state**: Tier 0+1 complete for 24 experiments. **Tier 2 live**: 3 WGSL shaders compiled and validated (Exp053), fused unidirectional pipeline (Exp054), scaling to 10M elements (Exp055). CPU vs GPU parity matrix (Exp060, 27/27). Mixed hardware dispatch (Exp061, 22/22). PCIe P2P transfer (Exp062, 26/26). toadStool `Pipeline::execute_gpu()` dispatches stages via `GpuContext`. metalForge substrate routing (Tier 3 foundation). Patient-parameterized clinical TRT scenarios (Exp063) with petalTongue IPC push (Exp064).
+**Current state**: Tier 0+1 complete for 24 experiments. **Tier 2 live**: 3 WGSL shaders compiled and validated (Exp053), fused unidirectional pipeline (Exp054), scaling to 10M elements (Exp055). CPU vs GPU parity matrix (Exp060, 27/27). Mixed hardware dispatch (Exp061, 22/22). PCIe P2P transfer (Exp062, 26/26). toadStool `Pipeline::execute_gpu()` and `execute_streaming()` dispatch stages via `GpuContext`. metalForge substrate routing (Tier 3 foundation). Patient-parameterized clinical TRT scenarios (Exp063/073) with petalTongue IPC push (Exp064) and live streaming (Exp065/073). petalTongue interaction roundtrip validated (Exp074).
 
 ---
 
@@ -140,13 +182,23 @@ Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 healthSpring/
 ├── barracuda/           # Rust library — PK/PD, microbiome, biosignal, endocrine
 │   └── src/
-│       ├── lib.rs       # 145 tests, #![forbid(unsafe_code)]
+│       ├── lib.rs       # 250 tests, #![forbid(unsafe_code)]
 │       ├── pkpd/        # Track 1: Hill, 1/2-compartment, allometric, pop PK, PBPK
-│       ├── microbiome.rs # Track 2: Shannon, Simpson, Pielou, Chao1, Anderson W, FMT
+│       ├── microbiome.rs # Track 2: Shannon, Simpson, Pielou, Chao1, Anderson W, FMT, eigensolver
 │       ├── biosignal.rs  # Track 3: Pan-Tompkins, IIR bandpass, HRV, PPG, fusion
 │       ├── endocrine.rs  # Track 4: testosterone PK, decline, TRT outcomes, gut axis
-│       ├── gpu.rs       # Tier 2: GPU dispatch + GpuContext + fused pipeline
-│       └── visualization/ # petalTongue schema (DataChannel, ClinicalRange)
+│       ├── rng.rs       # Deterministic LCG PRNG (centralized)
+│       ├── gpu/         # Tier 2: GPU dispatch + GpuContext + fused pipeline
+│       │   ├── mod.rs
+│       │   ├── dispatch.rs
+│       │   └── context.rs
+│       └── visualization/ # petalTongue integration
+│           ├── ipc_push.rs      # JSON-RPC client (render, append, replace, gauge, caps, interact)
+│           ├── stream.rs        # StreamSession with backpressure
+│           ├── clinical.rs      # Patient-parameterized TRT scenario builder (374 lines)
+│           ├── clinical_nodes.rs # TRT node builders (819 lines)
+│           ├── scenarios/       # Per-track + topology + dispatch scenario builders
+│           └── capabilities.rs  # Songbird capability announcement (glob-based discovery)
 │   └── shaders/health/  # WGSL compute kernels (f64)
 │       ├── hill_dose_response_f64.wgsl
 │       ├── population_pk_f64.wgsl
@@ -156,60 +208,37 @@ healthSpring/
 │   ├── microbiome/      # exp010–exp013
 │   ├── biosignal/       # exp020–exp023
 │   ├── endocrine/       # exp030–exp038
-│   └── validation/     # Exp040 CPU parity
-├── experiments/         # Validation binaries (Tier 1) — 418 checks
-│   ├── exp001_hill_dose_response/
-│   ├── exp002_one_compartment_pk/
-│   ├── exp003_two_compartment_pk/
-│   ├── exp004_mab_pk_transfer/
-│   ├── exp005_population_pk/
-│   ├── exp006_pbpk_compartments/
-│   ├── exp010_diversity_indices/
-│   ├── exp011_anderson_gut_lattice/
-│   ├── exp012_cdiff_resistance/
-│   ├── exp013_fmt_rcdi/
-│   ├── exp020_pan_tompkins_qrs/
-│   ├── exp021_hrv_metrics/
-│   ├── exp022_ppg_spo2/
-│   ├── exp023_biosignal_fusion/
-│   ├── exp030_testosterone_im_pk/
-│   ├── exp031_testosterone_pellet_pk/
-│   ├── exp032_age_testosterone_decline/
-│   ├── exp033_trt_weight_trajectory/
-│   ├── exp034_trt_cardiovascular/
-│   ├── exp035_trt_diabetes/
-│   ├── exp036_population_trt_montecarlo/
-│   ├── exp037_testosterone_gut_axis/
-│   ├── exp038_hrv_trt_cardiovascular/
-│   ├── exp040_barracuda_cpu_parity/
-│   ├── exp050_diagnostic_pipeline/
-│   ├── exp051_population_diagnostic/
-│   ├── exp052_petaltongue_render/
-│   ├── exp053_gpu_parity/         # Tier 2: WGSL vs CPU validation
-│   ├── exp054_gpu_pipeline/       # Fused pipeline + toadStool GPU dispatch
-│   ├── exp055_gpu_scaling/        # 1K→10M scaling, crossover, field thesis
-│   ├── exp056_study_scenarios/    # V7: Full petalTongue visualization, all 4 tracks
-│   ├── exp060_cpu_vs_gpu_pipeline/ # CPU vs GPU parity matrix (27 checks)
-│   ├── exp061_mixed_hardware_dispatch/ # NUCLEUS topology dispatch (22 checks)
-│   ├── exp062_pcie_transfer_validation/ # PCIe P2P DMA planning (26 checks)
-│   ├── exp063_clinical_trt_scenarios/   # Patient-parameterized TRT (5 archetypes)
-│   └── exp064_ipc_push/                 # IPC push to petalTongue (JSON-RPC)
+│   └── validation/      # Exp040 CPU parity
+├── experiments/         # 47 validation binaries (630 binary checks)
+│   ├── exp001–exp006/   # Track 1: PK/PD
+│   ├── exp010–exp013/   # Track 2: Microbiome
+│   ├── exp020–exp023/   # Track 3: Biosignal
+│   ├── exp030–exp038/   # Track 4: Endocrinology
+│   ├── exp040/          # barraCuda CPU parity
+│   ├── exp050–exp052/   # Integrated diagnostics
+│   ├── exp053–exp056/   # GPU pipeline + visualization
+│   ├── exp060–exp062/   # CPU vs GPU + mixed dispatch + PCIe
+│   ├── exp063–exp065/   # Clinical TRT + IPC + live streaming
+│   ├── exp066–exp072/   # Compute benchmarks + dashboard
+│   └── exp073–exp074/   # petalTongue evolution (TRT dashboard, interaction roundtrip)
 ├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
 │       └── src/
-│           ├── nucleus.rs
-│           └── transfer.rs
+│           ├── nucleus.rs    # NUCLEUS atomics (Tower, Node, Nest)
+│           ├── dispatch.rs   # DispatchPlan, StageAssignment
+│           └── transfer.rs   # PCIe P2P transfer planning
 ├── toadstool/           # Compute dispatch pipeline
 │   └── src/
-│       ├── pipeline.rs
-│       └── stage.rs
-├── specs/               # Paper queue, compute profile, integration plan
+│       ├── pipeline.rs  # execute(), execute_gpu(), execute_streaming(), execute_auto()
+│       └── stage.rs     # StageOp, BiosignalFusion, AucTrapezoidal, BrayCurtis
+├── specs/               # Paper queue, evolution map, compute profile, integration plan
 ├── whitePaper/          # Scientific documentation
 │   ├── baseCamp/        # Faculty-linked sub-theses
 │   └── experiments/     # Experiment plan and status
 ├── wateringHole/        # Cross-spring handoffs
-│   └── handoffs/        # → barraCuda, toadStool, biomeOS
-├── Cargo.toml           # Workspace
+│   └── handoffs/        # → barraCuda, toadStool, petalTongue
+├── scripts/             # Dashboard, visualization, sync scripts
+├── Cargo.toml           # Workspace (59 members)
 └── README.md            # This file
 ```
 
@@ -218,12 +247,14 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 221 lib tests (barraCuda + forge + toadStool)
-cargo clippy --workspace -- -D warnings # Lint — zero warnings
+cargo test --workspace                  # 317 tests (barraCuda + forge + toadStool + doc-tests)
+cargo clippy --workspace --all-features -- -D clippy::all -W clippy::pedantic  # Zero warnings
+cargo fmt --check --all                 # Zero diffs
+cargo doc --workspace --no-deps         # Zero warnings
 
 # Full validation (all experiments + Python cross-checks)
 cargo build --workspace --release
-# Run each exp* binary (see .github/workflows/ci.yml validate job), then:
+# Run each exp* binary, then:
 python3 control/pkpd/cross_validate.py
 
 # Run individual validation binaries
@@ -242,17 +273,20 @@ cargo run --release --bin exp061_mixed_hardware_dispatch # 22 NUCLEUS dispatch c
 cargo run --release --bin exp062_pcie_transfer_validation # 26 PCIe P2P checks
 
 # Full petalTongue visualization — per-track scenario JSON generation
-cargo run --bin exp056_study_scenarios  # 47 checks across 4 tracks
-cargo run --release --bin dump_scenarios # Write 6 scenario JSON files to sandbox/scenarios/
+cargo run --bin exp056_study_scenarios  # 50 checks across 4 tracks
+cargo run --release --bin dump_scenarios # Write 13 scenario JSON files to sandbox/scenarios/
 
-# Clinical TRT patient scenarios + IPC push
+# Clinical TRT patient scenarios + live dashboard
 cargo run --bin exp063_clinical_trt_scenarios      # 5 patient archetypes
-cargo run --release --bin dump_clinical_scenarios   # Write clinical JSON to sandbox/
-cargo run --bin exp064_ipc_push                    # Push to running petalTongue instance
+cargo run --release --bin exp073_clinical_trt_dashboard  # Live streaming TRT dashboard
+cargo run --release --bin exp074_interaction_roundtrip   # Interaction roundtrip validation
+
+# Compute dashboard
+./scripts/compute_dashboard.sh  # Full compute validation suite
 
 # Load in petalTongue (topology + data channel charts)
 petaltongue ui --scenario sandbox/scenarios/healthspring-full-study.json
-petaltongue ui --scenario sandbox/scenarios/clinical-trt-middle-metabolic.json  # Clinical mode
+petaltongue ui --scenario sandbox/scenarios/healthspring-trt-obese.json  # Clinical TRT mode
 
 # Python controls
 python3 control/endocrine/exp030_testosterone_im_pk.py

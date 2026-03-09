@@ -124,6 +124,31 @@
 | exp031 | Steady-state ratio | > 0.95 | Clinical | C(5t½)/C_ss > 95%; 5 half-lives to steady state. |
 | exp031 | Washout > 50% | 0.50 | Clinical | C(6 mo) < 50% of C(end); pellet washout. |
 
+### GPU Parity Class (1e-4 to 0.25)
+
+| Experiment | Check | Tolerance | Class | Justification |
+|-----------|-------|-----------|-------|---------------|
+| exp053 | Hill GPU vs CPU | 1e-4 rel | GPU f32 transcendental | WGSL uses f32 exp/log for fractional Hill n; ~7 decimal digits. f64 GPU is driver-dependent. |
+| exp053 | PopPK GPU mean AUC vs CPU | 0.25 | GPU statistical | GPU uses xorshift32+Wang hash PRNG vs CPU LCG; different streams → statistical parity only. |
+| exp053 | PopPK GPU std AUC vs CPU | 0.25 | GPU statistical | Same PRNG difference; ±25% on std with different random streams. |
+| exp053 | PopPK AUC range [0.1, 10] | range | GPU validity | AUC must be positive and bounded; independent of PRNG. |
+| exp054 | Fused Hill vs individual | 1e-4 | GPU f32 transcendental | Same shader, single vs fused encoder; f32 precision limit. |
+| exp054 | Fused PopPK vs individual | 0.25 | GPU statistical | Statistical parity for fused vs individual dispatch. |
+| exp055 | GPU scaling linearity | 0.01 | GPU numerical | Throughput must scale with problem size; 1% for timing noise. |
+| exp060 | CPU vs GPU pipeline parity | 1e-4 | GPU f32 transcendental | Same as exp053 Hill parity. |
+| exp062 | Zero transfer bytes | 1e-15 | Machine epsilon | Same-substrate transfers should have zero overhead. |
+| exp006 | Mass conservation | 0.25 | Numerical | PBPK mass balance: sum of tissue masses vs dose; Euler discretization. |
+
+### CPU Parity Class (1e-10)
+
+| Experiment | Check | Tolerance | Class | Justification |
+|-----------|-------|-----------|-------|---------------|
+| exp067 | Hill GPU-less CPU parity | 1e-10 | Machine epsilon | CPU-only validation of all three GPU op types (Hill, PopPK, Diversity) without GPU hardware; pure f64 arithmetic. |
+| exp067 | PopPK CPU deterministic | 1e-10 | Machine epsilon | LCG-based population PK with deterministic seeds; f64 exact. |
+| exp067 | Diversity CPU parity | 1e-10 | Machine epsilon | Shannon/Simpson CPU fallback vs library; identical codepath. |
+| exp069 | ExpDecay pipeline stage | 1e-10 | Machine epsilon | `y = exp(-0.01 * x)` pipeline transform; f64 transcendental at small argument. |
+| exp069 | Dispatch plan substrate consistency | 1e-10 | Machine epsilon | metalForge substrate selection must be deterministic for given workload. |
+
 ### Summary by Experiment
 
 | Experiment | Key Tolerances | Primary Class |
@@ -145,3 +170,9 @@
 | exp035 | 1e-10, 1e-12, 0.05, 0.80, 0.30, 0.15–0.50 | Mixed |
 | exp036 | 0.05, 0.15 | Population |
 | exp037 | 1e-10, 0.001 | Machine epsilon |
+| exp053 | 1e-4, 0.25 | GPU parity |
+| exp054 | 1e-4, 0.25 | GPU parity |
+| exp060 | 1e-4, 0.25 | GPU parity |
+| exp062 | 1e-15 | Machine epsilon |
+| exp067 | 1e-10 | Machine epsilon (CPU parity) |
+| exp069 | 1e-10 | Machine epsilon (dispatch) |

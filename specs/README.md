@@ -1,7 +1,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 9, 2026
-**Status**: V9 — 37 experiments, 221 Rust tests, 526+ binary checks, 104 cross-validation checks. GPU Tier 2+3 live. CPU vs GPU parity matrix. Mixed hardware dispatch via NUCLEUS topology. PCIe P2P transfer validation. Patient-parameterized clinical TRT scenarios. petalTongue SAME DAVE motor channel + IPC bridge.
+**Status**: V13 — 47 experiments, 317 Rust tests (250 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 630 binary checks, 104 cross-validation checks. Deep audit: Anderson eigensolver (QL), smart refactoring, math deduplication, centralized RNG, 4 doc-tests, capability-based discovery. GPU Tier 2+3 live. CPU vs GPU parity matrix. Mixed hardware dispatch via NUCLEUS topology. PCIe P2P transfer validation. Patient-parameterized clinical TRT scenarios (5 archetypes, live streaming dashboard). petalTongue: full stream ops, domain theming, capabilities query, interaction subscription. 13 scenarios.
 **Domain**: Human health applications — PK/PD, gut microbiome, biosignal, endocrinology
 
 ---
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust lib tests | 211 (161 barraCuda + 33 forge + 17 toadStool) |
+| Rust lib tests | 317 (250 barraCuda + 33 forge + 30 toadStool + 4 doc-tests) |
 | Python control checks | 104 (cross-validation) |
-| Rust binary checks | 526 (393 base + 44 GPU + 27 parity + 22 dispatch + 26 PCIe + 14 scaling) |
-| Experiments | 34 (24 Tier 0+1 + 3 diagnostic + 3 GPU + 1 visualization + 3 dispatch/transfer) |
+| Rust binary checks | 630 |
+| Experiments | 47 (24 Tier 0+1 + 3 diagnostic + 3 GPU + 1 visualization + 3 dispatch + 3 clinical + 2 streaming + 7 compute/bench + 1 interaction) |
 | GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity, 27/27 CPU-GPU matrix |
 | metalForge validation (Tier 3) | 33 tests (substrate routing + dispatch planning + transfer) |
 | Paper queue | 24/30 complete |
@@ -36,9 +36,12 @@ Papers queued for reproduction and extension. Organized by track. See [PAPER_REV
 | Validation | CPU parity | 1 (Exp040) | 15 | 15 | — | **Complete** |
 | Diagnostics | Integrated pipeline | 3 (Exp050-052) | — | 87 | — | **Complete** |
 | GPU | Tier 2 pipeline | 3 (Exp053-055) | — | GPU live | — | **Complete** |
-| Visualization | petalTongue scenarios | 1 (Exp056) | — | 47 | — | **Complete** |
+| Visualization | petalTongue scenarios | 1 (Exp056) | — | 50 | — | **Complete** |
 | Dispatch | CPU vs GPU + mixed HW | 3 (Exp060-062) | — | 75 | — | **Complete** |
-| **Total** | | **34** | **289** | **526** | **211** | **All green** |
+| Clinical | TRT + IPC + streaming | 3 (Exp063-065) | — | structural | — | **Complete** |
+| Compute | Benchmarks + dashboard | 7 (Exp066-072) | — | structural | — | **Complete** |
+| petalTongue | Evolution + interaction | 2 (Exp073-074) | — | 19 | — | **Complete** |
+| **Total** | | **47** | **289** | **630** | **317** | **All green** |
 
 ---
 
@@ -57,6 +60,17 @@ All healthSpring experiments use **publicly accessible data or published model p
 | Saad et al. 2013, 2016 (Moscow/Bremerhaven TRT registries) | Track 4 | Open (Obesity, Int J Obes) |
 | Kapoor et al. 2006 (TRT RCT, Sheffield) | Track 4 | Open (Diabetes Care) |
 | Sharma et al. 2015 (TRT cardiovascular meta-analysis) | Track 4 | Open (JAMA IM) |
+
+### Open Data Controls for Paper Validation
+
+Every paper in the review queue is validated against open data at three tiers:
+
+1. **Tier 0 (Python control)**: Reference implementation using published equations and parameters from peer-reviewed literature. All source data is cited with DOI or accession number.
+2. **Tier 1 (Rust CPU)**: Pure Rust implementation validated against the Python baseline within documented tolerances (`specs/TOLERANCE_REGISTRY.md`). Same open data sources.
+3. **Tier 2 (Rust GPU)**: WGSL shader output validated against CPU baseline for math parity. No additional data — proves compute substrate independence.
+4. **Tier 3 (metalForge)**: Cross-substrate dispatch validated for routing correctness. toadStool pipeline produces identical results regardless of CPU/GPU/NPU assignment.
+
+No experiment requires proprietary data, commercial software licenses, or restricted datasets.
 
 ---
 
@@ -81,11 +95,13 @@ Tier 2: Rust GPU (barraCuda WGSL) ← LIVE
   └─ Scaling: GPU crossover at 100K elements, peak 207 M/s (RTX 4070)
   └─ Validated: Exp053 (parity), Exp054 (fused pipeline), Exp055 (scaling)
 
-Tier 3: metalForge + toadStool dispatch ← IN PROGRESS
-  └─ toadStool Pipeline::execute_gpu() dispatches via GpuContext
+Tier 3: metalForge + toadStool dispatch ← LIVE
+  └─ toadStool Pipeline::execute_gpu() and execute_streaming() dispatch via GpuContext
   └─ metalForge select_substrate() routes by element count
   └─ Cross-substrate: CPU ↔ GPU ↔ NPU routing
-  └─ Target: single GPU in the field (Pi + eGPU), future TPU/NPU
+  └─ NUCLEUS atomics: Tower/Node/Nest hierarchy for mixed hardware
+  └─ PCIe P2P: NPU→GPU direct transfer bypassing CPU roundtrip
+  └─ biomeOS atomic graphs for node and tower deployments
 ```
 
 ---
@@ -105,4 +121,8 @@ See [BARRACUDA_REQUIREMENTS.md](BARRACUDA_REQUIREMENTS.md) for detailed primitiv
 | **groundSpring** | Error propagation, uncertainty quantification, spectral methods |
 | **airSpring** | CytokineBrain visualization, sensor fusion patterns |
 | **hotSpring** | Lattice methods (SU(3) → tissue lattice), Anderson spectral theory |
-| **barraCuda** | All GPU primitives (standalone math library) |
+| **barraCuda** | All GPU primitives (standalone math library, v0.3.3) |
+| **toadStool** | Compute pipeline dispatch (CPU/GPU/NPU routing, streaming) |
+| **metalForge** | NUCLEUS topology, substrate capabilities, PCIe transfer planning |
+| **petalTongue** | Universal UI — 7 DataChannel types, streaming, interaction, domain theming |
+| **biomeOS** | Deployment graphs, atomic orchestration (healthspring_deploy.toml) |

@@ -83,6 +83,39 @@ impl Pipeline {
         }
     }
 
+    /// Execute the pipeline on CPU with per-stage streaming callbacks.
+    ///
+    /// After each stage completes, the `on_stage` callback is invoked with
+    /// the stage index, total stage count, and the `StageResult`. This
+    /// enables integration with `petalTongue` `StreamSession` for live
+    /// progress reporting.
+    #[must_use]
+    pub fn execute_streaming<F>(&self, mut on_stage: F) -> PipelineResult
+    where
+        F: FnMut(usize, usize, &StageResult),
+    {
+        let n_stages = self.stages.len();
+        let mut results = Vec::with_capacity(n_stages);
+        let mut total_time = 0.0;
+        let mut all_success = true;
+        let mut input_data: Option<Vec<f64>> = None;
+
+        for (i, stage) in self.stages.iter().enumerate() {
+            let result = stage.execute(input_data.as_deref());
+            total_time += result.elapsed_us;
+            all_success &= result.success;
+            on_stage(i, n_stages, &result);
+            input_data = Some(result.output_data.clone());
+            results.push(result);
+        }
+
+        PipelineResult {
+            stage_results: results,
+            total_time_us: total_time,
+            success: all_success,
+        }
+    }
+
     /// Execute the pipeline on GPU via a fused single-submission dispatch.
     ///
     /// Stages that map to GPU ops are batched and dispatched in a single
@@ -292,12 +325,15 @@ fn stage_to_workload(stage: &Stage, input: Option<&[f64]>) -> healthspring_forge
         StageOp::Generate { n_elements, .. } => healthspring_forge::Workload::PopulationPk {
             n_patients: *n_elements as u32,
         },
-        StageOp::DiversityReduce { communities } => {
+        StageOp::DiversityReduce { communities } | StageOp::BrayCurtis { communities } => {
             healthspring_forge::Workload::DiversityIndex {
                 n_samples: communities.len() as u32,
             }
         }
         StageOp::Reduce { .. } => healthspring_forge::Workload::DiversityIndex { n_samples: n },
+        StageOp::BiosignalFusion { n_channels } => healthspring_forge::Workload::BiosignalFusion {
+            channels: *n_channels as u32,
+        },
         _ => healthspring_forge::Workload::Analytical,
     }
 }
@@ -340,6 +376,37 @@ mod tests {
             operation: StageOp::Reduce {
                 kind: ReduceKind::Mean,
             },
+        }
+    }
+
+    fn make_diversity_stage() -> Stage {
+        Stage {
+            name: "diversity".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::DiversityReduce {
+                communities: vec![vec![0.25, 0.25, 0.25, 0.25], vec![0.9, 0.05, 0.03, 0.02]],
+            },
+        }
+    }
+
+    fn make_population_pk_stage() -> Stage {
+        Stage {
+            name: "pop_pk".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::PopulationPk {
+                n_patients: 20,
+                dose_mg: 4.0,
+                f_bioavail: 0.79,
+                seed: 123,
+            },
+        }
+    }
+
+    fn make_filter_stage(threshold: f64) -> Stage {
+        Stage {
+            name: "filter".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Filter { threshold },
         }
     }
 
@@ -398,5 +465,279 @@ mod tests {
         assert!(result.success);
         assert!(result.stage_results.is_empty());
         assert_eq!(result.total_time_us, 0.0);
+    }
+
+    #[test]
+    fn pipeline_execute_cpu_with_diversity_reduce() {
+        let mut p = Pipeline::new("diversity");
+        p.add_stage(make_diversity_stage());
+
+        let result = p.execute_cpu();
+        assert!(result.success);
+        assert_eq!(result.stage_results.len(), 1);
+        // DiversityReduce outputs [shannon1, simpson1, shannon2, simpson2] per community
+        assert_eq!(result.stage_results[0].output_data.len(), 4);
+        assert!(result.total_time_us > 0.0);
+    }
+
+    #[test]
+    fn pipeline_execute_cpu_with_population_pk() {
+        let mut p = Pipeline::new("pop_pk");
+        p.add_stage(make_population_pk_stage());
+
+        let result = p.execute_cpu();
+        assert!(result.success);
+        assert_eq!(result.stage_results.len(), 1);
+        assert_eq!(result.stage_results[0].output_data.len(), 20);
+        assert!(result.stage_results[0].output_data.iter().all(|&v| v > 0.0));
+    }
+
+    #[test]
+    fn pipeline_execute_cpu_with_filter() {
+        let mut p = Pipeline::new("filtered");
+        p.add_stage(make_generate_stage());
+        p.add_stage(make_filter_stage(0.5));
+
+        let result = p.execute_cpu();
+        assert!(result.success);
+        assert_eq!(result.stage_results.len(), 2);
+        let filtered = &result.stage_results[1].output_data;
+        assert!(filtered.iter().all(|&x| x > 0.5));
+        assert!(filtered.len() <= 10);
+    }
+
+    #[test]
+    fn pipeline_success_tracking_generate_transform_filter_reduce() {
+        let mut p = Pipeline::new("full");
+        p.add_stage(make_generate_stage());
+        p.add_stage(make_transform_stage());
+        p.add_stage(make_filter_stage(0.1));
+        p.add_stage(Stage {
+            name: "sum".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Reduce {
+                kind: ReduceKind::Sum,
+            },
+        });
+
+        let result = p.execute_cpu();
+        assert!(result.success);
+        assert_eq!(result.stage_results.len(), 4);
+        assert_eq!(result.stage_results[3].output_data.len(), 1);
+    }
+
+    #[test]
+    fn pipeline_data_flow_correctness() {
+        let mut p = Pipeline::new("flow");
+        p.add_stage(Stage {
+            name: "gen".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Generate {
+                n_elements: 5,
+                seed: 999,
+            },
+        });
+        p.add_stage(Stage {
+            name: "square".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::ElementwiseTransform {
+                kind: TransformKind::Square,
+            },
+        });
+        p.add_stage(Stage {
+            name: "sum".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Reduce {
+                kind: ReduceKind::Sum,
+            },
+        });
+
+        let result = p.execute_cpu();
+        assert!(result.success);
+        let gen_out = &result.stage_results[0].output_data;
+        let square_out = &result.stage_results[1].output_data;
+        let sum_out = &result.stage_results[2].output_data;
+
+        assert_eq!(gen_out.len(), 5);
+        assert_eq!(square_out.len(), 5);
+        for i in 0..5 {
+            let expected = gen_out[i] * gen_out[i];
+            assert!(
+                (square_out[i] - expected).abs() < 1e-10,
+                "square[{i}] = {} expected {}",
+                square_out[i],
+                expected
+            );
+        }
+        let expected_sum: f64 = square_out.iter().sum();
+        assert!(
+            (sum_out[0] - expected_sum).abs() < 1e-10,
+            "sum = {} expected {}",
+            sum_out[0],
+            expected_sum
+        );
+    }
+
+    #[test]
+    fn pipeline_result_total_time_positive() {
+        let mut p = Pipeline::new("timed");
+        p.add_stage(make_generate_stage());
+        p.add_stage(make_reduce_stage());
+
+        let result = p.execute_cpu();
+        assert!(result.success);
+        assert!(result.total_time_us >= 0.0);
+    }
+
+    #[test]
+    fn pipeline_reduce_sum() {
+        let mut p = Pipeline::new("sum");
+        p.add_stage(Stage {
+            name: "gen".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Generate {
+                n_elements: 4,
+                seed: 1,
+            },
+        });
+        p.add_stage(Stage {
+            name: "sum".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Reduce {
+                kind: ReduceKind::Sum,
+            },
+        });
+        let result = p.execute_cpu();
+        assert!(result.success);
+        assert_eq!(result.stage_results[1].output_data.len(), 1);
+    }
+
+    #[test]
+    fn pipeline_reduce_max() {
+        let mut p = Pipeline::new("max");
+        p.add_stage(make_generate_stage());
+        p.add_stage(Stage {
+            name: "max".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Reduce {
+                kind: ReduceKind::Max,
+            },
+        });
+        let result = p.execute_cpu();
+        assert!(result.success);
+        assert_eq!(result.stage_results[1].output_data.len(), 1);
+        assert!(result.stage_results[1].output_data[0] <= 1.0);
+    }
+
+    #[test]
+    fn pipeline_reduce_min() {
+        let mut p = Pipeline::new("min");
+        p.add_stage(make_generate_stage());
+        p.add_stage(Stage {
+            name: "min".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Reduce {
+                kind: ReduceKind::Min,
+            },
+        });
+        let result = p.execute_cpu();
+        assert!(result.success);
+        assert_eq!(result.stage_results[1].output_data.len(), 1);
+        assert!(result.stage_results[1].output_data[0] >= 0.0);
+    }
+
+    #[test]
+    fn pipeline_transform_square() {
+        let mut p = Pipeline::new("square");
+        p.add_stage(Stage {
+            name: "gen".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Generate {
+                n_elements: 3,
+                seed: 0,
+            },
+        });
+        p.add_stage(Stage {
+            name: "sq".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::ElementwiseTransform {
+                kind: TransformKind::Square,
+            },
+        });
+        let result = p.execute_cpu();
+        assert!(result.success);
+        let out = &result.stage_results[1].output_data;
+        assert_eq!(out.len(), 3);
+        for i in 0..3 {
+            let inp = result.stage_results[0].output_data[i];
+            assert!((out[i] - inp * inp).abs() < 1e-10);
+        }
+    }
+
+    #[test]
+    fn pipeline_transform_exp_decay() {
+        let mut p = Pipeline::new("exp_decay");
+        p.add_stage(Stage {
+            name: "gen".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::Generate {
+                n_elements: 5,
+                seed: 42,
+            },
+        });
+        p.add_stage(Stage {
+            name: "decay".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::ElementwiseTransform {
+                kind: TransformKind::ExpDecay { k: 0.1, t: 1.0 },
+            },
+        });
+        let result = p.execute_cpu();
+        assert!(result.success);
+        assert_eq!(result.stage_results[1].output_data.len(), 5);
+    }
+
+    #[test]
+    fn pipeline_execute_streaming_invokes_callback() {
+        let mut p = Pipeline::new("streaming_test");
+        p.add_stage(make_generate_stage());
+        p.add_stage(make_transform_stage());
+        p.add_stage(make_reduce_stage());
+
+        let mut callback_calls = Vec::new();
+        let result = p.execute_streaming(|idx, total, stage_result| {
+            callback_calls.push((idx, total, stage_result.stage_name.clone()));
+        });
+
+        assert!(result.success);
+        assert_eq!(result.stage_results.len(), 3);
+        assert_eq!(callback_calls.len(), 3);
+        assert_eq!(callback_calls[0], (0, 3, "gen".to_string()));
+        assert_eq!(callback_calls[1], (1, 3, "hill".to_string()));
+        assert_eq!(callback_calls[2], (2, 3, "mean".to_string()));
+    }
+
+    #[test]
+    fn pipeline_execute_streaming_matches_cpu() {
+        let mut p = Pipeline::new("streaming_cpu_match");
+        p.add_stage(make_generate_stage());
+        p.add_stage(make_transform_stage());
+        p.add_stage(make_reduce_stage());
+
+        let cpu_result = p.execute_cpu();
+        let streaming_result = p.execute_streaming(|_, _, _| {});
+
+        assert_eq!(
+            cpu_result.stage_results.len(),
+            streaming_result.stage_results.len()
+        );
+        for (cpu, stream) in cpu_result
+            .stage_results
+            .iter()
+            .zip(streaming_result.stage_results.iter())
+        {
+            assert_eq!(cpu.output_data, stream.output_data);
+            assert_eq!(cpu.stage_name, stream.stage_name);
+        }
     }
 }

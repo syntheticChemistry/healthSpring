@@ -159,13 +159,9 @@ fn main() {
 
     verify_scenario_json_structure(&json, &mut passed, &mut failed);
 
-    println!(
-        "\nExp050 Diagnostic Pipeline: {passed}/{} checks passed",
-        passed + failed
-    );
-    if failed > 0 {
-        std::process::exit(1);
-    }
+    let total = passed + failed;
+    println!("\nExp050 Diagnostic Pipeline: {passed}/{total} checks passed",);
+    std::process::exit(i32::from(passed != total));
 }
 
 fn verify_scenario_json_structure(json: &str, passed: &mut u32, failed: &mut u32) {

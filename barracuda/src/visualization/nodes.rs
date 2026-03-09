@@ -6,7 +6,7 @@
 
 use crate::diagnostic::DiagnosticAssessment;
 
-use super::types::{ClinicalRange, DataChannel, Position, ScenarioEdge, ScenarioNode};
+use super::types::{ClinicalRange, DataChannel, ScenarioEdge, ScenarioNode};
 
 pub(super) fn risk_to_health(risk: f64) -> u8 {
     #[expect(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
@@ -41,7 +41,7 @@ pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<S
             status: health_to_status(patient_health).into(),
             health: patient_health,
             confidence: 95,
-            position: Position { x: 480.0, y: 80.0 },
+            position: None,
             capabilities: vec!["science.diagnostic.assess_patient".into()],
             data_channels: vec![DataChannel::Gauge {
                 id: "composite_risk".into(),
@@ -67,7 +67,7 @@ pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<S
             status: health_to_status(gut_health).into(),
             health: gut_health,
             confidence: 80,
-            position: Position { x: 380.0, y: 480.0 },
+            position: None,
             capabilities: vec!["science.cross_track.gut_metabolic_response".into()],
             data_channels: vec![DataChannel::Gauge {
                 id: "gut_trt_response".into(),
@@ -89,7 +89,7 @@ pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<S
             status: health_to_status(hrv_health).into(),
             health: hrv_health,
             confidence: 95,
-            position: Position { x: 700.0, y: 480.0 },
+            position: None,
             capabilities: vec!["science.cross_track.hrv_cardiac_composite".into()],
             data_channels: vec![DataChannel::Gauge {
                 id: "hrv_cardiac_composite".into(),
@@ -115,7 +115,7 @@ fn build_pk_node(a: &DiagnosticAssessment) -> ScenarioNode {
         status: "healthy".into(),
         health: 100,
         confidence: 100,
-        position: Position { x: 160.0, y: 280.0 },
+        position: None,
         capabilities: vec![
             "science.pkpd.one_compartment_pk".into(),
             "science.pkpd.hill_dose_response".into(),
@@ -186,7 +186,7 @@ fn build_microbiome_node(a: &DiagnosticAssessment, health: u8) -> ScenarioNode {
         status: health_to_status(health).into(),
         health,
         confidence: 88,
-        position: Position { x: 360.0, y: 280.0 },
+        position: None,
         capabilities: vec!["science.microbiome.shannon_index".into()],
         data_channels: vec![
             DataChannel::Bar {
@@ -245,7 +245,7 @@ fn build_biosignal_node(a: &DiagnosticAssessment, health: u8) -> ScenarioNode {
         status: health_to_status(health).into(),
         health,
         confidence: 92,
-        position: Position { x: 600.0, y: 280.0 },
+        position: None,
         capabilities: vec![
             "science.biosignal.pan_tompkins".into(),
             "science.biosignal.fuse_channels".into(),
@@ -350,7 +350,7 @@ fn build_endocrine_node(a: &DiagnosticAssessment, health: u8) -> ScenarioNode {
         status: health_to_status(health).into(),
         health,
         confidence: 97,
-        position: Position { x: 800.0, y: 280.0 },
+        position: None,
         capabilities: vec!["science.endocrine.testosterone_pk".into()],
         data_channels: vec![
             DataChannel::Gauge {

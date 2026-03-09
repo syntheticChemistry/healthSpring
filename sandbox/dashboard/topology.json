@@ -1,0 +1,216 @@
+{
+  "name": "NUCLEUS Tower 0",
+  "description": "Hardware topology — Tower/Node/Nest hierarchy with PCIe P2P and dispatch assignments",
+  "version": "2.0.0",
+  "mode": "live-ecosystem",
+  "sensory_config": {
+    "required_capabilities": {
+      "outputs": [
+        "visual"
+      ],
+      "inputs": []
+    },
+    "optional_capabilities": {
+      "outputs": [
+        "audio"
+      ],
+      "inputs": [
+        "pointer",
+        "keyboard"
+      ]
+    },
+    "complexity_hint": "standard"
+  },
+  "ui_config": {
+    "theme": "benchtop-dark",
+    "animations": {
+      "enabled": true,
+      "breathing_nodes": true,
+      "connection_pulses": true,
+      "smooth_transitions": true,
+      "celebration_effects": false
+    },
+    "performance": {
+      "target_fps": 60,
+      "vsync": true,
+      "hardware_acceleration": true
+    }
+  },
+  "ecosystem": {
+    "primals": [
+      {
+        "id": "T0.N0.D0",
+        "name": "CPU (16 cores)",
+        "type": "cpu",
+        "family": "nucleus",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 90,
+        "capabilities": [
+          "cpu"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "T0.N0.D0_mem",
+            "label": "Memory",
+            "value": 8589934592.0,
+            "min": 0.0,
+            "max": 68719476736.0,
+            "unit": "bytes",
+            "normal_range": [
+              0.0,
+              54975581388.8
+            ],
+            "warning_range": [
+              54975581388.8,
+              65283502899.2
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "T0.N0.D0_util",
+            "label": "Utilization",
+            "value": 15.0,
+            "min": 0.0,
+            "max": 100.0,
+            "unit": "%",
+            "normal_range": [
+              0.0,
+              80.0
+            ],
+            "warning_range": [
+              80.0,
+              95.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "T0.N0.D1",
+        "name": "GPU (RTX 4090)",
+        "type": "gpu",
+        "family": "nucleus",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 90,
+        "capabilities": [
+          "gpu"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "T0.N0.D1_mem",
+            "label": "Memory",
+            "value": 2147483648.0,
+            "min": 0.0,
+            "max": 25769803776.0,
+            "unit": "bytes",
+            "normal_range": [
+              0.0,
+              20615843020.800003
+            ],
+            "warning_range": [
+              20615843020.800003,
+              24481313587.199997
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "T0.N0.D1_util",
+            "label": "Utilization",
+            "value": 0.0,
+            "min": 0.0,
+            "max": 100.0,
+            "unit": "%",
+            "normal_range": [
+              0.0,
+              80.0
+            ],
+            "warning_range": [
+              80.0,
+              95.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "T0.N0.D2",
+        "name": "NPU (Akida)",
+        "type": "npu",
+        "family": "nucleus",
+        "status": "healthy",
+        "health": 100,
+        "confidence": 90,
+        "capabilities": [
+          "npu"
+        ],
+        "data_channels": [
+          {
+            "channel_type": "gauge",
+            "id": "T0.N0.D2_mem",
+            "label": "Memory",
+            "value": 0.0,
+            "min": 0.0,
+            "max": 268435456.0,
+            "unit": "bytes",
+            "normal_range": [
+              0.0,
+              214748364.8
+            ],
+            "warning_range": [
+              214748364.8,
+              255013683.2
+            ]
+          },
+          {
+            "channel_type": "gauge",
+            "id": "T0.N0.D2_util",
+            "label": "Utilization",
+            "value": 0.0,
+            "min": 0.0,
+            "max": 100.0,
+            "unit": "%",
+            "normal_range": [
+              0.0,
+              80.0
+            ],
+            "warning_range": [
+              80.0,
+              95.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "neural_api": {
+    "enabled": false
+  },
+  "edges": [
+    {
+      "from": "T0.N0.D0",
+      "to": "T0.N0.D1",
+      "edge_type": "data-flow",
+      "label": "PCIe Gen4"
+    },
+    {
+      "from": "T0.N0.D0",
+      "to": "T0.N0.D2",
+      "edge_type": "data-flow",
+      "label": "PCIe Gen4"
+    },
+    {
+      "from": "T0.N0.D1",
+      "to": "T0.N0.D2",
+      "edge_type": "data-flow",
+      "label": "PCIe Gen4"
+    },
+    {
+      "from": "T0.N0.D2",
+      "to": "T0.N0.D1",
+      "edge_type": "data-flow",
+      "label": "PCIe P2P Gen4 31.5 GB/s"
+    }
+  ]
+}

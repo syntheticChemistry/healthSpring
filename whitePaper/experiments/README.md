@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V9 — 37 experiments (Tier 0+1 + diagnostic + petalTongue + GPU pipeline + visualization + mixed dispatch + clinical TRT + IPC), 221 Rust unit tests, 526+ binary checks, 104 cross-validation checks
+**Status**: V13 — 47 experiments (Tier 0+1+2+3 + diagnostic + petalTongue + GPU + visualization + dispatch + clinical TRT + streaming + interaction), 317 Rust tests (250 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 630 binary checks, 104 cross-validation checks. Deep audit: Anderson eigensolver, smart refactoring, math deduplication, 4 doc-tests.
 **Last Updated**: March 9, 2026
 
 ---
@@ -13,18 +13,18 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
 |-----|------|---------|:-----:|:------:|:-----------:|
-| 001 | Hill dose-response (4 human JAK inhibitors) | nS-601 extension | 0,1 | 19 | 18 |
+| 001 | Hill dose-response (4 human JAK inhibitors) | nS-601 extension | 0,1,2 | 19 | 18 |
 | 002 | One-compartment PK (IV bolus + oral + multi-dose) | Rowland & Tozer Ch. 3 | 0,1 | 12 | 18 |
 | 003 | Two-compartment PK (biexponential α/β) | Rowland & Tozer Ch. 19 | 0,1 | 15 | 11 |
 | 004 | mAb PK cross-species transfer (lokivetmab → nemolizumab) | nS-603 extension | 0,1 | 12 | 7 |
-| 005 | Population PK Monte Carlo (1,000 patients) | Mould & Upton 2013 | 0,1 | 15 | 12 |
+| 005 | Population PK Monte Carlo (1,000 patients) | Mould & Upton 2013 | 0,1,2 | 15 | 12 |
 | 006 | PBPK 5-tissue physiological compartments | Gabrielsson & Weiner | 0,1 | 13 | 13 |
 
 ### Track 2: Gut Microbiome
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
 |-----|------|---------|:-----:|:------:|:-----------:|
-| 010 | Shannon/Simpson/Pielou/Chao1 diversity | wetSpring Track 1 | 0,1 | 14 | 12 |
+| 010 | Shannon/Simpson/Pielou/Chao1 diversity | wetSpring Track 1 | 0,1,2 | 14 | 12 |
 | 011 | Anderson localization in gut lattice | wetSpring Exp107 extension | 0,1 | 12 | 14 |
 | 012 | C. diff colonization resistance score | Jenior 2021 / Anderson ξ | 0,1 | 10 | 10 |
 | 013 | FMT microbiota transplant for rCDI | van Nood 2013 / Bray-Curtis | 0,1 | 12 | 12 |
@@ -33,7 +33,7 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
 |-----|------|---------|:-----:|:------:|:-----------:|
-| 020 | Pan-Tompkins QRS detection | Pan & Tompkins 1985 | 0,1 | 12 | 12 |
+| 020 | Pan-Tompkins QRS detection (5-stage intermediates) | Pan & Tompkins 1985 | 0,1 | 12 | 12 |
 | 021 | HRV metrics (SDNN, RMSSD, pNN50) | Task Force 1996 | 0,1 | 10 | 10 |
 | 022 | PPG SpO2 R-value calibration | Beer-Lambert / Tremper 1989 | 0,1 | 11 | 11 |
 | 023 | Multi-channel fusion (ECG + PPG + EDA) | Composite weighted index | 0,1 | 11 | 11 |
@@ -52,6 +52,12 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 037 | Testosterone–gut axis: microbiome stratification | Cross-track 2×4 hypothesis | 0,1 | 12 | 10 |
 | 038 | HRV × TRT cardiovascular (cross-track D3) | Kleiger 1987 / Mok Ch. 6 | 0,1 | 10 | 10 |
 
+### Validation
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 040 | barraCuda CPU parity (15 analytical contracts) | Analytical identities | 0,1 | 15 | 15 |
+
 ### Integrated Diagnostics
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
@@ -60,46 +66,60 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 051 | Population diagnostic Monte Carlo (1000 patients) | Statistical validation | 1 | — | 21 |
 | 052 | petalTongue scenario schema validation | JSON round-trip | 1 | — | 31 |
 
-### Validation
-
-| Exp | Name | Control | Tiers | Python | Rust Binary |
-|-----|------|---------|:-----:|:------:|:-----------:|
-| 040 | barraCuda CPU parity (15 analytical contracts) | Analytical identities | 0,1 | 15 | 15 |
-
 ### GPU Pipeline (Tier 2)
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
 |-----|------|---------|:-----:|:------:|:-----------:|
-| 053 | GPU parity: WGSL shaders vs CPU (Hill, PopPK, Diversity) | CPU reference | 2 | — | 17 checks |
-| 054 | Fused pipeline: single encoder + toadStool GPU dispatch | Individual dispatch | 2,3 | — | 11 checks |
+| 053 | GPU parity: WGSL shaders vs CPU (Hill, PopPK, Diversity) | CPU reference | 2 | — | 17 |
+| 054 | Fused pipeline: single encoder + toadStool GPU dispatch | Individual dispatch | 2,3 | — | 11 |
 | 055 | GPU scaling: 1K→10M sweep, crossover, field deployment | CPU baseline | 2 | — | Benchmark |
 
 ### Visualization (petalTongue Scenarios)
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
 |-----|------|---------|:-----:|:------:|:-----------:|
-| 056 | Full petalTongue visualization for all 4 study tracks | Schema validation | 1 | — | 47 checks |
+| 056 | Full petalTongue visualization (4 tracks, 7 channel types) | Schema validation | 1 | — | 50 |
 
 ### Dispatch and Transfer (V8)
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
 |-----|------|---------|:-----:|:------:|:-----------:|
-| 060 | CPU vs GPU parity matrix — 3 kernels x 3 scales via toadStool Pipeline | CPU reference | 2,3 | — | 27 checks |
-| 061 | Mixed hardware dispatch — NUCLEUS topology, substrate transitions, PCIe P2P | CPU fallback | 3 | — | 22 checks |
-| 062 | PCIe P2P transfer validation — Gen3/4/5 bandwidth, realistic workloads | Analytical | 3 | — | 26 checks |
+| 060 | CPU vs GPU parity matrix — 3 kernels × 3 scales | CPU reference | 2,3 | — | 27 |
+| 061 | Mixed hardware dispatch — NUCLEUS topology, PCIe P2P | CPU fallback | 3 | — | 22 |
+| 062 | PCIe P2P transfer validation — Gen3/4/5 bandwidth | Analytical | 3 | — | 26 |
 
-### Clinical TRT Scenarios & petalTongue Integration (V9)
+### Clinical TRT Scenarios & petalTongue IPC (V9)
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
 |-----|------|---------|:-----:|:------:|:-----------:|
-| 063 | Patient-parameterized TRT scenarios (5 archetypes, clinical mode preset) | Schema validation | 1 | — | Structural |
-| 064 | IPC push to petalTongue (Unix socket discovery, JSON-RPC, fallback) | E2E integration | 1 | — | Structural |
+| 063 | Patient-parameterized TRT (5 archetypes, clinical mode) | Schema validation | 1 | — | Structural |
+| 064 | IPC push to petalTongue (Unix socket, JSON-RPC, fallback) | E2E integration | 1 | — | Structural |
+| 065 | Live streaming dashboard (ECG, HRV, PK via StreamSession) | Backpressure validation | 1 | — | Structural |
+
+### Compute & Benchmark (V10-V11)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 066 | barraCuda CPU benchmark (Hill, PopPK, Diversity timing) | Timing reference | 1 | — | Structural |
+| 067 | GPU parity extended (additional kernel validation) | CPU reference | 2 | — | Structural |
+| 068 | GPU benchmark (throughput at scale) | CPU timing | 2 | — | Structural |
+| 069 | toadStool dispatch matrix (stage assignment) | Manual dispatch | 3 | — | Structural |
+| 070 | PCIe P2P bypass (NPU→GPU direct transfer) | CPU roundtrip | 3 | — | Structural |
+| 071 | Mixed system pipeline (CPU+GPU+NPU coordinated) | Sequential fallback | 3 | — | Structural |
+| 072 | Compute dashboard (toadStool → petalTongue live gauges) | Schema validation | 1 | — | 8 |
+
+### petalTongue Evolution (V12)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 073 | Clinical TRT live dashboard (PK trough, HRV, cardiac risk) | Schema + stream validation | 1 | — | 7 |
+| 074 | Interaction roundtrip (mock petalTongue: caps + subscribe) | Mock server E2E | 1 | — | 12 |
 
 ### Cross-Validation
 
 | Test | Scope | Matches | Status |
 |------|-------|:-------:|--------|
-| cross_validate.py | All 24 experiments Python ↔ Rust | 104/104 | **Complete** |
+| cross_validate.py | All 24 core experiments Python ↔ Rust | 104/104 | **Complete** |
 
 ---
 
@@ -137,12 +157,22 @@ experiments/
 ├── exp053_gpu_parity/
 ├── exp054_gpu_pipeline/
 ├── exp055_gpu_scaling/
-├── exp056_study_scenarios/   # V7: Full petalTongue visualization for all 4 tracks
-├── exp060_cpu_vs_gpu_pipeline/  # V8: CPU vs GPU parity matrix (3 kernels x 3 scales)
-├── exp061_mixed_hardware_dispatch/  # V8: NUCLEUS topology + DispatchPlan
-├── exp062_pcie_transfer_validation/ # V8: PCIe P2P Gen3/4/5 bandwidth validation
-├── exp063_clinical_trt_scenarios/   # V9: Patient-parameterized TRT (5 archetypes)
-└── exp064_ipc_push/                 # V9: IPC push to petalTongue (JSON-RPC)
+├── exp056_study_scenarios/       # V7: Full petalTongue visualization for all 4 tracks
+├── exp060_cpu_vs_gpu_pipeline/   # V8: CPU vs GPU parity matrix
+├── exp061_mixed_hardware_dispatch/ # V8: NUCLEUS topology + DispatchPlan
+├── exp062_pcie_transfer_validation/ # V8: PCIe P2P Gen3/4/5 bandwidth
+├── exp063_clinical_trt_scenarios/  # V9: Patient-parameterized TRT (5 archetypes)
+├── exp064_ipc_push/               # V9: IPC push to petalTongue (JSON-RPC)
+├── exp065_live_dashboard/         # V10: Live streaming dashboard
+├── exp066_barracuda_cpu_bench/    # V10: CPU benchmarks
+├── exp067_gpu_parity_extended/    # V10: Extended GPU validation
+├── exp068_gpu_benchmark/          # V10: GPU throughput benchmark
+├── exp069_toadstool_dispatch_matrix/ # V11: toadStool dispatch validation
+├── exp070_pcie_p2p_bypass/        # V11: PCIe P2P bypass (NPU→GPU)
+├── exp071_mixed_system_pipeline/  # V11: Mixed CPU+GPU+NPU pipeline
+├── exp072_compute_dashboard/      # V11: Compute dashboard → petalTongue
+├── exp073_clinical_trt_dashboard/ # V12: Live TRT clinical dashboard
+└── exp074_interaction_roundtrip/  # V12: Interaction roundtrip validation
 ```
 
 Controls live in `control/`:
@@ -189,12 +219,15 @@ control/
 - **020–029**: Track 3 (Biosignal)
 - **030–039**: Track 4 (Endocrinology)
 - **040–049**: Validation and parity
-- **050–052**: Integrated diagnostics and visualization
+- **050–052**: Integrated diagnostics and visualization schema
 - **053–055**: GPU pipeline (Tier 2) and scaling
 - **056–059**: Visualization and petalTongue scenario generation
 - **060–062**: CPU vs GPU parity, mixed hardware dispatch, PCIe transfer
-- **063–064**: Clinical TRT patient scenarios, petalTongue IPC push
-- **065+**: Extensions and cross-spring validations
+- **063–065**: Clinical TRT patient scenarios, petalTongue IPC, live streaming
+- **066–068**: Compute benchmarks (CPU and GPU)
+- **069–072**: toadStool dispatch, PCIe bypass, mixed systems, compute dashboard
+- **073–074**: petalTongue evolution (interaction, streaming, capabilities)
+- **075+**: Future extensions
 
 ---
 
@@ -204,4 +237,4 @@ control/
 2. Add Rust implementations to `barracuda/src/{module}.rs` with `#[cfg(test)]` unit tests
 3. Create validation binary in `experiments/exp{NNN}_{name}/` (workspace member)
 4. Run Python control → Rust unit tests → validation binary
-5. Update this README, `specs/PAPER_REVIEW_QUEUE.md`, and `whitePaper/baseCamp/`
+5. Update this README, `experiments/README.md`, `specs/PAPER_REVIEW_QUEUE.md`, and `whitePaper/baseCamp/`

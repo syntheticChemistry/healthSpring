@@ -32,6 +32,12 @@ pub enum StageOp {
     DiversityReduce { communities: Vec<Vec<f64>> },
     /// Filter: keep elements matching a predicate.
     Filter { threshold: f64 },
+    /// Multi-channel biosignal fusion (ECG+PPG+EDA). CPU path, NPU-ready.
+    BiosignalFusion { n_channels: usize },
+    /// AUC trapezoidal: integrate concentration-time curve to a scalar.
+    AucTrapezoidal { t_max: f64 },
+    /// Bray-Curtis pairwise dissimilarity matrix over communities.
+    BrayCurtis { communities: Vec<Vec<f64>> },
 }
 
 /// Kind of element-wise transform.
@@ -96,15 +102,16 @@ impl Stage {
                 f_bioavail: *f_bioavail,
                 seed: *seed,
             }),
-            StageOp::DiversityReduce { communities } => {
-                Some(GpuOp::DiversityBatch {
-                    communities: communities.clone(),
-                })
-            }
+            StageOp::DiversityReduce { communities } => Some(GpuOp::DiversityBatch {
+                communities: communities.clone(),
+            }),
             StageOp::Generate { .. }
             | StageOp::ElementwiseTransform { .. }
             | StageOp::Reduce { .. }
-            | StageOp::Filter { .. } => None,
+            | StageOp::Filter { .. }
+            | StageOp::BiosignalFusion { .. }
+            | StageOp::AucTrapezoidal { .. }
+            | StageOp::BrayCurtis { .. } => None,
         }
     }
 
@@ -112,7 +119,7 @@ impl Stage {
     #[must_use]
     #[expect(clippy::cast_precision_loss)]
     pub fn execute(&self, input: Option<&[f64]>) -> StageResult {
-        use healthspring_barracuda::gpu::{execute_cpu as gpu_cpu, GpuResult};
+        use healthspring_barracuda::gpu::{GpuResult, execute_cpu as gpu_cpu};
 
         let start = std::time::Instant::now();
         let output = match &self.operation {
@@ -157,6 +164,15 @@ impl Stage {
                 let data = input.unwrap_or(&[]);
                 data.iter().copied().filter(|&x| x > *threshold).collect()
             }
+            StageOp::BiosignalFusion { n_channels } => {
+                let data = input.unwrap_or(&[]);
+                fuse_biosignal_channels(data, *n_channels)
+            }
+            StageOp::AucTrapezoidal { t_max } => {
+                let data = input.unwrap_or(&[]);
+                vec![compute_auc_trapezoidal(data, *t_max)]
+            }
+            StageOp::BrayCurtis { communities } => compute_bray_curtis_matrix(communities),
         };
         let elapsed = start.elapsed().as_micros() as f64;
 
@@ -175,9 +191,7 @@ fn generate_data(n: usize, seed: u64) -> Vec<f64> {
     let mut data = Vec::with_capacity(n);
     let mut state = seed;
     for _ in 0..n {
-        state = state
-            .wrapping_mul(6_364_136_223_846_793_005)
-            .wrapping_add(1);
+        state = healthspring_barracuda::rng::lcg_step(state);
         let val = (state >> 33) as f64 / f64::from(u32::MAX);
         data.push(val);
     }
@@ -216,6 +230,74 @@ fn apply_reduce(data: &[f64], kind: ReduceKind) -> f64 {
             data.iter().map(|&x| (x - mean).powi(2)).sum::<f64>() / data.len() as f64
         }
     }
+}
+
+/// Multi-channel biosignal fusion: averages interleaved channel data into
+/// a single fused signal, then appends per-channel energy ratios.
+#[expect(clippy::cast_precision_loss)]
+fn fuse_biosignal_channels(data: &[f64], n_channels: usize) -> Vec<f64> {
+    if n_channels == 0 || data.is_empty() {
+        return vec![];
+    }
+    let samples_per_ch = data.len() / n_channels;
+    if samples_per_ch == 0 {
+        return vec![];
+    }
+    let mut fused = vec![0.0; samples_per_ch];
+    for (i, val) in data.iter().enumerate().take(samples_per_ch * n_channels) {
+        fused[i % samples_per_ch] += val / n_channels as f64;
+    }
+    let total_energy: f64 = fused.iter().map(|&x| x * x).sum();
+    for ch in 0..n_channels {
+        let ch_energy: f64 = (0..samples_per_ch)
+            .map(|s| {
+                let idx = ch * samples_per_ch + s;
+                if idx < data.len() {
+                    data[idx] * data[idx]
+                } else {
+                    0.0
+                }
+            })
+            .sum();
+        let ratio = if total_energy > 0.0 {
+            ch_energy / total_energy
+        } else {
+            0.0
+        };
+        fused.push(ratio);
+    }
+    fused
+}
+
+/// AUC trapezoidal: treats input as concentration values equally spaced
+/// over `[0, t_max]` and returns the area under the curve.
+#[expect(clippy::cast_precision_loss)]
+fn compute_auc_trapezoidal(concs: &[f64], t_max: f64) -> f64 {
+    if concs.len() < 2 {
+        return 0.0;
+    }
+    let dt = t_max / (concs.len() - 1) as f64;
+    let mut auc = 0.0;
+    for i in 1..concs.len() {
+        auc += 0.5 * (concs[i] + concs[i - 1]) * dt;
+    }
+    auc
+}
+
+/// Bray-Curtis pairwise dissimilarity: returns the upper triangle of the
+/// dissimilarity matrix as a flat vector.
+fn compute_bray_curtis_matrix(communities: &[Vec<f64>]) -> Vec<f64> {
+    let n = communities.len();
+    let mut result = Vec::with_capacity(n * (n - 1) / 2);
+    for i in 0..n {
+        for j in (i + 1)..n {
+            result.push(healthspring_barracuda::microbiome::bray_curtis(
+                &communities[i],
+                &communities[j],
+            ));
+        }
+    }
+    result
 }
 
 #[cfg(test)]
@@ -382,10 +464,7 @@ mod tests {
             name: "diversity".into(),
             substrate: Substrate::Cpu,
             operation: StageOp::DiversityReduce {
-                communities: vec![
-                    vec![0.25, 0.25, 0.25, 0.25],
-                    vec![0.9, 0.05, 0.03, 0.02],
-                ],
+                communities: vec![vec![0.25, 0.25, 0.25, 0.25], vec![0.9, 0.05, 0.03, 0.02]],
             },
         };
         let r = stage.execute(None);

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 
-//! Exp060: CPU vs GPU parity matrix through toadStool pipeline.
+//! Exp060: CPU vs GPU parity matrix through `toadStool` pipeline.
 //!
-//! Validates all three GPU-backed kernels (Hill, PopPK, Diversity) through
+//! Validates all three GPU-backed kernels (Hill, `PopPK`, Diversity) through
 //! the toadStool `Pipeline` abstraction at multiple scales, comparing
 //! `execute_cpu()`, `execute_gpu()`, and `execute_auto()`.
 
@@ -173,7 +173,11 @@ async fn main() {
         let auto_data = &auto_result.stage_results[0].output_data;
 
         check(
-            &format!("pop_pk_{n_patients}: CPU len={} GPU len={}", cpu_data.len(), gpu_data.len()),
+            &format!(
+                "pop_pk_{n_patients}: CPU len={} GPU len={}",
+                cpu_data.len(),
+                gpu_data.len()
+            ),
             cpu_data.len() == gpu_data.len(),
             &mut passed,
             &mut total,
@@ -181,7 +185,15 @@ async fn main() {
 
         // PRNGs differ (CPU uses LCG, GPU uses xorshift32+Wang hash) —
         // compare statistical properties, not element-wise values.
+        #[expect(
+            clippy::cast_precision_loss,
+            reason = "usize len fits f64 for mean calculation"
+        )]
         let cpu_mean: f64 = cpu_data.iter().sum::<f64>() / cpu_data.len() as f64;
+        #[expect(
+            clippy::cast_precision_loss,
+            reason = "usize len fits f64 for mean calculation"
+        )]
         let gpu_mean: f64 = gpu_data.iter().sum::<f64>() / gpu_data.len() as f64;
         let rel_err = (cpu_mean - gpu_mean).abs() / cpu_mean;
         check(
@@ -191,6 +203,10 @@ async fn main() {
             &mut total,
         );
 
+        #[expect(
+            clippy::cast_precision_loss,
+            reason = "usize len fits f64 for mean calculation"
+        )]
         let auto_mean: f64 = auto_data.iter().sum::<f64>() / auto_data.len() as f64;
         let auto_rel = (cpu_mean - auto_mean).abs() / cpu_mean;
         check(
@@ -217,13 +233,8 @@ async fn main() {
 
         let communities: Vec<Vec<f64>> = (0..n_communities)
             .map(|i| {
-                let bias = (i as f64) / (n_communities as f64);
-                vec![
-                    0.4 - 0.3 * bias,
-                    0.3 - 0.1 * bias,
-                    0.2,
-                    0.1 + 0.4 * bias,
-                ]
+                let bias = f64::from(i) / f64::from(n_communities);
+                vec![0.4 - 0.3 * bias, 0.3 - 0.1 * bias, 0.2, 0.1 + 0.4 * bias]
             })
             .collect();
 
@@ -254,7 +265,11 @@ async fn main() {
         let auto_data = &auto_result.stage_results[0].output_data;
 
         check(
-            &format!("div_{n_communities}: length CPU={} GPU={}", cpu_data.len(), gpu_data.len()),
+            &format!(
+                "div_{n_communities}: length CPU={} GPU={}",
+                cpu_data.len(),
+                gpu_data.len()
+            ),
             cpu_data.len() == gpu_data.len(),
             &mut passed,
             &mut total,
@@ -298,5 +313,5 @@ async fn main() {
     // -----------------------------------------------------------------------
     println!("=================================================");
     println!("Exp060 CPU vs GPU Pipeline: {passed}/{total} checks passed");
-    assert_eq!(passed, total, "some checks failed");
+    std::process::exit(i32::from(passed != total));
 }

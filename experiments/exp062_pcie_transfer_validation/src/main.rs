@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 
-//! Exp062: PCIe P2P transfer validation with realistic healthSpring workloads.
+//! Exp062: `PCIe` P2P transfer validation with realistic healthSpring workloads.
 //!
 //! Exercises `transfer.rs` with actual data sizes from healthSpring pipelines,
 //! validates `TransferMethod` selection and bandwidth calculations across
-//! PCIe Gen3/4/5 topologies.
+//! `PCIe` Gen3/4/5 topologies.
 
-use healthspring_forge::nucleus::{
-    DeviceStatus, Nest, NestId, Node, NodeId, PcieGeneration,
-};
-use healthspring_forge::transfer::{TransferMethod, plan_transfer};
 use healthspring_forge::Substrate;
+use healthspring_forge::nucleus::{DeviceStatus, Nest, NestId, Node, NodeId, PcieGeneration};
+use healthspring_forge::transfer::{TransferMethod, plan_transfer};
 
 fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
     *total += 1;
@@ -28,19 +26,31 @@ fn make_node(pcie: PcieGeneration) -> Node {
         id: NodeId { tower: 0, node: 0 },
         nests: vec![
             Nest {
-                id: NestId { tower: 0, node: 0, device: 0 },
+                id: NestId {
+                    tower: 0,
+                    node: 0,
+                    device: 0,
+                },
                 substrate: Substrate::Cpu,
                 memory_bytes: 64 * 1024 * 1024 * 1024,
                 status: DeviceStatus::Available,
             },
             Nest {
-                id: NestId { tower: 0, node: 0, device: 1 },
+                id: NestId {
+                    tower: 0,
+                    node: 0,
+                    device: 1,
+                },
                 substrate: Substrate::Gpu,
                 memory_bytes: 24 * 1024 * 1024 * 1024,
                 status: DeviceStatus::Available,
             },
             Nest {
-                id: NestId { tower: 0, node: 0, device: 2 },
+                id: NestId {
+                    tower: 0,
+                    node: 0,
+                    device: 2,
+                },
                 substrate: Substrate::Npu,
                 memory_bytes: 256 * 1024 * 1024,
                 status: DeviceStatus::Available,
@@ -50,12 +60,39 @@ fn make_node(pcie: PcieGeneration) -> Node {
     }
 }
 
-const GPU: NestId = NestId { tower: 0, node: 0, device: 1 };
-const NPU: NestId = NestId { tower: 0, node: 0, device: 2 };
-const CPU: NestId = NestId { tower: 0, node: 0, device: 0 };
-const REMOTE_GPU: NestId = NestId { tower: 0, node: 1, device: 1 };
+const GPU: NestId = NestId {
+    tower: 0,
+    node: 0,
+    device: 1,
+};
+const NPU: NestId = NestId {
+    tower: 0,
+    node: 0,
+    device: 2,
+};
+const CPU: NestId = NestId {
+    tower: 0,
+    node: 0,
+    device: 0,
+};
+const REMOTE_GPU: NestId = NestId {
+    tower: 0,
+    node: 1,
+    device: 1,
+};
 
+#[expect(
+    clippy::too_many_lines,
+    clippy::similar_names,
+    reason = "validation binary — PCIe transfer plan checks; gpu_npu/npu_cpu denote distinct transfer directions"
+)]
 fn main() {
+    struct WorkloadTransfer {
+        name: &'static str,
+        bytes: u64,
+        description: &'static str,
+    }
+
     println!("Exp062 PCIe P2P Transfer Validation");
     println!("====================================\n");
 
@@ -70,33 +107,57 @@ fn main() {
     let node_gen4 = make_node(PcieGeneration::Gen4);
 
     let same_dev = plan_transfer(GPU, GPU, 1024, Some(&node_gen4));
-    check("same device -> None", same_dev.method == TransferMethod::None, &mut passed, &mut total);
+    check(
+        "same device -> None",
+        same_dev.method == TransferMethod::None,
+        &mut passed,
+        &mut total,
+    );
 
     let gpu_npu = plan_transfer(GPU, NPU, 1024, Some(&node_gen4));
-    check("GPU->NPU same node -> PcieP2p", gpu_npu.method == TransferMethod::PcieP2p, &mut passed, &mut total);
+    check(
+        "GPU->NPU same node -> PcieP2p",
+        gpu_npu.method == TransferMethod::PcieP2p,
+        &mut passed,
+        &mut total,
+    );
 
     let npu_cpu = plan_transfer(NPU, CPU, 1024, Some(&node_gen4));
-    check("NPU->CPU same node -> PcieP2p", npu_cpu.method == TransferMethod::PcieP2p, &mut passed, &mut total);
+    check(
+        "NPU->CPU same node -> PcieP2p",
+        npu_cpu.method == TransferMethod::PcieP2p,
+        &mut passed,
+        &mut total,
+    );
 
     let gpu_cpu = plan_transfer(GPU, CPU, 1024, Some(&node_gen4));
-    check("GPU->CPU same node -> PcieP2p", gpu_cpu.method == TransferMethod::PcieP2p, &mut passed, &mut total);
+    check(
+        "GPU->CPU same node -> PcieP2p",
+        gpu_cpu.method == TransferMethod::PcieP2p,
+        &mut passed,
+        &mut total,
+    );
 
     let no_node = plan_transfer(GPU, NPU, 1024, None);
-    check("no node info -> HostStaged", no_node.method == TransferMethod::HostStaged, &mut passed, &mut total);
+    check(
+        "no node info -> HostStaged",
+        no_node.method == TransferMethod::HostStaged,
+        &mut passed,
+        &mut total,
+    );
 
     let cross_node = plan_transfer(GPU, REMOTE_GPU, 1024, Some(&node_gen4));
-    check("cross-node -> NetworkIpc", cross_node.method == TransferMethod::NetworkIpc, &mut passed, &mut total);
+    check(
+        "cross-node -> NetworkIpc",
+        cross_node.method == TransferMethod::NetworkIpc,
+        &mut passed,
+        &mut total,
+    );
 
     // -----------------------------------------------------------------------
     // Section 2: Realistic healthSpring workload sizes
     // -----------------------------------------------------------------------
     println!("\n--- Section 2: Realistic workload transfer sizes ---");
-
-    struct WorkloadTransfer {
-        name: &'static str,
-        bytes: u64,
-        description: &'static str,
-    }
 
     let workloads = [
         WorkloadTransfer {
@@ -163,9 +224,7 @@ fn main() {
         let plan = plan_transfer(GPU, NPU, bytes_1mb, Some(&node));
         let time_us = plan.estimated_time_us();
         let bw_gbps = plan.estimated_bandwidth_gbps;
-        println!(
-            "  {pcie_gen:?}: {bw_gbps:.1} GB/s x16 lanes, 1 MB in {time_us:.2} us",
-        );
+        println!("  {pcie_gen:?}: {bw_gbps:.1} GB/s x16 lanes, 1 MB in {time_us:.2} us",);
 
         check(
             &format!("{pcie_gen:?}: faster than previous gen"),
@@ -199,11 +258,26 @@ fn main() {
     println!("\n--- Section 4: Edge cases ---");
 
     let zero_plan = plan_transfer(GPU, NPU, 0, Some(&node_gen4));
-    check("0 bytes -> 0 time", zero_plan.estimated_time_us().abs() < 1e-15, &mut passed, &mut total);
+    check(
+        "0 bytes -> 0 time",
+        zero_plan.estimated_time_us().abs() < 1e-15,
+        &mut passed,
+        &mut total,
+    );
 
     let same_plan = plan_transfer(CPU, CPU, 1_000_000, Some(&node_gen4));
-    check("same device -> infinite bw", same_plan.estimated_bandwidth_gbps.is_infinite(), &mut passed, &mut total);
-    check("same device -> 0 time", same_plan.estimated_time_us().abs() < 1e-15, &mut passed, &mut total);
+    check(
+        "same device -> infinite bw",
+        same_plan.estimated_bandwidth_gbps.is_infinite(),
+        &mut passed,
+        &mut total,
+    );
+    check(
+        "same device -> 0 time",
+        same_plan.estimated_time_us().abs() < 1e-15,
+        &mut passed,
+        &mut total,
+    );
 
     // -----------------------------------------------------------------------
     // Section 5: Transfer overhead vs compute time ratio
@@ -243,5 +317,5 @@ fn main() {
     // -----------------------------------------------------------------------
     println!("\n====================================");
     println!("Exp062 PCIe Transfer: {passed}/{total} checks passed");
-    assert_eq!(passed, total, "some checks failed");
+    std::process::exit(i32::from(passed != total));
 }

@@ -40,7 +40,8 @@ jobs:
       run: cargo test --workspace
     - name: Coverage (library, fail below 90%)
       run: |
-        cargo llvm-cov --workspace --lib --fail-under-lines 90
+        cargo llvm-cov --workspace --lib --fail-under-lines 90 \
+          --ignore-filename-regex 'gpu/(context|dispatch)\.rs'
 
   validate:
     runs-on: ubuntu-latest

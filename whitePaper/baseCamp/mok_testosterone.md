@@ -1,7 +1,7 @@
 # Sub-Thesis 04: Testosterone Replacement Therapy — Clinical Claim Verification Pipeline
 
 **Source**: Dr. Charles Mok, *If Your Testosterone Is Low, You're Gonna Get Fat* (Allure Medical Publishing, 2018, 196 pages)
-**Status**: Complete — 9 experiments validated (Exp030–038), 96 Python + 86 Rust binary + 51 lib unit tests. Patient-parameterized clinical scenarios (Exp063) close the per-person translation loop: `PatientTrtProfile` → scenario graph → petalTongue clinical mode.
+**Status**: Complete — 9 experiments validated (Exp030–038), 96 Python + 86 Rust binary + 51 lib unit tests. Patient-parameterized clinical scenarios (Exp063) close the per-person translation loop: `PatientTrtProfile` → scenario graph → petalTongue clinical mode. Live clinical TRT dashboard (Exp073) streams PK trough, HRV improvement, HbA1c trajectory, and cardiac risk comparison via `replace` stream operation. 5 TRT archetypes wired into `dump_scenarios`. Interaction roundtrip validated (Exp074). V13: smart clinical.rs refactor (1177→374+819 lines), math deduplication (lognormal_params delegates to pkpd).
 **Last Updated**: March 9, 2026
 
 ---
@@ -160,6 +160,17 @@ Patient-parameterized clinical TRT scenarios close the gap between population mo
 3. petalTongue clinical mode preset (sidebars hidden, awakening skipped, graph fitted) — **Exp063**
 4. IPC push to running petalTongue via Unix socket JSON-RPC — **Exp064**
 5. SAME DAVE motor command channel bridges scenario config → UI state — **petalTongue V9**
+
+### Phase 5: Live Clinical Dashboard (V12) — COMPLETE
+
+Streaming clinical visualization of TRT treatment over time.
+
+1. Live PK trough streaming via `push_timeseries` (12-week simulation, weekly updates) — **Exp073**
+2. HRV improvement gauge via `push_gauge` (tracks SDNN improvement across treatment) — **Exp073**
+3. HbA1c trajectory and cardiac risk comparison via `push_replace_binding` (Bar channel swap at weeks 4/8/12) — **Exp073**
+4. Domain theming: `domain=clinical` with `UiConfig` passthrough for clinical mode rendering — **Exp073**
+5. Capability querying and interaction subscription validated end-to-end — **Exp074** (mock petalTongue, 12/12)
+6. 5 TRT archetypes wired into `dump_scenarios` pipeline (13 total scenarios) — **Exp056**
 
 ---
 

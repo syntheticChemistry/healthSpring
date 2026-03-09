@@ -23,6 +23,10 @@ fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
     }
 }
 
+#[expect(
+    clippy::too_many_lines,
+    reason = "validation binary — sequential checks are clearest as a single flow"
+)]
 #[tokio::main]
 async fn main() {
     println!("Exp053 GPU Parity — Live GPU vs CPU");
@@ -144,7 +148,15 @@ async fn main() {
             // Different PRNGs with different distributions: CPU extracts upper 31 bits
             // (u ∈ [0, 0.5]), GPU uses full u32 (u ∈ [0, 1]).
             // Validate same-order-of-magnitude statistics, not bit-exact parity.
+            #[expect(
+                clippy::cast_precision_loss,
+                reason = "population count N < 2^52 is safe for f64"
+            )]
             let cpu_mean: f64 = cpu.iter().sum::<f64>() / cpu.len() as f64;
+            #[expect(
+                clippy::cast_precision_loss,
+                reason = "population count N < 2^52 is safe for f64"
+            )]
             let gpu_mean: f64 = gpu.iter().sum::<f64>() / gpu.len() as f64;
             let cpu_min = cpu.iter().copied().fold(f64::INFINITY, f64::min);
             let cpu_max = cpu.iter().copied().fold(f64::NEG_INFINITY, f64::max);
@@ -173,6 +185,10 @@ async fn main() {
             check(
                 "GPU wider distribution (full CL range): std > 0",
                 {
+                    #[expect(
+                        clippy::cast_precision_loss,
+                        reason = "population count N < 2^52 is safe for f64"
+                    )]
                     let var: f64 =
                         gpu.iter().map(|x| (x - gpu_mean).powi(2)).sum::<f64>() / gpu.len() as f64;
                     var.sqrt() > 0.01
@@ -249,5 +265,5 @@ async fn main() {
     println!("\n====================================");
     println!("Exp053 GPU Parity: {passed}/{total} checks passed");
 
-    std::process::exit(if passed == total { 0 } else { 1 });
+    std::process::exit(i32::from(passed != total));
 }

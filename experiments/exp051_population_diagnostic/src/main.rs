@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
-#![expect(
-    clippy::too_many_lines,
-    reason = "validation binary — linear check sequence"
-)]
 
 //! Exp051: Population diagnostic Monte Carlo.
 //!
@@ -132,16 +128,12 @@ fn main() {
         pop_female.mean_risk > 0.0 && pop_female.mean_risk < 1.0
     );
 
-    println!(
-        "\nExp051 Population Diagnostic: {passed}/{} checks passed",
-        passed + failed
-    );
+    let total = passed + failed;
+    println!("\nExp051 Population Diagnostic: {passed}/{total} checks passed",);
     println!(
         "  Population: n={}, mean_risk={:.4}, std={:.4}, percentile={:.1}",
         pop.n_patients, pop.mean_risk, pop.std_risk, pop.patient_percentile
     );
     println!("  Risk range: [{min_risk:.4}, {max_risk:.4}]");
-    if failed > 0 {
-        std::process::exit(1);
-    }
+    std::process::exit(i32::from(passed != total));
 }

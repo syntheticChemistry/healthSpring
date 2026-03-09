@@ -1,7 +1,7 @@
 # healthSpring White Paper
 
 **Date:** March 9, 2026
-**Status:** V9 — 4 tracks + diagnostics + GPU + visualization + clinical TRT + SAME DAVE, 37 experiments validated (Tier 0+1+2+3)
+**Status:** V13 — 4 tracks + diagnostics + GPU + visualization + clinical TRT + streaming + interaction, 47 experiments validated (Tier 0+1+2+3). Deep audit evolution: Anderson eigensolver, smart refactor, math deduplication, 4 doc-tests, capability-based discovery.
 **License:** AGPL-3.0-or-later
 
 ---

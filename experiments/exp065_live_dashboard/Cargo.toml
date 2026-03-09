@@ -1,0 +1,12 @@
+[package]
+name = "healthspring-exp065-live-dashboard"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "exp065_live_dashboard"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+serde_json = "1"

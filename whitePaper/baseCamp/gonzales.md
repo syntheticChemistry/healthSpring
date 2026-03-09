@@ -1,7 +1,7 @@
 # healthSpring baseCamp: Gonzales PK/PD → Human Therapeutics
 
 **Faculty**: Andrea J. Gonzales (MSU Pharmacology & Toxicology), Erika Lisabeth (ADDRC), Richard Neubig (Drug Discovery)
-**Status**: Complete — 6 experiments validated (Exp001–006), 84 Python + 84 Rust binary + 46 lib unit tests
+**Status**: Complete — 6 experiments validated (Exp001–006), 84 Python + 84 Rust binary + 46 lib unit tests. PBPK 5-tissue concentration TimeSeries (liver, kidney, muscle, fat, rest) now visualized in petalTongue via `pbpk_iv_tissue_profiles()`. GPU Tier 2 validated for Hill dose-response and Population PK. V13: doc-tests added for `hill_dose_response` and `auc_trapezoidal`.
 **Parent**: gen3/baseCamp Paper 12 (Immunological Anderson), gen3/baseCamp Paper 13 (healthSpring)
 
 ---
@@ -95,6 +95,7 @@ Lokivetmab → nemolizumab/dupilumab via allometric scaling.
 - Fat compartment accumulates most (Kp=5.0), liver clears fastest
 - Euler integration with dt=0.01 hr, verified deterministic
 - Rust module: `pkpd::pbpk` (TissueCompartment, PbpkState, pbpk_iv_simulate, cardiac_output)
+- V12: `pbpk_iv_tissue_profiles()` collects per-tissue concentration time series (5 tissues × N time points), now exposed as 5 `TimeSeries` DataChannels in the PBPK scenario node (9 total channels)
 - **GPU target**: Parallel across patients (each patient = independent PBPK ODE system)
 
 ## Human Extensions — Planned

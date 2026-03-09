@@ -335,15 +335,11 @@ fn assess_microbiome(profile: &PatientProfile, cfg: &DiagnosticConfig) -> Microb
             disorder * (1.0 + 0.1 * ((fi * 0.7).sin()))
         })
         .collect();
-    let eigenvalues = microbiome::anderson_hamiltonian_1d(&disorder_field, 1.0);
+    let (_eigenvalues, eigenvectors) = microbiome::anderson_diagonalize(&disorder_field, 1.0);
 
-    let mid = eigenvalues.len() / 2;
-    let mid_psi = &eigenvalues[mid.saturating_sub(1)..=(mid).min(eigenvalues.len() - 1)];
-    let ipr = if mid_psi.is_empty() {
-        1.0
-    } else {
-        microbiome::inverse_participation_ratio(mid_psi)
-    };
+    let mid = n_sites / 2;
+    let mid_psi = &eigenvectors[mid * n_sites..(mid + 1) * n_sites];
+    let ipr = microbiome::inverse_participation_ratio(mid_psi);
     let xi = microbiome::localization_length_from_ipr(ipr);
     let resistance = microbiome::colonization_resistance(xi);
 
@@ -551,9 +547,9 @@ pub fn population_montecarlo_with_config(
     let mut risks = Vec::with_capacity(n_patients);
 
     for _ in 0..n_patients {
-        rng = rng.wrapping_mul(6_364_136_223_846_793_005).wrapping_add(1);
+        rng = crate::rng::lcg_step(rng);
         let u1 = (rng >> 33) as f64 / (1u64 << 31) as f64;
-        rng = rng.wrapping_mul(6_364_136_223_846_793_005).wrapping_add(1);
+        rng = crate::rng::lcg_step(rng);
         let u2 = (rng >> 33) as f64 / (1u64 << 31) as f64;
 
         let u1_safe = u1.max(1e-10);
@@ -563,9 +559,9 @@ pub fn population_montecarlo_with_config(
         let weight_var =
             profile_cv_lognormal(base_profile.weight_kg, cfg.mc_weight_cv, z).max(30.0);
 
-        rng = rng.wrapping_mul(6_364_136_223_846_793_005).wrapping_add(1);
+        rng = crate::rng::lcg_step(rng);
         let z2_u1 = ((rng >> 33) as f64 / (1u64 << 31) as f64).max(1e-10);
-        rng = rng.wrapping_mul(6_364_136_223_846_793_005).wrapping_add(1);
+        rng = crate::rng::lcg_step(rng);
         let z2_u2 = (rng >> 33) as f64 / (1u64 << 31) as f64;
         let z2 = (-2.0 * z2_u1.ln()).sqrt() * (std::f64::consts::TAU * z2_u2).cos();
 

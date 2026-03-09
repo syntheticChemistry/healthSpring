@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp072"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Compute dashboard: toadStool streaming pipeline → petalTongue live visualization"
+
+[[bin]]
+name = "exp072_compute_dashboard"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+healthspring-toadstool = { path = "../../toadstool" }
+healthspring-forge = { path = "../../metalForge/forge" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

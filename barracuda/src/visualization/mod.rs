@@ -7,10 +7,13 @@
 //!    time-series, distributions, bar charts, and gauges. petalTongue absorbs
 //!    these extensions to evolve from topology viewer to universal data UI.
 
+pub mod capabilities;
 pub mod clinical;
+mod clinical_nodes;
 pub mod ipc_push;
 mod nodes;
 pub mod scenarios;
+pub mod stream;
 mod types;
 
 pub use types::*;
@@ -98,7 +101,7 @@ pub fn annotate_population(mut scenario: HealthScenario, pop: &PopulationResult)
         status: "healthy".into(),
         health: 100,
         confidence: 99,
-        position: Position { x: 480.0, y: 600.0 },
+        position: None,
         capabilities: vec!["science.diagnostic.population_montecarlo".into()],
         data_channels: vec![
             DataChannel::Distribution {

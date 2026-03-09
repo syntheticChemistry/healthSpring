@@ -81,6 +81,10 @@ struct BenchResult {
     speedup: f64,
 }
 
+#[expect(
+    clippy::too_many_lines,
+    reason = "validation binary — scaling test with sequential checks"
+)]
 #[tokio::main]
 async fn main() {
     println!("Exp055 GPU Scaling — Single GPU at Population Scale");
@@ -305,8 +309,7 @@ async fn main() {
         let marker = if speedup >= 1.0 { "▲" } else { " " };
 
         println!(
-            "║ {:>8} │ {:>9.3} ms │ {:>9.3} ms │ {:>9.3} ms │ {:>6.2}x{} ║",
-            label, cpu_ms, ind_ms, fused_ms, speedup, marker
+            "║ {label:>8} │ {cpu_ms:>9.3} ms │ {ind_ms:>9.3} ms │ {fused_ms:>9.3} ms │ {speedup:>6.2}x{marker} ║"
         );
     }
     println!("╚══════════════════════════════════════════════════════════════════╝");
@@ -369,4 +372,5 @@ async fn main() {
     println!("│  Thesis: one GPU where people are — not infrastructure.        │");
     println!("│  Same pipeline maps to TPU/NPU when hardware becomes native.   │");
     println!("└──────────────────────────────────────────────────────────────────┘");
+    std::process::exit(0);
 }
