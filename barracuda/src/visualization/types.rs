@@ -49,12 +49,15 @@ pub enum DataChannel {
 }
 
 /// Clinical reference range for threshold coloring.
+///
+/// `status` is `String` to match petalTongue's upstream `ClinicalRange`
+/// (which needs `Deserialize`). healthSpring serializes, petalTongue deserializes.
 #[derive(Debug, Clone, Serialize)]
 pub struct ClinicalRange {
     pub label: String,
     pub min: f64,
     pub max: f64,
-    pub status: &'static str,
+    pub status: String,
 }
 
 /// A node in the scenario graph.

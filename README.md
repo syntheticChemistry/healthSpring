@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — human health applications validating PK/PD, microbiome, biosignal, and endocrine pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 8, 2026
+**Date:** March 9, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V6 — 200 unit tests (160 barraCuda + 27 forge + 13 toadStool), 30 experiments, 346 Rust binary checks, 104 cross-validation checks. **Tier 2 (GPU) live**: 3 WGSL shaders (Hill, PopPK, Diversity), `GpuContext` persistent device, fused unidirectional pipeline (single encoder submission), toadStool GPU dispatch. GPU crossover at 100K elements, 207 M/s peak throughput (RTX 4070). Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**. Ecosystem: barraCuda `v0.3.3`, wetSpring V99, neuralSpring V90.
+**Status:** V6.1 — 201 unit tests (161 barraCuda + 27 forge + 13 toadStool), 30 experiments, 371 Rust binary checks, 104 cross-validation checks. **Tier 2 (GPU) live**: 3 WGSL shaders (Hill, PopPK, Diversity), `GpuContext` persistent device, fused unidirectional pipeline, toadStool GPU dispatch. **petalTongue absorption complete**: DataChannel, ClinicalRange, renderers, clinical theme absorbed upstream; `petaltongue-health` crate removed (lean phase). Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**.
 
 ---
 
@@ -176,11 +176,8 @@ healthSpring/
 │   ├── exp053_gpu_parity/         # Tier 2: WGSL vs CPU validation
 │   ├── exp054_gpu_pipeline/       # Fused pipeline + toadStool GPU dispatch
 │   └── exp055_gpu_scaling/        # 1K→10M scaling, crossover, field thesis
-├── petaltongue-health/   # petalTongue UI evolution prototype (egui)
-│   └── src/
-│       ├── render.rs     # Chart/gauge/topology rendering (for absorption)
-│       ├── theme.rs      # Clinical color theme
-│       └── bin/healthspring_ui.rs  # Standalone interactive dashboard
+├── # petaltongue-health/  — REMOVED (V6.1): absorbed into petalTongue upstream
+│   # DataChannel, ClinicalRange, renderers, clinical theme → petal-tongue-core + petal-tongue-graph
 ├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
 │       └── src/
@@ -224,8 +221,8 @@ cargo run --release --bin exp053_gpu_parity    # 17 parity checks
 cargo run --release --bin exp054_gpu_pipeline  # Fused pipeline + toadStool
 cargo run --release --bin exp055_gpu_scaling   # 1K→10M scaling benchmark
 
-# Interactive diagnostic UI prototype
-cargo run -p petaltongue-health --bin healthspring-ui
+# petaltongue-health removed in V6.1 — renderers absorbed into petalTongue upstream
+# Use petalTongue with healthspring-diagnostic.json scenario instead
 
 # Python controls
 python3 control/endocrine/exp030_testosterone_im_pk.py

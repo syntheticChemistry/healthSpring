@@ -21,7 +21,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V6** | [V6 GPU Pipeline](handoffs/HEALTHSPRING_V6_GPU_PIPELINE_BARRACUDA_TOADSTOOL_HANDOFF_MAR08_2026.md) | Mar 8 | GPU Tier 2 live: 3 WGSL shaders, GpuContext, fused pipeline, toadStool GPU dispatch, scaling to 10M. 3 new experiments (Exp053-055). Critical learnings for barraCuda/toadStool/coralReef. |
+| **V6.1** | [V6.1 petalTongue Absorption Complete](handoffs/HEALTHSPRING_V6.1_PETALTONGUE_LEAN_HANDOFF_MAR09_2026.md) | Mar 9 | petalTongue absorbed DataChannel, ClinicalRange, renderers, clinical theme. healthSpring petaltongue-health removed (lean phase). ClinicalRange.status aligned to String. |
+| **V6** | [V6 GPU Pipeline](handoffs/HEALTHSPRING_V6_GPU_PIPELINE_BARRACUDA_TOADSTOOL_HANDOFF_MAR08_2026.md) | Mar 8 | GPU Tier 2 live: 3 WGSL shaders, GpuContext, fused pipeline, toadStool GPU dispatch, scaling to 10M. |
 | | *V1, V3, V4, V5 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
@@ -40,7 +41,7 @@ Superseded handoffs in `handoffs/archive/` — preserved as fossil record.
 | **groundSpring** | Uncertainty propagation, spectral methods | V100 | Validated |
 | **airSpring** | CytokineBrain, sensor fusion patterns | v0.7.5 | Validated |
 | **hotSpring** | Lattice methods, Anderson spectral theory | v0.6.17+ | Validated |
-| **petalTongue** | UI/visualization platform | v1.3.0 | healthSpring driving evolution — prototypes built |
+| **petalTongue** | UI/visualization platform | v1.3.0 | **Absorbed**: DataChannel, ClinicalRange, renderers, theme. healthSpring leaned. |
 
 ---
 

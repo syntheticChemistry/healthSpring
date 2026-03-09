@@ -41,7 +41,6 @@ members = [
     "experiments/exp053_gpu_parity",
     "experiments/exp054_gpu_pipeline",
     "experiments/exp055_gpu_scaling",
-    "petaltongue-health",
 ]
 
 [workspace.package]
