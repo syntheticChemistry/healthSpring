@@ -12,7 +12,7 @@
 //!
 //! | Module | Domain | GPU Shader |
 //! |--------|--------|-----------|
-//! | [`pkpd`] | Hill dose-response, compartmental PK, population MC | `hill_dose_response_f64.wgsl` |
+//! | [`pkpd`] | Hill dose-response, compartmental PK, population MC | `hill_dose_response_f64.wgsl`, `population_pk_f64.wgsl` |
 //! | [`microbiome`] | Shannon, Simpson, Pielou, Chao1, Anderson lattice | `diversity_f64.wgsl` |
 //! | [`biosignal`] | Pan-Tompkins QRS, HRV, PPG SpO2, fusion | — (NPU target) |
 //! | [`endocrine`] | Testosterone PK, TRT outcomes, decline models | — |

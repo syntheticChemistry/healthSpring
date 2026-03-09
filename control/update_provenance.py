@@ -2,6 +2,7 @@
 """Update baseline JSON files with provenance metadata."""
 
 import json
+import os
 import sys
 
 GIT_COMMIT = "4138375e3973a6a95d25758ccfc5436b5e8d0ee1"
@@ -35,7 +36,7 @@ FILES = [
 
 
 def main():
-    repo_root = "/home/eastgate/Development/ecoPrimals/healthSpring"
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     errors = []
 
     for json_path, command in FILES:

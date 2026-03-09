@@ -36,7 +36,8 @@ Papers queued for reproduction and extension. Organized by track. See [PAPER_REV
 | Validation | CPU parity | 1 (Exp040) | 15 | 15 | — | **Complete** |
 | Diagnostics | Integrated pipeline | 3 (Exp050-052) | — | 87 | — | **Complete** |
 | GPU | Tier 2 pipeline | 3 (Exp053-055) | — | GPU live | — | **Complete** |
-| **Total** | | **30** | **289** | **346+** | **200** | **All green** |
+| Visualization | petalTongue scenarios | 1 (Exp056) | — | 47 | — | **Complete** |
+| **Total** | | **31** | **289** | **418** | **201** | **All green** |
 
 ---
 

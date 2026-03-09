@@ -2,7 +2,7 @@
 
 Cross-substrate dispatch validation for health application pipelines.
 
-**Status**: Scaffold — awaiting Tier 1/2 implementations
+**Status**: Built — NUCLEUS atomics (27 tests), PCIe P2P transfer planning. Tier 2 GPU live via GpuContext. Routing not yet wired to live dispatch.
 
 ---
 

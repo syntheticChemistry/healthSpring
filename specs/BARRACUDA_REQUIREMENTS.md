@@ -1,7 +1,7 @@
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: March 8, 2026
-**Status**: Initial specification
+**Last Updated**: March 9, 2026
+**Status**: V7 — Tier 2 GPU live (3 WGSL shaders, GpuContext, fused pipeline). Full visualization.
 
 ---
 

@@ -9,7 +9,7 @@ independently, results written to JSON for cross-comparison.
 
   Tier 0: Python baseline (this script)
   Tier 1: Rust CPU (cargo run --release --bin exp040_barracuda_cpu_parity)
-  Tier 2: barraCuda GPU (future — WGSL shaders via wgpu)
+  Tier 2: barraCuda GPU (LIVE — 3 WGSL shaders via wgpu, Exp053-055)
 
 Usage:
     python3 control/scripts/bench_barracuda_cpu_vs_python.py [--n_iterations 100]

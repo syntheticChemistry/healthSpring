@@ -29,17 +29,16 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | V6 |
-| Rust lib tests | 200 (160 barraCuda + 27 forge + 13 toadStool) |
-| Rust binary checks | 346 |
+| Version | **V7** |
+| Rust lib tests | 201 (161 barraCuda + 27 forge + 13 toadStool) |
+| Rust binary checks | 418 |
 | Python control checks | 104 (cross-validation) |
-| Experiments complete | 30 (Tier 0+1 + diagnostic + petalTongue + GPU) |
+| Experiments complete | 31 (Tier 0+1 + diagnostic + petalTongue + GPU + visualization) |
 | GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity checks |
 | GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s |
+| petalTongue visualization | **Full** — 22 nodes, 62 data channels, 13 clinical ranges (4 tracks) |
 | metalForge validation | 27 tests |
-| toadStool validation | 13 tests + GPU dispatch (Pipeline::execute_gpu) |
-| petalTongue prototype | Interactive egui dashboard |
-| Paper queue | 24/30 complete |
+| toadStool validation | 13 tests + GPU dispatch (`Pipeline::execute_gpu`) |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 | Unsafe blocks | 0 |
 | Clippy warnings | 0 |
@@ -145,7 +144,7 @@ healthSpring/
 │   ├── biosignal/       # exp020–exp023
 │   ├── endocrine/       # exp030–exp038
 │   └── validation/     # Exp040 CPU parity
-├── experiments/         # Validation binaries (Tier 1) — 280 checks
+├── experiments/         # Validation binaries (Tier 1) — 418 checks
 │   ├── exp001_hill_dose_response/
 │   ├── exp002_one_compartment_pk/
 │   ├── exp003_two_compartment_pk/
@@ -175,9 +174,8 @@ healthSpring/
 │   ├── exp052_petaltongue_render/
 │   ├── exp053_gpu_parity/         # Tier 2: WGSL vs CPU validation
 │   ├── exp054_gpu_pipeline/       # Fused pipeline + toadStool GPU dispatch
-│   └── exp055_gpu_scaling/        # 1K→10M scaling, crossover, field thesis
-├── # petaltongue-health/  — REMOVED (V6.1): absorbed into petalTongue upstream
-│   # DataChannel, ClinicalRange, renderers, clinical theme → petal-tongue-core + petal-tongue-graph
+│   ├── exp055_gpu_scaling/        # 1K→10M scaling, crossover, field thesis
+│   └── exp056_study_scenarios/    # V7: Full petalTongue visualization, all 4 tracks
 ├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
 │       └── src/
@@ -202,7 +200,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 200 lib tests (barraCuda + forge + toadStool)
+cargo test --workspace                  # 201 lib tests (barraCuda + forge + toadStool)
 cargo clippy --workspace -- -D warnings # Lint — zero warnings
 cargo llvm-cov report --workspace      # 96.84% coverage
 
@@ -221,8 +219,8 @@ cargo run --release --bin exp053_gpu_parity    # 17 parity checks
 cargo run --release --bin exp054_gpu_pipeline  # Fused pipeline + toadStool
 cargo run --release --bin exp055_gpu_scaling   # 1K→10M scaling benchmark
 
-# petaltongue-health removed in V6.1 — renderers absorbed into petalTongue upstream
-# Use petalTongue with healthspring-diagnostic.json scenario instead
+# Full petalTongue visualization (V7) — per-track scenario JSON generation
+cargo run --bin exp056_study_scenarios  # 47 checks across 4 tracks
 
 # Python controls
 python3 control/endocrine/exp030_testosterone_im_pk.py

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: March 8, 2026
-**Status**: V5. Tier 0+1 complete. GPU dispatch layer built (`gpu.rs`). petalTongue evolution prototypes built. No WGSL shaders executed yet.
+**Last Updated**: March 9, 2026
+**Status**: V7. Tier 0+1+2 complete. 3 WGSL shaders live (Hill, PopPK, Diversity). GpuContext + fused pipeline. Full petalTongue visualization (22 nodes, 62 channels). petalTongue absorption complete.
 
 ---
 
@@ -22,8 +22,8 @@ Python baseline → Rust CPU (Tier 1) → barraCuda CPU parity (Exp040)
 | Rust Module | Function | GpuOp | WGSL Shader | Pipeline Pattern | Priority |
 |------------|----------|-------|-------------|-----------------|----------|
 | `pkpd::population_pk_cpu` | Per-patient Bateman ODE | `PopulationPkBatch` | `population_pk_f64.wgsl` | 1 workgroup/patient, independent | **P0** |
-| `pkpd::hill_dose_response` | Per-concentration Hill eq | `HillSweep` | `batched_elementwise_f64.wgsl` | Element-wise exp/pow/div | P1 |
-| `microbiome::shannon_index` | -Σ p·ln(p) batch | `DiversityBatch` | `mean_variance_f64.wgsl` | Map-reduce per community | P1 |
+| `pkpd::hill_dose_response` | Per-concentration Hill eq | `HillSweep` | `hill_dose_response_f64.wgsl` | Element-wise, f32 pow() intermediates | **P0 — LIVE** |
+| `microbiome::shannon_index` | -Σ p·ln(p) batch | `DiversityBatch` | `diversity_f64.wgsl` | Workgroup reduction | **P0 — LIVE** |
 | `endocrine::lognormal_params` | μ,σ from typical+CV | — | CPU-side utility | Parameter setup, not GPU | P2 |
 
 ### Tier B — Adapt (Decompose into Existing Primitives)
@@ -47,17 +47,17 @@ Python baseline → Rust CPU (Tier 1) → barraCuda CPU parity (Exp040)
 
 ---
 
-## GPU Dispatch Layer (`barracuda/src/gpu.rs`)
+## GPU Dispatch Layer (`barracuda/src/gpu.rs`) — LIVE (V6+)
 
-Built in V4. Maps domain operations to WGSL shaders with CPU reference fallback.
+`GpuContext` holds persistent `wgpu::Device`/`Queue`. `execute_fused()` dispatches multiple ops in a single encoder submission.
 
-| GpuOp Variant | CPU Fallback | Shader Path | Memory Estimate |
-|--------------|-------------|-------------|----------------|
-| `HillSweep` | `pkpd::hill_dose_response` loop | `batched_elementwise_f64.wgsl` | 8 bytes/concentration |
-| `PopulationPkBatch` | `pkpd::population_pk_cpu` | `population_pk_f64.wgsl` | ~200 bytes/patient |
-| `DiversityBatch` | `microbiome::shannon_index` loop | `mean_variance_f64.wgsl` | 8 bytes/taxon/community |
+| GpuOp Variant | CPU Fallback | WGSL Shader | Status |
+|--------------|-------------|-------------|--------|
+| `HillSweep` | `pkpd::hill_dose_response` loop | `hill_dose_response_f64.wgsl` | **LIVE** — 17/17 parity, crossover at 100K |
+| `PopulationPkBatch` | `pkpd::population_pk_cpu` | `population_pk_f64.wgsl` | **LIVE** — u32 xorshift32 PRNG, crossover at 5M |
+| `DiversityBatch` | `microbiome::shannon_index` loop | `diversity_f64.wgsl` | **LIVE** — workgroup reduction |
 
-Exp040 validates analytical CPU parity (15 contracts) between direct function calls and `execute_cpu(&GpuOp)`.
+Exp040 validates CPU parity (15 contracts). Exp053 validates GPU parity (17 checks). Exp054 validates fused pipeline (11 checks). Exp055 validates scaling to 10M elements.
 
 ---
 
@@ -104,49 +104,40 @@ Exp040 validates analytical CPU parity (15 contracts) between direct function ca
 
 ---
 
-## petalTongue Evolution (V5 — healthSpring Driving)
+## petalTongue Evolution — COMPLETE (V6.1 lean, V7 visualization)
 
-healthSpring now drives petalTongue's evolution from topology viewer to universal data UI.
+petalTongue absorbed all healthSpring prototypes (commit `037caaa`). healthSpring leaned in V6.1 (petaltongue-health removed). V7 added per-track scenario builders.
 
-### Schema Extensions (Built in healthSpring, Pending Absorption)
+### Absorption Status
 
-| Extension | Location | Purpose | Status |
-|-----------|----------|---------|--------|
-| `DataChannel` enum | `visualization/types.rs` | Typed data channels: TimeSeries, Distribution, Bar, Gauge | Built + validated |
-| `ClinicalRange` | `visualization/types.rs` | Normal/warning/critical threshold coloring | Built |
-| Enhanced node fields | `visualization/nodes.rs` | `family`, `status`, `confidence`, `capabilities` | Built |
-| Full PK curves | `diagnostic.rs` | 101-point concentration-time curves | Built |
-| Hill dose-response sweep | `diagnostic.rs` | 50-point Hill curves | Built |
-| RR tachogram | `diagnostic.rs` | Beat-by-beat RR intervals from ECG | Built |
-| Gut abundances | `diagnostic.rs` | Genus-level relative abundance bars | Built |
-| Population distribution | `diagnostic.rs` | 1000-patient Monte Carlo risk histogram | Built |
+| Component | healthSpring Source | petalTongue Target | Status |
+|-----------|--------------------|--------------------|--------|
+| `DataChannel` enum | `visualization/types.rs` | `petal-tongue-core/data_channel.rs` | **Absorbed** |
+| `ClinicalRange` struct | `visualization/types.rs` | `petal-tongue-core/data_channel.rs` | **Absorbed** (status: String) |
+| Chart renderers | ~~petaltongue-health/render.rs~~ (removed) | `petal-tongue-graph/chart_renderer.rs` | **Absorbed** |
+| Clinical theme | ~~petaltongue-health/theme.rs~~ (removed) | `petal-tongue-graph/clinical_theme.rs` | **Absorbed** |
+| Version parsing fix | N/A | `dynamic_schema.rs` | **Fixed** |
 
-### Rendering Prototypes (Built, Ready for Absorption)
+### Per-Track Scenario Builders (V7)
 
-| Renderer | Widget | Location |
-|----------|--------|----------|
-| Time-series chart | `egui_plot::Line` | `petaltongue-health/src/render.rs` |
-| Distribution histogram | `egui_plot::BarChart` + VLine | `render.rs` |
-| Bar chart | `egui_plot::BarChart` | `render.rs` |
-| Gauge widget | Custom painter | `render.rs` |
-| Node topology | Custom painter + click | `render.rs` |
-| Detail panel | ScrollArea + all channels | `render.rs` |
-| Clinical theme | Color constants | `theme.rs` |
-
-### petalTongue Bugs (Blocking Absorption)
-
-1. `DynamicData` version field: expects `{major, minor, patch}`, JSON has `"2.0.0"` string
-2. `add_node` ignores scenario positions — always `(0, 0)`
-3. ~96 clippy warnings masking potential issues
+| Track | Builder | Nodes | Channels | Experiments |
+|-------|---------|-------|----------|-------------|
+| PK/PD | `scenarios::pkpd_study()` | 6 | 18 | Exp001-006 |
+| Microbiome | `scenarios::microbiome_study()` | 4 | 10 | Exp010-013 |
+| Biosignal | `scenarios::biosignal_study()` | 4 | 15 | Exp020-023 |
+| Endocrinology | `scenarios::endocrine_study()` | 8 | 19 | Exp030-038 |
+| Full Study | `scenarios::full_study()` | 22 | 62 | All 4 tracks |
 
 ---
 
-## Blocking Items for Tier 2
+## Tier 2 Status — LIVE
 
-1. ~~metalForge routing logic empty~~ → NUCLEUS atomics + transfer planning built (27 tests)
-2. ~~No GPU dispatch abstraction~~ → `gpu.rs` GpuOp + execute_cpu + shader_for_op built
-3. `population_pk_f64.wgsl` not yet written in barraCuda (P0 target)
-4. No `FusedMapReduceF64` fused-op chain wiring in healthSpring
+All previous blocking items resolved:
+
+1. ~~metalForge routing logic empty~~ → NUCLEUS atomics + transfer planning built (27 tests) ✓
+2. ~~No GPU dispatch abstraction~~ → `GpuContext` + `execute_fused` ✓
+3. ~~`population_pk_f64.wgsl` not written~~ → LIVE with u32 xorshift32 PRNG ✓
+4. ~~No fused-op chain~~ → `execute_fused()` single encoder submission ✓
 5. ODE solver absorption status from wetSpring TBD
 6. NPU dispatch path in toadStool not production-ready
-7. coralReef `df64_core.wgsl` preamble required for consumer GPUs
+7. ~~coralReef `df64_core.wgsl` preamble~~ → `strip_f64_enable()` workaround ✓

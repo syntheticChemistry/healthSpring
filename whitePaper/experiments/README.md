@@ -74,6 +74,12 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 054 | Fused pipeline: single encoder + toadStool GPU dispatch | Individual dispatch | 2,3 | — | 11 checks |
 | 055 | GPU scaling: 1K→10M sweep, crossover, field deployment | CPU baseline | 2 | — | Benchmark |
 
+### Visualization (petalTongue Scenarios)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 056 | Full petalTongue visualization for all 4 study tracks | Schema validation | 1 | — | 47 checks |
+
 ### Cross-Validation
 
 | Test | Scope | Matches | Status |
@@ -164,7 +170,8 @@ control/
 - **030–039**: Track 4 (Endocrinology)
 - **040–049**: Validation and parity
 - **050–052**: Integrated diagnostics and visualization
-- **053–059**: GPU pipeline (Tier 2) and scaling
+- **053–055**: GPU pipeline (Tier 2) and scaling
+- **056–059**: Visualization and petalTongue scenario generation
 - **060+**: Extensions and cross-spring validations
 
 ---

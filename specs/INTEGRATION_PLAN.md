@@ -1,15 +1,16 @@
 # healthSpring Integration Plan: NestGate + biomeOS + Atomic Stack
 
-**Last Updated**: March 8, 2026
+**Last Updated**: March 9, 2026
 
 ---
 
 ## 1. Current State
 
-healthSpring is **standalone** — no primal dependencies at runtime. All 9 experiments (Exp001-020) run with:
-- Python + NumPy (Tier 0)
-- Rust + healthspring-barracuda crate (Tier 1)
-- barracuda-core link (compile-time only, no GPU dispatch yet)
+healthSpring is **standalone** — no primal dependencies at runtime. 31 experiments (Exp001-056) run with:
+- Python + NumPy (Tier 0 — 104 cross-validation checks)
+- Rust + healthspring-barracuda crate (Tier 1 — 418 binary checks)
+- GPU via wgpu/WGSL (Tier 2 — 3 shaders, GpuContext, fused pipeline)
+- metalForge substrate routing (Tier 3 — 27 tests)
 
 ## 2. Integration Targets
 

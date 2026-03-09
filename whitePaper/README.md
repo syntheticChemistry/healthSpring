@@ -1,7 +1,7 @@
 # healthSpring White Paper
 
-**Date:** March 8, 2026
-**Status:** V3 — 4 tracks complete, 17 experiments validated (Tier 0+1)
+**Date:** March 9, 2026
+**Status:** V7 — 4 tracks + diagnostics + GPU + visualization, 31 experiments validated (Tier 0+1+2)
 **License:** AGPL-3.0-or-later
 
 ---
@@ -42,10 +42,10 @@
 
 | Sub-thesis | Domain | Faculty | Status |
 |-----------|--------|---------|--------|
-| [gonzales.md](baseCamp/gonzales.md) | PK/PD + immunology extensions to human therapeutics | Gonzales, Lisabeth, Neubig | **Complete** — Exp001-005 (Track 1) |
-| [mok_testosterone.md](baseCamp/mok_testosterone.md) | TRT claim verification + endocrine modeling | Mok (Allure Medical) | **Complete** — Exp030-037 (Track 4) |
-| cdiff_colonization.md | Anderson localization → gut colonization resistance | (TBD) | **Complete** — Exp011-012 (Track 2) |
-| biosignal_sovereign.md | Edge biosignal processing | (TBD) | **Complete** — Exp020 (Track 3) |
+| [gonzales.md](baseCamp/gonzales.md) | PK/PD + immunology extensions to human therapeutics | Gonzales, Lisabeth, Neubig | **Complete** — Exp001-006 (Track 1) |
+| [mok_testosterone.md](baseCamp/mok_testosterone.md) | TRT claim verification + endocrine modeling | Mok (Allure Medical) | **Complete** — Exp030-038 (Track 4) |
+| [cdiff_colonization.md](baseCamp/cdiff_colonization.md) | Anderson localization → gut colonization resistance | (TBD) | **Complete** — Exp010-013 (Track 2) |
+| [biosignal_sovereign.md](baseCamp/biosignal_sovereign.md) | Edge biosignal processing | (TBD) | **Complete** — Exp020-023 (Track 3) |
 
 ---
 

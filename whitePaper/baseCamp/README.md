@@ -23,8 +23,8 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 | # | File | Faculty | Domain | Status | Python | Rust |
 |---|------|---------|--------|--------|:------:|:----:|
 | 01 | [gonzales.md](gonzales.md) | Gonzales, Lisabeth, Neubig | PK/PD + immunology → human therapeutics | **Complete** | 73 | 79 |
-| 02 | cdiff_colonization.md | TBD | Anderson localization → gut colonization resistance, FMT | **Complete** | 36 | 48 |
-| 03 | biosignal_sovereign.md | TBD | Edge biosignal processing, PPG SpO2, fusion | **Complete** | 44 | 44 |
+| 02 | [cdiff_colonization.md](cdiff_colonization.md) | TBD | Anderson localization → gut colonization resistance, FMT | **Complete** | 36 | 48 |
+| 03 | [biosignal_sovereign.md](biosignal_sovereign.md) | TBD | Edge biosignal processing, PPG SpO2, fusion | **Complete** | 44 | 44 |
 | 04 | [mok_testosterone.md](mok_testosterone.md) | Dr. Charles Mok | Testosterone PK, TRT outcomes, HRV cross-track | **Complete** | 96 | 86 |
 
 ---
@@ -38,9 +38,12 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 | Biosignal / ECG+PPG+EDA (Exp020-023) | — | 44 | 44 | 88 |
 | Mok Testosterone + D3 (Exp030-038) | — | 96 | 86 | 182 |
 | Validation / Parity (Exp040) | — | 15 | 15 | 30 |
-| **Lib unit tests** | — | — | **139** | 139 |
+| Diagnostics (Exp050-052) | — | — | 87 | 87 |
+| GPU Pipeline (Exp053-055) | — | — | GPU live | — |
+| Visualization (Exp056) | — | — | 47 | 47 |
+| **Lib unit tests** | — | — | **201** | 201 |
 | **metalForge tests** | — | — | **27** | 27 |
-| **Total** | **688** | **287** (Tier 0) | **280** (binary) + **166** (lib+forge) = **446** | **1,421+** |
+| **Total** | **688** | **287** (Tier 0) | **418** (binary) + **228** (lib+forge) = **646** | **1,621+** |
 
 ---
 
