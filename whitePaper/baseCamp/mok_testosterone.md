@@ -1,8 +1,8 @@
 # Sub-Thesis 04: Testosterone Replacement Therapy — Clinical Claim Verification Pipeline
 
 **Source**: Dr. Charles Mok, *If Your Testosterone Is Low, You're Gonna Get Fat* (Allure Medical Publishing, 2018, 196 pages)
-**Status**: Complete — 9 experiments validated (Exp030–038), 96 Python + 86 Rust binary + 51 lib unit tests
-**Last Updated**: March 8, 2026
+**Status**: Complete — 9 experiments validated (Exp030–038), 96 Python + 86 Rust binary + 51 lib unit tests. Patient-parameterized clinical scenarios (Exp063) close the per-person translation loop: `PatientTrtProfile` → scenario graph → petalTongue clinical mode.
+**Last Updated**: March 9, 2026
 
 ---
 
@@ -143,13 +143,23 @@ Exp037 validates cross-track hypotheses D1/D2: Pielou evenness → Anderson diso
 
 Exp038 validates cross-track hypothesis D3: SDNN improvement correlates with TRT cardiovascular benefit. Composite cardiac risk score combines HRV and testosterone level factors (Kleiger 1987, Mok Ch. 6).
 
-### Phase 3: GPU + LAN HPC (Tier 2+3) — PENDING
+### Phase 3: GPU + LAN HPC (Tier 2+3) — LIVE
 
-Requires barraCuda GPU absorption. See `wateringHole/handoffs/` for evolution handoff.
+GPU pipeline validated (Exp053-055). CPU vs GPU parity matrix (Exp060, 27/27). Mixed hardware dispatch via NUCLEUS topology (Exp061, 22/22). PCIe P2P transfer planning (Exp062, 26/26).
 
-1. Population PK on barraCuda GPU (10K patients, RTX 5090)
-2. metalForge: data fetch (Strandgate) → compute (Northgate) → store (Westgate)
-3. biomeOS NUCLEUS deployment graph for healthSpring
+1. Population PK on barraCuda GPU (10K patients) — **validated** (Exp053, PopPK shader)
+2. metalForge: dispatch planning with NUCLEUS topology — **validated** (Exp061)
+3. biomeOS NUCLEUS deployment graph for healthSpring — **defined** (`healthspring_deploy.toml`)
+
+### Phase 4: Per-Person Translation (V9) — COMPLETE
+
+Patient-parameterized clinical TRT scenarios close the gap between population models and individual patient care.
+
+1. `PatientTrtProfile` → `trt_clinical_scenario()` → 8-node graph with edges, channels, ranges — **Exp063**
+2. 5 patient archetypes (young athletic, middle metabolic, older cardiovascular, diabetic, post-FMT) — **validated**
+3. petalTongue clinical mode preset (sidebars hidden, awakening skipped, graph fitted) — **Exp063**
+4. IPC push to running petalTongue via Unix socket JSON-RPC — **Exp064**
+5. SAME DAVE motor command channel bridges scenario config → UI state — **petalTongue V9**
 
 ---
 

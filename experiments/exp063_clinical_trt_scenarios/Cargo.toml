@@ -1,0 +1,16 @@
+[package]
+name = "healthspring-exp063-clinical-trt-scenarios"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "exp063_clinical_trt_scenarios"
+path = "src/main.rs"
+
+[[bin]]
+name = "dump_clinical_scenarios"
+path = "src/dump.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+serde_json = "1"

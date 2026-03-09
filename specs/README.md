@@ -1,7 +1,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 9, 2026
-**Status**: V8 — 34 experiments, 211 Rust tests, 526 binary checks, 104 cross-validation checks. GPU Tier 2 live. CPU vs GPU parity matrix. Mixed hardware dispatch via NUCLEUS topology. PCIe P2P transfer validation.
+**Status**: V9 — 37 experiments, 221 Rust tests, 526+ binary checks, 104 cross-validation checks. GPU Tier 2+3 live. CPU vs GPU parity matrix. Mixed hardware dispatch via NUCLEUS topology. PCIe P2P transfer validation. Patient-parameterized clinical TRT scenarios. petalTongue SAME DAVE motor channel + IPC bridge.
 **Domain**: Human health applications — PK/PD, gut microbiome, biosignal, endocrinology
 
 ---

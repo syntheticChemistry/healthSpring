@@ -7,6 +7,8 @@
 //!    time-series, distributions, bar charts, and gauges. petalTongue absorbs
 //!    these extensions to evolve from topology viewer to universal data UI.
 
+pub mod clinical;
+pub mod ipc_push;
 mod nodes;
 pub mod scenarios;
 mod types;
@@ -14,7 +16,6 @@ mod types;
 pub use types::*;
 
 use crate::diagnostic::{DiagnosticAssessment, PopulationResult, RiskLevel};
-use serde::Serialize;
 
 /// Map a clinical risk level to a display string.
 #[must_use]
@@ -65,11 +66,15 @@ pub fn assessment_to_scenario(
                 vsync: true,
                 hardware_acceleration: true,
             },
+            show_panels: None,
+            awakening_enabled: None,
+            initial_zoom: None,
         },
         ecosystem: Ecosystem {
             primals: nodes::build_nodes(assessment, patient_name),
         },
         neural_api: NeuralApi { enabled: false },
+        edges: Vec::new(),
     }
 }
 
@@ -123,13 +128,6 @@ pub fn annotate_population(mut scenario: HealthScenario, pop: &PopulationResult)
     scenario
 }
 
-#[derive(Serialize)]
-struct ScenarioWithEdges<'a> {
-    #[serde(flatten)]
-    scenario: &'a HealthScenario,
-    edges: &'a [ScenarioEdge],
-}
-
 /// Build the complete enriched scenario (nodes + edges) as a JSON string.
 /// This is the primary export for the standalone UI and petalTongue integration.
 ///
@@ -142,13 +140,9 @@ pub fn full_scenario_json(
     patient_name: &str,
 ) -> String {
     let scenario = assessment_to_scenario(assessment, patient_name);
-    let annotated = annotate_population(scenario, pop);
-    let edges = nodes::build_edges();
-    let with_edges = ScenarioWithEdges {
-        scenario: &annotated,
-        edges: &edges,
-    };
-    serde_json::to_string_pretty(&with_edges).expect("serialization cannot fail")
+    let mut annotated = annotate_population(scenario, pop);
+    annotated.edges = nodes::build_edges();
+    serde_json::to_string_pretty(&annotated).expect("serialization cannot fail")
 }
 
 #[cfg(test)]

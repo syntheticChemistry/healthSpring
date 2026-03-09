@@ -1,7 +1,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 9, 2026
-**Status**: 31 experiments complete — 418 Rust binary checks, 201 unit tests (161 barracuda + 27 forge + 13 toadStool), 104 cross-validation checks
+**Status**: 37 experiments complete — 526+ Rust binary checks, 221 unit tests (171 barracuda + 33 forge + 17 toadStool), 104 cross-validation checks
 
 ---
 

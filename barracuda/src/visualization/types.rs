@@ -106,6 +106,8 @@ pub struct HealthScenario {
     pub ui_config: UiConfig,
     pub ecosystem: Ecosystem,
     pub neural_api: NeuralApi,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub edges: Vec<ScenarioEdge>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -131,6 +133,25 @@ pub struct UiConfig {
     pub theme: String,
     pub animations: Animations,
     pub performance: Performance,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub show_panels: Option<ShowPanels>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub awakening_enabled: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub initial_zoom: Option<String>,
+}
+
+/// Panel visibility for petalTongue scenario config.
+#[derive(Debug, Clone, Serialize)]
+pub struct ShowPanels {
+    pub left_sidebar: bool,
+    pub right_sidebar: bool,
+    pub top_menu: bool,
+    pub system_dashboard: bool,
+    pub audio_panel: bool,
+    pub trust_dashboard: bool,
+    pub proprioception: bool,
+    pub graph_stats: bool,
 }
 
 #[expect(clippy::struct_excessive_bools, reason = "matches petalTongue schema")]

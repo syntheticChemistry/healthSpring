@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 9, 2026
-**Status**: V8. Tier 0+1+2+3 complete. 3 WGSL shaders live (Hill, PopPK, Diversity). CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS (22/22). PCIe P2P transfer (26/26). DispatchPlan wires topology to pipeline. 211 tests, 526 binary checks.
+**Status**: V9. Tier 0+1+2+3 complete. 3 WGSL shaders live (Hill, PopPK, Diversity). CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS (22/22). PCIe P2P transfer (26/26). DispatchPlan wires topology to pipeline. Patient-parameterized clinical TRT scenarios (5 archetypes). petalTongue SAME DAVE motor channel + IPC bridge. 221 tests, 526+ binary checks.
 
 ---
 

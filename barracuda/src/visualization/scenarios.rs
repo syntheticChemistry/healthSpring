@@ -42,9 +42,13 @@ fn scaffold(name: &str, description: &str) -> HealthScenario {
                 vsync: true,
                 hardware_acceleration: true,
             },
+            show_panels: None,
+            awakening_enabled: None,
+            initial_zoom: None,
         },
         ecosystem: Ecosystem { primals: vec![] },
         neural_api: NeuralApi { enabled: false },
+        edges: Vec::new(),
     }
 }
 
@@ -52,7 +56,7 @@ fn scaffold(name: &str, description: &str) -> HealthScenario {
     clippy::too_many_arguments,
     reason = "internal helper — all args have clear roles"
 )]
-fn gauge(
+pub(super) fn gauge(
     id: &str,
     label: &str,
     value: f64,
@@ -74,7 +78,7 @@ fn gauge(
     }
 }
 
-fn timeseries(
+pub(super) fn timeseries(
     id: &str,
     label: &str,
     x_label: &str,
@@ -94,7 +98,7 @@ fn timeseries(
     }
 }
 
-fn bar(id: &str, label: &str, cats: Vec<String>, vals: Vec<f64>, unit: &str) -> DataChannel {
+pub(super) fn bar(id: &str, label: &str, cats: Vec<String>, vals: Vec<f64>, unit: &str) -> DataChannel {
     DataChannel::Bar {
         id: id.into(),
         label: label.into(),
@@ -108,7 +112,7 @@ fn bar(id: &str, label: &str, cats: Vec<String>, vals: Vec<f64>, unit: &str) -> 
     clippy::too_many_arguments,
     reason = "internal helper — all args have clear roles"
 )]
-fn node(
+pub(super) fn node(
     id: &str,
     name: &str,
     node_type: &str,
@@ -133,7 +137,7 @@ fn node(
     }
 }
 
-fn edge(from: &str, to: &str, label: &str) -> ScenarioEdge {
+pub(super) fn edge(from: &str, to: &str, label: &str) -> ScenarioEdge {
     ScenarioEdge {
         from: from.into(),
         to: to.into(),
@@ -1509,15 +1513,13 @@ pub fn full_study() -> (HealthScenario, Vec<ScenarioEdge>) {
 
 /// Serialize a scenario + edges to pretty JSON.
 ///
+/// Edges are merged into the scenario's `edges` field for a single clean JSON output.
+///
 /// # Panics
 /// Cannot panic — all types are `Serialize`.
 #[must_use]
 pub fn scenario_with_edges_json(scenario: &HealthScenario, edges: &[ScenarioEdge]) -> String {
-    #[derive(serde::Serialize)]
-    struct WithEdges<'a> {
-        #[serde(flatten)]
-        scenario: &'a HealthScenario,
-        edges: &'a [ScenarioEdge],
-    }
-    serde_json::to_string_pretty(&WithEdges { scenario, edges }).expect("serialization cannot fail")
+    let mut merged = scenario.clone();
+    merged.edges.extend_from_slice(edges);
+    serde_json::to_string_pretty(&merged).expect("serialization cannot fail")
 }

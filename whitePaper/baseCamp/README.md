@@ -1,9 +1,9 @@
 # healthSpring baseCamp
 
-Faculty-linked sub-theses documenting how healthSpring extends validated science into human health applications.
+Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 9, 2026
-**Status:** V7 — 4 tracks + diagnostics + GPU pipeline + visualization, 31 experiments (201 unit tests, 418 binary checks, 104 cross-validation checks). Tier 2 GPU live. Full petalTongue visualization: 22 nodes, 62 data channels, 13 clinical ranges across all tracks.
+**Status:** V9 — 4 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC, 37 experiments (221 unit tests, 526+ binary checks, 104 cross-validation checks). Tier 2+3 GPU live. Patient-parameterized clinical scenarios (5 archetypes). petalTongue SAME DAVE integration (motor command channel, IPC bridge, clinical mode).
 
 ---
 
@@ -29,6 +29,21 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 
 ---
 
+## Per-Person Translation Pipeline
+
+The entire validation chain exists to serve a single purpose: translate population-level science into individual patient insight.
+
+```
+Published literature → Claim extraction → Computational model
+     → Population validation → Patient parameterization
+          → Clinical scenario → petalTongue visualization
+               → Clinician sees THIS patient's data
+```
+
+Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level, comorbidities) generates an 8-node scenario graph with edges, clinical ranges, and risk annotations — all rendered in petalTongue's clinical mode (sidebars hidden, awakening skipped, graph fitted to view). The clinician sees the patient, not the infrastructure.
+
+---
+
 ## Validation Summary
 
 | Sub-thesis | Upstream Checks | Tier 0 (Python) | Tier 1 (Rust) | Total |
@@ -41,9 +56,11 @@ Faculty-linked sub-theses documenting how healthSpring extends validated science
 | Diagnostics (Exp050-052) | — | — | 87 | 87 |
 | GPU Pipeline (Exp053-055) | — | — | GPU live | — |
 | Visualization (Exp056) | — | — | 47 | 47 |
-| **Lib unit tests** | — | — | **201** | 201 |
-| **metalForge tests** | — | — | **27** | 27 |
-| **Total** | **688** | **287** (Tier 0) | **418** (binary) + **228** (lib+forge) = **646** | **1,621+** |
+| Mixed Dispatch (Exp060-062) | — | — | 75 | 75 |
+| Clinical TRT + IPC (Exp063-064) | — | — | Structural | — |
+| **Lib unit tests** | — | — | **221** | 221 |
+| **metalForge tests** | — | — | **33** | 33 |
+| **Total** | **688** | **287** (Tier 0) | **526+** (binary) + **254** (lib+forge) = **780+** | **1,755+** |
 
 ---
 
@@ -133,9 +150,9 @@ hotSpring → planned lattice tissue finite-size scaling
 
 ---
 
-## GPU Pipeline (Tier 2) — LIVE
+## GPU Pipeline (Tier 2+3) — LIVE
 
-All 24 Tier 0+1 experiments validated. GPU pipeline now live with 3 additional experiments:
+All 24 Tier 0+1 experiments validated. GPU pipeline live (Exp053-055). CPU vs GPU parity (Exp060, 27/27). Mixed hardware dispatch (Exp061, 22/22). PCIe P2P transfers (Exp062, 26/26).
 
 ### WGSL Shaders (f64 precision, compiled into binary)
 
@@ -172,13 +189,14 @@ All 24 Tier 0+1 experiments validated. GPU pipeline now live with 3 additional e
 
 ---
 
-## Next Steps: Tier 3 (metalForge Live Dispatch) and Field
+## Next Steps: Per-Person Depth and Field Deployment
 
-1. **metalForge** — wire `select_substrate()` to live GPU dispatch (currently routing-only)
-2. **Anderson eigensolve** — GPU shader for gut lattice localization length (Exp011/037)
-3. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG processing (Exp020-023)
-4. **Field deployment** — validate on Raspberry Pi + eGPU (same WGSL, portable pipeline)
-5. **TPU/NPU** — toadStool backend swap for Coral TPU, Akida NPU (Pan-Tompkins streaming)
+1. **Multi-track patient scenarios** — extend Exp063 beyond TRT to full 4-track diagnostic scenarios (PK/PD + microbiome + biosignal + endocrine per patient)
+2. **Translation layer** — clinician-facing labels, units, language support for medical staff ↔ patient communication (SAME DAVE afferent channel for locale/context)
+3. **Anderson eigensolve** — GPU shader for gut lattice localization length (Exp011/037)
+4. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG processing (Exp020-023)
+5. **Field deployment** — validate on Raspberry Pi + eGPU (same WGSL, portable pipeline)
+6. **TPU/NPU** — toadStool backend swap for Coral TPU, Akida NPU (Pan-Tompkins streaming)
 
 ---
 

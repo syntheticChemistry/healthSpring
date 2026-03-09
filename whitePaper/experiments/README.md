@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V7 — 31 experiments (Tier 0+1 + diagnostic + petalTongue + GPU pipeline + visualization), 201 Rust unit tests, 418 binary checks, 104 cross-validation checks
+**Status**: V9 — 37 experiments (Tier 0+1 + diagnostic + petalTongue + GPU pipeline + visualization + mixed dispatch + clinical TRT + IPC), 221 Rust unit tests, 526+ binary checks, 104 cross-validation checks
 **Last Updated**: March 9, 2026
 
 ---
@@ -88,6 +88,13 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 061 | Mixed hardware dispatch — NUCLEUS topology, substrate transitions, PCIe P2P | CPU fallback | 3 | — | 22 checks |
 | 062 | PCIe P2P transfer validation — Gen3/4/5 bandwidth, realistic workloads | Analytical | 3 | — | 26 checks |
 
+### Clinical TRT Scenarios & petalTongue Integration (V9)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 063 | Patient-parameterized TRT scenarios (5 archetypes, clinical mode preset) | Schema validation | 1 | — | Structural |
+| 064 | IPC push to petalTongue (Unix socket discovery, JSON-RPC, fallback) | E2E integration | 1 | — | Structural |
+
 ### Cross-Validation
 
 | Test | Scope | Matches | Status |
@@ -133,7 +140,9 @@ experiments/
 ├── exp056_study_scenarios/   # V7: Full petalTongue visualization for all 4 tracks
 ├── exp060_cpu_vs_gpu_pipeline/  # V8: CPU vs GPU parity matrix (3 kernels x 3 scales)
 ├── exp061_mixed_hardware_dispatch/  # V8: NUCLEUS topology + DispatchPlan
-└── exp062_pcie_transfer_validation/ # V8: PCIe P2P Gen3/4/5 bandwidth validation
+├── exp062_pcie_transfer_validation/ # V8: PCIe P2P Gen3/4/5 bandwidth validation
+├── exp063_clinical_trt_scenarios/   # V9: Patient-parameterized TRT (5 archetypes)
+└── exp064_ipc_push/                 # V9: IPC push to petalTongue (JSON-RPC)
 ```
 
 Controls live in `control/`:
@@ -184,7 +193,8 @@ control/
 - **053–055**: GPU pipeline (Tier 2) and scaling
 - **056–059**: Visualization and petalTongue scenario generation
 - **060–062**: CPU vs GPU parity, mixed hardware dispatch, PCIe transfer
-- **063+**: Extensions and cross-spring validations
+- **063–064**: Clinical TRT patient scenarios, petalTongue IPC push
+- **065+**: Extensions and cross-spring validations
 
 ---
 

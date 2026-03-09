@@ -5,7 +5,7 @@
 **Date:** March 9, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V8 — 211 unit tests (161 barraCuda + 33 forge + 17 toadStool), 34 experiments, 526 Rust binary checks, 104 cross-validation checks. CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS topology (22/22). PCIe P2P transfer validation (26/26). Tier 2+3 live. Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**.
+**Status:** V9 — 221 unit tests (171 barraCuda + 33 forge + 17 toadStool), 37 experiments, 526+ Rust binary checks, 104 cross-validation checks. CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS topology (22/22). PCIe P2P transfer validation (26/26). Patient-parameterized clinical TRT scenarios with per-person translation (5 archetypes, 8 nodes/8 edges each). petalTongue SAME DAVE neuroanatomy integration (motor command channel, IPC bridge, clinical mode presets). Tier 2+3 live. Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**.
 
 ---
 
@@ -29,16 +29,18 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | **V7** |
-| Rust lib tests | 201 (161 barraCuda + 27 forge + 13 toadStool) |
-| Rust binary checks | 418 |
+| Version | **V9** |
+| Rust lib tests | 221 (171 barraCuda + 33 forge + 17 toadStool) |
+| Rust binary checks | 526+ |
 | Python control checks | 104 (cross-validation) |
-| Experiments complete | 31 (Tier 0+1 + diagnostic + petalTongue + GPU + visualization) |
+| Experiments complete | 37 (Tier 0+1 + diagnostic + petalTongue + GPU + visualization + clinical TRT + IPC) |
 | GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity checks |
 | GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s |
 | petalTongue visualization | **Full** — 22 nodes, 62 data channels, 13 clinical ranges (4 tracks) |
-| metalForge validation | 27 tests |
-| toadStool validation | 13 tests + GPU dispatch (`Pipeline::execute_gpu`) |
+| Clinical TRT scenarios | 5 patient archetypes, 8 nodes + 8 edges each, clinical mode preset |
+| petalTongue SAME DAVE | Motor command channel, IPC bridge, clinical/developer/presentation modes |
+| metalForge validation | 33 tests |
+| toadStool validation | 17 tests + GPU dispatch (`Pipeline::execute_gpu`) |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 | Unsafe blocks | 0 |
 | Clippy warnings | 0 |
@@ -106,6 +108,17 @@ Clinical claim verification pipeline: extracting quantifiable claims from Dr. Ch
 
 - barraCuda CPU parity (Tier 0+1 baseline for GPU migration) — Exp040
 
+### CPU vs GPU Parity & Mixed Dispatch (Exp060-062)
+
+- CPU vs GPU pipeline comparison (full matrix, 27 parity checks) — Exp060
+- Mixed hardware dispatch via NUCLEUS topology (22 dispatch route checks) — Exp061
+- PCIe P2P transfer validation (DMA planning, 26 transfer checks) — Exp062
+
+### Clinical TRT Scenarios & petalTongue Integration (Exp063-064)
+
+- Patient-parameterized clinical TRT scenarios (5 archetypes, 8 nodes/8 edges each) — Exp063
+- IPC push to petalTongue (Unix socket discovery, JSON-RPC render push, fallback to file) — Exp064
+
 ---
 
 ## Validation Protocol
@@ -117,7 +130,7 @@ Tier 2: Rust GPU (barraCuda WGSL shaders, math parity with CPU)
 Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 ```
 
-**Current state**: Tier 0+1 complete for 24 experiments. **Tier 2 live**: 3 WGSL shaders compiled and validated (Exp053), fused unidirectional pipeline (Exp054), scaling to 10M elements (Exp055). toadStool `Pipeline::execute_gpu()` dispatches stages via `GpuContext`. metalForge substrate routing (Tier 3 foundation).
+**Current state**: Tier 0+1 complete for 24 experiments. **Tier 2 live**: 3 WGSL shaders compiled and validated (Exp053), fused unidirectional pipeline (Exp054), scaling to 10M elements (Exp055). CPU vs GPU parity matrix (Exp060, 27/27). Mixed hardware dispatch (Exp061, 22/22). PCIe P2P transfer (Exp062, 26/26). toadStool `Pipeline::execute_gpu()` dispatches stages via `GpuContext`. metalForge substrate routing (Tier 3 foundation). Patient-parameterized clinical TRT scenarios (Exp063) with petalTongue IPC push (Exp064).
 
 ---
 
@@ -175,7 +188,12 @@ healthSpring/
 │   ├── exp053_gpu_parity/         # Tier 2: WGSL vs CPU validation
 │   ├── exp054_gpu_pipeline/       # Fused pipeline + toadStool GPU dispatch
 │   ├── exp055_gpu_scaling/        # 1K→10M scaling, crossover, field thesis
-│   └── exp056_study_scenarios/    # V7: Full petalTongue visualization, all 4 tracks
+│   ├── exp056_study_scenarios/    # V7: Full petalTongue visualization, all 4 tracks
+│   ├── exp060_cpu_vs_gpu_pipeline/ # CPU vs GPU parity matrix (27 checks)
+│   ├── exp061_mixed_hardware_dispatch/ # NUCLEUS topology dispatch (22 checks)
+│   ├── exp062_pcie_transfer_validation/ # PCIe P2P DMA planning (26 checks)
+│   ├── exp063_clinical_trt_scenarios/   # Patient-parameterized TRT (5 archetypes)
+│   └── exp064_ipc_push/                 # IPC push to petalTongue (JSON-RPC)
 ├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
 │       └── src/
@@ -200,9 +218,8 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 201 lib tests (barraCuda + forge + toadStool)
+cargo test --workspace                  # 221 lib tests (barraCuda + forge + toadStool)
 cargo clippy --workspace -- -D warnings # Lint — zero warnings
-cargo llvm-cov report --workspace      # 96.84% coverage
 
 # Full validation (all experiments + Python cross-checks)
 cargo build --workspace --release
@@ -219,12 +236,23 @@ cargo run --release --bin exp053_gpu_parity    # 17 parity checks
 cargo run --release --bin exp054_gpu_pipeline  # Fused pipeline + toadStool
 cargo run --release --bin exp055_gpu_scaling   # 1K→10M scaling benchmark
 
-# Full petalTongue visualization (V7) — per-track scenario JSON generation
+# CPU vs GPU and mixed dispatch
+cargo run --release --bin exp060_cpu_vs_gpu_pipeline    # 27 parity checks
+cargo run --release --bin exp061_mixed_hardware_dispatch # 22 NUCLEUS dispatch checks
+cargo run --release --bin exp062_pcie_transfer_validation # 26 PCIe P2P checks
+
+# Full petalTongue visualization — per-track scenario JSON generation
 cargo run --bin exp056_study_scenarios  # 47 checks across 4 tracks
 cargo run --release --bin dump_scenarios # Write 6 scenario JSON files to sandbox/scenarios/
 
+# Clinical TRT patient scenarios + IPC push
+cargo run --bin exp063_clinical_trt_scenarios      # 5 patient archetypes
+cargo run --release --bin dump_clinical_scenarios   # Write clinical JSON to sandbox/
+cargo run --bin exp064_ipc_push                    # Push to running petalTongue instance
+
 # Load in petalTongue (topology + data channel charts)
 petaltongue ui --scenario sandbox/scenarios/healthspring-full-study.json
+petaltongue ui --scenario sandbox/scenarios/clinical-trt-middle-metabolic.json  # Clinical mode
 
 # Python controls
 python3 control/endocrine/exp030_testosterone_im_pk.py

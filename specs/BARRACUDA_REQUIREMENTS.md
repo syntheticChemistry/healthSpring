@@ -1,7 +1,7 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: March 9, 2026
-**Status**: V7 — Tier 2 GPU live (3 WGSL shaders, GpuContext, fused pipeline). Full visualization.
+**Status**: V9 — Tier 2+3 GPU live (3 WGSL shaders, GpuContext, fused pipeline, mixed dispatch, PCIe P2P). Patient-parameterized clinical scenarios. SAME DAVE motor channel integration.
 
 ---
 

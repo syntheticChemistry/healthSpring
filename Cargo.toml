@@ -45,6 +45,8 @@ members = [
     "experiments/exp060_cpu_vs_gpu_pipeline",
     "experiments/exp061_mixed_hardware_dispatch",
     "experiments/exp062_pcie_transfer_validation",
+    "experiments/exp063_clinical_trt_scenarios",
+    "experiments/exp064_ipc_push",
 ]
 
 [workspace.package]

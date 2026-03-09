@@ -1,7 +1,7 @@
 # healthSpring White Paper
 
 **Date:** March 9, 2026
-**Status:** V7 — 4 tracks + diagnostics + GPU + visualization, 31 experiments validated (Tier 0+1+2)
+**Status:** V9 — 4 tracks + diagnostics + GPU + visualization + clinical TRT + SAME DAVE, 37 experiments validated (Tier 0+1+2+3)
 **License:** AGPL-3.0-or-later
 
 ---

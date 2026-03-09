@@ -123,18 +123,33 @@ capabilities = [
     "science.diagnostic.composite_risk",
 ]
 
+# --- Clinical Scenarios ---
+
+[[stages]]
+name = "clinical"
+primal = "healthspring"
+depends_on = ["diagnostic"]
+capabilities = [
+    "science.clinical.trt_scenario",
+    "science.clinical.patient_parameterize",
+    "science.clinical.risk_annotate",
+]
+
 # --- Visualization ---
 
 [[stages]]
 name = "petaltongue"
 primal = "petaltongue"
-depends_on = ["diagnostic"]
+depends_on = ["diagnostic", "clinical"]
 capabilities = [
     "ui.scenario.render",
     "ui.graph.display",
     "ui.tui.display",
     "ui.web.serve",
     "ui.audio.sonify",
+    "ui.motor.set_mode",
+    "ui.motor.set_panel",
+    "ui.ipc.push_render",
 ]
 
 # --- Storage (results) ---

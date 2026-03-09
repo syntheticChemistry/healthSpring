@@ -999,6 +999,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "healthspring-exp063-clinical-trt-scenarios"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "serde_json",
+]
+
+[[package]]
+name = "healthspring-exp064-ipc-push"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "serde_json",
+]
+
+[[package]]
 name = "healthspring-forge"
 version = "0.1.0"
 dependencies = [
