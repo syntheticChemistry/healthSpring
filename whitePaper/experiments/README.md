@@ -80,6 +80,14 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 |-----|------|---------|:-----:|:------:|:-----------:|
 | 056 | Full petalTongue visualization for all 4 study tracks | Schema validation | 1 | — | 47 checks |
 
+### Dispatch and Transfer (V8)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 060 | CPU vs GPU parity matrix — 3 kernels x 3 scales via toadStool Pipeline | CPU reference | 2,3 | — | 27 checks |
+| 061 | Mixed hardware dispatch — NUCLEUS topology, substrate transitions, PCIe P2P | CPU fallback | 3 | — | 22 checks |
+| 062 | PCIe P2P transfer validation — Gen3/4/5 bandwidth, realistic workloads | Analytical | 3 | — | 26 checks |
+
 ### Cross-Validation
 
 | Test | Scope | Matches | Status |
@@ -122,7 +130,10 @@ experiments/
 ├── exp053_gpu_parity/
 ├── exp054_gpu_pipeline/
 ├── exp055_gpu_scaling/
-└── exp056_study_scenarios/   # V7: Full petalTongue visualization for all 4 tracks
+├── exp056_study_scenarios/   # V7: Full petalTongue visualization for all 4 tracks
+├── exp060_cpu_vs_gpu_pipeline/  # V8: CPU vs GPU parity matrix (3 kernels x 3 scales)
+├── exp061_mixed_hardware_dispatch/  # V8: NUCLEUS topology + DispatchPlan
+└── exp062_pcie_transfer_validation/ # V8: PCIe P2P Gen3/4/5 bandwidth validation
 ```
 
 Controls live in `control/`:
@@ -172,7 +183,8 @@ control/
 - **050–052**: Integrated diagnostics and visualization
 - **053–055**: GPU pipeline (Tier 2) and scaling
 - **056–059**: Visualization and petalTongue scenario generation
-- **060+**: Extensions and cross-spring validations
+- **060–062**: CPU vs GPU parity, mixed hardware dispatch, PCIe transfer
+- **063+**: Extensions and cross-spring validations
 
 ---
 

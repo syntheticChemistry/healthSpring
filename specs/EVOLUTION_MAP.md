@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 9, 2026
-**Status**: V7. Tier 0+1+2 complete. 3 WGSL shaders live (Hill, PopPK, Diversity). GpuContext + fused pipeline. Full petalTongue visualization (22 nodes, 62 channels). petalTongue absorption complete.
+**Status**: V8. Tier 0+1+2+3 complete. 3 WGSL shaders live (Hill, PopPK, Diversity). CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS (22/22). PCIe P2P transfer (26/26). DispatchPlan wires topology to pipeline. 211 tests, 526 binary checks.
 
 ---
 
@@ -104,9 +104,9 @@ Exp040 validates CPU parity (15 contracts). Exp053 validates GPU parity (17 chec
 
 ---
 
-## petalTongue Evolution — COMPLETE (V6.1 lean, V7 visualization)
+## petalTongue Evolution — LIVE (V6.1 lean, V7 visualization, V7.1 wiring)
 
-petalTongue absorbed all healthSpring prototypes (commit `037caaa`). healthSpring leaned in V6.1 (petaltongue-health removed). V7 added per-track scenario builders.
+petalTongue absorbed all healthSpring prototypes (commit `037caaa`). healthSpring leaned in V6.1 (petaltongue-health removed). V7 added per-track scenario builders. **V7.1**: Local petalTongue evolution wires data channel rendering end-to-end (3 additive changes, ready for absorption).
 
 ### Absorption Status
 
@@ -127,17 +127,37 @@ petalTongue absorbed all healthSpring prototypes (commit `037caaa`). healthSprin
 | Biosignal | `scenarios::biosignal_study()` | 4 | 15 | Exp020-023 |
 | Endocrinology | `scenarios::endocrine_study()` | 8 | 19 | Exp030-038 |
 | Full Study | `scenarios::full_study()` | 22 | 62 | All 4 tracks |
+| Diagnostic | `full_scenario_json()` | 8 | 12 | Exp050 |
+
+### Live + Storable Visualization (V7.1)
+
+`dump_scenarios` binary writes 6 petalTongue-compatible JSON files to `sandbox/scenarios/`. Local petalTongue evolution (3 non-invasive changes) wires `PrimalDefinition.data_channels` through `PrimalInfo.properties` to `draw_node_detail()`. Loading `healthspring-full-study.json` renders 22-node topology with 62 data channels and 13 clinical ranges on node click.
+
+| Local petalTongue Change | File | Effect |
+|--------------------------|------|--------|
+| Schema: `data_channels` + `clinical_ranges` fields | `ecosystem.rs` | Accept scenario channels during load |
+| Convert: serialize to `properties["data_channels_json"]` | `convert.rs` | Flow channels through existing property system |
+| Render: deserialize and call `draw_node_detail()` | `primal_details.rs` | Charts appear on node click |
 
 ---
 
-## Tier 2 Status — LIVE
+## Tier 2+3 Status — LIVE
 
 All previous blocking items resolved:
 
-1. ~~metalForge routing logic empty~~ → NUCLEUS atomics + transfer planning built (27 tests) ✓
+1. ~~metalForge routing logic empty~~ → NUCLEUS atomics + dispatch planning (33 tests) ✓
 2. ~~No GPU dispatch abstraction~~ → `GpuContext` + `execute_fused` ✓
 3. ~~`population_pk_f64.wgsl` not written~~ → LIVE with u32 xorshift32 PRNG ✓
 4. ~~No fused-op chain~~ → `execute_fused()` single encoder submission ✓
 5. ODE solver absorption status from wetSpring TBD
-6. NPU dispatch path in toadStool not production-ready
+6. ~~NPU dispatch path in toadStool not production-ready~~ → `DispatchPlan` with NPU routing + PCIe P2P ✓
 7. ~~coralReef `df64_core.wgsl` preamble~~ → `strip_f64_enable()` workaround ✓
+
+### V8 additions
+
+- **Exp060**: CPU vs GPU parity matrix — 3 kernels x 3 scales through toadStool pipeline (27/27)
+- **Exp061**: Mixed hardware dispatch — NUCLEUS topology + `DispatchPlan` + PCIe P2P transfers (22/22)
+- **Exp062**: PCIe transfer validation — Gen3/4/5 bandwidth, realistic workloads, overhead analysis (26/26)
+- **toadStool**: `StageOp::PopulationPk` + `StageOp::DiversityReduce` → GPU-native dispatch
+- **metalForge**: `dispatch.rs` module with `plan_dispatch()`, `StageAssignment`, `DispatchPlan`
+- **Workload**: Added `BiosignalFusion` and `EndocrinePk` variants for NPU and CPU routing

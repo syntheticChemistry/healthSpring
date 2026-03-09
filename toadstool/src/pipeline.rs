@@ -1,5 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Compute pipeline: a sequence of stages that execute on heterogeneous hardware.
+//!
+//! ## ABSORPTION CANDIDATES (toadStool)
+//!
+//! - `Pipeline::execute_auto()` with metalForge routing -> toadStool core pipeline
+//! - `stage_to_workload()` mapping -> toadStool workload classification
+//! - `Pipeline::execute_gpu()` fused batch dispatch -> toadStool GPU executor
 
 use crate::stage::{Stage, StageResult};
 #[cfg(feature = "gpu")]
@@ -280,9 +286,17 @@ fn stage_to_workload(stage: &Stage, input: Option<&[f64]>) -> healthspring_forge
         } => healthspring_forge::Workload::DoseResponse {
             n_concentrations: n,
         },
+        StageOp::PopulationPk { n_patients, .. } => healthspring_forge::Workload::PopulationPk {
+            n_patients: *n_patients as u32,
+        },
         StageOp::Generate { n_elements, .. } => healthspring_forge::Workload::PopulationPk {
             n_patients: *n_elements as u32,
         },
+        StageOp::DiversityReduce { communities } => {
+            healthspring_forge::Workload::DiversityIndex {
+                n_samples: communities.len() as u32,
+            }
+        }
         StageOp::Reduce { .. } => healthspring_forge::Workload::DiversityIndex { n_samples: n },
         _ => healthspring_forge::Workload::Analytical,
     }

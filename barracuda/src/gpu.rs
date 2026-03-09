@@ -12,6 +12,13 @@
 //! | `HillSweep` | `hill_dose_response_f64.wgsl` | Exp001 vectorized |
 //! | `PopulationPkBatch` | `population_pk_f64.wgsl` | Exp005/036 Monte Carlo |
 //! | `DiversityBatch` | `diversity_f64.wgsl` | Exp010 batch |
+//!
+//! ## ABSORPTION CANDIDATES (barraCuda / coralReef)
+//!
+//! - `GpuContext` (persistent device + queue, `execute_fused`) -> barraCuda compute executor
+//! - `execute_cpu()` / `execute_fused()` dual-path pattern -> barraCuda ops
+//! - `strip_f64_enable()` WGSL preprocessor -> coralReef naga pass
+//! - `shader_for_op()` mapping -> barraCuda shader registry
 
 use crate::microbiome;
 use crate::pkpd;

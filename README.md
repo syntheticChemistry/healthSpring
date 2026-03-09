@@ -5,7 +5,7 @@
 **Date:** March 9, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V7 — 201 unit tests (161 barraCuda + 27 forge + 13 toadStool), 31 experiments, 418 Rust binary checks, 104 cross-validation checks. **Full petalTongue visualization**: per-track scenario builders for all 4 tracks (22 nodes, 62 data channels, 13 clinical ranges). Tier 2 GPU live. petalTongue absorption complete. Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**.
+**Status:** V8 — 211 unit tests (161 barraCuda + 33 forge + 17 toadStool), 34 experiments, 526 Rust binary checks, 104 cross-validation checks. CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS topology (22/22). PCIe P2P transfer validation (26/26). Tier 2+3 live. Zero unsafe code, `cargo clippy --workspace -- -D warnings` **ZERO WARNINGS**.
 
 ---
 
@@ -221,6 +221,10 @@ cargo run --release --bin exp055_gpu_scaling   # 1K→10M scaling benchmark
 
 # Full petalTongue visualization (V7) — per-track scenario JSON generation
 cargo run --bin exp056_study_scenarios  # 47 checks across 4 tracks
+cargo run --release --bin dump_scenarios # Write 6 scenario JSON files to sandbox/scenarios/
+
+# Load in petalTongue (topology + data channel charts)
+petaltongue ui --scenario sandbox/scenarios/healthspring-full-study.json
 
 # Python controls
 python3 control/endocrine/exp030_testosterone_im_pk.py

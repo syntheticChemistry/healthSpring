@@ -5,7 +5,7 @@
     "script": "control/biosignal/exp023_fusion.py",
     "source": "Rust exp023_biosignal_fusion --write-baseline",
     "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
-    "git_commit": "4138375e3973a6a95d25758ccfc5436b5e8d0ee1",
+    "git_commit": "91a718e9f357b62ca630702c1096e8a8c271a69a",
     "command": "python3 control/biosignal/exp023_fusion.py"
   },
   "_source": "healthSpring Exp023: Multi-Channel Biosignal Fusion",

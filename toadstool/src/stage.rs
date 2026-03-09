@@ -17,10 +17,19 @@ pub struct Stage {
 pub enum StageOp {
     /// Generate input data (source stage).
     Generate { n_elements: usize, seed: u64 },
+    /// Population PK Monte Carlo: generate AUC per patient (GPU-native).
+    PopulationPk {
+        n_patients: usize,
+        dose_mg: f64,
+        f_bioavail: f64,
+        seed: u64,
+    },
     /// Element-wise transform: apply f(x) to each element.
     ElementwiseTransform { kind: TransformKind },
     /// Reduce: aggregate elements to a scalar or smaller array.
     Reduce { kind: ReduceKind },
+    /// Batch diversity indices over communities (GPU-native via `DiversityBatch`).
+    DiversityReduce { communities: Vec<Vec<f64>> },
     /// Filter: keep elements matching a predicate.
     Filter { threshold: f64 },
 }
@@ -76,6 +85,22 @@ impl Stage {
                     concentrations,
                 })
             }
+            StageOp::PopulationPk {
+                n_patients,
+                dose_mg,
+                f_bioavail,
+                seed,
+            } => Some(GpuOp::PopulationPkBatch {
+                n_patients: *n_patients,
+                dose_mg: *dose_mg,
+                f_bioavail: *f_bioavail,
+                seed: *seed,
+            }),
+            StageOp::DiversityReduce { communities } => {
+                Some(GpuOp::DiversityBatch {
+                    communities: communities.clone(),
+                })
+            }
             StageOp::Generate { .. }
             | StageOp::ElementwiseTransform { .. }
             | StageOp::Reduce { .. }
@@ -87,9 +112,28 @@ impl Stage {
     #[must_use]
     #[expect(clippy::cast_precision_loss)]
     pub fn execute(&self, input: Option<&[f64]>) -> StageResult {
+        use healthspring_barracuda::gpu::{execute_cpu as gpu_cpu, GpuResult};
+
         let start = std::time::Instant::now();
         let output = match &self.operation {
             StageOp::Generate { n_elements, seed } => generate_data(*n_elements, *seed),
+            StageOp::PopulationPk {
+                n_patients,
+                dose_mg,
+                f_bioavail,
+                seed,
+            } => {
+                let op = GpuOp::PopulationPkBatch {
+                    n_patients: *n_patients,
+                    dose_mg: *dose_mg,
+                    f_bioavail: *f_bioavail,
+                    seed: *seed,
+                };
+                match gpu_cpu(&op) {
+                    GpuResult::PopulationPkBatch(v) => v,
+                    _ => unreachable!(),
+                }
+            }
             StageOp::ElementwiseTransform { kind } => {
                 let data = input.unwrap_or(&[]);
                 apply_transform(data, *kind)
@@ -97,6 +141,17 @@ impl Stage {
             StageOp::Reduce { kind } => {
                 let data = input.unwrap_or(&[]);
                 vec![apply_reduce(data, *kind)]
+            }
+            StageOp::DiversityReduce { communities } => {
+                let op = GpuOp::DiversityBatch {
+                    communities: communities.clone(),
+                };
+                match gpu_cpu(&op) {
+                    GpuResult::DiversityBatch(pairs) => {
+                        pairs.iter().flat_map(|&(s, d)| [s, d]).collect()
+                    }
+                    _ => unreachable!(),
+                }
             }
             StageOp::Filter { threshold } => {
                 let data = input.unwrap_or(&[]);
@@ -285,5 +340,73 @@ mod tests {
         let input = [0.3, 0.6, 0.4, 0.8];
         let r = stage.execute(Some(&input));
         assert_eq!(r.output_data, [0.6, 0.8]);
+    }
+
+    #[test]
+    fn population_pk_produces_positive_aucs() {
+        let stage = Stage {
+            name: "pop_pk".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::PopulationPk {
+                n_patients: 50,
+                dose_mg: 4.0,
+                f_bioavail: 0.79,
+                seed: 42,
+            },
+        };
+        let r = stage.execute(None);
+        assert_eq!(r.output_data.len(), 50);
+        assert!(r.output_data.iter().all(|&a| a > 0.0));
+    }
+
+    #[test]
+    fn population_pk_maps_to_gpu_op() {
+        let stage = Stage {
+            name: "pop_pk".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::PopulationPk {
+                n_patients: 100,
+                dose_mg: 4.0,
+                f_bioavail: 0.79,
+                seed: 7,
+            },
+        };
+        let op = stage.to_gpu_op(None);
+        assert!(op.is_some());
+        assert!(matches!(op.unwrap(), GpuOp::PopulationPkBatch { .. }));
+    }
+
+    #[test]
+    fn diversity_reduce_computes_shannon_simpson() {
+        let stage = Stage {
+            name: "diversity".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::DiversityReduce {
+                communities: vec![
+                    vec![0.25, 0.25, 0.25, 0.25],
+                    vec![0.9, 0.05, 0.03, 0.02],
+                ],
+            },
+        };
+        let r = stage.execute(None);
+        assert_eq!(r.output_data.len(), 4);
+        let (even_shannon, even_simpson) = (r.output_data[0], r.output_data[1]);
+        let (dom_shannon, _dom_simpson) = (r.output_data[2], r.output_data[3]);
+        assert!(even_shannon > dom_shannon, "even > dominated");
+        assert!(even_simpson > 0.0);
+    }
+
+    #[test]
+    fn diversity_reduce_maps_to_gpu_op() {
+        let stage = Stage {
+            name: "diversity".into(),
+            substrate: Substrate::Cpu,
+            operation: StageOp::DiversityReduce {
+                communities: vec![vec![0.5, 0.5]],
+            },
+        };
+        let op = stage.to_gpu_op(None);
+        assert!(op.is_some());
+        assert!(matches!(op.unwrap(), GpuOp::DiversityBatch { .. }));
     }
 }

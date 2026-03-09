@@ -1,4 +1,5 @@
 /target
+/sandbox/scenarios/
 **/*.rs.bk
 *.swp
 *.swo

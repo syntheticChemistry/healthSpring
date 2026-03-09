@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp061"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Exp061: Mixed hardware dispatch via metalForge NUCLEUS topology"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+healthspring-forge = { path = "../../metalForge/forge" }
+
+[[bin]]
+name = "exp061_mixed_hardware_dispatch"
+path = "src/main.rs"

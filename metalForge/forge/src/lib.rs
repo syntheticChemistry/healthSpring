@@ -9,6 +9,13 @@
 //! Organizes hardware via NUCLEUS atomics (Tower → Node → Nest) and plans
 //! inter-device transfers (`PCIe` P2P DMA, host-staged, network IPC).
 //!
+//! ## ABSORPTION CANDIDATES (barraCuda / toadStool / biomeOS)
+//!
+//! - `Substrate` + `Workload` enum -> barraCuda workload classification
+//! - `select_substrate()` threshold routing -> toadStool dispatcher
+//! - `Capabilities::discover()` -> barraCuda hardware probe
+//! - `DispatchPlan` + NUCLEUS topology -> biomeOS graph planner
+//!
 //! ## Architecture
 //!
 //! ```text
@@ -25,6 +32,7 @@
 //!     └── Network IPC (cross-node via biomeOS)
 //! ```
 
+pub mod dispatch;
 pub mod nucleus;
 pub mod transfer;
 
@@ -54,6 +62,10 @@ pub enum Workload {
     DiversityIndex { n_samples: u32 },
     /// Streaming time-series pipeline (NPU ideal, latency-critical).
     BiosignalDetect { sample_rate_hz: u32 },
+    /// Multi-channel biosignal fusion (CPU or NPU).
+    BiosignalFusion { channels: u32 },
+    /// Endocrine PK computation (CPU-only, analytical).
+    EndocrinePk { n_timepoints: u32 },
     /// Small analytical computation — CPU always.
     Analytical,
 }
@@ -67,6 +79,8 @@ impl Workload {
             Self::DoseResponse { n_concentrations } => n_concentrations,
             Self::DiversityIndex { n_samples } => n_samples,
             Self::BiosignalDetect { sample_rate_hz } => sample_rate_hz,
+            Self::BiosignalFusion { channels } => channels,
+            Self::EndocrinePk { n_timepoints } => n_timepoints,
             Self::Analytical => 0,
         }
     }
@@ -74,7 +88,10 @@ impl Workload {
     /// Whether this workload benefits from streaming/low-latency NPU.
     #[must_use]
     pub const fn prefers_npu(&self) -> bool {
-        matches!(self, Self::BiosignalDetect { .. })
+        matches!(
+            self,
+            Self::BiosignalDetect { .. } | Self::BiosignalFusion { .. }
+        )
     }
 }
 
@@ -158,7 +175,7 @@ impl Capabilities {
                     power_preference: wgpu::PowerPreference::HighPerformance,
                     ..Default::default()
                 }));
-            adapter.map(|a| {
+            adapter.ok().map(|a| {
                 let info = a.get_info();
                 GpuInfo {
                     name: info.name.clone(),
@@ -212,7 +229,10 @@ pub fn select_substrate_with_thresholds(
             Workload::PopulationPk { .. } => thresholds.parallel_gpu_min,
             Workload::DoseResponse { .. } => thresholds.sweep_gpu_min,
             Workload::DiversityIndex { .. } => thresholds.reduce_gpu_min,
-            Workload::BiosignalDetect { .. } | Workload::Analytical => return Substrate::Cpu,
+            Workload::BiosignalDetect { .. }
+            | Workload::BiosignalFusion { .. }
+            | Workload::EndocrinePk { .. }
+            | Workload::Analytical => return Substrate::Cpu,
         };
         if n > threshold {
             return Substrate::Gpu;

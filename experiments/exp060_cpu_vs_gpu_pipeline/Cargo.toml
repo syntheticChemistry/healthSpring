@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp060"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Exp060: CPU vs GPU parity matrix through toadStool pipeline — all 3 kernels"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda", features = ["gpu"] }
+healthspring-toadstool = { path = "../../toadstool", features = ["gpu"] }
+healthspring-forge = { path = "../../metalForge/forge", features = ["gpu"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[[bin]]
+name = "exp060_cpu_vs_gpu_pipeline"
+path = "src/main.rs"

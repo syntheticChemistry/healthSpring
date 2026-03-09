@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V7 — 31 experiments, 4 tracks + diagnostics + GPU pipeline + visualization (Tier 0+1+2)
+**Status**: V8 — 34 experiments, 4 tracks + diagnostics + GPU + dispatch + PCIe transfer (Tier 0+1+2+3)
 **Last Updated**: March 9, 2026
 
 ---
@@ -21,7 +21,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V7** | [V7 Full Visualization + barraCuda Handoff](handoffs/HEALTHSPRING_V7_FULL_VISUALIZATION_BARRACUDA_TOADSTOOL_HANDOFF_MAR09_2026.md) | Mar 9 | Per-track scenario builders (22 nodes, 62 data channels, 13 clinical ranges). Exp056 validates 47 checks. barraCuda/toadStool evolution handoff. |
+| **V8** | [V8 Mixed Dispatch Handoff](handoffs/HEALTHSPRING_V8_MIXED_DISPATCH_HANDOFF_MAR09_2026.md) | Mar 9 | CPU vs GPU parity, mixed NUCLEUS dispatch, PCIe P2P transfers, DispatchPlan. Absorption tables for barraCuda, toadStool, coralReef. |
+| V7.1 | [V7 Visualization Handoff](handoffs/HEALTHSPRING_V7_FULL_VISUALIZATION_BARRACUDA_TOADSTOOL_HANDOFF_MAR09_2026.md) | Mar 9 | petalTongue visualization, scenario builders, chart rendering |
 | | *V1, V3, V4, V5, V6, V6.1 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
@@ -40,7 +41,7 @@ Superseded handoffs in `handoffs/archive/` — preserved as fossil record.
 | **groundSpring** | Uncertainty propagation, spectral methods | V100 | Validated |
 | **airSpring** | CytokineBrain, sensor fusion patterns | v0.7.5 | Validated |
 | **hotSpring** | Lattice methods, Anderson spectral theory | v0.6.17+ | Validated |
-| **petalTongue** | UI/visualization platform | v1.3.0 | **Absorbed**: DataChannel, ClinicalRange, renderers, theme. healthSpring leaned. |
+| **petalTongue** | UI/visualization platform | v1.3.0 | **Absorbed** + local wiring: DataChannel, ClinicalRange, renderers, theme. 3 additive changes ready for absorption. |
 
 ---
 

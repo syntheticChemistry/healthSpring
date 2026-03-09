@@ -1,7 +1,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 9, 2026
-**Status**: V7 — 31 experiments, 201 Rust tests, 418 binary checks, 104 cross-validation checks. GPU Tier 2 live. Full petalTongue visualization: 4 per-track scenario builders, 22 nodes, 62 data channels.
+**Status**: V8 — 34 experiments, 211 Rust tests, 526 binary checks, 104 cross-validation checks. GPU Tier 2 live. CPU vs GPU parity matrix. Mixed hardware dispatch via NUCLEUS topology. PCIe P2P transfer validation.
 **Domain**: Human health applications — PK/PD, gut microbiome, biosignal, endocrinology
 
 ---
@@ -10,12 +10,12 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust lib tests | 201 (161 barraCuda + 27 forge + 13 toadStool) |
+| Rust lib tests | 211 (161 barraCuda + 33 forge + 17 toadStool) |
 | Python control checks | 104 (cross-validation) |
-| Rust binary checks | 418 (371 + 47 scenario) |
-| Experiments | 31 (24 Tier 0+1 + 3 diagnostic + 3 GPU + 1 visualization) |
-| GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity |
-| metalForge validation (Tier 3) | 27 tests (substrate routing) |
+| Rust binary checks | 526 (393 base + 44 GPU + 27 parity + 22 dispatch + 26 PCIe + 14 scaling) |
+| Experiments | 34 (24 Tier 0+1 + 3 diagnostic + 3 GPU + 1 visualization + 3 dispatch/transfer) |
+| GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity, 27/27 CPU-GPU matrix |
+| metalForge validation (Tier 3) | 33 tests (substrate routing + dispatch planning + transfer) |
 | Paper queue | 24/30 complete |
 | Faculty | Gonzales (MSU), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 
@@ -37,7 +37,8 @@ Papers queued for reproduction and extension. Organized by track. See [PAPER_REV
 | Diagnostics | Integrated pipeline | 3 (Exp050-052) | — | 87 | — | **Complete** |
 | GPU | Tier 2 pipeline | 3 (Exp053-055) | — | GPU live | — | **Complete** |
 | Visualization | petalTongue scenarios | 1 (Exp056) | — | 47 | — | **Complete** |
-| **Total** | | **31** | **289** | **418** | **201** | **All green** |
+| Dispatch | CPU vs GPU + mixed HW | 3 (Exp060-062) | — | 75 | — | **Complete** |
+| **Total** | | **34** | **289** | **526** | **211** | **All green** |
 
 ---
 
