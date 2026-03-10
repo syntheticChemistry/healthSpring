@@ -65,6 +65,7 @@ members = [
     "experiments/exp080_gut_brain_serotonin",
     "experiments/exp081_eda_stress_detection",
     "experiments/exp082_arrhythmia_classification",
+    "experiments/exp083_gpu_v16_parity",
 ]
 
 [workspace.package]

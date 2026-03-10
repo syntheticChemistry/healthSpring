@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 10, 2026
-**Status**: 54 experiments complete — 391 tests (325 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 54 validation binaries. GPU Tier 2+3 live. V16: NLME (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels). 6 new experiments: Michaelis-Menten PK, antibiotic perturbation, SCFA production, gut-brain serotonin, EDA stress, arrhythmia classification. All 30 queued papers complete.
+**Status**: 55 experiments complete — 395 tests (329 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 55 validation binaries. GPU Tier 2+3 live (6 WGSL shaders). V17: GPU portability for V16 primitives — 3 new compute shaders (Michaelis-Menten batch, SCFA batch, beat classify batch), metalForge cross-system routing, toadStool streaming dispatch. All 30 queued papers complete.
 
 ---
 
@@ -174,5 +174,7 @@ All experiments use publicly accessible data. No proprietary dependencies.
 | Exp080 | Serotonin production (Yano 2015, Clarke 2013) | Published tryptophan metabolism |
 | Exp081 | EDA stress norms (Boucsein 2012) | Published SCR/SCL reference values |
 | Exp082 | MIT-BIH beat morphology (Moody & Mark 2001) | PhysioNet (open) |
+
+| Exp083 | GPU V16 parity (no new data) | CPU baseline as ground truth |
 
 See `specs/README.md` for full provenance table.

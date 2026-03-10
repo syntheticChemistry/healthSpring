@@ -12,6 +12,9 @@
 //! | `HillSweep` | `hill_dose_response_f64.wgsl` | Exp001 vectorized |
 //! | `PopulationPkBatch` | `population_pk_f64.wgsl` | Exp005/036 Monte Carlo |
 //! | `DiversityBatch` | `diversity_f64.wgsl` | Exp010 batch |
+//! | `MichaelisMentenBatch` | `michaelis_menten_batch_f64.wgsl` | Exp077 batch PK ODE |
+//! | `ScfaBatch` | `scfa_batch_f64.wgsl` | Exp079 batch metabolic |
+//! | `BeatClassifyBatch` | `beat_classify_batch_f64.wgsl` | Exp082 batch ECG |
 //!
 //! ## ABSORPTION STATUS (barraCuda S-latest / coralReef Phase 10)
 //!
@@ -69,6 +72,11 @@ pub mod shaders {
         include_str!("../../shaders/health/hill_dose_response_f64.wgsl");
     pub const POPULATION_PK: &str = include_str!("../../shaders/health/population_pk_f64.wgsl");
     pub const DIVERSITY: &str = include_str!("../../shaders/health/diversity_f64.wgsl");
+    pub const MICHAELIS_MENTEN_BATCH: &str =
+        include_str!("../../shaders/health/michaelis_menten_batch_f64.wgsl");
+    pub const SCFA_BATCH: &str = include_str!("../../shaders/health/scfa_batch_f64.wgsl");
+    pub const BEAT_CLASSIFY_BATCH: &str =
+        include_str!("../../shaders/health/beat_classify_batch_f64.wgsl");
 }
 
 /// A GPU-dispatchable operation with input/output buffers.
@@ -90,6 +98,26 @@ pub enum GpuOp {
     },
     /// Batch diversity indices for multiple communities.
     DiversityBatch { communities: Vec<Vec<f64>> },
+    /// Batch Michaelis-Menten PK: parallel Euler ODE per patient.
+    MichaelisMentenBatch {
+        vmax: f64,
+        km: f64,
+        vd: f64,
+        dt: f64,
+        n_steps: u32,
+        n_patients: u32,
+        seed: u32,
+    },
+    /// Batch SCFA production: element-wise Michaelis-Menten per fiber input.
+    ScfaBatch {
+        params: crate::microbiome::ScfaParams,
+        fiber_inputs: Vec<f64>,
+    },
+    /// Batch beat classification: template correlation per beat window.
+    BeatClassifyBatch {
+        beats: Vec<Vec<f64>>,
+        templates: Vec<Vec<f64>>,
+    },
 }
 
 /// Result of a GPU operation.
@@ -101,6 +129,12 @@ pub enum GpuResult {
     PopulationPkBatch(Vec<f64>),
     /// Diversity results: (shannon, simpson) per community.
     DiversityBatch(Vec<(f64, f64)>),
+    /// Michaelis-Menten batch: AUC per patient.
+    MichaelisMentenBatch(Vec<f64>),
+    /// SCFA batch: (acetate, propionate, butyrate) per fiber input.
+    ScfaBatch(Vec<(f64, f64, f64)>),
+    /// Beat classify batch: (`template_index`, correlation) per beat.
+    BeatClassifyBatch(Vec<(u32, f64)>),
 }
 
 /// Execute a GPU operation using CPU fallback (pure Rust).
@@ -112,6 +146,7 @@ pub enum GpuResult {
     clippy::cast_precision_loss,
     reason = "LCG state u64 → f64 for uniform variate; precision sufficient for PK variation"
 )]
+#[expect(clippy::too_many_lines, reason = "flat match over all GpuOp variants")]
 pub fn execute_cpu(op: &GpuOp) -> GpuResult {
     match op {
         GpuOp::HillSweep {
@@ -151,7 +186,95 @@ pub fn execute_cpu(op: &GpuOp) -> GpuResult {
                 .collect();
             GpuResult::DiversityBatch(results)
         }
+        GpuOp::MichaelisMentenBatch {
+            vmax,
+            km,
+            vd,
+            dt,
+            n_steps,
+            n_patients,
+            seed,
+        } => {
+            let params = pkpd::MichaelisMentenParams {
+                vmax: *vmax,
+                km: *km,
+                vd: *vd,
+            };
+            let dose_mg = vd * 6.0;
+            let t_end = f64::from(*n_steps) * dt;
+            let mut aucs = Vec::with_capacity(*n_patients as usize);
+            for i in 0..*n_patients {
+                let u = wang_hash_uniform(seed.wrapping_add(i));
+                let factor = 0.7 + u * 0.6;
+                let patient_params = pkpd::MichaelisMentenParams {
+                    vmax: params.vmax * factor,
+                    ..params.clone()
+                };
+                let (_, concs) = pkpd::mm_pk_simulate(&patient_params, dose_mg, t_end, *dt);
+                let auc = pkpd::mm_auc(&concs, *dt);
+                aucs.push(auc);
+            }
+            GpuResult::MichaelisMentenBatch(aucs)
+        }
+        GpuOp::ScfaBatch {
+            params,
+            fiber_inputs,
+        } => {
+            let results: Vec<(f64, f64, f64)> = fiber_inputs
+                .iter()
+                .map(|&f| microbiome::scfa_production(f, params))
+                .collect();
+            GpuResult::ScfaBatch(results)
+        }
+        GpuOp::BeatClassifyBatch { beats, templates } => {
+            use crate::biosignal::classification;
+            let tmpl_structs: Vec<classification::BeatTemplate> = templates
+                .iter()
+                .enumerate()
+                .map(|(i, w)| {
+                    let class = match i {
+                        0 => classification::BeatClass::Normal,
+                        1 => classification::BeatClass::Pvc,
+                        2 => classification::BeatClass::Pac,
+                        _ => classification::BeatClass::Unknown,
+                    };
+                    classification::BeatTemplate {
+                        class,
+                        waveform: w.clone(),
+                    }
+                })
+                .collect();
+            let results: Vec<(u32, f64)> = beats
+                .iter()
+                .map(|beat| {
+                    let (class, corr) = classification::classify_beat(beat, &tmpl_structs, 0.0);
+                    let idx = match class {
+                        classification::BeatClass::Normal => 0,
+                        classification::BeatClass::Pvc => 1,
+                        classification::BeatClass::Pac => 2,
+                        classification::BeatClass::Unknown => u32::MAX,
+                    };
+                    (idx, corr)
+                })
+                .collect();
+            GpuResult::BeatClassifyBatch(results)
+        }
     }
+}
+
+/// Wang hash for deterministic per-patient PRNG (mirrors WGSL shader).
+fn wang_hash_uniform(seed: u32) -> f64 {
+    let mut s = seed;
+    s = (s ^ 61) ^ (s >> 16);
+    s = s.wrapping_mul(9);
+    s = s ^ (s >> 4);
+    s = s.wrapping_mul(0x27d4_eb2d);
+    s = s ^ (s >> 15);
+    // xorshift32
+    s ^= s << 13;
+    s ^= s >> 17;
+    s ^= s << 5;
+    f64::from(s) / f64::from(u32::MAX)
 }
 
 /// Shader descriptor: maps a `GpuOp` to its WGSL shader source.
@@ -161,6 +284,9 @@ pub const fn shader_for_op(op: &GpuOp) -> &'static str {
         GpuOp::HillSweep { .. } => shaders::HILL_DOSE_RESPONSE,
         GpuOp::PopulationPkBatch { .. } => shaders::POPULATION_PK,
         GpuOp::DiversityBatch { .. } => shaders::DIVERSITY,
+        GpuOp::MichaelisMentenBatch { .. } => shaders::MICHAELIS_MENTEN_BATCH,
+        GpuOp::ScfaBatch { .. } => shaders::SCFA_BATCH,
+        GpuOp::BeatClassifyBatch { .. } => shaders::BEAT_CLASSIFY_BATCH,
     }
 }
 
@@ -173,6 +299,16 @@ pub fn gpu_memory_estimate(op: &GpuOp) -> u64 {
         GpuOp::DiversityBatch { communities } => {
             let total_species: usize = communities.iter().map(Vec::len).sum();
             (total_species as u64) * 8 + (communities.len() as u64) * 16
+        }
+        GpuOp::MichaelisMentenBatch { n_patients, .. } => u64::from(*n_patients) * 8,
+        GpuOp::ScfaBatch { fiber_inputs, .. } => (fiber_inputs.len() as u64) * 8 * 4,
+        GpuOp::BeatClassifyBatch {
+            beats, templates, ..
+        } => {
+            let ws = beats.first().map_or(0, Vec::len) as u64;
+            (beats.len() as u64) * ws * 8
+                + (templates.len() as u64) * ws * 8
+                + (beats.len() as u64) * 16
         }
     }
 }
@@ -276,6 +412,74 @@ mod tests {
         };
         let mem = gpu_memory_estimate(&op);
         assert!(mem < 1_000_000, "10K patients < 1MB GPU memory");
+    }
+
+    #[test]
+    fn michaelis_menten_batch_cpu() {
+        let op = GpuOp::MichaelisMentenBatch {
+            vmax: 500.0,
+            km: 5.0,
+            vd: 50.0,
+            dt: 0.01,
+            n_steps: 2000,
+            n_patients: 64,
+            seed: 42,
+        };
+        if let GpuResult::MichaelisMentenBatch(aucs) = execute_cpu(&op) {
+            assert_eq!(aucs.len(), 64);
+            assert!(aucs.iter().all(|&a| a > 0.0), "all AUC positive");
+            let mean: f64 = aucs.iter().sum::<f64>() / aucs.len() as f64;
+            assert!(mean > 1.0, "mean AUC should be physiological: {mean}");
+        } else {
+            panic!("wrong result type");
+        }
+    }
+
+    #[test]
+    fn scfa_batch_cpu() {
+        let op = GpuOp::ScfaBatch {
+            params: crate::microbiome::SCFA_HEALTHY_PARAMS,
+            fiber_inputs: vec![5.0, 10.0, 20.0, 30.0],
+        };
+        if let GpuResult::ScfaBatch(results) = execute_cpu(&op) {
+            assert_eq!(results.len(), 4);
+            for &(a, p, b) in &results {
+                assert!(a > 0.0 && p > 0.0 && b > 0.0, "all SCFA > 0");
+                assert!(a > p && a > b, "acetate dominant");
+            }
+        } else {
+            panic!("wrong result type");
+        }
+    }
+
+    #[test]
+    fn beat_classify_batch_cpu() {
+        use crate::biosignal::classification;
+        let templates = vec![
+            classification::generate_normal_template(41),
+            classification::generate_pvc_template(41),
+            classification::generate_pac_template(41),
+        ];
+        let beats = vec![
+            classification::generate_normal_template(41),
+            classification::generate_pvc_template(41),
+        ];
+        let op = GpuOp::BeatClassifyBatch { beats, templates };
+        if let GpuResult::BeatClassifyBatch(results) = execute_cpu(&op) {
+            assert_eq!(results.len(), 2);
+            assert_eq!(results[0].0, 0, "first beat → Normal (template 0)");
+            assert_eq!(results[1].0, 1, "second beat → PVC (template 1)");
+            assert!(results[0].1 > 0.99, "self-correlation ~ 1.0");
+        } else {
+            panic!("wrong result type");
+        }
+    }
+
+    #[test]
+    fn new_shader_sources_loaded() {
+        assert!(shaders::MICHAELIS_MENTEN_BATCH.contains("michaelis_menten"));
+        assert!(shaders::SCFA_BATCH.contains("scfa"));
+        assert!(shaders::BEAT_CLASSIFY_BATCH.contains("beat_classify"));
     }
 
     #[test]

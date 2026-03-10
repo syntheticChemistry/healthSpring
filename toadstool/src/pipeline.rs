@@ -302,8 +302,15 @@ impl Pipeline {
 )]
 fn gpu_result_to_vec(result: &GpuResult) -> Vec<f64> {
     match result {
-        GpuResult::HillSweep(v) | GpuResult::PopulationPkBatch(v) => v.clone(),
+        GpuResult::HillSweep(v)
+        | GpuResult::PopulationPkBatch(v)
+        | GpuResult::MichaelisMentenBatch(v) => v.clone(),
         GpuResult::DiversityBatch(pairs) => pairs.iter().flat_map(|&(s, d)| [s, d]).collect(),
+        GpuResult::ScfaBatch(triples) => triples.iter().flat_map(|&(a, p, b)| [a, p, b]).collect(),
+        GpuResult::BeatClassifyBatch(pairs) => pairs
+            .iter()
+            .flat_map(|&(idx, corr)| [f64::from(idx), corr])
+            .collect(),
     }
 }
 
@@ -335,6 +342,19 @@ fn stage_to_workload(stage: &Stage, input: Option<&[f64]>) -> healthspring_forge
         StageOp::BiosignalFusion { n_channels } => healthspring_forge::Workload::BiosignalFusion {
             channels: *n_channels as u32,
         },
+        StageOp::MichaelisMentenBatch { n_patients, .. } => {
+            healthspring_forge::Workload::MichaelisMentenBatch {
+                n_patients: *n_patients,
+            }
+        }
+        StageOp::ScfaBatch { fiber_inputs, .. } => healthspring_forge::Workload::ScfaBatch {
+            n_elements: fiber_inputs.len() as u32,
+        },
+        StageOp::BeatClassifyBatch { beats, .. } => {
+            healthspring_forge::Workload::BeatClassifyBatch {
+                n_beats: beats.len() as u32,
+            }
+        }
         _ => healthspring_forge::Workload::Analytical,
     }
 }

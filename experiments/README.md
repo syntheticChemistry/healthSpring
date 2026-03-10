@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 10, 2026
-**Status**: V16 — 54 experiments, all 30 paper queue entries complete. V16: Michaelis-Menten PK (Exp077), antibiotic perturbation (Exp078), SCFA production (Exp079), gut-brain serotonin (Exp080), EDA stress (Exp081), arrhythmia classification (Exp082). NLME (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels).
+**Status**: V17 — 55 experiments, all 30 paper queue entries complete. V17: GPU portability for V16 primitives — 3 new WGSL compute shaders, metalForge cross-system routing, toadStool streaming dispatch, Exp083 GPU V16 parity (25/25).
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 
@@ -123,6 +123,23 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 |-----|--------|--------|:------:|
 | 075 | `exp075_nlme_cross_validation` | NLME cross-validation (FOCE/SAEM, NCA, CWRES, GOF) | 19 |
 | 076 | `exp076_full_pipeline_scenarios` | Full pipeline petalTongue scenario validation (5 tracks) | 197 |
+
+### V16 Paper Queue Complete (Exp077-082) — V16
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 077 | `exp077_michaelis_menten_pk` | Michaelis-Menten nonlinear PK (phenytoin) | 10 |
+| 078 | `exp078_antibiotic_perturbation` | Antibiotic perturbation recovery model | 10 |
+| 079 | `exp079_scfa_production` | SCFA metabolic production model | 11 |
+| 080 | `exp080_gut_brain_serotonin` | Gut-brain serotonin pathway | 10 |
+| 081 | `exp081_eda_stress_detection` | EDA autonomic stress detection | 11 |
+| 082 | `exp082_arrhythmia_classification` | Arrhythmia beat classification | 11 |
+
+### GPU V16 Portability (Exp083) — V17
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 083 | `exp083_gpu_v16_parity` | GPU parity for V16 primitives + metalForge routing | 25 |
 
 ---
 

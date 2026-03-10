@@ -38,6 +38,26 @@ pub enum StageOp {
     AucTrapezoidal { t_max: f64 },
     /// Bray-Curtis pairwise dissimilarity matrix over communities.
     BrayCurtis { communities: Vec<Vec<f64>> },
+    /// Batch Michaelis-Menten PK: parallel ODE per patient (GPU-native).
+    MichaelisMentenBatch {
+        vmax: f64,
+        km: f64,
+        vd: f64,
+        dt: f64,
+        n_steps: u32,
+        n_patients: u32,
+        seed: u32,
+    },
+    /// Batch SCFA production: element-wise Michaelis-Menten (GPU-native).
+    ScfaBatch {
+        params: healthspring_barracuda::microbiome::ScfaParams,
+        fiber_inputs: Vec<f64>,
+    },
+    /// Batch beat classification: template correlation (GPU-native).
+    BeatClassifyBatch {
+        beats: Vec<Vec<f64>>,
+        templates: Vec<Vec<f64>>,
+    },
 }
 
 /// Kind of element-wise transform.
@@ -105,6 +125,34 @@ impl Stage {
             StageOp::DiversityReduce { communities } => Some(GpuOp::DiversityBatch {
                 communities: communities.clone(),
             }),
+            StageOp::MichaelisMentenBatch {
+                vmax,
+                km,
+                vd,
+                dt,
+                n_steps,
+                n_patients,
+                seed,
+            } => Some(GpuOp::MichaelisMentenBatch {
+                vmax: *vmax,
+                km: *km,
+                vd: *vd,
+                dt: *dt,
+                n_steps: *n_steps,
+                n_patients: *n_patients,
+                seed: *seed,
+            }),
+            StageOp::ScfaBatch {
+                params,
+                fiber_inputs,
+            } => Some(GpuOp::ScfaBatch {
+                params: params.clone(),
+                fiber_inputs: fiber_inputs.clone(),
+            }),
+            StageOp::BeatClassifyBatch { beats, templates } => Some(GpuOp::BeatClassifyBatch {
+                beats: beats.clone(),
+                templates: templates.clone(),
+            }),
             StageOp::Generate { .. }
             | StageOp::ElementwiseTransform { .. }
             | StageOp::Reduce { .. }
@@ -116,6 +164,12 @@ impl Stage {
     }
 
     /// Execute this stage on CPU.
+    ///
+    /// # Panics
+    ///
+    /// Panics if a GPU-native stage (`MichaelisMentenBatch`, `ScfaBatch`,
+    /// `BeatClassifyBatch`) fails `to_gpu_op`, which cannot happen for
+    /// valid inputs.
     #[must_use]
     #[expect(clippy::cast_precision_loss)]
     #[expect(
@@ -177,6 +231,32 @@ impl Stage {
                 vec![compute_auc_trapezoidal(data, *t_max)]
             }
             StageOp::BrayCurtis { communities } => compute_bray_curtis_matrix(communities),
+            StageOp::MichaelisMentenBatch { .. } => {
+                let op = self.to_gpu_op(input).unwrap();
+                match gpu_cpu(&op) {
+                    GpuResult::MichaelisMentenBatch(v) => v,
+                    _ => unreachable!(),
+                }
+            }
+            StageOp::ScfaBatch { .. } => {
+                let op = self.to_gpu_op(input).unwrap();
+                match gpu_cpu(&op) {
+                    GpuResult::ScfaBatch(triples) => {
+                        triples.iter().flat_map(|&(a, p, b)| [a, p, b]).collect()
+                    }
+                    _ => unreachable!(),
+                }
+            }
+            StageOp::BeatClassifyBatch { .. } => {
+                let op = self.to_gpu_op(input).unwrap();
+                match gpu_cpu(&op) {
+                    GpuResult::BeatClassifyBatch(pairs) => pairs
+                        .iter()
+                        .flat_map(|&(idx, corr)| [f64::from(idx), corr])
+                        .collect(),
+                    _ => unreachable!(),
+                }
+            }
         };
         let elapsed = start.elapsed().as_micros() as f64;
 

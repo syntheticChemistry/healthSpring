@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use super::dispatch::{
-    DivParams, HillParams, PkParams, WG_SIZE, execute_diversity_gpu, execute_hill_gpu,
-    execute_pop_pk_gpu, strip_f64_enable,
+    BeatClassifyParams, DivParams, HillParams, MmParams, PkParams, ScfaGpuParams, WG_SIZE,
+    execute_beat_classify_gpu, execute_diversity_gpu, execute_hill_gpu, execute_mm_gpu,
+    execute_pop_pk_gpu, execute_scfa_gpu, strip_f64_enable,
 };
 use super::{GpuError, GpuOp, GpuResult, shaders};
 
@@ -105,6 +106,34 @@ impl GpuContext {
             GpuOp::DiversityBatch { communities } => {
                 execute_diversity_gpu(&self.device, &self.queue, communities).await
             }
+            GpuOp::MichaelisMentenBatch {
+                vmax,
+                km,
+                vd,
+                dt,
+                n_steps,
+                n_patients,
+                seed,
+            } => {
+                let mm_params = MmParams {
+                    vmax: *vmax,
+                    km: *km,
+                    vd: *vd,
+                    dt: *dt,
+                    n_steps: *n_steps,
+                    n_patients: *n_patients,
+                    base_seed: *seed,
+                    _pad: 0,
+                };
+                execute_mm_gpu(&self.device, &self.queue, &mm_params).await
+            }
+            GpuOp::ScfaBatch {
+                params,
+                fiber_inputs,
+            } => execute_scfa_gpu(&self.device, &self.queue, params, fiber_inputs).await,
+            GpuOp::BeatClassifyBatch { beats, templates } => {
+                execute_beat_classify_gpu(&self.device, &self.queue, beats, templates).await
+            }
         }
     }
 
@@ -139,6 +168,9 @@ impl GpuContext {
             Hill,
             PopPk,
             Diversity { n_communities: usize },
+            MichaelisMenten,
+            Scfa { n_elements: usize },
+            BeatClassify { n_beats: usize },
         }
 
         if ops.is_empty() {
@@ -418,6 +450,290 @@ impl GpuContext {
                         },
                     });
                 }
+                GpuOp::MichaelisMentenBatch {
+                    vmax,
+                    km,
+                    vd,
+                    dt,
+                    n_steps,
+                    n_patients,
+                    seed,
+                } => {
+                    let byte_size = u64::from(*n_patients) * 8;
+                    let params = MmParams {
+                        vmax: *vmax,
+                        km: *km,
+                        vd: *vd,
+                        dt: *dt,
+                        n_steps: *n_steps,
+                        n_patients: *n_patients,
+                        base_seed: *seed,
+                        _pad: 0,
+                    };
+                    let output_buf = self.device.create_buffer(&wgpu::BufferDescriptor {
+                        label: Some(&label),
+                        size: byte_size,
+                        usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC,
+                        mapped_at_creation: false,
+                    });
+                    let params_buf =
+                        self.device
+                            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                                label: Some(&label),
+                                contents: bytemuck::bytes_of(&params),
+                                usage: wgpu::BufferUsages::UNIFORM,
+                            });
+                    let staging_buf = self.device.create_buffer(&wgpu::BufferDescriptor {
+                        label: Some(&label),
+                        size: byte_size,
+                        usage: wgpu::BufferUsages::MAP_READ | wgpu::BufferUsages::COPY_DST,
+                        mapped_at_creation: false,
+                    });
+                    let src = strip_f64_enable(shaders::MICHAELIS_MENTEN_BATCH);
+                    let shader = self
+                        .device
+                        .create_shader_module(wgpu::ShaderModuleDescriptor {
+                            label: Some(&label),
+                            source: wgpu::ShaderSource::Wgsl(src.into()),
+                        });
+                    let pipeline =
+                        self.device
+                            .create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+                                label: Some(&label),
+                                layout: None,
+                                module: &shader,
+                                entry_point: Some("main"),
+                                cache: None,
+                                compilation_options: wgpu::PipelineCompilationOptions::default(),
+                            });
+                    let bind_group = self.device.create_bind_group(&wgpu::BindGroupDescriptor {
+                        label: Some(&label),
+                        layout: &pipeline.get_bind_group_layout(0),
+                        entries: &[
+                            wgpu::BindGroupEntry {
+                                binding: 0,
+                                resource: output_buf.as_entire_binding(),
+                            },
+                            wgpu::BindGroupEntry {
+                                binding: 1,
+                                resource: params_buf.as_entire_binding(),
+                            },
+                        ],
+                    });
+                    prepared.push(PreparedOp {
+                        pipeline,
+                        bind_group,
+                        workgroups: (n_patients.div_ceil(WG_SIZE), 1, 1),
+                        output_buf,
+                        staging_buf,
+                        output_bytes: byte_size,
+                        kind: OpKind::MichaelisMenten,
+                    });
+                }
+                GpuOp::ScfaBatch {
+                    params: scfa_p,
+                    fiber_inputs,
+                } => {
+                    #[expect(clippy::cast_possible_truncation, reason = "element count fits u32")]
+                    let n_elements = fiber_inputs.len() as u32;
+                    let output_bytes = u64::from(n_elements) * 3 * 8;
+                    let params = ScfaGpuParams {
+                        vmax_acetate: scfa_p.vmax_acetate,
+                        km_acetate: scfa_p.km_acetate,
+                        vmax_propionate: scfa_p.vmax_propionate,
+                        km_propionate: scfa_p.km_propionate,
+                        vmax_butyrate: scfa_p.vmax_butyrate,
+                        km_butyrate: scfa_p.km_butyrate,
+                        n_elements,
+                        _pad: 0,
+                    };
+                    let input_buf =
+                        self.device
+                            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                                label: Some(&label),
+                                contents: bytemuck::cast_slice(fiber_inputs),
+                                usage: wgpu::BufferUsages::STORAGE,
+                            });
+                    let output_buf = self.device.create_buffer(&wgpu::BufferDescriptor {
+                        label: Some(&label),
+                        size: output_bytes,
+                        usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC,
+                        mapped_at_creation: false,
+                    });
+                    let params_buf =
+                        self.device
+                            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                                label: Some(&label),
+                                contents: bytemuck::bytes_of(&params),
+                                usage: wgpu::BufferUsages::UNIFORM,
+                            });
+                    let staging_buf = self.device.create_buffer(&wgpu::BufferDescriptor {
+                        label: Some(&label),
+                        size: output_bytes,
+                        usage: wgpu::BufferUsages::MAP_READ | wgpu::BufferUsages::COPY_DST,
+                        mapped_at_creation: false,
+                    });
+                    let src = strip_f64_enable(shaders::SCFA_BATCH);
+                    let shader = self
+                        .device
+                        .create_shader_module(wgpu::ShaderModuleDescriptor {
+                            label: Some(&label),
+                            source: wgpu::ShaderSource::Wgsl(src.into()),
+                        });
+                    let pipeline =
+                        self.device
+                            .create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+                                label: Some(&label),
+                                layout: None,
+                                module: &shader,
+                                entry_point: Some("main"),
+                                cache: None,
+                                compilation_options: wgpu::PipelineCompilationOptions::default(),
+                            });
+                    let bind_group = self.device.create_bind_group(&wgpu::BindGroupDescriptor {
+                        label: Some(&label),
+                        layout: &pipeline.get_bind_group_layout(0),
+                        entries: &[
+                            wgpu::BindGroupEntry {
+                                binding: 0,
+                                resource: input_buf.as_entire_binding(),
+                            },
+                            wgpu::BindGroupEntry {
+                                binding: 1,
+                                resource: output_buf.as_entire_binding(),
+                            },
+                            wgpu::BindGroupEntry {
+                                binding: 2,
+                                resource: params_buf.as_entire_binding(),
+                            },
+                        ],
+                    });
+                    prepared.push(PreparedOp {
+                        pipeline,
+                        bind_group,
+                        workgroups: (n_elements.div_ceil(WG_SIZE), 1, 1),
+                        output_buf,
+                        staging_buf,
+                        output_bytes,
+                        kind: OpKind::Scfa {
+                            n_elements: fiber_inputs.len(),
+                        },
+                    });
+                }
+                GpuOp::BeatClassifyBatch { beats, templates } => {
+                    #[expect(
+                        clippy::cast_possible_truncation,
+                        reason = "beat/template counts fit u32"
+                    )]
+                    let n_beats = beats.len() as u32;
+                    #[expect(clippy::cast_possible_truncation, reason = "template count fits u32")]
+                    let n_templates = templates.len() as u32;
+                    #[expect(clippy::cast_possible_truncation, reason = "window size fits u32")]
+                    let window_size = beats.first().map_or(0, Vec::len) as u32;
+                    let output_bytes = u64::from(n_beats) * 2 * 8;
+                    let params = BeatClassifyParams {
+                        n_beats,
+                        n_templates,
+                        window_size,
+                        _pad: 0,
+                    };
+                    let mut flat_beats =
+                        Vec::with_capacity(n_beats as usize * window_size as usize);
+                    for b in beats {
+                        flat_beats.extend_from_slice(b);
+                        flat_beats.resize(flat_beats.len() + (window_size as usize - b.len()), 0.0);
+                    }
+                    let mut flat_templates =
+                        Vec::with_capacity(n_templates as usize * window_size as usize);
+                    for t in templates {
+                        flat_templates.extend_from_slice(t);
+                        flat_templates
+                            .resize(flat_templates.len() + (window_size as usize - t.len()), 0.0);
+                    }
+                    let beats_buf =
+                        self.device
+                            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                                label: Some(&label),
+                                contents: bytemuck::cast_slice(&flat_beats),
+                                usage: wgpu::BufferUsages::STORAGE,
+                            });
+                    let templates_buf =
+                        self.device
+                            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                                label: Some(&label),
+                                contents: bytemuck::cast_slice(&flat_templates),
+                                usage: wgpu::BufferUsages::STORAGE,
+                            });
+                    let output_buf = self.device.create_buffer(&wgpu::BufferDescriptor {
+                        label: Some(&label),
+                        size: output_bytes,
+                        usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC,
+                        mapped_at_creation: false,
+                    });
+                    let params_buf =
+                        self.device
+                            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                                label: Some(&label),
+                                contents: bytemuck::bytes_of(&params),
+                                usage: wgpu::BufferUsages::UNIFORM,
+                            });
+                    let staging_buf = self.device.create_buffer(&wgpu::BufferDescriptor {
+                        label: Some(&label),
+                        size: output_bytes,
+                        usage: wgpu::BufferUsages::MAP_READ | wgpu::BufferUsages::COPY_DST,
+                        mapped_at_creation: false,
+                    });
+                    let src = strip_f64_enable(shaders::BEAT_CLASSIFY_BATCH);
+                    let shader = self
+                        .device
+                        .create_shader_module(wgpu::ShaderModuleDescriptor {
+                            label: Some(&label),
+                            source: wgpu::ShaderSource::Wgsl(src.into()),
+                        });
+                    let pipeline =
+                        self.device
+                            .create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+                                label: Some(&label),
+                                layout: None,
+                                module: &shader,
+                                entry_point: Some("main"),
+                                cache: None,
+                                compilation_options: wgpu::PipelineCompilationOptions::default(),
+                            });
+                    let bind_group = self.device.create_bind_group(&wgpu::BindGroupDescriptor {
+                        label: Some(&label),
+                        layout: &pipeline.get_bind_group_layout(0),
+                        entries: &[
+                            wgpu::BindGroupEntry {
+                                binding: 0,
+                                resource: beats_buf.as_entire_binding(),
+                            },
+                            wgpu::BindGroupEntry {
+                                binding: 1,
+                                resource: templates_buf.as_entire_binding(),
+                            },
+                            wgpu::BindGroupEntry {
+                                binding: 2,
+                                resource: output_buf.as_entire_binding(),
+                            },
+                            wgpu::BindGroupEntry {
+                                binding: 3,
+                                resource: params_buf.as_entire_binding(),
+                            },
+                        ],
+                    });
+                    prepared.push(PreparedOp {
+                        pipeline,
+                        bind_group,
+                        workgroups: (n_beats.div_ceil(WG_SIZE), 1, 1),
+                        output_buf,
+                        staging_buf,
+                        output_bytes,
+                        kind: OpKind::BeatClassify {
+                            n_beats: beats.len(),
+                        },
+                    });
+                }
             }
         }
 
@@ -479,6 +795,24 @@ impl GpuContext {
                         .map(|i| (raw[i * 2], raw[i * 2 + 1]))
                         .collect();
                     GpuResult::DiversityBatch(pairs)
+                }
+                OpKind::MichaelisMenten => GpuResult::MichaelisMentenBatch(raw.to_vec()),
+                OpKind::Scfa { n_elements } => {
+                    let triples: Vec<(f64, f64, f64)> = (0..*n_elements)
+                        .map(|i| (raw[i * 3], raw[i * 3 + 1], raw[i * 3 + 2]))
+                        .collect();
+                    GpuResult::ScfaBatch(triples)
+                }
+                OpKind::BeatClassify { n_beats } => {
+                    #[expect(
+                        clippy::cast_possible_truncation,
+                        clippy::cast_sign_loss,
+                        reason = "template index fits u32"
+                    )]
+                    let pairs: Vec<(u32, f64)> = (0..*n_beats)
+                        .map(|i| (raw[i * 2] as u32, raw[i * 2 + 1]))
+                        .collect();
+                    GpuResult::BeatClassifyBatch(pairs)
                 }
             };
             drop(data);

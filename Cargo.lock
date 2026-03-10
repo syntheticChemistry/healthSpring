@@ -1233,6 +1233,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "healthspring-exp083"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "healthspring-forge",
+]
+
+[[package]]
 name = "healthspring-forge"
 version = "0.1.0"
 dependencies = [

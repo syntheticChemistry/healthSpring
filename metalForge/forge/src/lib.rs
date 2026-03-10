@@ -66,6 +66,12 @@ pub enum Workload {
     BiosignalFusion { channels: u32 },
     /// Endocrine PK computation (CPU-only, analytical).
     EndocrinePk { n_timepoints: u32 },
+    /// Batch Michaelis-Menten PK ODE per patient (GPU ideal).
+    MichaelisMentenBatch { n_patients: u32 },
+    /// Batch SCFA metabolic production per fiber input (GPU ideal).
+    ScfaBatch { n_elements: u32 },
+    /// Batch beat template-matching classification (GPU ideal).
+    BeatClassifyBatch { n_beats: u32 },
     /// Small analytical computation — CPU always.
     Analytical,
 }
@@ -75,12 +81,16 @@ impl Workload {
     #[must_use]
     pub const fn element_count(&self) -> u32 {
         match *self {
-            Self::PopulationPk { n_patients } => n_patients,
+            Self::PopulationPk { n_patients } | Self::MichaelisMentenBatch { n_patients } => {
+                n_patients
+            }
             Self::DoseResponse { n_concentrations } => n_concentrations,
             Self::DiversityIndex { n_samples } => n_samples,
             Self::BiosignalDetect { sample_rate_hz } => sample_rate_hz,
             Self::BiosignalFusion { channels } => channels,
             Self::EndocrinePk { n_timepoints } => n_timepoints,
+            Self::ScfaBatch { n_elements } => n_elements,
+            Self::BeatClassifyBatch { n_beats } => n_beats,
             Self::Analytical => 0,
         }
     }
@@ -262,9 +272,13 @@ pub const fn select_substrate_with_thresholds(
     if let Some(ref _gpu) = caps.gpu {
         let n = workload.element_count();
         let threshold = match workload {
-            Workload::PopulationPk { .. } => thresholds.parallel_gpu_min,
-            Workload::DoseResponse { .. } => thresholds.sweep_gpu_min,
-            Workload::DiversityIndex { .. } => thresholds.reduce_gpu_min,
+            Workload::PopulationPk { .. } | Workload::MichaelisMentenBatch { .. } => {
+                thresholds.parallel_gpu_min
+            }
+            Workload::DoseResponse { .. } | Workload::ScfaBatch { .. } => thresholds.sweep_gpu_min,
+            Workload::DiversityIndex { .. } | Workload::BeatClassifyBatch { .. } => {
+                thresholds.reduce_gpu_min
+            }
             Workload::BiosignalDetect { .. }
             | Workload::BiosignalFusion { .. }
             | Workload::EndocrinePk { .. }
