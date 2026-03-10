@@ -90,6 +90,26 @@ metalForge NUCLEUS topology validation:
 
 ---
 
+## Cross-Track: Gut–Digester Analogy (baseCamp Paper 16)
+
+The gut is an anaerobic digester. The same microbial ecology that determines
+biogas yield in an ADREC digester determines nutrient extraction, immune
+modulation, and pathogen resistance in the gut. Experiments Exp011 (Anderson
+gut colonization), Exp012 (C. diff metabolic modeling), Exp013 (synthetic
+microbiota for rCDI), and Exp037 (testosterone-gut axis) all model the
+colon as a largely anaerobic microbial ecosystem.
+
+baseCamp Paper 16 (Anaerobic-Aerobic QS Phase Transition) formalizes this:
+the Anderson disorder parameter W at the gut mucosal surface (aerobic) differs
+from W in the lumen (anaerobic). The oxygen gradient creates a spatial
+gradient in QS propagation. healthSpring's Anderson gut lattice (Exp011)
+provides the test case; wetSpring Track 6 (Liao/ADREC) provides the
+controlled anaerobic comparison.
+
+Faculty anchor: Wei Liao (ADREC, MSU BAE). See `whitePaper/attsi/non-anon/contact/liao/README.md`.
+
+---
+
 ## Next Papers (Remaining Queue)
 
 All 24 queued papers complete at Tier 0+1. Three have Tier 2 GPU validation. Next evolution targets:
