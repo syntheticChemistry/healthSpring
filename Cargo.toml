@@ -66,6 +66,10 @@ members = [
     "experiments/exp081_eda_stress_detection",
     "experiments/exp082_arrhythmia_classification",
     "experiments/exp083_gpu_v16_parity",
+    "experiments/exp084_v16_cpu_parity_bench",
+    "experiments/exp085_gpu_vs_cpu_v16_bench",
+    "experiments/exp086_toadstool_v16_dispatch",
+    "experiments/exp087_mixed_nucleus_v16",
 ]
 
 [workspace.package]

@@ -5,7 +5,7 @@
 **Date:** March 10, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V17 — 395 tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 55 experiments, GPU portability for V16 primitives. V17 additions: 3 new WGSL compute shaders (Michaelis-Menten batch PK, SCFA batch production, beat classification batch correlation), full GPU dispatch pipeline (GpuOp/GpuContext/execute_fused), metalForge cross-system routing (GPU→NPU→CPU) for new workloads, toadStool streaming dispatch for V16 ops, Exp083 GPU V16 parity (25/25 checks). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean.
+**Status:** V19 — 395 tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 59 experiments, 194 Python cross-validation checks, full-stack portability validated (barraCuda CPU → GPU → toadStool dispatch → metalForge NUCLEUS routing). V19: GPU scaling bench (Exp085, 47/47), toadStool V16 streaming dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch with PCIe P2P bypass (Exp087, 35/35). V18: CPU parity benchmarks (Exp084, Rust 84× faster than Python). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: 6 new domain primitives (Exp077-082) + paper queue complete (30/30). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean.
 
 ---
 
@@ -29,18 +29,19 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | **V17** (GPU portability for V16 primitives) |
+| Version | **V19** (full-stack portability: CPU → GPU → toadStool → NUCLEUS) |
 | Rust lib tests | 329 (barraCuda) |
 | Rust forge tests | 33 (metalForge) |
 | Rust toadStool tests | 30 |
 | Doc-tests | 3 (`shannon_index`, `hill_dose_response`, `auc_trapezoidal`) |
 | **Total tests** | **395** |
 | Paper queue | **30/30 complete** |
-| Python control checks | 167 (cross-validation) |
-| Experiments complete | 55 (Tier 0+1+2+3 + diagnostic + GPU + clinical + NLME + PK-003/MB-003-005/BS-005-006 + GPU V16) |
+| Python control checks | 194 (cross-validation) |
+| Experiments complete | 59 (Tier 0+1+2+3 + diagnostics + GPU + clinical + NLME + V16 primitives + GPU scaling + dispatch + NUCLEUS) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity checks |
 | GPU V16 shaders | `michaelis_menten_batch_f64.wgsl`, `scfa_batch_f64.wgsl`, `beat_classify_batch_f64.wgsl` |
-| GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s |
+| GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s; V16 linear scaling confirmed |
+| CPU parity | Rust 84× faster than Python across V16 primitives (SCFA 160×, antibiotic 233×, beat 149×) |
 | petalTongue visualization | **Full** — 7 DataChannel types, 3 stream ops, domain theming, capabilities query, interaction subscription |
 | petalTongue scenarios | 14 scenarios (6 clinical + 5 TRT archetypes + topology + dispatch + NLME) |
 | petalTongue pipeline | 28 nodes, 29 edges, 121 channels across all 7 DataChannel types |
@@ -194,6 +195,31 @@ Sovereign replacement for NONMEM (FOCE), Monolix (SAEM), and WinNonlin (NCA). Fu
 - NLME cross-validation: FOCE/SAEM parameter recovery, NCA (λz, AUC∞), CWRES, GOF (19 checks) — Exp075
 - Full pipeline petalTongue scenario validation: 5 tracks, 28 nodes, 29 edges, 121 channels, 197 checks — Exp076
 
+### V16 Primitives (Exp077-082)
+
+Six new domain experiments closing the paper queue (30/30):
+
+- Michaelis-Menten nonlinear PK (capacity-limited elimination) — Exp077
+- Antibiotic perturbation (diversity decline/recovery dynamics) — Exp078
+- SCFA production (Michaelis-Menten kinetics: acetate, propionate, butyrate) — Exp079
+- Gut-brain serotonin (tryptophan metabolism pathway) — Exp080
+- EDA stress detection (SCL, phasic decomposition, SCR) — Exp081
+- Arrhythmia beat classification (template correlation: Normal, PVC, PAC) — Exp082
+
+### GPU V16 Parity (Exp083)
+
+- GPU parity for V16 primitives: 3 new WGSL compute shaders (MM batch, SCFA batch, Beat classify) — Exp083
+
+### CPU Parity Benchmarks (Exp084)
+
+- V16 CPU parity bench: Rust 84× faster than Python across 6 primitives (33 Rust checks, 17 Python checks) — Exp084
+
+### GPU Scaling + toadStool Dispatch + NUCLEUS Routing (Exp085-087)
+
+- barraCuda GPU vs CPU V16 scaling bench (4 scales × 3 ops, fused pipeline, metalForge routing) — Exp085
+- toadStool V16 streaming dispatch (execute_cpu + streaming callbacks, GPU-mappability) — Exp086
+- metalForge mixed NUCLEUS V16 dispatch (Tower/Node/Nest topology, PCIe P2P bypass, plan_dispatch) — Exp087
+
 ---
 
 ## Validation Protocol
@@ -205,7 +231,7 @@ Tier 2: Rust GPU (barraCuda WGSL shaders, math parity with CPU)
 Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 ```
 
-**Current state**: Tier 0+1 complete for 24 experiments. **Tier 2 live**: 3 WGSL shaders compiled and validated (Exp053), fused unidirectional pipeline (Exp054), scaling to 10M elements (Exp055). CPU vs GPU parity matrix (Exp060, 27/27). Mixed hardware dispatch (Exp061, 22/22). PCIe P2P transfer (Exp062, 26/26). toadStool `Pipeline::execute_gpu()` and `execute_streaming()` dispatch stages via `GpuContext`. metalForge substrate routing (Tier 3 foundation). Patient-parameterized clinical TRT scenarios (Exp063/073) with petalTongue IPC push (Exp064) and live streaming (Exp065/073). petalTongue interaction roundtrip validated (Exp074).
+**Current state**: Tier 0+1 complete for 30 experiments (paper queue 30/30). **Tier 2 live**: 6 WGSL shaders (3 original + 3 V16), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **V19**: GPU scaling bench (linear scaling confirmed at 4 scales), toadStool V16 dispatch (streaming + callbacks), mixed NUCLEUS V16 dispatch (Tower/Node/Nest + PCIe P2P GPU↔NPU). **V18**: CPU parity — Rust 84× faster than Python across V16 primitives.
 
 ---
 
@@ -243,14 +269,18 @@ healthSpring/
 │   └── shaders/health/  # WGSL compute kernels (f64)
 │       ├── hill_dose_response_f64.wgsl
 │       ├── population_pk_f64.wgsl
-│       └── diversity_f64.wgsl
-├── control/             # Python baselines (Tier 0) — 104 cross-validation checks
-│   ├── pkpd/            # exp001–exp006 + cross_validate.py
-│   ├── microbiome/      # exp010–exp013
-│   ├── biosignal/       # exp020–exp023
+│       ├── diversity_f64.wgsl
+│       ├── michaelis_menten_batch_f64.wgsl
+│       ├── scfa_batch_f64.wgsl
+│       └── beat_classify_batch_f64.wgsl
+├── control/             # Python baselines (Tier 0) — 194 cross-validation checks
+│   ├── pkpd/            # exp001–exp006, exp077 + cross_validate.py
+│   ├── microbiome/      # exp010–exp013, exp078–exp080
+│   ├── biosignal/       # exp020–exp023, exp081–exp082
 │   ├── endocrine/       # exp030–exp038
-│   └── validation/      # Exp040 CPU parity
-├── experiments/         # 48 validation binaries (853 binary checks)
+│   ├── validation/      # Exp040 CPU parity
+│   └── scripts/         # Benchmark scripts + timing JSON results
+├── experiments/         # 59 validation binaries
 │   ├── exp001–exp006/   # Track 1: PK/PD
 │   ├── exp010–exp013/   # Track 2: Microbiome
 │   ├── exp020–exp023/   # Track 3: Biosignal
@@ -261,9 +291,12 @@ healthSpring/
 │   ├── exp060–exp062/   # CPU vs GPU + mixed dispatch + PCIe
 │   ├── exp063–exp065/   # Clinical TRT + IPC + live streaming
 │   ├── exp066–exp072/   # Compute benchmarks + dashboard
-│   ├── exp073–exp074/   # petalTongue evolution (TRT dashboard, interaction roundtrip)
-│   ├── exp075/          # Track 5: NLME cross-validation (FOCE/SAEM, NCA, diagnostics)
-│   └── exp076/          # Full pipeline petalTongue scenario validation (197 checks)
+│   ├── exp073–exp074/   # petalTongue evolution
+│   ├── exp075–exp076/   # NLME + full pipeline
+│   ├── exp077–exp082/   # V16 primitives (MM PK, antibiotic, SCFA, serotonin, EDA, arrhythmia)
+│   ├── exp083/          # GPU V16 parity (25/25)
+│   ├── exp084/          # CPU parity bench (Rust 84× faster)
+│   └── exp085–exp087/   # GPU scaling + toadStool dispatch + NUCLEUS routing
 ├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
 │       └── src/
@@ -290,7 +323,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 356 tests (barraCuda + forge + toadStool + doc-tests)
+cargo test --workspace                  # 395 tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests)
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings
@@ -323,21 +356,19 @@ cargo run --release --bin dump_scenarios # Write 14 scenario JSON files to sandb
 cargo run --bin exp075_nlme_cross_validation     # 19 checks (FOCE/SAEM/NCA/CWRES/GOF)
 cargo run --bin exp076_full_pipeline_scenarios    # 197 checks (all 5 tracks + full study)
 
-# Clinical TRT patient scenarios + live dashboard
-cargo run --bin exp063_clinical_trt_scenarios      # 5 patient archetypes
-cargo run --release --bin exp073_clinical_trt_dashboard  # Live streaming TRT dashboard
-cargo run --release --bin exp074_interaction_roundtrip   # Interaction roundtrip validation
+# V16 primitives
+cargo run --release --bin exp077_michaelis_menten_pk      # Nonlinear PK
+cargo run --release --bin exp084_v16_cpu_parity_bench     # CPU parity: Rust 84× faster
 
-# Compute dashboard
-./scripts/compute_dashboard.sh  # Full compute validation suite
-
-# Load in petalTongue (topology + data channel charts)
-petaltongue ui --scenario sandbox/scenarios/healthspring-full-study.json
-petaltongue ui --scenario sandbox/scenarios/healthspring-trt-obese.json  # Clinical TRT mode
+# GPU scaling + dispatch + NUCLEUS
+cargo run --release --bin exp085_gpu_vs_cpu_v16_bench     # 47 checks — GPU scaling
+cargo run --release --bin exp086_toadstool_v16_dispatch   # 24 checks — toadStool dispatch
+cargo run --release --bin exp087_mixed_nucleus_v16        # 35 checks — NUCLEUS routing
 
 # Python controls
-python3 control/endocrine/exp030_testosterone_im_pk.py
-python3 control/endocrine/exp036_population_trt_montecarlo.py
+python3 control/scripts/bench_v16_cpu_vs_python.py       # V16 Python timing baseline
+python3 control/scripts/compare_v16_benchmarks.py        # Rust vs Python comparison
+python3 control/scripts/control_exp085_gpu_scaling.py    # GPU scaling validation
 ```
 
 ---

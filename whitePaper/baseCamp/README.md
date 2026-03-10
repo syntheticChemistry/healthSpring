@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 10, 2026
-**Status:** V15 — 5 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC + streaming + interaction + NLME, 48 experiments (368 tests, 853 binary checks, 104 cross-validation checks). NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix), NCA (sovereign WinNonlin), NLME diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. Industry benchmark mapping.
+**Status:** V19 — 5 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC + streaming + interaction + NLME + paper queue + GPU V16 + CPU parity + GPU scaling + toadStool dispatch + mixed NUCLEUS, 59 experiments (395 tests, 194 Python cross-validation checks, 14 Criterion benchmarks). V19: GPU scaling bench (Exp085, 47/47), toadStool V16 streaming dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch (Exp087, 35/35) — proves full-stack portability from barraCuda math through toadStool pipeline to metalForge NUCLEUS routing with PCIe P2P bypass. V18: CPU parity (Exp084, Rust 84× faster). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: paper queue complete (30/30). 6 total WGSL shaders.
 
 ---
 
@@ -11,9 +11,9 @@ Per-person translation of validated science into usable health applications. Met
 
 | Track | Domain | Experiments | Status |
 |-------|--------|-------------|--------|
-| 1 — PK/PD | Pharmacokinetics, dose-response, population modeling, PBPK | Exp001-006 | **Complete** (Tier 0+1) |
-| 2 — Microbiome | Gut diversity, Anderson lattice, colonization resistance, FMT | Exp010-013 | **Complete** (Tier 0+1) |
-| 3 — Biosignal | ECG detection, HRV, PPG SpO2, EDA, multi-channel fusion | Exp020-023 | **Complete** (Tier 0+1) |
+| 1 — PK/PD | Pharmacokinetics, dose-response, population modeling, PBPK, MM PK | Exp001-006, 077 | **Complete** (Tier 0+1+2) |
+| 2 — Microbiome | Gut diversity, Anderson lattice, colonization resistance, FMT, antibiotics, SCFA, serotonin | Exp010-013, 078-080 | **Complete** (Tier 0+1+2) |
+| 3 — Biosignal | ECG detection, HRV, PPG SpO2, EDA stress, arrhythmia classification, multi-channel fusion | Exp020-023, 081-082 | **Complete** (Tier 0+1+2) |
 | 4 — Endocrinology | Testosterone PK, TRT outcomes, gut axis, HRV cross-track | Exp030-038 | **Complete** (Tier 0+1) |
 | 5 — NLME | FOCE/SAEM population PK, NCA, CWRES/VPC/GOF diagnostics | Exp075-076 | **Complete** (Tier 0+1) |
 
@@ -23,9 +23,9 @@ Per-person translation of validated science into usable health applications. Met
 
 | # | File | Faculty | Domain | Status | Python | Rust |
 |---|------|---------|--------|--------|:------:|:----:|
-| 01 | [gonzales.md](gonzales.md) | Gonzales, Lisabeth, Neubig | PK/PD + immunology → human therapeutics | **Complete** | 73 | 79 |
-| 02 | [cdiff_colonization.md](cdiff_colonization.md) | TBD | Anderson localization → gut colonization resistance, FMT | **Complete** | 36 | 48 |
-| 03 | [biosignal_sovereign.md](biosignal_sovereign.md) | TBD | Edge biosignal processing, PPG SpO2, fusion | **Complete** | 44 | 44 |
+| 01 | [gonzales.md](gonzales.md) | Gonzales, Lisabeth, Neubig | PK/PD + immunology → human therapeutics + MM PK | **Complete** | 73 | 79 |
+| 02 | [cdiff_colonization.md](cdiff_colonization.md) | TBD | Anderson localization → gut colonization, FMT, antibiotics, SCFA, serotonin | **Complete** | 36 | 48 |
+| 03 | [biosignal_sovereign.md](biosignal_sovereign.md) | TBD | Edge biosignal processing, PPG SpO2, EDA stress, arrhythmia | **Complete** | 44 | 44 |
 | 04 | [mok_testosterone.md](mok_testosterone.md) | Dr. Charles Mok | Testosterone PK, TRT outcomes, HRV cross-track | **Complete** | 96 | 86 |
 
 ---
@@ -62,11 +62,18 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | Compute + benchmark (Exp066-072) | — | — | Structural | — |
 | petalTongue evolution (Exp073-074) | — | — | 19 | 19 |
 | NLME + Full Pipeline (Exp075-076) | — | — | 216 | 216 |
-| **Lib unit tests** | — | — | **289** | 289 |
+| Paper Queue (Exp077-082) | — | 6 controls | 6 binaries | — |
+| GPU V16 Parity (Exp083) | — | — | 25 | 25 |
+| CPU Parity Bench (Exp084) | — | 17 | 33 | 50 |
+| GPU Scaling Bench (Exp085) | — | 10 | 47 | 57 |
+| toadStool V16 Dispatch (Exp086) | — | — | 24 | 24 |
+| Mixed NUCLEUS V16 (Exp087) | — | — | 35 | 35 |
+| **Lib unit tests** | — | — | **302** | 302 |
 | **metalForge tests** | — | — | **33** | 33 |
-| **toadStool tests** | — | — | **30** | 30 |
+| **toadStool tests** | — | — | **36** | 36 |
 | **Doc-tests** | — | — | **4** | 4 |
-| **Total** | **688** | **287** (Tier 0) | **853** (binary) + **356** (tests) = **1,209** | **2,184+** |
+| **Criterion benchmarks** | — | — | **14** | 14 |
+| **Total** | **688** | **287+** (Tier 0) | **395** (tests) | **2,500+** |
 
 ---
 
@@ -82,6 +89,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | 004 | mAb PK cross-species transfer (allometric) | 12 | 7 |
 | 005 | Population PK Monte Carlo (1000 patients) | 15 | 12 |
 | 006 | PBPK compartments (5-tissue physiological) | 13 | 13 |
+| 077 | Michaelis-Menten nonlinear PK (phenytoin) | control | binary |
 
 ### Track 2 — Microbiome
 
@@ -91,6 +99,9 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | 011 | Anderson gut lattice (localization → resistance) | 12 | 14 |
 | 012 | C. diff colonization resistance score | 10 | 10 |
 | 013 | FMT microbiota transplant for rCDI | 12 | 12 |
+| 078 | Antibiotic perturbation (ciprofloxacin) | control | binary |
+| 079 | SCFA production (acetate/propionate/butyrate) | control | binary |
+| 080 | Gut-brain serotonin axis (tryptophan → 5-HT) | control | binary |
 
 ### Track 3 — Biosignal
 
@@ -100,6 +111,8 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | 021 | HRV metrics (SDNN, RMSSD, pNN50) | 10 | 10 |
 | 022 | PPG SpO2 R-value calibration | 11 | 11 |
 | 023 | Multi-channel fusion (ECG + PPG + EDA) | 11 | 11 |
+| 081 | EDA electrodermal stress detection | control | binary |
+| 082 | Arrhythmia beat classification (template matching) | control | binary |
 
 ### Track 4 — Endocrinology
 
@@ -114,6 +127,26 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | 036 | Population TRT Monte Carlo (10K patients) | 12 | 10 |
 | 037 | Testosterone–gut axis: microbiome stratification | 12 | 10 |
 | 038 | HRV × TRT cardiovascular cross-track (Mok D3) | 10 | 10 |
+
+### GPU V16 Parity
+
+| Exp | Title | Checks |
+|-----|-------|:------:|
+| 083 | GPU V16 parity (3 shaders + metalForge + toadStool) | 25/25 |
+
+### CPU Parity Benchmarks (V18)
+
+| Exp | Title | Rust Checks | Python Checks | Bench Cases |
+|-----|-------|:-----------:|:-------------:|:-----------:|
+| 084 | V16 CPU parity bench (Rust 84× faster than Python) | 33/33 | 17/17 | 14 |
+
+### GPU Scaling + toadStool Dispatch + NUCLEUS Routing (V19)
+
+| Exp | Title | Checks |
+|-----|-------|:------:|
+| 085 | barraCuda GPU vs CPU V16 scaling bench (4 scales × 3 ops + fused + routing) | 47/47 |
+| 086 | toadStool V16 streaming dispatch (execute_cpu + streaming callbacks + GPU-mappability) | 24/24 |
+| 087 | metalForge mixed NUCLEUS V16 dispatch (Tower/Node/Nest + PCIe P2P + plan_dispatch) | 35/35 |
 
 ---
 
@@ -167,6 +200,9 @@ All 24 Tier 0+1 experiments validated. GPU pipeline live (Exp053-055). CPU vs GP
 | `hill_dose_response_f64.wgsl` | E(c) = Emax·c^n / (c^n + EC50^n) | Element-wise | **Validated** (Exp053) |
 | `population_pk_f64.wgsl` | AUC = F·Dose / CL(random) | Embarrassingly parallel MC | **Validated** (Exp053) |
 | `diversity_f64.wgsl` | Shannon + Simpson indices | Workgroup reduction | **Validated** (Exp053) |
+| `michaelis_menten_batch_f64.wgsl` | Per-patient MM ODE (Euler + Wang hash PRNG) | Embarrassingly parallel ODE | **Validated** (Exp083) |
+| `scfa_batch_f64.wgsl` | Acetate/propionate/butyrate MM kinetics | Element-wise (3-output) | **Validated** (Exp083) |
+| `beat_classify_batch_f64.wgsl` | Template-matching beat classification | Per-beat cross-correlation | **Validated** (Exp083) |
 
 ### GPU Architecture
 

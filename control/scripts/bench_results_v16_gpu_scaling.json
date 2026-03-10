@@ -1,0 +1,77 @@
+{
+  "experiment": "exp085",
+  "results": [
+    {
+      "op": "mm_batch",
+      "scale": 64,
+      "mean_us": 1520.4582999999998,
+      "p95_us": 1695.868
+    },
+    {
+      "op": "mm_batch",
+      "scale": 256,
+      "mean_us": 5934.817800000001,
+      "p95_us": 5999.016
+    },
+    {
+      "op": "mm_batch",
+      "scale": 1024,
+      "mean_us": 24026.253480000003,
+      "p95_us": 24234.603
+    },
+    {
+      "op": "mm_batch",
+      "scale": 4096,
+      "mean_us": 95955.14467999998,
+      "p95_us": 96920.281
+    },
+    {
+      "op": "scfa_batch",
+      "scale": 100,
+      "mean_us": 0.15433999999999995,
+      "p95_us": 0.158
+    },
+    {
+      "op": "scfa_batch",
+      "scale": 500,
+      "mean_us": 0.6414199999999997,
+      "p95_us": 0.649
+    },
+    {
+      "op": "scfa_batch",
+      "scale": 2000,
+      "mean_us": 2.4780399999999996,
+      "p95_us": 2.484
+    },
+    {
+      "op": "scfa_batch",
+      "scale": 10000,
+      "mean_us": 13.07964,
+      "p95_us": 12.655
+    },
+    {
+      "op": "beat_classify_batch",
+      "scale": 10,
+      "mean_us": 1.3545800000000003,
+      "p95_us": 1.396
+    },
+    {
+      "op": "beat_classify_batch",
+      "scale": 50,
+      "mean_us": 6.43338,
+      "p95_us": 6.459
+    },
+    {
+      "op": "beat_classify_batch",
+      "scale": 200,
+      "mean_us": 26.015200000000007,
+      "p95_us": 26.666
+    },
+    {
+      "op": "beat_classify_batch",
+      "scale": 1000,
+      "mean_us": 128.46220000000002,
+      "p95_us": 131.183
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # healthSpring White Paper
 
 **Date:** March 10, 2026
-**Status:** V15 — 5 tracks + diagnostics + GPU + visualization + clinical TRT + streaming + interaction + NLME, 48 experiments validated (Tier 0+1+2+3). NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix), NCA (sovereign WinNonlin), diagnostics (CWRES, VPC, GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels). Upstream rewire: precision routing, barracuda::rng/special delegation, cross-spring shader evolution.
+**Status:** V19 — 5 tracks + diagnostics + GPU + visualization + clinical TRT + streaming + interaction + NLME + V16 primitives + GPU scaling + toadStool dispatch + mixed NUCLEUS, 59 experiments validated (Tier 0+1+2+3). Full-stack portability: barraCuda CPU → GPU (6 WGSL shaders) → toadStool dispatch → metalForge NUCLEUS routing (PCIe P2P bypass). Rust 84× faster than Python (V18). 395 tests, 194 Python cross-validation checks.
 **License:** AGPL-3.0-or-later
 
 ---

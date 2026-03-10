@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 10, 2026
-**Status**: V15 — 48 experiments, 368 Rust tests (302 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 853 binary checks, 104 cross-validation checks. NLME population PK (FOCE + SAEM), NCA, NLME diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. Industry benchmark mapping (sovereign NONMEM/Monolix/WinNonlin replacements).
+**Status**: V19 — 59 experiments, 395 Rust tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 194 Python cross-validation checks. Full-stack portability: barraCuda CPU → GPU (6 WGSL shaders) → toadStool streaming dispatch → metalForge NUCLEUS routing (PCIe P2P bypass). Paper queue 30/30 complete. V19: GPU scaling bench + toadStool dispatch + mixed NUCLEUS (106 new checks). V18: Rust 84× faster than Python (Exp084). V16-V17: 6 new domain primitives + 3 new WGSL shaders.
 **Domain**: Human health applications — PK/PD, gut microbiome, biosignal, endocrinology
 
 ---
@@ -11,14 +11,15 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust lib tests | 356 (289 barraCuda + 33 forge + 30 toadStool + 4 doc-tests) |
-| Python control checks | 104 (cross-validation) |
-| Rust binary checks | 853 |
-| Experiments | 48 (24 Tier 0+1 + 3 diagnostic + 3 GPU + 1 visualization + 3 dispatch + 3 clinical + 2 streaming + 7 compute/bench + 1 interaction + 2 NLME/pipeline) |
-| GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity, 27/27 CPU-GPU matrix |
-| metalForge validation (Tier 3) | 33 tests (substrate routing + dispatch planning + transfer) |
+| Rust lib tests | 395 (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests) |
+| Python control checks | 194 (cross-validation) |
+| Experiments | 59 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack) |
+| GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
+| metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
+| toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |
+| CPU parity | Rust 84× faster than Python (Exp084, 33+17 checks) |
 | NLME population PK | FOCE + SAEM estimation, NCA, CWRES/VPC/GOF diagnostics |
-| Paper queue | 24/30 complete |
+| Paper queue | **30/30 complete** |
 | Faculty | Gonzales (MSU), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 
 ---
@@ -44,7 +45,11 @@ Papers queued for reproduction and extension. Organized by track. See [PAPER_REV
 | Compute | Benchmarks + dashboard | 7 (Exp066-072) | — | structural | — | **Complete** |
 | petalTongue | Evolution + interaction | 2 (Exp073-074) | — | 19 | — | **Complete** |
 | NLME | Pop PK + full pipeline | 2 (Exp075-076) | — | 216 | — | **Complete** |
-| **Total** | | **48** | **289** | **853** | **356** | **All green** |
+| V16 Primitives | MM PK, antibiotic, SCFA, serotonin, EDA, arrhythmia | 6 (Exp077-082) | 63 | structural | 27 | **Complete** |
+| GPU V16 | GPU parity for V16 ops | 1 (Exp083) | — | 25 | — | **Complete** |
+| CPU Parity | Rust vs Python bench | 1 (Exp084) | 17 | 33 | — | **Complete** |
+| V19 Full-Stack | GPU scaling + dispatch + NUCLEUS | 3 (Exp085-087) | 10 | 106 | — | **Complete** |
+| **Total** | | **59** | **379** | | **395** | **All green** |
 
 ---
 
@@ -92,19 +97,21 @@ Tier 1: Rust CPU
   └─ Cross-validated against Python baseline (< 1e-6 tolerance)
 
 Tier 2: Rust GPU (barraCuda WGSL) ← LIVE
-  └─ 3 WGSL shaders: hill_dose_response_f64, population_pk_f64, diversity_f64
+  └─ 6 WGSL shaders: Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify
   └─ GpuContext: persistent device, fused unidirectional pipeline
-  └─ Math parity: max_rel < 1e-4 (f32 transcendental path), 17/17 checks
-  └─ Scaling: GPU crossover at 100K elements, peak 207 M/s (RTX 4070)
-  └─ Validated: Exp053 (parity), Exp054 (fused pipeline), Exp055 (scaling)
+  └─ Math parity: 42/42 checks across all ops
+  └─ Scaling: GPU crossover at 100K elements, V16 linear scaling confirmed (Exp085)
+  └─ Validated: Exp053-055 (original), Exp083 (V16 parity), Exp085 (V16 scaling)
 
 Tier 3: metalForge + toadStool dispatch ← LIVE
-  └─ toadStool Pipeline::execute_gpu() and execute_streaming() dispatch via GpuContext
-  └─ metalForge select_substrate() routes by element count
+  └─ toadStool Pipeline::execute_cpu/gpu/streaming/auto dispatch for all StageOps
+  └─ metalForge select_substrate() routes 9 Workload variants by element count
   └─ Cross-substrate: CPU ↔ GPU ↔ NPU routing
   └─ NUCLEUS atomics: Tower/Node/Nest hierarchy for mixed hardware
-  └─ PCIe P2P: NPU→GPU direct transfer bypassing CPU roundtrip
+  └─ PCIe P2P: GPU↔NPU direct DMA, bypassing CPU roundtrip (31.5 GB/s Gen4)
+  └─ plan_dispatch: 5-stage mixed pipeline (GPU→GPU→GPU→NPU→CPU) validated
   └─ biomeOS atomic graphs for node and tower deployments
+  └─ Validated: Exp060-062 (original), Exp086 (V16 dispatch), Exp087 (V16 NUCLEUS)
 ```
 
 ---

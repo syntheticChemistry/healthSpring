@@ -3,8 +3,8 @@
 
 **Faculty**: TBD (extends wetSpring Anderson framework)
 **Track**: 2 — Microbiome
-**Experiments**: Exp010 (diversity indices), Exp011 (Anderson gut lattice), Exp012 (C. diff resistance), Exp013 (FMT engraftment)
-**Status**: Complete — 4 experiments, 48 binary checks, 48 Python cross-validation checks. Anderson eigenvalue spectrum and per-eigenstate IPR spectrum now visualized in petalTongue (6 channels on Anderson node). GPU Tier 2 validated for diversity indices. V13: Anderson eigensolver (QL algorithm) fixes IPR to use true eigenvectors; `shannon_index` doc-test added; `evenness_to_disorder` deduplicated. V14.1: `#![deny(clippy::pedantic)]` enforced. V15: upstream rewire.
+**Experiments**: Exp010 (diversity indices), Exp011 (Anderson gut lattice), Exp012 (C. diff resistance), Exp013 (FMT engraftment), Exp078 (antibiotic perturbation), Exp079 (SCFA production), Exp080 (gut-brain serotonin)
+**Status**: Complete — 7 experiments. Anderson eigenvalue spectrum and per-eigenstate IPR spectrum now visualized in petalTongue (6 channels on Anderson node). GPU Tier 2 validated for diversity indices. V13: Anderson eigensolver (QL algorithm) fixes IPR to use true eigenvectors; `shannon_index` doc-test added; `evenness_to_disorder` deduplicated. V14.1: `#![deny(clippy::pedantic)]` enforced. V15: upstream rewire. V16: antibiotic perturbation model (Exp078 — exponential kill + recovery dynamics, Dethlefsen ciprofloxacin reference), SCFA production (Exp079 — Michaelis-Menten fiber fermentation, Cummings 1987 validation), gut-brain serotonin axis (Exp080 — tryptophan → 5-HT, Yano 2015 reference). V17: SCFA GPU shader (`scfa_batch_f64.wgsl`) validated (Exp083).
 **Last Updated**: March 10, 2026
 
 ---
@@ -27,6 +27,9 @@ localized states are vulnerable. FMT engraftment models the transition from loca
 | 011 | Anderson Gut Lattice | Hamiltonian construction, IPR, ξ, colonization resistance CR(ξ), level spacing ratio |
 | 012 | C. diff Resistance | Pielou → W → ξ → CR pipeline; healthy gut has higher CR than dysbiotic/C. diff colonized |
 | 013 | FMT Engraftment | fmt_blend(donor, recipient, engraftment); Shannon/Pielou/Bray-Curtis vs engraftment fraction |
+| 078 | Antibiotic Perturbation | Exponential kill + logistic recovery; ciprofloxacin disruption → diversity collapse → slow recovery (Dethlefsen) |
+| 079 | SCFA Production | Michaelis-Menten fiber fermentation → acetate, propionate, butyrate; Cummings 1987 ratios; GPU-ready via `scfa_batch_f64.wgsl` |
+| 080 | Gut-Brain Serotonin | Tryptophan → 5-HT production via gut microbiota; cross-track hypothesis D5 (Yano 2015); links microbiome to neurochemistry |
 
 ---
 

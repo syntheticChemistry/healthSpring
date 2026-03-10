@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp087"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Exp087: metalForge mixed NUCLEUS V16 dispatch — Tower/Node/Nest topology with P2P bypass"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+healthspring-forge = { path = "../../metalForge/forge" }
+
+[[bin]]
+name = "exp087_mixed_nucleus_v16"
+path = "src/main.rs"

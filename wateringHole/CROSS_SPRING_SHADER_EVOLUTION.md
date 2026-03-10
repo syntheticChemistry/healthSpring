@@ -1,6 +1,6 @@
 # Cross-Spring Shader Evolution — healthSpring Perspective
 
-**Updated**: March 10, 2026 (V15)
+**Updated**: March 10, 2026 (V19)
 **License**: AGPL-3.0-or-later
 
 This document tracks how WGSL shaders and math primitives flow between
@@ -40,6 +40,9 @@ is cross-spring evolution.
 | LCG PRNG | V3 | `rng::{lcg_step, state_to_f64}` | ALL springs | Mar 2026 |
 | Tridiagonal QL eigensolver | Exp011 | `special::tridiagonal_ql` | groundSpring (Anderson), hotSpring (lattice) | Mar 2026 |
 | Anderson diagonalization | Exp011 | `special::anderson_diagonalize` | groundSpring, hotSpring | Mar 2026 |
+| Michaelis-Menten batch PK | Exp077/083 | `shaders/health/michaelis_menten_batch_f64.wgsl` | (healthSpring-specific) | Mar 2026 |
+| SCFA batch production | Exp079/083 | `shaders/health/scfa_batch_f64.wgsl` | wetSpring (microbiome) | Mar 2026 |
+| Beat classification batch | Exp082/083 | `shaders/health/beat_classify_batch_f64.wgsl` | (healthSpring-specific) | Mar 2026 |
 
 ### healthSpring ← Other Springs (Consumed via barraCuda)
 
@@ -158,17 +161,21 @@ airSpring (atmospheric science, IoT) contributes environmental computation:
 
 ## coralReef Compilation Coverage
 
-coralReef Phase 10 can compile 79/86 cross-spring WGSL shaders to SM70 SASS.
-healthSpring's 3 shaders (Hill, PopPK, Diversity) are in the compilation corpus.
+coralReef can compile cross-spring WGSL shaders to SM70 SASS.
+healthSpring's 6 shaders are in the compilation corpus:
 
 | Shader | coralReef Status | Notes |
 |--------|------------------|-------|
-| `hill_f64.wgsl` | Compiles to SM70 | f32 transcendental intermediates |
+| `hill_dose_response_f64.wgsl` | Compiles to SM70 | f32 transcendental intermediates |
 | `population_pk_f64.wgsl` | Compiles to SM70 | u32 PRNG, no SHADER_INT64 |
 | `diversity_f64.wgsl` | Compiles to SM70 | Workgroup reduction |
+| `michaelis_menten_batch_f64.wgsl` | Compiles to SM70 | df64 ODE per workgroup item (V17) |
+| `scfa_batch_f64.wgsl` | Compiles to SM70 | Element-wise Michaelis-Menten (V17) |
+| `beat_classify_batch_f64.wgsl` | Compiles to SM70 | Normalized cross-correlation (V17) |
 
 When coralReef f64 lowering replaces the f32 transcendental workarounds,
 healthSpring's Hill shader will gain full f64 precision (~15 digits vs ~7).
+The 3 V17 shaders already use df64 throughout.
 
 ---
 

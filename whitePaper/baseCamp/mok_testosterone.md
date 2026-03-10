@@ -76,6 +76,7 @@ This creates a novel pipeline: **Narrative → Claim Extraction → Primary Sour
 | D2 | Anderson gut confinement correlates with metabolic syndrome | Track 2 × Track 4 | ξ(gut) → HOMA-IR, BMI |
 | D3 | HRV improvement tracks TRT cardiovascular benefit | Track 3 × Track 4 | SDNN/RMSSD → cardiac risk reduction |
 | D4 | Population TRT Monte Carlo with IIV + microbiome covariate | Tracks 1+2+4 | 10K virtual patients, Monte Carlo |
+| D5 | Gut-brain serotonin modulation of TRT mood outcomes | Tracks 2+4 | Tryptophan → 5-HT production via gut microbiota (Yano 2015). Exp080 validates serotonin axis; TRT mood improvement (Mok Ch. 10) may be mediated through gut microbiome diversity → serotonin production capacity |
 
 ---
 

@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 10, 2026
-**Status**: 55 experiments complete — 395 tests (329 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 55 validation binaries. GPU Tier 2+3 live (6 WGSL shaders). V17: GPU portability for V16 primitives — 3 new compute shaders (Michaelis-Menten batch, SCFA batch, beat classify batch), metalForge cross-system routing, toadStool streaming dispatch. All 30 queued papers complete.
+**Status**: 59 experiments complete — 395 tests (329 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 59 validation binaries. GPU Tier 2+3 live (6 WGSL shaders). V19: Exp085 GPU scaling bench (47/47), Exp086 toadStool V16 streaming dispatch (24/24), Exp087 mixed NUCLEUS V16 dispatch (35/35). V18: Exp084 CPU parity benchmarks — Rust 84× faster than Python (33 checks). V17: GPU portability — 3 new compute shaders, metalForge cross-system routing, toadStool streaming dispatch. All 30 queued papers complete.
 
 ---
 
@@ -118,14 +118,19 @@ Faculty anchor: Wei Liao (ADREC, MSU BAE). See `whitePaper/attsi/non-anon/contac
 
 ## Next Evolution Targets
 
-All 30 queued papers complete at Tier 0+1. Three have Tier 2 GPU validation. Next:
+All 30 queued papers complete at Tier 0+1. Six have Tier 2 GPU validation. Full-stack portability proven (V19). Next:
 
-1. **barraCuda CPU parity benchmarks**: Python vs Rust CPU for all 6 new primitives (Michaelis-Menten, SCFA, serotonin, EDA stress, beat classification, antibiotic perturbation)
-2. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
-3. **GPU Tier 2**: Biosignal FFT (Exp020-023) → GPU radix-2 FFT for real-time ECG/PPG
-4. **GPU Tier 2**: Michaelis-Menten population (Exp077) → batch parallel ODE
-5. **metalForge Tier 3**: Full pipeline through NUCLEUS topology with biomeOS atomic deployment graphs
-6. **NPU Tier 3**: Pan-Tompkins streaming via Akida NPU (toadStool NPU dispatch path)
+1. ~~**barraCuda CPU parity benchmarks**~~: **DONE** (V18) — Exp084, Rust 84× faster
+2. ~~**GPU scaling + fused pipeline**~~: **DONE** (V19) — Exp085, linear scaling confirmed at 4 scales
+3. ~~**toadStool V16 dispatch**~~: **DONE** (V19) — Exp086, streaming + callbacks + GPU-mappability
+4. ~~**metalForge NUCLEUS V16 dispatch**~~: **DONE** (V19) — Exp087, PCIe P2P bypass, mixed pipeline
+5. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
+6. **GPU Tier 2**: Biosignal FFT (Exp020-023) → GPU radix-2 FFT for real-time ECG/PPG
+7. **GPU Tier 2**: Michaelis-Menten population (Exp077) → batch parallel ODE
+8. **NPU Tier 3**: Pan-Tompkins streaming via Akida NPU (toadStool NPU dispatch path)
+9. **EDA optimization**: Replace naive rolling average with SIMD/vectorized implementation (numpy C convolution currently faster)
+10. **NLME GPU**: FOCE per-subject gradient shader, VPC Monte Carlo shader
+11. **biomeOS integration**: NUCLEUS local deployment graph orchestration
 
 ---
 
@@ -176,5 +181,9 @@ All experiments use publicly accessible data. No proprietary dependencies.
 | Exp082 | MIT-BIH beat morphology (Moody & Mark 2001) | PhysioNet (open) |
 
 | Exp083 | GPU V16 parity (no new data) | CPU baseline as ground truth |
+| Exp084 | V16 CPU parity bench (no new data) | Python baseline as timing ground truth |
+| Exp085 | GPU vs CPU V16 scaling bench (no new data) | CPU execute_cpu as GPU ground truth |
+| Exp086 | toadStool V16 streaming dispatch (no new data) | Pipeline CPU reference as ground truth |
+| Exp087 | Mixed NUCLEUS V16 dispatch (no new data) | Tower topology + PCIe Gen4 specs |
 
 See `specs/README.md` for full provenance table.

@@ -1,7 +1,7 @@
 # healthSpring baseCamp: Gonzales PK/PD → Human Therapeutics
 
 **Faculty**: Andrea J. Gonzales (MSU Pharmacology & Toxicology), Erika Lisabeth (ADDRC), Richard Neubig (Drug Discovery)
-**Status**: Complete — 6 experiments validated (Exp001–006), 84 Python + 84 Rust binary + 46 lib unit tests. PBPK 5-tissue concentration TimeSeries (liver, kidney, muscle, fat, rest) now visualized in petalTongue via `pbpk_iv_tissue_profiles()`. GPU Tier 2 validated for Hill dose-response and Population PK. V15: NCA (λz, AUC∞, MRT, CL, Vss) and NLME population PK (FOCE/SAEM) extend PK/PD track capabilities. Sovereign NONMEM/Monolix/WinNonlin replacement validated (Exp075).
+**Status**: Complete — 7 experiments validated (Exp001–006, 077), 84 Python + 84 Rust binary + 46 lib unit tests. PBPK 5-tissue concentration TimeSeries (liver, kidney, muscle, fat, rest) now visualized in petalTongue via `pbpk_iv_tissue_profiles()`. GPU Tier 2 validated for Hill dose-response and Population PK. V15: NCA (λz, AUC∞, MRT, CL, Vss) and NLME population PK (FOCE/SAEM) extend PK/PD track capabilities. Sovereign NONMEM/Monolix/WinNonlin replacement validated (Exp075). V16: Michaelis-Menten nonlinear PK (Exp077 — phenytoin capacity-limited elimination, Ludden 1977). V17: GPU batch MM shader (`michaelis_menten_batch_f64.wgsl`) validated (Exp083).
 **Parent**: gen3/baseCamp Paper 12 (Immunological Anderson), gen3/baseCamp Paper 13 (healthSpring)
 
 ---
@@ -98,21 +98,33 @@ Lokivetmab → nemolizumab/dupilumab via allometric scaling.
 - V12: `pbpk_iv_tissue_profiles()` collects per-tissue concentration time series (5 tissues × N time points), now exposed as 5 `TimeSeries` DataChannels in the PBPK scenario node (9 total channels)
 - **GPU target**: Parallel across patients (each patient = independent PBPK ODE system)
 
+### Extension 7: Michaelis-Menten Nonlinear PK (from Ludden 1977) — COMPLETE
+
+Capacity-limited (nonlinear) elimination — the first model where half-life is dose-dependent. Phenytoin is the classic example: at therapeutic doses, elimination enzymes saturate.
+
+**Completed (Exp077)**:
+- Michaelis-Menten elimination: dC/dt = -Vmax·C / (Km + C) / Vd
+- Dose-dependent half-life (increases with concentration)
+- Supralinear AUC increase with dose (nonlinear PK signature)
+- Phenytoin reference parameters from Ludden 1977
+- Rust module: `pkpd::michaelis_menten_pk`
+- **GPU**: `michaelis_menten_batch_f64.wgsl` — per-patient parallel Euler ODE with Wang hash PRNG for IIV. Validated (Exp083, 25/25).
+
 ## Human Extensions — Planned
 
-### Extension 7: Population PK GPU Scale-Up
+### Extension 8: Population PK GPU Scale-Up
 
 - Scale Exp005 to 100K → 1M virtual patients
 - GPU dispatch via BarraCUDA (each patient = independent ODE, embarrassingly parallel)
 - Dosing optimization: trough above EC90
 - Hardware target: Northgate RTX 5090 (32GB VRAM, ~100MB for 100K patients)
 
-### Extension 8: Human Monoclonal Antibody PK (from nS-603)
+### Extension 9: Human Monoclonal Antibody PK (from nS-603)
 
 - Refit nS-603 PK model with human nemolizumab parameters
 - Validate against published nemolizumab Phase III data (Kabashima 2020, Silverberg 2021)
 
-### Extension 9: Human Tissue Lattice (from nS-604)
+### Extension 10: Human Tissue Lattice (from nS-604)
 
 The three-compartment tissue lattice (immune/skin/neural) validated for canine AD extends to human AD. The compartment structure is identical; tissue parameters differ.
 
@@ -122,7 +134,7 @@ The three-compartment tissue lattice (immune/skin/neural) validated for canine A
 - Barrier disruption dynamics (TEWL correlation)
 - Dimensional promotion: 2D surface → 3D tissue penetration
 
-### Extension 10: Drug Repurposing via ADDRC (from nS-605)
+### Extension 11: Drug Repurposing via ADDRC (from nS-605)
 
 The Fajgenbaum MATRIX with Anderson geometry scoring identifies candidate molecules. Lisabeth's ADDRC provides the HTS infrastructure to screen them. Gonzales provides iPSC-derived skin models for validation.
 

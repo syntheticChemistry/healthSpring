@@ -3,8 +3,8 @@
 
 **Faculty**: TBD
 **Track**: 3 — Biosignal
-**Experiments**: Exp020 (Pan-Tompkins QRS), Exp021 (HRV metrics), Exp022 (PPG SpO2), Exp023 (multi-channel fusion)
-**Status**: Complete — 4 experiments, 44 binary checks, 44 Python cross-validation checks. Pan-Tompkins 5-stage intermediates (raw, bandpass, derivative, squared, MWI) now visualized as individual TimeSeries channels in petalTongue (8 channels on QRS node). V13: LCG PRNG centralized to `rng.rs`. V14.1: biosignal.rs refactored to 6 domain-coherent submodules (ecg, hrv, ppg, eda, fusion, fft). V15: upstream rewire.
+**Experiments**: Exp020 (Pan-Tompkins QRS), Exp021 (HRV metrics), Exp022 (PPG SpO2), Exp023 (multi-channel fusion), Exp081 (EDA stress), Exp082 (arrhythmia classification)
+**Status**: Complete — 6 experiments. Pan-Tompkins 5-stage intermediates (raw, bandpass, derivative, squared, MWI) now visualized as individual TimeSeries channels in petalTongue (8 channels on QRS node). V13: LCG PRNG centralized to `rng.rs`. V14.1: biosignal.rs refactored to 6 domain-coherent submodules (ecg, hrv, ppg, eda, fusion, fft). V15: upstream rewire. V16: EDA electrodermal stress detection (Exp081 — tonic/phasic decomposition, skin conductance response peaks), arrhythmia beat classification (Exp082 — template-matching: Normal/PVC/PAC/BBB, MIT-BIH annotation reference). V17: beat classify GPU shader (`beat_classify_batch_f64.wgsl`) validated (Exp083).
 **Last Updated**: March 10, 2026
 
 ---
@@ -25,6 +25,8 @@ latency, enabling edge deployment on wearables and field devices without cloud d
 | 021 | HRV Metrics | SDNN, RMSSD, pNN50 from RR intervals. Cross-validated against Python |
 | 022 | PPG SpO2 | R-value calibration curve, synthetic PPG generation, SpO2 recovery within ±2% |
 | 023 | Biosignal Fusion | ECG + PPG + EDA → FusedHealthAssessment (HR, SDNN, RMSSD, SpO2, stress, overall score) |
+| 081 | EDA Stress Detection | Tonic/phasic decomposition, SCR peak detection, stress quantification. Cross-validated against Python |
+| 082 | Arrhythmia Beat Classification | Template-matching via normalized cross-correlation. Normal/PVC/PAC/BBB typing. MIT-BIH reference. GPU-ready via `beat_classify_batch_f64.wgsl` |
 
 ---
 
@@ -58,4 +60,4 @@ latency, enabling edge deployment on wearables and field devices without cloud d
 
 - **CPU**: All algorithms run at real-time latency on ARM Cortex-A (Raspberry Pi 4+)
 - **NPU**: Pan-Tompkins streaming detection targeted for Akida AKD1000 (hotSpring lineage)
-- **GPU**: Not primary target — biosignal data volumes typically small enough for CPU
+- **GPU**: Beat classification at batch scale (100K+ beats) — `beat_classify_batch_f64.wgsl` validated (Exp083). Per-beat normalized cross-correlation is embarrassingly parallel. metalForge routes to GPU when `n_beats > threshold`.

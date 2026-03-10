@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 10, 2026
-**Status**: V17 — 55 experiments, all 30 paper queue entries complete. V17: GPU portability for V16 primitives — 3 new WGSL compute shaders, metalForge cross-system routing, toadStool streaming dispatch, Exp083 GPU V16 parity (25/25).
+**Status**: V19 — 59 experiments, all 30 paper queue entries complete. V19: GPU scaling bench (Exp085, 47/47), toadStool V16 dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch (Exp087, 35/35). V18: CPU parity (Exp084, Rust 84× faster). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: 6 new domain primitives (Exp077-082).
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 
@@ -140,6 +140,20 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
 | 083 | `exp083_gpu_v16_parity` | GPU parity for V16 primitives + metalForge routing | 25 |
+
+### CPU Parity Benchmarks (Exp084) — V18
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 084 | `exp084_v16_cpu_parity_bench` | Rust vs Python timing: 84× faster (33 Rust + 17 Python) | 33 |
+
+### GPU Scaling + toadStool Dispatch + NUCLEUS Routing (Exp085-087) — V19
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 085 | `exp085_gpu_vs_cpu_v16_bench` | GPU scaling (4 scales × 3 ops) + fused pipeline + metalForge routing | 47 |
+| 086 | `exp086_toadstool_v16_dispatch` | toadStool streaming dispatch + callbacks + GPU-mappability | 24 |
+| 087 | `exp087_mixed_nucleus_v16` | NUCLEUS Tower/Node/Nest + PCIe P2P bypass + plan_dispatch | 35 |
 
 ---
 

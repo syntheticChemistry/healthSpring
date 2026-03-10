@@ -1,0 +1,132 @@
+{
+  "tier": "rust_cpu_v16",
+  "experiment": "exp084",
+  "benchmarks": [
+    {
+      "name": "mm_pk_simulate_300mg_10d",
+      "n_iterations": 100,
+      "mean_us": 110.30637,
+      "min_us": 105.447,
+      "max_us": 202.411,
+      "p50_us": 107.123,
+      "p95_us": 137.706
+    },
+    {
+      "name": "mm_auc_analytical_x100",
+      "n_iterations": 100,
+      "mean_us": 0.6816100000000003,
+      "min_us": 0.677,
+      "max_us": 0.713,
+      "p50_us": 0.681,
+      "p95_us": 0.683
+    },
+    {
+      "name": "mm_half_life_sweep_100",
+      "n_iterations": 100,
+      "mean_us": 0.2446100000000001,
+      "min_us": 0.243,
+      "max_us": 0.294,
+      "p50_us": 0.244,
+      "p95_us": 0.245
+    },
+    {
+      "name": "antibiotic_perturb_30d",
+      "n_iterations": 100,
+      "mean_us": 18.213879999999996,
+      "min_us": 12.141,
+      "max_us": 121.726,
+      "p50_us": 12.206,
+      "p95_us": 38.235
+    },
+    {
+      "name": "antibiotic_perturb_365d",
+      "n_iterations": 100,
+      "mean_us": 15.256320000000006,
+      "min_us": 14.831,
+      "max_us": 46.449,
+      "p50_us": 14.885,
+      "p95_us": 15.017
+    },
+    {
+      "name": "scfa_healthy_x1000",
+      "n_iterations": 100,
+      "mean_us": 1.9698900000000001,
+      "min_us": 1.641,
+      "max_us": 30.687,
+      "p50_us": 1.646,
+      "p95_us": 1.65
+    },
+    {
+      "name": "scfa_dysbiotic_x1000",
+      "n_iterations": 100,
+      "mean_us": 1.6578900000000008,
+      "min_us": 1.641,
+      "max_us": 1.836,
+      "p50_us": 1.647,
+      "p95_us": 1.754
+    },
+    {
+      "name": "serotonin_sweep_1000",
+      "n_iterations": 100,
+      "mean_us": 3.6337599999999997,
+      "min_us": 3.479,
+      "max_us": 5.818,
+      "p50_us": 3.5,
+      "p95_us": 5.201
+    },
+    {
+      "name": "tryptophan_availability_sweep_1000",
+      "n_iterations": 100,
+      "mean_us": 3.778350000000001,
+      "min_us": 3.566,
+      "max_us": 5.94,
+      "p50_us": 3.59,
+      "p95_us": 5.81
+    },
+    {
+      "name": "eda_scl_2000_samples",
+      "n_iterations": 100,
+      "mean_us": 95.37377999999998,
+      "min_us": 92.409,
+      "max_us": 221.858,
+      "p50_us": 92.474,
+      "p95_us": 96.687
+    },
+    {
+      "name": "eda_phasic_2000_samples",
+      "n_iterations": 100,
+      "mean_us": 93.62022,
+      "min_us": 92.667,
+      "max_us": 102.231,
+      "p50_us": 92.716,
+      "p95_us": 98.045
+    },
+    {
+      "name": "eda_detect_scr_2000",
+      "n_iterations": 100,
+      "mean_us": 1.5455200000000004,
+      "min_us": 1.069,
+      "max_us": 27.963,
+      "p50_us": 1.093,
+      "p95_us": 1.245
+    },
+    {
+      "name": "classify_beat_x1000",
+      "n_iterations": 100,
+      "mean_us": 203.81692000000004,
+      "min_us": 186.315,
+      "max_us": 461.88,
+      "p50_us": 186.447,
+      "p95_us": 420.749
+    },
+    {
+      "name": "normalized_correlation_x1000",
+      "n_iterations": 100,
+      "mean_us": 71.78833999999998,
+      "min_us": 61.284,
+      "max_us": 138.978,
+      "p50_us": 61.593,
+      "p95_us": 107.811
+    }
+  ]
+}

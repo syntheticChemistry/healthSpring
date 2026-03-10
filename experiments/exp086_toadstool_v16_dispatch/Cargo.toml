@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp086"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Exp086: toadStool V16 streaming dispatch — end-to-end pipeline for all V16 StageOps"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+healthspring-toadstool = { path = "../../toadstool" }
+healthspring-forge = { path = "../../metalForge/forge" }
+
+[[bin]]
+name = "exp086_toadstool_v16_dispatch"
+path = "src/main.rs"
