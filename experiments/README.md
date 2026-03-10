@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 10, 2026
-**Status**: V15 — 48 experiments, 853 binary checks, all green. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels).
+**Status**: V16 — 54 experiments, all 30 paper queue entries complete. V16: Michaelis-Menten PK (Exp077), antibiotic perturbation (Exp078), SCFA production (Exp079), gut-brain serotonin (Exp080), EDA stress (Exp081), arrhythmia classification (Exp082). NLME (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels).
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 

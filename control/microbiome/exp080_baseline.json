@@ -1,0 +1,16 @@
+{
+  "_source": "Exp080 Serotonin",
+  "shannon": {
+    "healthy": 1.9868643500048115,
+    "dysbiotic": 0.698056996607822,
+    "cdiff": 1.339648956992998
+  },
+  "serotonin": {
+    "healthy": 115.05980091952873,
+    "dysbiotic": 0.022790968593091435,
+    "cdiff": 14.814330353598628
+  },
+  "_provenance": {
+    "date": "2026-03-10"
+  }
+}

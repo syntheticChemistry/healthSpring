@@ -66,7 +66,7 @@
             "values": [
               0.0,
               5.0,
-              20.0,
+              18.0,
               2.0,
               1.0,
               0.0,
@@ -94,7 +94,7 @@
             "label": "Time",
             "value": 0.0,
             "min": 0.0,
-            "max": 30.0,
+            "max": 27.0,
             "unit": "μs",
             "normal_range": [
               0.0,
@@ -142,7 +142,7 @@
             "label": "Time",
             "value": 5.0,
             "min": 0.0,
-            "max": 30.0,
+            "max": 27.0,
             "unit": "μs",
             "normal_range": [
               0.0,
@@ -188,17 +188,17 @@
             "channel_type": "gauge",
             "id": "stage_2_time",
             "label": "Time",
-            "value": 20.0,
+            "value": 18.0,
             "min": 0.0,
-            "max": 30.0,
+            "max": 27.0,
             "unit": "μs",
             "normal_range": [
               0.0,
-              40.0
+              36.0
             ],
             "warning_range": [
-              40.0,
-              100.0
+              36.0,
+              90.0
             ]
           },
           {
@@ -238,7 +238,7 @@
             "label": "Time",
             "value": 2.0,
             "min": 0.0,
-            "max": 30.0,
+            "max": 27.0,
             "unit": "μs",
             "normal_range": [
               0.0,
@@ -286,7 +286,7 @@
             "label": "Time",
             "value": 1.0,
             "min": 0.0,
-            "max": 30.0,
+            "max": 27.0,
             "unit": "μs",
             "normal_range": [
               0.0,
@@ -334,7 +334,7 @@
             "label": "Time",
             "value": 0.0,
             "min": 0.0,
-            "max": 30.0,
+            "max": 27.0,
             "unit": "μs",
             "normal_range": [
               0.0,
@@ -382,7 +382,7 @@
             "label": "Time",
             "value": 0.0,
             "min": 0.0,
-            "max": 30.0,
+            "max": 27.0,
             "unit": "μs",
             "normal_range": [
               0.0,

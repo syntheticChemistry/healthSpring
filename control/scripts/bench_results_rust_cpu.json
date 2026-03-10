@@ -4,65 +4,65 @@
     {
       "name": "hill_sweep_50",
       "n_iterations": 100,
-      "mean_us": 1.5875800000000007,
-      "min_us": 1.493,
-      "max_us": 3.006,
-      "p50_us": 1.556,
-      "p95_us": 1.696
+      "mean_us": 0.9430000000000003,
+      "min_us": 0.924,
+      "max_us": 1.859,
+      "p50_us": 0.933,
+      "p95_us": 0.944
     },
     {
       "name": "hill_sweep_10K",
       "n_iterations": 100,
-      "mean_us": 190.6830099999999,
-      "min_us": 181.518,
-      "max_us": 338.929,
-      "p50_us": 184.598,
-      "p95_us": 212.248
+      "mean_us": 201.20217000000008,
+      "min_us": 181.897,
+      "max_us": 414.839,
+      "p50_us": 182.382,
+      "p95_us": 316.901
     },
     {
       "name": "pk_curve_101_points",
       "n_iterations": 100,
-      "mean_us": 1.429399999999999,
-      "min_us": 1.234,
-      "max_us": 2.396,
-      "p50_us": 1.447,
-      "p95_us": 1.542
+      "mean_us": 1.4714499999999995,
+      "min_us": 1.321,
+      "max_us": 2.186,
+      "p50_us": 1.493,
+      "p95_us": 1.541
     },
     {
       "name": "diversity_indices_7_genera",
       "n_iterations": 100,
-      "mean_us": 0.25036000000000025,
-      "min_us": 0.229,
-      "max_us": 1.79,
-      "p50_us": 0.23,
-      "p95_us": 0.254
+      "mean_us": 0.2792899999999998,
+      "min_us": 0.225,
+      "max_us": 1.954,
+      "p50_us": 0.264,
+      "p95_us": 0.305
     },
     {
       "name": "auc_trapezoidal_101_points",
       "n_iterations": 100,
-      "mean_us": 0.57343,
-      "min_us": 0.537,
-      "max_us": 2.218,
-      "p50_us": 0.539,
-      "p95_us": 0.642
+      "mean_us": 0.52971,
+      "min_us": 0.5,
+      "max_us": 0.916,
+      "p50_us": 0.521,
+      "p95_us": 0.599
     },
     {
       "name": "population_montecarlo_500",
       "n_iterations": 10,
-      "mean_us": 1526.0817000000002,
-      "min_us": 1516.396,
-      "max_us": 1536.85,
-      "p50_us": 1523.548,
-      "p95_us": 1536.85
+      "mean_us": 1530.6005,
+      "min_us": 1503.622,
+      "max_us": 1622.32,
+      "p50_us": 1515.198,
+      "p95_us": 1622.32
     },
     {
       "name": "population_montecarlo_5000",
       "n_iterations": 5,
-      "mean_us": 15369.3468,
-      "min_us": 15227.514,
-      "max_us": 15529.766,
-      "p50_us": 15374.772,
-      "p95_us": 15529.766
+      "mean_us": 15163.945000000002,
+      "min_us": 15091.522,
+      "max_us": 15246.835,
+      "p50_us": 15157.224,
+      "p95_us": 15246.835
     }
   ]
 }

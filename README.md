@@ -5,7 +5,7 @@
 **Date:** March 10, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V15 — 368 tests (302 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 48 experiments, 853 Rust binary checks, 104 cross-validation checks. NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix replacement). NCA (sovereign WinNonlin replacement). NLME diagnostics (CWRES, VPC, GOF). WFDB parser (PhysioNet Format 212/16). Kokkos-equivalent GPU benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, all 7 DataChannel types. Industry benchmark mapping (SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean, `cargo doc` clean. Upstream rewire: precision routing, barracuda::rng/special delegation, cross-spring shader evolution documented.
+**Status:** V16 — 391 tests (325 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 54 experiments, all 30 paper queue entries complete. V16 additions: Michaelis-Menten nonlinear PK (Exp077), antibiotic perturbation recovery (Exp078), SCFA production model (Exp079), gut-brain serotonin pathway (Exp080), EDA stress detection (Exp081), arrhythmia beat classification (Exp082). 6 new Python controls, 14 new Criterion benchmarks. All paper queue entries (30/30) validated at Tier 0+1. Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean, `cargo doc` clean.
 
 ---
 
@@ -29,15 +29,15 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | **V15** (upstream rewire + precision routing) |
-| Rust lib tests | 302 (barraCuda) |
+| Version | **V16** (paper queue complete + 6 new experiments) |
+| Rust lib tests | 325 (barraCuda) |
 | Rust forge tests | 33 (metalForge) |
 | Rust toadStool tests | 30 |
 | Doc-tests | 3 (`shannon_index`, `hill_dose_response`, `auc_trapezoidal`) |
-| **Total tests** | **368** |
-| Rust binary checks | 853 |
-| Python control checks | 104 (cross-validation) |
-| Experiments complete | 48 (Tier 0+1+2+3 + diagnostic + visualization + clinical + streaming + interaction + NLME) |
+| **Total tests** | **391** |
+| Paper queue | **30/30 complete** |
+| Python control checks | 167 (cross-validation) |
+| Experiments complete | 54 (Tier 0+1+2+3 + diagnostic + GPU + clinical + NLME + PK-003/MB-003-005/BS-005-006) |
 | GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity checks |
 | GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s |
 | petalTongue visualization | **Full** — 7 DataChannel types, 3 stream ops, domain theming, capabilities query, interaction subscription |

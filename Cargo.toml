@@ -59,6 +59,12 @@ members = [
     "experiments/exp074_interaction_roundtrip",
     "experiments/exp075_nlme_cross_validation",
     "experiments/exp076_full_pipeline_scenarios",
+    "experiments/exp077_michaelis_menten_pk",
+    "experiments/exp078_antibiotic_perturbation",
+    "experiments/exp079_scfa_production",
+    "experiments/exp080_gut_brain_serotonin",
+    "experiments/exp081_eda_stress_detection",
+    "experiments/exp082_arrhythmia_classification",
 ]
 
 [workspace.package]

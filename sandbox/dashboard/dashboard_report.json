@@ -18,7 +18,7 @@
     {
       "index": 2,
       "name": "Hill Transform",
-      "elapsed_us": 20.0,
+      "elapsed_us": 18.0,
       "output_elements": 500,
       "success": true
     },
@@ -51,7 +51,7 @@
       "success": true
     }
   ],
-  "total_time_us": 28.0,
+  "total_time_us": 26.0,
   "all_success": true,
   "petaltongue_connected": true
 }

@@ -30,6 +30,7 @@ pub mod diagnostics;
 mod dose_response;
 pub mod nca;
 pub mod nlme;
+pub mod nonlinear;
 mod pbpk;
 mod population;
 mod util;
@@ -53,6 +54,10 @@ pub use nca::{NcaResult, aumc_trapezoidal, nca_iv};
 pub use nlme::{
     NlmeConfig, NlmeResult, Subject, SyntheticPopConfig, foce, generate_synthetic_population,
     iv_one_compartment_model, oral_one_compartment_model, saem,
+};
+pub use nonlinear::{
+    MichaelisMentenParams, PHENYTOIN_PARAMS, mm_apparent_half_life, mm_auc, mm_auc_analytical,
+    mm_css_infusion, mm_nonlinearity_ratio, mm_pk_simulate,
 };
 pub use pbpk::{
     PbpkState, PbpkTissueProfiles, TissueCompartment, cardiac_output, pbpk_auc, pbpk_iv_simulate,

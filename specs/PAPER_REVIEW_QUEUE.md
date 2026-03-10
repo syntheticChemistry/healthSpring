@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 10, 2026
-**Status**: 48 experiments complete — 853 Rust binary checks, 368 tests (302 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 104 cross-validation checks. GPU Tier 2+3 live. V15: NLME (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels). Industry benchmark mapping.
+**Status**: 54 experiments complete — 391 tests (325 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 54 validation binaries. GPU Tier 2+3 live. V16: NLME (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels). 6 new experiments: Michaelis-Menten PK, antibiotic perturbation, SCFA production, gut-brain serotonin, EDA stress, arrhythmia classification. All 30 queued papers complete.
 
 ---
 
@@ -10,12 +10,12 @@
 
 | Track | Papers Queued | Started | Complete |
 |-------|:------------:|:-------:|:--------:|
-| Track 1: PK/PD | 7 | 6 | 6 |
-| Track 2: Microbiome | 7 | 4 | 4 |
-| Track 3: Biosignal | 6 | 4 | 4 |
+| Track 1: PK/PD | 7 | 7 | 7 |
+| Track 2: Microbiome | 7 | 7 | 7 |
+| Track 3: Biosignal | 6 | 6 | 6 |
 | Track 4: Endocrinology | 9 | 9 | 9 |
 | Validation | 1 | 1 | 1 |
-| **Total** | **30** | **24** | **24** |
+| **Total** | **30** | **30** | **30** |
 
 ---
 
@@ -46,6 +46,12 @@
 | EN-007 | Composite registries — Population TRT Monte Carlo | Exp036 | 12 | 10 | 0,1 |
 | EN-008 | Cross-track D1/D2 — Testosterone-gut axis | Exp037 | 12 | 10 | 0,1 |
 | EN-D3 | Mok D3: HRV × TRT cardiovascular cross-track | Exp038 | 10 | 10 | 0,1 |
+| PK-003 | Rowland & Tozer Ch. 20 — Michaelis-Menten nonlinear PK | Exp077 | 10 | 12 | 0,1 |
+| MB-003 | Dethlefsen & Relman 2011 — Antibiotic perturbation recovery | Exp078 | 10 | 10 | 0,1 |
+| MB-004 | den Besten 2013 / Cummings 1987 — SCFA production | Exp079 | 10 | 10 | 0,1 |
+| MB-005 | Yano 2015 / Clarke 2013 — Gut-brain serotonin pathway | Exp080 | 10 | 10 | 0,1 |
+| BS-005 | Boucsein 2012 — EDA autonomic stress detection | Exp081 | 11 | 11 | 0,1 |
+| BS-006 | MIT-BIH / AAMI EC57 — Arrhythmia beat classification | Exp082 | 12 | 12 | 0,1 |
 | VAL-001 | barraCuda CPU parity — analytical contracts | Exp040 | 15 | 15 | 0,1 |
 
 ---
@@ -110,14 +116,16 @@ Faculty anchor: Wei Liao (ADREC, MSU BAE). See `whitePaper/attsi/non-anon/contac
 
 ---
 
-## Next Papers (Remaining Queue)
+## Next Evolution Targets
 
-All 24 queued papers complete at Tier 0+1. Three have Tier 2 GPU validation. Next evolution targets:
+All 30 queued papers complete at Tier 0+1. Three have Tier 2 GPU validation. Next:
 
-1. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
-2. **GPU Tier 2**: Biosignal FFT (Exp020-023) → GPU radix-2 FFT for real-time ECG/PPG
-3. **metalForge Tier 3**: Full pipeline through NUCLEUS topology with biomeOS atomic deployment graphs
-4. **NPU Tier 3**: Pan-Tompkins streaming via Akida NPU (toadStool NPU dispatch path)
+1. **barraCuda CPU parity benchmarks**: Python vs Rust CPU for all 6 new primitives (Michaelis-Menten, SCFA, serotonin, EDA stress, beat classification, antibiotic perturbation)
+2. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
+3. **GPU Tier 2**: Biosignal FFT (Exp020-023) → GPU radix-2 FFT for real-time ECG/PPG
+4. **GPU Tier 2**: Michaelis-Menten population (Exp077) → batch parallel ODE
+5. **metalForge Tier 3**: Full pipeline through NUCLEUS topology with biomeOS atomic deployment graphs
+6. **NPU Tier 3**: Pan-Tompkins streaming via Akida NPU (toadStool NPU dispatch path)
 
 ---
 
@@ -160,5 +168,11 @@ All experiments use publicly accessible data. No proprietary dependencies.
 | Exp073-074 | petalTongue evolution (no new data) | Existing scenarios + mock server |
 | Exp075 | NONMEM/Monolix methods (published algorithms) | Beal & Sheiner, Kuhn & Lavielle (literature) |
 | Exp076 | Full pipeline validation (no new data) | All existing track data + scenario builders |
+| Exp077 | Phenytoin PK parameters (Ludden 1977) | Published textbook parameters |
+| Exp078 | Ciprofloxacin perturbation (Dethlefsen & Relman 2011) | Published diversity time-course |
+| Exp079 | SCFA ratios (Cummings 1987, den Besten 2013) | Published molar ratios |
+| Exp080 | Serotonin production (Yano 2015, Clarke 2013) | Published tryptophan metabolism |
+| Exp081 | EDA stress norms (Boucsein 2012) | Published SCR/SCL reference values |
+| Exp082 | MIT-BIH beat morphology (Moody & Mark 2001) | PhysioNet (open) |
 
 See `specs/README.md` for full provenance table.

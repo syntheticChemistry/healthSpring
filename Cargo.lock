@@ -1191,6 +1191,48 @@ dependencies = [
 ]
 
 [[package]]
+name = "healthspring-exp077"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+]
+
+[[package]]
+name = "healthspring-exp078"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+]
+
+[[package]]
+name = "healthspring-exp079"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+]
+
+[[package]]
+name = "healthspring-exp080"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+]
+
+[[package]]
+name = "healthspring-exp081"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+]
+
+[[package]]
+name = "healthspring-exp082"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+]
+
+[[package]]
 name = "healthspring-forge"
 version = "0.1.0"
 dependencies = [

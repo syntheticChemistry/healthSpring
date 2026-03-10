@@ -263,6 +263,144 @@ pub fn bray_curtis(a: &[f64], b: &[f64]) -> f64 {
     }
 }
 
+// ── Antibiotic Perturbation Model ──────────────────────────────────────
+
+/// Simulate Shannon diversity time course under antibiotic perturbation
+/// and recovery. Returns `(time, shannon)` pairs.
+///
+/// - `h0`: baseline Shannon H'
+/// - `depth`: fractional decline at nadir (0–1)
+/// - `k_decline`: decline rate constant (per day)
+/// - `k_recovery`: recovery rate constant (per day)
+/// - `treatment_days`: duration of antibiotic exposure
+/// - `total_days`: total simulation time
+/// - `dt`: time step
+///
+/// Reference: Dethlefsen & Relman 2011 (Nature) — ciprofloxacin causes
+/// 30-50% diversity decline with incomplete recovery.
+#[must_use]
+#[expect(clippy::cast_precision_loss, reason = "n_steps fits f64")]
+#[expect(
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss,
+    reason = "total_days / dt is small positive"
+)]
+pub fn antibiotic_perturbation(
+    h0: f64,
+    depth: f64,
+    k_decline: f64,
+    k_recovery: f64,
+    treatment_days: f64,
+    total_days: f64,
+    dt: f64,
+) -> Vec<(f64, f64)> {
+    let n_steps = (total_days / dt) as usize;
+    let mut result = Vec::with_capacity(n_steps + 1);
+    let h_nadir = h0 * (1.0 - depth);
+
+    for i in 0..=n_steps {
+        let t = i as f64 * dt;
+        let h = if t <= treatment_days {
+            h0 - (h0 - h_nadir) * (1.0 - (-k_decline * t).exp())
+        } else {
+            let t_rec = t - treatment_days;
+            let h_at_end = h0 - (h0 - h_nadir) * (1.0 - (-k_decline * treatment_days).exp());
+            let recovery_target = h0 * (1.0 - depth * 0.15);
+            h_at_end + (recovery_target - h_at_end) * (1.0 - (-k_recovery * t_rec).exp())
+        };
+        result.push((t, h));
+    }
+    result
+}
+
+// ── SCFA Production Model ─────────────────────────────────────────────
+
+/// Michaelis-Menten SCFA production parameters per acid.
+#[derive(Debug, Clone)]
+pub struct ScfaParams {
+    /// Acetate Vmax (mmol/L/day)
+    pub vmax_acetate: f64,
+    /// Acetate Km (g fiber/L)
+    pub km_acetate: f64,
+    /// Propionate Vmax
+    pub vmax_propionate: f64,
+    /// Propionate Km
+    pub km_propionate: f64,
+    /// Butyrate Vmax
+    pub vmax_butyrate: f64,
+    /// Butyrate Km
+    pub km_butyrate: f64,
+}
+
+/// Reference SCFA parameters for healthy gut (Cummings 1987 ratios: 60:20:15).
+pub const SCFA_HEALTHY_PARAMS: ScfaParams = ScfaParams {
+    vmax_acetate: 60.0,
+    km_acetate: 8.0,
+    vmax_propionate: 20.0,
+    km_propionate: 10.0,
+    vmax_butyrate: 15.0,
+    km_butyrate: 12.0,
+};
+
+/// Dysbiotic SCFA params (reduced butyrate producers).
+pub const SCFA_DYSBIOTIC_PARAMS: ScfaParams = ScfaParams {
+    vmax_acetate: 55.0,
+    km_acetate: 8.0,
+    vmax_propionate: 18.0,
+    km_propionate: 10.0,
+    vmax_butyrate: 5.0,
+    km_butyrate: 15.0,
+};
+
+/// Michaelis-Menten SCFA production from fiber substrate.
+///
+/// Returns `(acetate, propionate, butyrate)` in mmol/L.
+/// Reference: den Besten et al. 2013, Cummings 1987.
+#[must_use]
+pub fn scfa_production(fiber_g_per_l: f64, params: &ScfaParams) -> (f64, f64, f64) {
+    let mm = |vmax: f64, km: f64| vmax * fiber_g_per_l / (km + fiber_g_per_l);
+    (
+        mm(params.vmax_acetate, params.km_acetate),
+        mm(params.vmax_propionate, params.km_propionate),
+        mm(params.vmax_butyrate, params.km_butyrate),
+    )
+}
+
+// ── Gut-Brain Serotonin Pathway ───────────────────────────────────────
+
+/// Gut serotonin production rate as a function of tryptophan availability
+/// and microbiome diversity.
+///
+/// ~90% of body serotonin is gut-derived. Diverse microbiome increases
+/// tryptophan availability for enterochromaffin cells.
+///
+/// `rate = k_synth · trp · diversity_factor(H')`
+///
+/// where `diversity_factor = sigmoid((H' - H_ref) / scale)`.
+///
+/// Reference: Yano et al. 2015 (Cell), Clarke et al. 2013.
+#[must_use]
+pub fn gut_serotonin_production(
+    tryptophan_umol_l: f64,
+    shannon_h: f64,
+    k_synth: f64,
+    scale: f64,
+) -> f64 {
+    let h_ref = 1.5;
+    let diversity_factor = 1.0 / (1.0 + (-(shannon_h - h_ref) / scale).exp());
+    k_synth * tryptophan_umol_l * diversity_factor
+}
+
+/// Tryptophan availability from dietary intake modulated by microbiome.
+///
+/// Healthy microbiome: ~80% of dietary tryptophan available.
+/// Dysbiotic: ~40% (more diverted to indole pathway).
+#[must_use]
+pub fn tryptophan_availability(dietary_trp_umol_l: f64, shannon_h: f64) -> f64 {
+    let availability_fraction = 0.4 + 0.4 / (1.0 + (-3.0 * (shannon_h - 1.5)).exp());
+    dietary_trp_umol_l * availability_fraction
+}
+
 /// Synthetic gut microbiome community profiles for testing.
 pub mod communities {
     pub const HEALTHY_GUT: [f64; 10] = [0.25, 0.20, 0.15, 0.12, 0.10, 0.08, 0.05, 0.03, 0.01, 0.01];
@@ -556,6 +694,50 @@ mod tests {
         assert!(
             (local - upstream).abs() < 1e-10,
             "Bray-Curtis mismatch: local={local}, upstream={upstream}"
+        );
+    }
+
+    #[test]
+    fn antibiotic_perturbation_decline() {
+        let result = super::antibiotic_perturbation(2.2, 0.5, 0.3, 0.1, 7.0, 21.0, 0.1);
+        assert!(result.len() > 1);
+        let nadir = result.iter().map(|&(_, h)| h).fold(f64::INFINITY, f64::min);
+        assert!(nadir < 2.2, "Shannon must decline during antibiotics");
+    }
+
+    #[test]
+    fn antibiotic_perturbation_recovery() {
+        let result = super::antibiotic_perturbation(2.2, 0.5, 0.3, 0.1, 7.0, 42.0, 0.1);
+        let h_final = result.last().unwrap().1;
+        let nadir = result.iter().map(|&(_, h)| h).fold(f64::INFINITY, f64::min);
+        assert!(h_final > nadir, "should recover after antibiotics end");
+    }
+
+    #[test]
+    fn scfa_ratios_normal() {
+        let (a, p, b) = super::scfa_production(20.0, &super::SCFA_HEALTHY_PARAMS);
+        let total = a + p + b;
+        let acetate_frac = a / total;
+        assert!(
+            acetate_frac > 0.50 && acetate_frac < 0.75,
+            "acetate fraction should be ~60%: {acetate_frac}"
+        );
+    }
+
+    #[test]
+    fn scfa_saturates() {
+        let (a1, _, _) = super::scfa_production(10.0, &super::SCFA_HEALTHY_PARAMS);
+        let (a2, _, _) = super::scfa_production(100.0, &super::SCFA_HEALTHY_PARAMS);
+        assert!(a2 / a1 < 10.0, "SCFA should saturate (Michaelis-Menten)");
+    }
+
+    #[test]
+    fn gut_brain_serotonin_diversity_link() {
+        let s_high = super::gut_serotonin_production(200.0, 2.2, 0.8, 0.1);
+        let s_low = super::gut_serotonin_production(200.0, 0.8, 0.8, 0.1);
+        assert!(
+            s_high > s_low,
+            "higher diversity → more serotonin: {s_high} vs {s_low}"
         );
     }
 

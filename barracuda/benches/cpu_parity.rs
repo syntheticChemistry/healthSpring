@@ -160,6 +160,65 @@ fn bench_population_montecarlo_5000(c: &mut Criterion) {
     });
 }
 
+fn bench_michaelis_menten_pk(c: &mut Criterion) {
+    use healthspring_barracuda::pkpd;
+    c.bench_function("mm_pk_simulate_10day", |b| {
+        b.iter(|| pkpd::mm_pk_simulate(black_box(&pkpd::PHENYTOIN_PARAMS), 300.0, 10.0, 0.001));
+    });
+}
+
+fn bench_scfa_production(c: &mut Criterion) {
+    use healthspring_barracuda::microbiome;
+    c.bench_function("scfa_production", |b| {
+        b.iter(|| microbiome::scfa_production(black_box(20.0), &microbiome::SCFA_HEALTHY_PARAMS));
+    });
+}
+
+fn bench_gut_serotonin(c: &mut Criterion) {
+    use healthspring_barracuda::microbiome;
+    c.bench_function("gut_serotonin_production", |b| {
+        b.iter(|| microbiome::gut_serotonin_production(black_box(150.0), black_box(2.2), 0.8, 0.1));
+    });
+}
+
+fn bench_antibiotic_perturbation(c: &mut Criterion) {
+    use healthspring_barracuda::microbiome;
+    c.bench_function("antibiotic_perturbation_42d", |b| {
+        b.iter(|| {
+            microbiome::antibiotic_perturbation(black_box(2.2), 0.5, 0.3, 0.1, 7.0, 42.0, 0.1)
+        });
+    });
+}
+
+fn bench_stress_index(c: &mut Criterion) {
+    use healthspring_barracuda::biosignal;
+    c.bench_function("stress_index", |b| {
+        b.iter(|| biosignal::compute_stress_index(black_box(5.0), black_box(4.0), black_box(2.5)));
+    });
+}
+
+fn bench_beat_classify(c: &mut Criterion) {
+    use healthspring_barracuda::biosignal;
+    let templates = vec![
+        biosignal::BeatTemplate {
+            class: biosignal::BeatClass::Normal,
+            waveform: biosignal::generate_normal_template(41),
+        },
+        biosignal::BeatTemplate {
+            class: biosignal::BeatClass::Pvc,
+            waveform: biosignal::generate_pvc_template(41),
+        },
+        biosignal::BeatTemplate {
+            class: biosignal::BeatClass::Pac,
+            waveform: biosignal::generate_pac_template(41),
+        },
+    ];
+    let beat = biosignal::generate_normal_template(41);
+    c.bench_function("beat_classify_3templates", |b| {
+        b.iter(|| biosignal::classify_beat(black_box(&beat), &templates, 0.7));
+    });
+}
+
 criterion_group!(
     benches,
     bench_hill_sweep_50,
@@ -170,5 +229,11 @@ criterion_group!(
     bench_auc_trapezoidal_101,
     bench_population_montecarlo_500,
     bench_population_montecarlo_5000,
+    bench_michaelis_menten_pk,
+    bench_scfa_production,
+    bench_gut_serotonin,
+    bench_antibiotic_perturbation,
+    bench_stress_index,
+    bench_beat_classify,
 );
 criterion_main!(benches);
