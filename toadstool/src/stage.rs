@@ -118,6 +118,10 @@ impl Stage {
     /// Execute this stage on CPU.
     #[must_use]
     #[expect(clippy::cast_precision_loss)]
+    #[expect(
+        clippy::tuple_array_conversions,
+        reason = "destructured (shannon, simpson) to [f64; 2] is clearer than From"
+    )]
     pub fn execute(&self, input: Option<&[f64]>) -> StageResult {
         use healthspring_barracuda::gpu::{GpuResult, execute_cpu as gpu_cpu};
 

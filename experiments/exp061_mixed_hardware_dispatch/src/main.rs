@@ -140,16 +140,16 @@ fn full_caps() -> Capabilities {
     )
 }
 
-fn cpu_only_caps() -> Capabilities {
+const fn cpu_only_caps() -> Capabilities {
     Capabilities::with_known(None, None)
 }
 
 fn print_plan(plan: &DispatchPlan) {
     for a in &plan.assignments {
-        let transfer_str = match &a.transfer {
-            Some(t) => format!("{:?} ({:.1} us)", t.method, t.estimated_time_us()),
-            None => "none".into(),
-        };
+        let transfer_str = a.transfer.as_ref().map_or_else(
+            || "none".into(),
+            |t| format!("{:?} ({:.1} us)", t.method, t.estimated_time_us()),
+        );
         println!(
             "    stage {}: {:?} -> {:?} @ {}  transfer: {}",
             a.stage_index, a.workload, a.substrate, a.nest_id, transfer_str,

@@ -268,8 +268,8 @@ pub(super) fn population_node(p: &PatientTrtProfile) -> ScenarioNode {
 
     for i in 0..n_pop {
         let z = -2.0 + 4.0 * (i as f64) / pop_denom;
-        let vd_i = (mu_vd + sig_vd * z).exp();
-        let ke_i = (mu_ke + sig_ke * z).exp();
+        let vd_i = sig_vd.mul_add(z, mu_vd).exp();
+        let ke_i = sig_ke.mul_add(z, mu_ke).exp();
 
         let reg = endocrine::ImRegimen {
             dose_mg: tc::DOSE_WEEKLY_MG,

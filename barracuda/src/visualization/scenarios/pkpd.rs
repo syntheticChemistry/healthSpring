@@ -72,7 +72,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                times.clone(),
+                times,
                 oral_concs,
             ),
             gauge(
@@ -223,19 +223,19 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     let cl_vals: Vec<f64> = (0..n_patients)
         .map(|i| {
             let frac = f64::from(i) / f64::from(n_patients - 1);
-            pkpd::pop_baricitinib::CL.typical * (0.6 + 0.8 * frac)
+            pkpd::pop_baricitinib::CL.typical * 0.8f64.mul_add(frac, 0.6)
         })
         .collect();
     let vd_vals: Vec<f64> = (0..n_patients)
         .map(|i| {
             let frac = f64::from(i) / f64::from(n_patients - 1);
-            pkpd::pop_baricitinib::VD.typical * (0.7 + 0.6 * frac)
+            pkpd::pop_baricitinib::VD.typical * 0.6f64.mul_add(frac, 0.7)
         })
         .collect();
     let ka_vals: Vec<f64> = (0..n_patients)
         .map(|i| {
             let frac = f64::from(i) / f64::from(n_patients - 1);
-            pkpd::pop_baricitinib::KA.typical * (0.8 + 0.4 * frac)
+            pkpd::pop_baricitinib::KA.typical * 0.4f64.mul_add(frac, 0.8)
         })
         .collect();
     let pop = pkpd::population_pk_cpu(
@@ -273,7 +273,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 id: "pop_cmax".into(),
                 label: "Cmax Distribution".into(),
                 unit: "mg/L".into(),
-                values: cmaxs.clone(),
+                values: cmaxs,
                 mean: cmax_mean,
                 std: cmax_std,
                 patient_value: cmax_mean,
@@ -297,7 +297,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
         pkpd::pbpk_iv_simulate(&tissues, 100.0, 5.0, 24.0, 0.01);
     let pbpk_auc = pkpd::pbpk_auc(&pbpk_times, &pbpk_venous);
     let tissue_names: Vec<String> = tissues.iter().map(|t| t.name.into()).collect();
-    let tissue_concs = pbpk_state.concentrations.clone();
+    let tissue_concs = pbpk_state.concentrations;
     let co = pkpd::cardiac_output(&tissues);
     let ts_step = pbpk_times.len().max(1) / 500;
     let ts_step = ts_step.max(1);

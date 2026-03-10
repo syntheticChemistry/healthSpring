@@ -82,21 +82,21 @@ fn main() {
         .map(|i| {
             #[expect(clippy::cast_precision_loss, reason = "i < 20")]
             let fi = i as f64;
-            8.0 + 0.2 * fi
+            0.2f64.mul_add(fi, 8.0)
         })
         .collect();
     let vd_vals: Vec<f64> = (0..n)
         .map(|i| {
             #[expect(clippy::cast_precision_loss, reason = "i < 20")]
             let fi = i as f64;
-            70.0 + 1.0 * fi
+            1.0f64.mul_add(fi, 70.0)
         })
         .collect();
     let ka_vals: Vec<f64> = (0..n)
         .map(|i| {
             #[expect(clippy::cast_precision_loss, reason = "i < 20")]
             let fi = i as f64;
-            1.0 + 0.05 * fi
+            0.05f64.mul_add(fi, 1.0)
         })
         .collect();
 

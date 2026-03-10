@@ -116,9 +116,9 @@ fn bench_auc_trapezoidal_101(c: &mut Criterion) {
 )]
 fn bench_population_montecarlo_500(c: &mut Criterion) {
     let n = 500;
-    let cl_params: Vec<f64> = (0..n).map(|i| 8.0 + (i as f64 * 0.01)).collect();
-    let vd_params: Vec<f64> = (0..n).map(|i| 70.0 + (i as f64 * 0.05)).collect();
-    let ka_params: Vec<f64> = (0..n).map(|i| 1.2 + (i as f64 * 0.001)).collect();
+    let cl_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.01, 8.0)).collect();
+    let vd_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.05, 70.0)).collect();
+    let ka_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.001, 1.2)).collect();
     let times: Vec<f64> = (0..=100).map(|i| f64::from(i) * 24.0 / 100.0).collect();
     c.bench_function("population_montecarlo_500", |b| {
         b.iter(|| {
@@ -141,9 +141,9 @@ fn bench_population_montecarlo_500(c: &mut Criterion) {
 )]
 fn bench_population_montecarlo_5000(c: &mut Criterion) {
     let n = 5_000;
-    let cl_params: Vec<f64> = (0..n).map(|i| 8.0 + (i as f64 * 0.001)).collect();
-    let vd_params: Vec<f64> = (0..n).map(|i| 70.0 + (i as f64 * 0.005)).collect();
-    let ka_params: Vec<f64> = (0..n).map(|i| 1.2 + (i as f64 * 0.0001)).collect();
+    let cl_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.001, 8.0)).collect();
+    let vd_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.005, 70.0)).collect();
+    let ka_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.0001, 1.2)).collect();
     let times: Vec<f64> = (0..=100).map(|i| f64::from(i) * 24.0 / 100.0).collect();
     c.bench_function("population_montecarlo_5000", |b| {
         b.iter(|| {

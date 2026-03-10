@@ -11,8 +11,8 @@
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use healthspring_barracuda::microbiome::{shannon_index, simpson_index};
 use healthspring_barracuda::pkpd::{
-    auc_trapezoidal, foce, generate_synthetic_population, nca_iv,
-    oral_one_compartment_model, population_pk_cpu, NlmeConfig, SyntheticPopConfig,
+    NlmeConfig, SyntheticPopConfig, auc_trapezoidal, foce, generate_synthetic_population, nca_iv,
+    oral_one_compartment_model, population_pk_cpu,
 };
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -25,10 +25,7 @@ use healthspring_barracuda::pkpd::{
 fn bench_reduction_auc_10k(c: &mut Criterion) {
     let n = 10_000_i32;
     let times: Vec<f64> = (0..n).map(|i| f64::from(i) * 0.01).collect();
-    let concs: Vec<f64> = times
-        .iter()
-        .map(|&t| 10.0 * (-0.1 * t).exp())
-        .collect();
+    let concs: Vec<f64> = times.iter().map(|&t| 10.0 * (-0.1 * t).exp()).collect();
     c.bench_function("kokkos_reduce_auc_10K", |b| {
         b.iter(|| auc_trapezoidal(black_box(&times), black_box(&concs)));
     });
@@ -37,10 +34,7 @@ fn bench_reduction_auc_10k(c: &mut Criterion) {
 fn bench_reduction_auc_100k(c: &mut Criterion) {
     let n = 100_000_i32;
     let times: Vec<f64> = (0..n).map(|i| f64::from(i) * 0.001).collect();
-    let concs: Vec<f64> = times
-        .iter()
-        .map(|&t| 10.0 * (-0.1 * t).exp())
-        .collect();
+    let concs: Vec<f64> = times.iter().map(|&t| 10.0 * (-0.1 * t).exp()).collect();
     c.bench_function("kokkos_reduce_auc_100K", |b| {
         b.iter(|| auc_trapezoidal(black_box(&times), black_box(&concs)));
     });
@@ -99,9 +93,9 @@ fn bench_scatter_diversity_10k(c: &mut Criterion) {
 )]
 fn bench_montecarlo_pop_pk_1k(c: &mut Criterion) {
     let n = 1_000_usize;
-    let cl_params: Vec<f64> = (0..n).map(|i| 8.0 + (i as f64 * 0.005)).collect();
-    let vd_params: Vec<f64> = (0..n).map(|i| 70.0 + (i as f64 * 0.02)).collect();
-    let ka_params: Vec<f64> = (0..n).map(|i| 1.2 + (i as f64 * 0.0005)).collect();
+    let cl_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.005, 8.0)).collect();
+    let vd_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.02, 70.0)).collect();
+    let ka_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.0005, 1.2)).collect();
     let times: Vec<f64> = (0..=200).map(|i| f64::from(i) * 24.0 / 200.0).collect();
     c.bench_function("kokkos_montecarlo_popPK_1K", |b| {
         b.iter(|| {
@@ -135,8 +129,8 @@ fn bench_ode_batch_nca_100(c: &mut Criterion) {
     let n_points = 500_usize;
     let profiles: Vec<(Vec<f64>, Vec<f64>)> = (0..n_profiles)
         .map(|i| {
-            let ke = 0.05 + 0.002 * i as f64;
-            let vd = 10.0 + 0.5 * i as f64;
+            let ke = 0.002f64.mul_add(i as f64, 0.05);
+            let vd = 0.5f64.mul_add(i as f64, 10.0);
             let dose = 100.0;
             let c0 = dose / vd;
             let times: Vec<f64> = (0..n_points)
@@ -188,7 +182,16 @@ fn bench_nlme_foce_20subj_10iter(c: &mut Criterion) {
         seed: 12_345,
     };
     c.bench_function("kokkos_team_nlme_foce_20subj", |b| {
-        b.iter(|| foce(oral_one_compartment_model, black_box(&subjects), &theta, &omega, sigma, &config));
+        b.iter(|| {
+            foce(
+                oral_one_compartment_model,
+                black_box(&subjects),
+                &theta,
+                &omega,
+                sigma,
+                &config,
+            )
+        });
     });
 }
 

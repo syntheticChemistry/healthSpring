@@ -41,7 +41,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (days)",
                 "C (ng/mL)",
                 "ng/mL",
-                days.clone(),
+                days,
                 single_curve,
             ),
             gauge(
@@ -275,7 +275,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Month",
                 "SBP (mmHg)",
                 "mmHg",
-                months.clone(),
+                months,
                 sbp_curve,
             ),
         ],

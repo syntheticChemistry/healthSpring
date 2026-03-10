@@ -7,9 +7,9 @@
 
 ## 1. Current State
 
-healthSpring is **standalone** — no primal dependencies at runtime. 47 experiments (Exp001-074) run with:
+healthSpring is **standalone** — no primal dependencies at runtime. 48 experiments (Exp001-076) run with:
 - Python + NumPy (Tier 0 — 104 cross-validation checks)
-- Rust + healthspring-barracuda crate (Tier 1 — 630 binary checks)
+- Rust + healthspring-barracuda crate (Tier 1 — 853 binary checks)
 - GPU via wgpu/WGSL (Tier 2 — 3 shaders, GpuContext, fused pipeline)
 - metalForge substrate routing (Tier 3 — 33 tests)
 - petalTongue IPC integration (Exp064 — Unix socket JSON-RPC push)

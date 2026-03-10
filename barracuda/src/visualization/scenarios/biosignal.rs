@@ -9,6 +9,9 @@ use crate::wfdb;
 ///
 /// Returns `(frequencies_hz, power_ms2_per_hz)` covering the clinically
 /// relevant 0–0.5 Hz band (VLF + LF + HF).
+///
+/// Delegates to [`crate::biosignal::fft::rfft`] for the DFT computation,
+/// then converts to one-sided PSD with appropriate frequency binning.
 #[expect(
     clippy::cast_precision_loss,
     reason = "DFT indices and sample counts well within f64 mantissa"
@@ -24,25 +27,18 @@ fn hrv_power_spectrum(rr_intervals_ms: &[f64]) -> (Vec<f64>, Vec<f64>) {
     let fs = 1.0 / mean_rr_s;
 
     let centered: Vec<f64> = rr_intervals_ms.iter().map(|&r| r - mean_rr).collect();
+    let (re_all, im_all) = crate::biosignal::fft::rfft(&centered);
 
-    let n_freq = n / 2;
-    let mut freqs = Vec::with_capacity(n_freq);
-    let mut power = Vec::with_capacity(n_freq);
+    let nf = n as f64;
+    let mut freqs = Vec::with_capacity(re_all.len());
+    let mut power = Vec::with_capacity(re_all.len());
 
-    for k in 1..=n_freq {
-        let freq = k as f64 * fs / n as f64;
+    for k in 1..re_all.len() {
+        let freq = k as f64 * fs / nf;
         if freq > 0.5 {
             break;
         }
-
-        let mut re = 0.0;
-        let mut im = 0.0;
-        for (i, &val) in centered.iter().enumerate() {
-            let angle = 2.0 * std::f64::consts::PI * k as f64 * i as f64 / n as f64;
-            re += val * angle.cos();
-            im -= val * angle.sin();
-        }
-        let psd = (re * re + im * im) / (n as f64 * fs);
+        let psd = re_all[k].mul_add(re_all[k], im_all[k] * im_all[k]) / (nf * fs);
         freqs.push(freq);
         power.push(psd);
     }
@@ -265,7 +261,9 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     let (ac_ir, dc_ir) = biosignal::ppg_extract_ac_dc(&ppg.ir);
     let r_val = biosignal::ppg_r_value(ac_red, dc_red, ac_ir, dc_ir);
     let spo2 = biosignal::spo2_from_r(r_val);
-    let r_sweep: Vec<f64> = (0..20).map(|i| 0.3 + 0.05 * f64::from(i)).collect();
+    let r_sweep: Vec<f64> = (0..20)
+        .map(|i| 0.05f64.mul_add(f64::from(i), 0.3))
+        .collect();
     let spo2_sweep: Vec<f64> = r_sweep.iter().map(|&r| biosignal::spo2_from_r(r)).collect();
     s.ecosystem.primals.push(node(
         "spo2",
@@ -398,8 +396,9 @@ fn build_wfdb_ecg_node(s: &mut HealthScenario) {
     let raw_ch1: Vec<i16> = (0..n_samples)
         .map(|i| {
             let t = i as f64 / sample_freq;
-            let ecg_like = (2.0 * std::f64::consts::PI * 1.2 * t).sin() * 200.0
-                + (2.0 * std::f64::consts::PI * 0.2 * t).sin() * 50.0;
+            let ecg_like = (2.0 * std::f64::consts::PI * 1.2 * t)
+                .sin()
+                .mul_add(200.0, (2.0 * std::f64::consts::PI * 0.2 * t).sin() * 50.0);
             #[expect(
                 clippy::cast_possible_truncation,
                 reason = "synthetic ECG amplitude bounded to ±300"
@@ -416,7 +415,11 @@ fn build_wfdb_ecg_node(s: &mut HealthScenario) {
         let s2 = raw_ch2[i];
         #[expect(clippy::cast_sign_loss, reason = "masking to 8 bits")]
         let b0 = (s1 & 0xFF) as u8;
-        #[expect(clippy::cast_sign_loss, clippy::cast_possible_truncation, reason = "masking to 4+4 = 8 bits")]
+        #[expect(
+            clippy::cast_sign_loss,
+            clippy::cast_possible_truncation,
+            reason = "masking to 4+4 = 8 bits"
+        )]
         let b1 = (((s1 >> 8) & 0x0F) | ((s2 & 0x0F) << 4)) as u8;
         #[expect(clippy::cast_sign_loss, reason = "shift result fits u8")]
         let b2 = ((s2 >> 4) & 0xFF) as u8;
@@ -425,18 +428,17 @@ fn build_wfdb_ecg_node(s: &mut HealthScenario) {
         encoded.push(b2);
     }
 
-    let decoded = wfdb::decode_format_212(&encoded, n_samples, 2)
-        .expect("round-trip decode should succeed");
+    let decoded =
+        wfdb::decode_format_212(&encoded, n_samples, 2).expect("round-trip decode should succeed");
 
     let gain = 200.0;
     let baseline = 0;
     let physical = wfdb::adc_to_physical(&decoded[0], gain, baseline);
-    let time_axis: Vec<f64> = (0..physical.len()).map(|i| i as f64 / sample_freq).collect();
+    let time_axis: Vec<f64> = (0..physical.len())
+        .map(|i| i as f64 / sample_freq)
+        .collect();
 
-    let ann_bytes: Vec<u8> = vec![
-        0x14, 0x04, 0x50, 0x04, 0xA0, 0x04, 0xE0, 0x14,
-        0x00, 0x00,
-    ];
+    let ann_bytes: Vec<u8> = vec![0x14, 0x04, 0x50, 0x04, 0xA0, 0x04, 0xE0, 0x14, 0x00, 0x00];
     let annotations = wfdb::parse_annotations(&ann_bytes).unwrap_or_default();
 
     let mut beat_counts = std::collections::HashMap::new();
@@ -468,7 +470,13 @@ fn build_wfdb_ecg_node(s: &mut HealthScenario) {
                 time_axis,
                 physical,
             ),
-            bar("beat_types", "Beat Type Distribution", beat_labels, beat_vals, "count"),
+            bar(
+                "beat_types",
+                "Beat Type Distribution",
+                beat_labels,
+                beat_vals,
+                "count",
+            ),
             gauge(
                 "wfdb_fs",
                 "Sampling Frequency",

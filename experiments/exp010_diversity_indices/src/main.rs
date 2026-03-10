@@ -83,7 +83,7 @@ fn main() {
     println!("\n--- Check 4: Simpson perfectly even ---");
     let d_even = microbiome::simpson_index(even);
     #[expect(clippy::cast_precision_loss, reason = "species count (10) fits f64")]
-    let expected_d = 1.0 - (even.len() as f64) * 0.01;
+    let expected_d = (even.len() as f64).mul_add(-0.01, 1.0);
     if (d_even - expected_d).abs() < TOL {
         println!("  [PASS] D = {d_even:.10}");
         passed += 1;

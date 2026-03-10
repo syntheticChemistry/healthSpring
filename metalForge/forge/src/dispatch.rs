@@ -79,18 +79,11 @@ pub fn plan_dispatch(
         let substrate = select_substrate(&workload, caps);
         let nest_id = find_nest(local_node, substrate);
 
-        let transfer = if let Some(prev) = prev_nest {
-            if prev == nest_id {
-                None
-            } else {
-                transitions += 1;
-                let plan = plan_transfer(prev, nest_id, output_bytes, local_node);
-                total_bytes += output_bytes;
-                Some(plan)
-            }
-        } else {
-            None
-        };
+        let transfer = prev_nest.filter(|&prev| prev != nest_id).map(|prev| {
+            transitions += 1;
+            total_bytes += output_bytes;
+            plan_transfer(prev, nest_id, output_bytes, local_node)
+        });
 
         prev_nest = Some(nest_id);
         assignments.push(StageAssignment {

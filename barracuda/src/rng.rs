@@ -11,7 +11,7 @@ pub const LCG_MULTIPLIER: u64 = 6_364_136_223_846_793_005;
 /// Advance the LCG state by one step.
 #[must_use]
 #[inline]
-pub fn lcg_step(state: u64) -> u64 {
+pub const fn lcg_step(state: u64) -> u64 {
     state.wrapping_mul(LCG_MULTIPLIER).wrapping_add(1)
 }
 

@@ -2,11 +2,11 @@
   "_method": "ECG+PPG+EDA fusion, stress index, overall score",
   "_provenance": {
     "date": "2026-03-08",
-    "script": "control/biosignal/exp023_biosignal_fusion.py",
+    "script": "control/biosignal/exp023_fusion.py",
     "source": "Rust exp023_biosignal_fusion --write-baseline",
     "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
     "git_commit": "e93a81b6bdd85d537eb5a3904847c1cfc603ab28",
-    "command": "python3 control/biosignal/exp023_biosignal_fusion.py"
+    "command": "python3 control/biosignal/exp023_fusion.py"
   },
   "_source": "healthSpring Exp023: Multi-Channel Biosignal Fusion",
   "ecg": {

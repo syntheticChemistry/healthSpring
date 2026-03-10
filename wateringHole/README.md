@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V13 — 47 experiments, 4 tracks + diagnostics + GPU + dispatch + clinical TRT + streaming + petalTongue evolution + interaction (Tier 0+1+2+3). Deep audit: Anderson eigensolver, smart refactor, math deduplication, centralized RNG, capability-based discovery, 4 doc-tests, flaky test fix.
-**Last Updated**: March 9, 2026
+**Status**: V14.1 — 48 experiments, 5 tracks + diagnostics + GPU + dispatch + clinical TRT + streaming + petalTongue evolution + interaction + NLME (Tier 0+1+2+3). NLME population PK (FOCE + SAEM), NCA, diagnostics, WFDB, Kokkos benchmarks, full pipeline (28 nodes, 121 channels). V14.1 deep debt: biosignal modular refactor, `#![deny(clippy::pedantic)]`, DFT deduplication.
+**Last Updated**: March 10, 2026
 
 ---
 
@@ -22,9 +22,9 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V13** | [V13 Deep Audit Evolution Handoff](handoffs/HEALTHSPRING_V13_DEEP_AUDIT_EVOLUTION_HANDOFF_MAR09_2026.md) | Mar 9 | Anderson eigensolver (QL algorithm), smart clinical.rs refactor, LCG PRNG centralization, math deduplication, capability-based Songbird discovery, flaky IPC test fix, 4 doc-tests, tolerance registry update. Absorption tables for barraCuda (eigensolver, RNG), toadStool (RNG, streaming), petalTongue (capabilities, interaction). Evolution readiness assessment. |
-| V12 | [V12 petalTongue Evolution Handoff](handoffs/HEALTHSPRING_V12_PETALTONGUE_EVOLUTION_HANDOFF_MAR09_2026.md) | Mar 9 | Full stream ops (replace), domain theming, UiConfig passthrough, capabilities query, interaction subscription, 5 TRT archetypes, PBPK tissue profiles, Pan-Tompkins intermediates, Anderson spectra. |
-| | *V1, V3, V4, V5, V6, V6.1, V7, V8, V9 → `handoffs/archive/`* | | Fossil record |
+| **V14.1** | [V14.1 Deep Debt + Absorption Handoff](handoffs/HEALTHSPRING_V14.1_DEEP_DEBT_ABSORPTION_HANDOFF_MAR10_2026.md) | Mar 10 | biosignal modular refactor (953→6 submodules), `#![deny(clippy::pedantic)]` in all lib crates, DFT deduplication, idiomatic Rust patterns, provenance fixes. Full absorption guidance for barraCuda/toadStool. |
+| V14 | [V14 NLME + Full Pipeline Handoff](handoffs/HEALTHSPRING_V14_NLME_FULL_PIPELINE_HANDOFF_MAR10_2026.md) | Mar 10 | NLME population PK (FOCE + SAEM), NCA, CWRES/VPC/GOF diagnostics, WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels), industry benchmark mapping (NONMEM, Monolix, WinNonlin). |
+| | *V1–V13 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

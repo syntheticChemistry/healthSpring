@@ -225,7 +225,11 @@ fn bin_observations(subjects: &[Subject], n_bins: usize) -> (Vec<f64>, Vec<Vec<f
 
     for (&time, &obs) in all_times.iter().zip(all_obs.iter()) {
         let raw = ((time - t_min) / bin_width).floor().max(0.0);
-        #[expect(clippy::cast_possible_truncation, clippy::cast_sign_loss, reason = "bin index from non-negative bounded float")]
+        #[expect(
+            clippy::cast_possible_truncation,
+            clippy::cast_sign_loss,
+            reason = "bin index from non-negative bounded float"
+        )]
         let mut bin_idx = raw as usize;
         if bin_idx >= n_bins {
             bin_idx = n_bins - 1;
@@ -249,12 +253,20 @@ fn percentile(values: &[f64], pct: f64) -> f64 {
     sorted.sort_by(|a, b| a.partial_cmp(b).unwrap_or(core::cmp::Ordering::Equal));
     let last = (sorted.len() - 1) as f64;
     let rank = (pct / 100.0 * last).clamp(0.0, last);
-    #[expect(clippy::cast_possible_truncation, clippy::cast_sign_loss, reason = "rank is non-negative bounded by array length")]
+    #[expect(
+        clippy::cast_possible_truncation,
+        clippy::cast_sign_loss,
+        reason = "rank is non-negative bounded by array length"
+    )]
     let lo = rank.floor() as usize;
-    #[expect(clippy::cast_possible_truncation, clippy::cast_sign_loss, reason = "rank is non-negative bounded by array length")]
+    #[expect(
+        clippy::cast_possible_truncation,
+        clippy::cast_sign_loss,
+        reason = "rank is non-negative bounded by array length"
+    )]
     let hi = rank.ceil().min(last) as usize;
     let frac = rank - rank.floor();
-    sorted[lo] * (1.0 - frac) + sorted[hi] * frac
+    sorted[lo].mul_add(1.0 - frac, sorted[hi] * frac)
 }
 
 /// Simulate one replicate dataset from the estimated model.
@@ -285,7 +297,7 @@ fn simulate_from_model(
                     let pred = model(&result.theta, &new_eta, subj.dose, time);
                     let (eps, new_st) = normal_sample(*rng);
                     *rng = new_st;
-                    (pred + result.sigma.sqrt() * eps).max(0.0)
+                    result.sigma.sqrt().mul_add(eps, pred).max(0.0)
                 })
                 .collect();
 
@@ -323,11 +335,7 @@ pub struct GofResult {
 
 /// Compute goodness-of-fit diagnostics.
 #[must_use]
-pub fn compute_gof(
-    model: StructuralModel,
-    subjects: &[Subject],
-    result: &NlmeResult,
-) -> GofResult {
+pub fn compute_gof(model: StructuralModel, subjects: &[Subject], result: &NlmeResult) -> GofResult {
     let n_eta = result.omega_diag.len();
     let eta_zero = vec![0.0; n_eta];
     let sigma_sqrt = result.sigma.sqrt().max(1e-15);
@@ -416,7 +424,14 @@ mod tests {
             tol: 1e-6,
             seed: 12_345,
         };
-        let result = foce(oral_one_compartment_model, &subjects, &theta, &omega, sigma, &config);
+        let result = foce(
+            oral_one_compartment_model,
+            &subjects,
+            &theta,
+            &omega,
+            sigma,
+            &config,
+        );
         (subjects, result)
     }
 
@@ -435,8 +450,11 @@ mod tests {
         let (subjects, result) = fitted_result();
         let cwres = compute_cwres(oral_one_compartment_model, &subjects, &result);
         let summary = cwres_summary(&cwres);
-        assert!(summary.mean.abs() < 2.0,
-            "CWRES mean should be near 0: got {}", summary.mean);
+        assert!(
+            summary.mean.abs() < 2.0,
+            "CWRES mean should be near 0: got {}",
+            summary.mean
+        );
     }
 
     #[test]
@@ -456,10 +474,14 @@ mod tests {
         assert_eq!(vpc.obs_p5.len(), 5);
         assert_eq!(vpc.sim_p50.len(), 5);
         for bin_idx in 0..5 {
-            assert!(vpc.obs_p5[bin_idx] <= vpc.obs_p50[bin_idx],
-                "p5 <= p50 in bin {bin_idx}");
-            assert!(vpc.obs_p50[bin_idx] <= vpc.obs_p95[bin_idx],
-                "p50 <= p95 in bin {bin_idx}");
+            assert!(
+                vpc.obs_p5[bin_idx] <= vpc.obs_p50[bin_idx],
+                "p5 <= p50 in bin {bin_idx}"
+            );
+            assert!(
+                vpc.obs_p50[bin_idx] <= vpc.obs_p95[bin_idx],
+                "p50 <= p95 in bin {bin_idx}"
+            );
         }
     }
 
@@ -467,9 +489,12 @@ mod tests {
     fn gof_individual_better_than_population() {
         let (subjects, result) = fitted_result();
         let gof = compute_gof(oral_one_compartment_model, &subjects, &result);
-        assert!(gof.r_squared_individual >= gof.r_squared_population,
+        assert!(
+            gof.r_squared_individual >= gof.r_squared_population,
             "individual R² ({}) >= population R² ({})",
-            gof.r_squared_individual, gof.r_squared_population);
+            gof.r_squared_individual,
+            gof.r_squared_population
+        );
     }
 
     #[test]
@@ -488,7 +513,10 @@ mod tests {
         let (subjects, result) = fitted_result();
         let g1 = compute_gof(oral_one_compartment_model, &subjects, &result);
         let g2 = compute_gof(oral_one_compartment_model, &subjects, &result);
-        assert_eq!(g1.r_squared_individual.to_bits(), g2.r_squared_individual.to_bits());
+        assert_eq!(
+            g1.r_squared_individual.to_bits(),
+            g2.r_squared_individual.to_bits()
+        );
     }
 
     #[test]

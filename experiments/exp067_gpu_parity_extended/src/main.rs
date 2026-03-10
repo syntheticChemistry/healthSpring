@@ -44,7 +44,8 @@ fn validate_simpson(passed: &mut u32, failed: &mut u32) {
             let gpu_simpson = gpu_results[idx].1;
             let diff = (cpu_simpson - gpu_simpson).abs();
             check!(
-                passed, failed,
+                passed,
+                failed,
                 &format!("simpson_community_{idx}_parity (diff={diff:.2e})"),
                 diff < NUMERICAL_TOL
             );
@@ -53,9 +54,24 @@ fn validate_simpson(passed: &mut u32, failed: &mut u32) {
 
     let even_simpson = simpson_index(&[0.25, 0.25, 0.25, 0.25]);
     let dominated_simpson = simpson_index(&[0.9, 0.05, 0.03, 0.02]);
-    check!(passed, failed, "simpson_even_gt_dominated", even_simpson > dominated_simpson);
-    check!(passed, failed, "simpson_uniform_near_0.75", (even_simpson - 0.75).abs() < 1e-10);
-    check!(passed, failed, "simpson_monoculture_zero", simpson_index(&[1.0]).abs() < 1e-10);
+    check!(
+        passed,
+        failed,
+        "simpson_even_gt_dominated",
+        even_simpson > dominated_simpson
+    );
+    check!(
+        passed,
+        failed,
+        "simpson_uniform_near_0.75",
+        (even_simpson - 0.75).abs() < 1e-10
+    );
+    check!(
+        passed,
+        failed,
+        "simpson_monoculture_zero",
+        simpson_index(&[1.0]).abs() < 1e-10
+    );
 }
 
 fn validate_auc_and_bray_curtis(passed: &mut u32, failed: &mut u32) {
@@ -70,41 +86,86 @@ fn validate_auc_and_bray_curtis(passed: &mut u32, failed: &mut u32) {
         .collect();
     let auc = auc_trapezoidal(&times, &concs);
     check!(passed, failed, "auc_positive", auc > 0.0);
-    check!(passed, failed, "auc_reasonable_range", auc > 0.1 && auc < 100.0);
+    check!(
+        passed,
+        failed,
+        "auc_reasonable_range",
+        auc > 0.1 && auc < 100.0
+    );
 
     let tri_times = [0.0, 1.0, 2.0];
     let tri_concs = [0.0, 1.0, 0.0];
     let tri_auc = auc_trapezoidal(&tri_times, &tri_concs);
-    check!(passed, failed, "auc_triangle_exact_1.0", (tri_auc - 1.0).abs() < 1e-10);
+    check!(
+        passed,
+        failed,
+        "auc_triangle_exact_1.0",
+        (tri_auc - 1.0).abs() < 1e-10
+    );
 
     let rect_times: Vec<f64> = (0..=10).map(f64::from).collect();
     let rect_concs = vec![5.0; 11];
     let rect_auc = auc_trapezoidal(&rect_times, &rect_concs);
-    check!(passed, failed, "auc_rectangle_exact_50.0", (rect_auc - 50.0).abs() < 1e-10);
+    check!(
+        passed,
+        failed,
+        "auc_rectangle_exact_50.0",
+        (rect_auc - 50.0).abs() < 1e-10
+    );
 
     let auc2 = auc_trapezoidal(&times, &concs);
-    check!(passed, failed, "auc_deterministic", (auc - auc2).abs() < f64::EPSILON);
+    check!(
+        passed,
+        failed,
+        "auc_deterministic",
+        (auc - auc2).abs() < f64::EPSILON
+    );
 
     println!("\n=== Bray-Curtis Dissimilarity (pairwise batch) ===");
     let sample_a = [0.3, 0.3, 0.2, 0.1, 0.1];
     let sample_b = [0.3, 0.3, 0.2, 0.1, 0.1];
     let bc_identical = bray_curtis(&sample_a, &sample_b);
-    check!(passed, failed, "bray_curtis_identical_zero", bc_identical.abs() < 1e-10);
+    check!(
+        passed,
+        failed,
+        "bray_curtis_identical_zero",
+        bc_identical.abs() < 1e-10
+    );
 
     let sample_c = [1.0, 0.0, 0.0, 0.0, 0.0];
     let sample_d = [0.0, 0.0, 0.0, 0.0, 1.0];
     let bc_disjoint = bray_curtis(&sample_c, &sample_d);
-    check!(passed, failed, "bray_curtis_disjoint_one", (bc_disjoint - 1.0).abs() < 1e-10);
+    check!(
+        passed,
+        failed,
+        "bray_curtis_disjoint_one",
+        (bc_disjoint - 1.0).abs() < 1e-10
+    );
 
     let sample_e = [0.4, 0.3, 0.2, 0.05, 0.05];
     let sample_f = [0.2, 0.2, 0.3, 0.15, 0.15];
     let bc_similar = bray_curtis(&sample_e, &sample_f);
-    check!(passed, failed, "bray_curtis_similar_lt_0.5", bc_similar < 0.5);
-    check!(passed, failed, "bray_curtis_range_0_to_1", (0.0..=1.0).contains(&bc_similar));
+    check!(
+        passed,
+        failed,
+        "bray_curtis_similar_lt_0.5",
+        bc_similar < 0.5
+    );
+    check!(
+        passed,
+        failed,
+        "bray_curtis_range_0_to_1",
+        (0.0..=1.0).contains(&bc_similar)
+    );
 
     let bc_ef = bray_curtis(&sample_e, &sample_f);
     let bc_fe = bray_curtis(&sample_f, &sample_e);
-    check!(passed, failed, "bray_curtis_symmetric", (bc_ef - bc_fe).abs() < 1e-10);
+    check!(
+        passed,
+        failed,
+        "bray_curtis_symmetric",
+        (bc_ef - bc_fe).abs() < 1e-10
+    );
 
     println!("\n=== GPU Parity (feature-gated) ===");
     println!("  GPU feature not enabled — CPU-only validation complete");

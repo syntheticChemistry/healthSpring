@@ -5,7 +5,7 @@
 **Date:** March 10, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V14 — 356 tests (289 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 48 experiments, 853 Rust binary checks, 104 cross-validation checks. NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix replacement). NCA (sovereign WinNonlin replacement). NLME diagnostics (CWRES, VPC, GOF). WFDB parser (PhysioNet Format 212/16). Kokkos-equivalent GPU benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, all 7 DataChannel types. Industry benchmark mapping (SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled). Zero unsafe code, zero clippy warnings, `cargo fmt` clean, `cargo doc` clean.
+**Status:** V14.1 — 356 tests (289 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 48 experiments, 853 Rust binary checks, 104 cross-validation checks. NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix replacement). NCA (sovereign WinNonlin replacement). NLME diagnostics (CWRES, VPC, GOF). WFDB parser (PhysioNet Format 212/16). Kokkos-equivalent GPU benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, all 7 DataChannel types. Industry benchmark mapping (SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean, `cargo doc` clean.
 
 ---
 
@@ -29,7 +29,7 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | **V14** (NLME + full pipeline) |
+| Version | **V14.1** (NLME + full pipeline + deep debt) |
 | Rust lib tests | 289 (barraCuda) |
 | Rust forge tests | 33 (metalForge) |
 | Rust toadStool tests | 30 |
@@ -49,7 +49,7 @@ The other springs do the chemistry. healthSpring makes the drug.
 | toadStool validation | 30 tests + GPU dispatch + streaming + auto-dispatch |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 | Unsafe blocks | 0 |
-| Clippy warnings | 0 (`-D clippy::all -W clippy::pedantic`) |
+| Clippy warnings | 0 (`#![deny(clippy::pedantic)]` in all lib crates, `-W clippy::nursery`) |
 | Max file size | 819 lines (all files under 1000-line wateringHole limit) |
 
 ---
@@ -217,7 +217,14 @@ healthSpring/
 │       ├── lib.rs       # 289 tests, #![forbid(unsafe_code)]
 │       ├── pkpd/        # Track 1: Hill, 1/2-compartment, allometric, pop PK, PBPK, NLME (FOCE/SAEM), NCA, diagnostics
 │       ├── microbiome.rs # Track 2: Shannon, Simpson, Pielou, Chao1, Anderson W, FMT, eigensolver
-│       ├── biosignal.rs  # Track 3: Pan-Tompkins, IIR bandpass, HRV, PPG, fusion
+│       ├── biosignal/    # Track 3 (submodules after V14.1 refactor)
+│       │   ├── mod.rs    # Re-exports all public items for API compatibility
+│       │   ├── ecg.rs    # Pan-Tompkins QRS detection, synthetic ECG
+│       │   ├── hrv.rs    # SDNN, RMSSD, pNN50, heart rate from peaks
+│       │   ├── ppg.rs    # SpO2 R-value calibration, synthetic PPG
+│       │   ├── eda.rs    # SCL, phasic decomposition, SCR detection
+│       │   ├── fusion.rs # Multi-channel FusedHealthAssessment
+│       │   └── fft.rs    # DFT/IDFT utilities (centralized)
 │       ├── endocrine.rs  # Track 4: testosterone PK, decline, TRT outcomes, gut axis
 │       ├── wfdb.rs      # WFDB parser (PhysioNet Format 212/16, annotations)
 │       ├── rng.rs       # Deterministic LCG PRNG (centralized)
@@ -283,7 +290,7 @@ healthSpring/
 
 ```bash
 cargo test --workspace                  # 356 tests (barraCuda + forge + toadStool + doc-tests)
-cargo clippy --workspace --all-features -- -D clippy::all -W clippy::pedantic  # Zero warnings
+cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings
 
@@ -339,3 +346,18 @@ python3 control/endocrine/exp036_population_trt_montecarlo.py
 healthSpring is a public scientific validation repository in the ecoPrimals ecosystem. It consumes `barraCuda` (vendor-agnostic GPU math library) and validates health application pipelines using the same constrained evolution methodology as the other five springs.
 
 The springs validate science. healthSpring applies it.
+
+---
+
+## V14.1 Deep Debt Evolution (from V14)
+
+V14.1 is a code quality evolution — zero-warning `#![deny(clippy::pedantic)]` enforcement, smart modular refactoring, and DFT deduplication.
+
+| Change | Impact |
+|--------|--------|
+| **biosignal.rs → biosignal/ submodules** | 953-line monolith split into 6 domain-coherent modules (ecg, hrv, ppg, eda, fusion, fft) with `mod.rs` re-exporting all public items for API compatibility. |
+| **clippy::pedantic promoted to deny** | All three lib crates (`barracuda`, `toadstool`, `metalForge/forge`) now use `#![deny(clippy::pedantic)]` instead of `#![warn(...)]`. All warnings resolved — `mul_add`, `must_use`, `const fn`, `while_float`, `branches_sharing_code`, `option_if_let_else`, `significant_drop_tightening`. |
+| **DFT deduplication** | `visualization/scenarios/biosignal.rs` HRV power spectrum now delegates to `biosignal::fft::rfft` instead of local DFT reimplementation. |
+| **Dead code removal** | Removed unused `cpu_stages` vector in toadStool pipeline. |
+| **Idiomatic Rust** | `if let Some(prev) = prev_nest { if prev == id { ... } }` chains replaced with `prev_nest.filter().map()`. Shared code hoisted from if/else branches. |
+| **exp023 provenance fix** | Corrected `exp023_biosignal_fusion.py` → `exp023_fusion.py` in baseline JSON and provenance script. |

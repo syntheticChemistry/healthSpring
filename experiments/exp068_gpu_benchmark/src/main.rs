@@ -80,7 +80,7 @@ fn main() {
             concentrations: concs,
         };
         let cpu_us = bench_cpu_op(&op, 20);
-        let est_gpu_us = GPU_DISPATCH_OVERHEAD_US + (n as f64 * 0.001);
+        let est_gpu_us = (n as f64).mul_add(0.001, GPU_DISPATCH_OVERHEAD_US);
         let gpu_wins = est_gpu_us < cpu_us;
         if gpu_wins && hill_crossover.is_none() {
             hill_crossover = Some(n);
@@ -120,7 +120,7 @@ fn main() {
             seed: 42,
         };
         let cpu_us = bench_cpu_op(&op, 20);
-        let est_gpu_us = GPU_DISPATCH_OVERHEAD_US + (n as f64 * 0.005);
+        let est_gpu_us = (n as f64).mul_add(0.005, GPU_DISPATCH_OVERHEAD_US);
         let gpu_wins = est_gpu_us < cpu_us;
         if gpu_wins && pk_crossover.is_none() {
             pk_crossover = Some(n);
@@ -169,7 +169,7 @@ fn main() {
             .collect();
         let op = GpuOp::DiversityBatch { communities };
         let cpu_us = bench_cpu_op(&op, 10);
-        let est_gpu_us = GPU_DISPATCH_OVERHEAD_US + (n as f64 * 0.01);
+        let est_gpu_us = (n as f64).mul_add(0.01, GPU_DISPATCH_OVERHEAD_US);
         let gpu_wins = est_gpu_us < cpu_us;
         if gpu_wins && div_crossover.is_none() {
             div_crossover = Some(n);

@@ -41,19 +41,18 @@ pub use compartment::{
     micro_to_macro, oral_tmax, pk_iv_bolus, pk_oral_one_compartment, pk_two_compartment_iv,
     two_compartment_ab,
 };
+pub use diagnostics::{
+    CwresSummary, GofResult, SubjectCwres, VpcConfig, VpcResult, compute_cwres, compute_gof,
+    compute_vpc, cwres_summary,
+};
 pub use dose_response::{
     ABROCITINIB, ALL_INHIBITORS, BARICITINIB, EcValues, JakInhibitor, OCLACITINIB, UPADACITINIB,
     compute_ec_values, hill_dose_response, hill_sweep,
 };
-pub use diagnostics::{
-    CwresSummary, GofResult, SubjectCwres, VpcConfig, VpcResult,
-    compute_cwres, compute_gof, compute_vpc, cwres_summary,
-};
 pub use nca::{NcaResult, aumc_trapezoidal, nca_iv};
 pub use nlme::{
-    NlmeConfig, NlmeResult, Subject, SyntheticPopConfig, foce,
-    generate_synthetic_population, iv_one_compartment_model,
-    oral_one_compartment_model, saem,
+    NlmeConfig, NlmeResult, Subject, SyntheticPopConfig, foce, generate_synthetic_population,
+    iv_one_compartment_model, oral_one_compartment_model, saem,
 };
 pub use pbpk::{
     PbpkState, PbpkTissueProfiles, TissueCompartment, cardiac_output, pbpk_auc, pbpk_iv_simulate,

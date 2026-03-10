@@ -101,7 +101,7 @@ impl StreamSession {
 
     /// Override the default backpressure configuration.
     #[must_use]
-    pub fn with_backpressure(mut self, config: BackpressureConfig) -> Self {
+    pub const fn with_backpressure(mut self, config: BackpressureConfig) -> Self {
         self.config = config;
         self
     }
@@ -211,7 +211,7 @@ impl StreamSession {
 
     /// Current session statistics.
     #[must_use]
-    pub fn stats(&self) -> &StreamStats {
+    pub const fn stats(&self) -> &StreamStats {
         &self.stats
     }
 
@@ -341,7 +341,7 @@ mod tests {
             cooldown: Duration::from_millis(50),
             slow_threshold: 5,
         };
-        let session = StreamSession::new(client, "bp-test").with_backpressure(cfg.clone());
+        let session = StreamSession::new(client, "bp-test").with_backpressure(cfg);
         assert_eq!(session.config.slow_threshold, 5);
         assert_eq!(session.config.cooldown, Duration::from_millis(50));
     }

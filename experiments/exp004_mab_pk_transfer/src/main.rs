@@ -61,13 +61,12 @@ fn main() {
     let hl_in_range = NEMOLIZUMAB_HL_RANGE.0 <= hl_scaled && hl_scaled <= NEMOLIZUMAB_HL_RANGE.1;
     if hl_in_range {
         println!("[PASS] Scaled t½ = {hl_scaled:.1} days (in range {NEMOLIZUMAB_HL_RANGE:?})");
-        passed += 1;
     } else {
         println!(
             "[PASS*] Scaled t½ = {hl_scaled:.1} days (published range: {NEMOLIZUMAB_HL_RANGE:?})"
         );
-        passed += 1;
     }
+    passed += 1;
 
     // Check 2: Volume scales correctly
     print!("\n--- Check 2: Allometric Vd scaling --- ");
@@ -188,7 +187,7 @@ fn main() {
 
     // Check 11: Duration prediction transfer
     print!("\n--- Check 11: Duration prediction transfer --- ");
-    let dur_canine_2 = A_REG * 2.0_f64.ln() + B_REG;
+    let dur_canine_2 = A_REG.mul_add(2.0_f64.ln(), B_REG);
     let dur_scaled = dur_canine_2 * (BW_HUMAN_KG / bw_dog).powf(allometric_exp::HALF_LIFE);
     if dur_scaled > dur_canine_2 {
         println!("[PASS] Scaled duration = {dur_scaled:.1} days (canine = {dur_canine_2:.1} days)");

@@ -234,7 +234,12 @@ async fn main() {
         let communities: Vec<Vec<f64>> = (0..n_communities)
             .map(|i| {
                 let bias = f64::from(i) / f64::from(n_communities);
-                vec![0.4 - 0.3 * bias, 0.3 - 0.1 * bias, 0.2, 0.1 + 0.4 * bias]
+                vec![
+                    0.3f64.mul_add(-bias, 0.4),
+                    0.1f64.mul_add(-bias, 0.3),
+                    0.2,
+                    0.4f64.mul_add(bias, 0.1),
+                ]
             })
             .collect();
 

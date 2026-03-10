@@ -166,7 +166,10 @@ fn two_comp_sum_identity() {
     let (alpha, beta) = micro_to_macro(K10_2C, K12_2C, K21_2C);
     let eigenvalue_sum = alpha + beta;
     let rate_constant_sum = K10_2C + K12_2C + K21_2C;
-    assert!((eigenvalue_sum - rate_constant_sum).abs() < TOL, "α+β = k10+k12+k21");
+    assert!(
+        (eigenvalue_sum - rate_constant_sum).abs() < TOL,
+        "α+β = k10+k12+k21"
+    );
 }
 
 #[test]
@@ -174,7 +177,10 @@ fn two_comp_product_identity() {
     let (alpha, beta) = micro_to_macro(K10_2C, K12_2C, K21_2C);
     let eigenvalue_prod = alpha * beta;
     let rate_constant_prod = K10_2C * K21_2C;
-    assert!((eigenvalue_prod - rate_constant_prod).abs() < TOL, "α·β = k10·k21");
+    assert!(
+        (eigenvalue_prod - rate_constant_prod).abs() < TOL,
+        "α·β = k10·k21"
+    );
 }
 
 #[test]

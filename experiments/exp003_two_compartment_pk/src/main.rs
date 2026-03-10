@@ -53,7 +53,7 @@ fn peripheral_concentration(
     let mut a_periph = vec![0.0; times.len()];
     for i in 1..times.len() {
         let dt = times[i] - times[i - 1];
-        let da = k12 * c_central[i - 1] * v1 - k21 * a_periph[i - 1];
+        let da = (k12 * c_central[i - 1]).mul_add(v1, -(k21 * a_periph[i - 1]));
         a_periph[i] = a_periph[i - 1] + da * dt;
     }
     a_periph.iter().map(|&a| a / v2).collect()
@@ -77,11 +77,11 @@ fn terminal_slope(times: &[f64], concs: &[f64], t_min: f64) -> Option<f64> {
     let sum_ln: f64 = valid.iter().map(|(_, ln)| ln).sum();
     let sum_t2: f64 = valid.iter().map(|(t, _)| t * t).sum();
     let sum_t_ln: f64 = valid.iter().map(|(t, ln)| t * ln).sum();
-    let denom = n * sum_t2 - sum_t * sum_t;
+    let denom = n.mul_add(sum_t2, -(sum_t * sum_t));
     if denom.abs() < 1e-15 {
         return None;
     }
-    Some((n * sum_t_ln - sum_t * sum_ln) / denom)
+    Some(n.mul_add(sum_t_ln, -(sum_t * sum_ln)) / denom)
 }
 
 fn main() {
@@ -148,12 +148,11 @@ fn main() {
     // Check 5: All concentrations ≥ 0
     print!("\n--- Check 5: All concentrations ≥ 0 --- ");
     let all_nonneg = c_curve.iter().all(|&c| c >= -1e-12);
+    let min_c = c_curve.iter().copied().fold(f64::INFINITY, f64::min);
     if all_nonneg {
-        let min_c = c_curve.iter().copied().fold(f64::INFINITY, f64::min);
         println!("[PASS] min(C) = {min_c:.6e}");
         passed += 1;
     } else {
-        let min_c = c_curve.iter().copied().fold(f64::INFINITY, f64::min);
         println!("[FAIL] min(C) = {min_c:.6e}");
         failed += 1;
     }

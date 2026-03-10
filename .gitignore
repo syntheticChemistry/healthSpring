@@ -1,5 +1,7 @@
 /target
 /sandbox/scenarios/
+/sandbox/clinical/
+/sandbox/dashboard/
 **/*.rs.bk
 *.swp
 *.swo

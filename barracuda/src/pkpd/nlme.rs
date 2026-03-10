@@ -189,11 +189,7 @@ fn subject_objective(
 }
 
 /// Gauss-Newton inner optimization for individual eta.
-fn optimize_individual_eta(
-    ctx: &EstimationCtx<'_>,
-    eta_init: &[f64],
-    subj: &Subject,
-) -> Vec<f64> {
+fn optimize_individual_eta(ctx: &EstimationCtx<'_>, eta_init: &[f64], subj: &Subject) -> Vec<f64> {
     let n_eta = ctx.n_eta;
     let mut eta = eta_init.to_vec();
 
@@ -205,7 +201,12 @@ fn optimize_individual_eta(
         let mut hess = vec![vec![0.0; n_eta]; n_eta];
 
         for (dim, rhs_val) in rhs.iter_mut().enumerate() {
-            for ((&obs, &pr), &gval) in subj.observations.iter().zip(pred.iter()).zip(grad[dim].iter()) {
+            for ((&obs, &pr), &gval) in subj
+                .observations
+                .iter()
+                .zip(pred.iter())
+                .zip(grad[dim].iter())
+            {
                 *rhs_val += gval * (obs - pr) / ctx.sigma;
             }
             if ctx.omega[dim] > 1e-15 {
@@ -416,7 +417,8 @@ pub fn foce(
             etas[idx] = optimize_individual_eta(&ctx, &etas[idx], subj);
         }
 
-        let (obj, sse, n_obs) = total_objective_and_mse(model, &theta, &etas, subjects, &omega, sigma);
+        let (obj, sse, n_obs) =
+            total_objective_and_mse(model, &theta, &etas, subjects, &omega, sigma);
 
         // Update omega: empirical variance of etas
         for (dim, omega_val) in omega.iter_mut().enumerate() {
@@ -434,7 +436,7 @@ pub fn foce(
         }
 
         #[expect(clippy::cast_precision_loss, reason = "iteration index fits f64")]
-        let lr = 0.0001 / (1.0 + 0.01 * iter as f64);
+        let lr = 0.0001 / 0.01f64.mul_add(iter as f64, 1.0);
         theta_gradient_step(model, &mut theta, &etas, subjects, &omega, sigma, lr);
 
         let rel_change = if prev_obj.is_finite() && prev_obj.abs() > 1e-15 {
@@ -495,7 +497,8 @@ fn saem_estep(
             proposal[dim] = eta[dim] + step_sd * z_val;
         }
 
-        let proposal_obj = subject_objective(model, theta, &proposal, subj, &state.omega, state.sigma);
+        let proposal_obj =
+            subject_objective(model, theta, &proposal, subj, &state.omega, state.sigma);
         let log_alpha = -0.5 * (proposal_obj - current_obj);
         let next = lcg_step(state.rng);
         state.rng = next;
@@ -520,7 +523,7 @@ fn saem_mstep(
     for (dim, stat) in state.stats_eta_sq.iter_mut().enumerate() {
         let emp: f64 = state.etas.iter().map(|e| e[dim] * e[dim]).sum();
         let emp_mean = emp / n_sub_f;
-        *stat = (1.0 - gamma) * *stat + gamma * emp_mean;
+        *stat = (1.0 - gamma).mul_add(*stat, gamma * emp_mean);
     }
 
     let mut total_sse = 0.0;
@@ -535,8 +538,8 @@ fn saem_mstep(
     if total_obs > 0 {
         #[expect(clippy::cast_precision_loss, reason = "observation count fits f64")]
         let emp_sigma = total_sse / total_obs as f64;
-        state.stats_sigma = (1.0 - gamma) * state.stats_sigma + gamma * emp_sigma;
-        state.stats_count = (1.0 - gamma) * state.stats_count + gamma;
+        state.stats_sigma = (1.0 - gamma).mul_add(state.stats_sigma, gamma * emp_sigma);
+        state.stats_count = (1.0 - gamma).mul_add(state.stats_count, gamma);
     }
 
     for (dim, stat) in state.stats_eta_sq.iter().enumerate() {
@@ -593,10 +596,19 @@ pub fn saem(
         saem_mstep(model, &theta, subjects, gamma, &mut st);
 
         if iter >= n_burn {
-            theta_gradient_step(model, &mut theta, &st.etas, subjects, &st.omega, st.sigma, gamma * 0.0001);
+            theta_gradient_step(
+                model,
+                &mut theta,
+                &st.etas,
+                subjects,
+                &st.omega,
+                st.sigma,
+                gamma * 0.0001,
+            );
         }
 
-        let (obj, _, _) = total_objective_and_mse(model, &theta, &st.etas, subjects, &st.omega, st.sigma);
+        let (obj, _, _) =
+            total_objective_and_mse(model, &theta, &st.etas, subjects, &st.omega, st.sigma);
 
         let rel_change = if prev_obj.is_finite() && prev_obj.abs() > 1e-15 {
             (prev_obj - obj).abs() / prev_obj.abs()
@@ -657,7 +669,7 @@ pub fn generate_synthetic_population(cfg: &SyntheticPopConfig<'_>) -> Vec<Subjec
             let pred = (cfg.model)(cfg.theta, &eta, cfg.dose, time);
             let (eps, new_st) = normal_sample(rng);
             rng = new_st;
-            observations.push((pred + cfg.sigma.sqrt() * eps).max(0.0));
+            observations.push(cfg.sigma.sqrt().mul_add(eps, pred).max(0.0));
         }
 
         subjects.push(Subject {
@@ -717,7 +729,14 @@ mod tests {
     fn foce_runs_and_returns() {
         let (subjects, theta_true, omega_true, sigma_true) = generate_test_data();
         let config = default_test_config();
-        let result = foce(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &config);
+        let result = foce(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &config,
+        );
 
         assert_eq!(result.theta.len(), 3);
         assert_eq!(result.omega_diag.len(), 3);
@@ -735,11 +754,21 @@ mod tests {
             ..default_test_config()
         };
 
-        let result = foce(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &config);
+        let result = foce(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &config,
+        );
 
         for (dim, (&est, &truth)) in result.theta.iter().zip(theta_true.iter()).enumerate() {
             let rel_err = (est - truth).abs() / truth.abs().max(0.01);
-            assert!(rel_err < 0.5, "theta[{dim}] within 50%: est={est:.4}, true={truth:.4}");
+            assert!(
+                rel_err < 0.5,
+                "theta[{dim}] within 50%: est={est:.4}, true={truth:.4}"
+            );
         }
     }
 
@@ -747,14 +776,34 @@ mod tests {
     fn foce_objective_decreases() {
         let (subjects, theta_true, omega_true, sigma_true) = generate_test_data();
 
-        let r10 = foce(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true,
-            &NlmeConfig { max_iter: 10, ..default_test_config() });
+        let r10 = foce(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &NlmeConfig {
+                max_iter: 10,
+                ..default_test_config()
+            },
+        );
 
-        let r50 = foce(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true,
-            &NlmeConfig { max_iter: 50, ..default_test_config() });
+        let r50 = foce(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &NlmeConfig {
+                max_iter: 50,
+                ..default_test_config()
+            },
+        );
 
-        assert!(r50.objective <= r10.objective + 1.0,
-            "more iterations should not dramatically increase objective");
+        assert!(
+            r50.objective <= r10.objective + 1.0,
+            "more iterations should not dramatically increase objective"
+        );
     }
 
     #[test]
@@ -762,8 +811,22 @@ mod tests {
         let (subjects, theta_true, omega_true, sigma_true) = generate_test_data();
         let config = default_test_config();
 
-        let r1 = foce(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &config);
-        let r2 = foce(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &config);
+        let r1 = foce(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &config,
+        );
+        let r2 = foce(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &config,
+        );
 
         assert_eq!(r1.objective.to_bits(), r2.objective.to_bits());
         for dim in 0..3 {
@@ -774,7 +837,14 @@ mod tests {
     #[test]
     fn saem_runs_and_returns() {
         let (subjects, theta_true, omega_true, sigma_true) = generate_test_data();
-        let result = saem(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &default_test_config());
+        let result = saem(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &default_test_config(),
+        );
 
         assert_eq!(result.theta.len(), 3);
         assert!(result.sigma > 0.0);
@@ -784,13 +854,27 @@ mod tests {
     #[test]
     fn saem_recovers_parameters() {
         let (subjects, theta_true, omega_true, sigma_true) = generate_test_data();
-        let config = NlmeConfig { max_iter: 300, tol: 1e-6, ..default_test_config() };
+        let config = NlmeConfig {
+            max_iter: 300,
+            tol: 1e-6,
+            ..default_test_config()
+        };
 
-        let result = saem(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &config);
+        let result = saem(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &config,
+        );
 
         for (dim, (&est, &truth)) in result.theta.iter().zip(theta_true.iter()).enumerate() {
             let rel_err = (est - truth).abs() / truth.abs().max(0.01);
-            assert!(rel_err < 0.5, "theta[{dim}] within 50%: est={est:.4}, true={truth:.4}");
+            assert!(
+                rel_err < 0.5,
+                "theta[{dim}] within 50%: est={est:.4}, true={truth:.4}"
+            );
         }
     }
 
@@ -798,8 +882,22 @@ mod tests {
     fn saem_deterministic() {
         let (subjects, theta_true, omega_true, sigma_true) = generate_test_data();
         let config = default_test_config();
-        let r1 = saem(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &config);
-        let r2 = saem(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &config);
+        let r1 = saem(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &config,
+        );
+        let r2 = saem(
+            oral_one_compartment_model,
+            &subjects,
+            &theta_true,
+            &omega_true,
+            sigma_true,
+            &config,
+        );
         assert_eq!(r1.objective.to_bits(), r2.objective.to_bits());
     }
 

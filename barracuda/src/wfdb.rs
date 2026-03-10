@@ -70,7 +70,7 @@ pub enum BeatType {
 impl BeatType {
     /// Decode WFDB annotation code to beat type.
     #[must_use]
-    pub fn from_code(code: u8) -> Self {
+    pub const fn from_code(code: u8) -> Self {
         match code {
             1 => Self::Normal,
             7 => Self::LeftBundleBranch,
@@ -129,7 +129,9 @@ impl std::error::Error for WfdbError {}
 ///
 /// Returns [`WfdbError::InvalidHeader`] if the header format is malformed.
 pub fn parse_header(content: &str) -> Result<WfdbHeader, WfdbError> {
-    let mut lines = content.lines().filter(|l| !l.starts_with('#') && !l.is_empty());
+    let mut lines = content
+        .lines()
+        .filter(|l| !l.starts_with('#') && !l.is_empty());
 
     let record_line = lines
         .next()
@@ -229,7 +231,11 @@ fn parse_signal_spec(line: &str) -> Result<SignalSpec, WfdbError> {
 /// # Errors
 ///
 /// Returns [`WfdbError::DataTruncated`] if the data is too short.
-pub fn decode_format_212(data: &[u8], n_samples: usize, n_signals: usize) -> Result<Vec<Vec<i16>>, WfdbError> {
+pub fn decode_format_212(
+    data: &[u8],
+    n_samples: usize,
+    n_signals: usize,
+) -> Result<Vec<Vec<i16>>, WfdbError> {
     if n_signals != 2 {
         return Err(WfdbError::UnsupportedFormat(212));
     }
@@ -265,7 +271,11 @@ pub fn decode_format_212(data: &[u8], n_samples: usize, n_signals: usize) -> Res
 /// # Errors
 ///
 /// Returns [`WfdbError::DataTruncated`] if the data is too short.
-pub fn decode_format_16(data: &[u8], n_samples: usize, n_signals: usize) -> Result<Vec<Vec<i16>>, WfdbError> {
+pub fn decode_format_16(
+    data: &[u8],
+    n_samples: usize,
+    n_signals: usize,
+) -> Result<Vec<Vec<i16>>, WfdbError> {
     let total_samples = n_samples * n_signals;
     let bytes_needed = total_samples * 2;
     if data.len() < bytes_needed {
@@ -341,7 +351,11 @@ pub fn parse_annotations(data: &[u8]) -> Result<Vec<Annotation>, WfdbError> {
         // NOTE/AUX annotations (type 63): skip the auxiliary data
         if anntype == 63 {
             let aux_len = delta as usize;
-            let padded = if aux_len.is_multiple_of(2) { aux_len } else { aux_len + 1 };
+            let padded = if aux_len.is_multiple_of(2) {
+                aux_len
+            } else {
+                aux_len + 1
+            };
             if pos + padded > data.len() {
                 return Err(WfdbError::InvalidAnnotation("AUX data truncated".into()));
             }
@@ -369,7 +383,7 @@ pub struct Format212Iter<'a> {
 impl<'a> Format212Iter<'a> {
     /// Create a new streaming iterator over Format 212 data.
     #[must_use]
-    pub fn new(data: &'a [u8]) -> Self {
+    pub const fn new(data: &'a [u8]) -> Self {
         Self { data, pos: 0 }
     }
 }
@@ -471,18 +485,20 @@ mod tests {
         let samples = vec![1024_i16, 1224, 824];
         let physical = adc_to_physical(&samples, 200.0, 1024);
         assert!((physical[0]).abs() < 1e-10, "baseline → 0 mV");
-        assert!((physical[1] - 1.0).abs() < 1e-10, "+200 ADC units → +1.0 mV at gain 200");
-        assert!((physical[2] + 1.0).abs() < 1e-10, "-200 ADC units → -1.0 mV");
+        assert!(
+            (physical[1] - 1.0).abs() < 1e-10,
+            "+200 ADC units → +1.0 mV at gain 200"
+        );
+        assert!(
+            (physical[2] + 1.0).abs() < 1e-10,
+            "-200 ADC units → -1.0 mV"
+        );
     }
 
     #[test]
     fn format_212_streaming_iterator() {
-        let data: Vec<u8> = vec![
-            0x00, 0x04, 0x00,
-            0xFF, 0x07, 0xFF,
-        ];
-        let pairs: Vec<(i16, i16)> = Format212Iter::new(&data).collect();
-        assert_eq!(pairs.len(), 2);
+        let data: Vec<u8> = vec![0x00, 0x04, 0x00, 0xFF, 0x07, 0xFF];
+        assert_eq!(Format212Iter::new(&data).count(), 2);
     }
 
     #[test]

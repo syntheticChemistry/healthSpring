@@ -222,7 +222,7 @@ fn main() {
     std::process::exit(i32::from(passed != total));
 }
 
-fn status<T>(r: &Result<T, impl std::fmt::Display>) -> &'static str {
+const fn status<T>(r: &Result<T, impl std::fmt::Display>) -> &'static str {
     if r.is_ok() { "ok" } else { "FAIL" }
 }
 

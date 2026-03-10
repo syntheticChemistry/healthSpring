@@ -201,7 +201,7 @@ fn main() {
     println!("\n=== Tower Topology ===");
     let tower = Tower {
         id: 0,
-        nodes: vec![node_gen4.clone(), {
+        nodes: vec![node_gen4, {
             Node {
                 id: NodeId { tower: 0, node: 1 },
                 nests: vec![

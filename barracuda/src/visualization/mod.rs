@@ -22,7 +22,7 @@ use crate::diagnostic::{DiagnosticAssessment, PopulationResult, RiskLevel};
 
 /// Map a clinical risk level to a display string.
 #[must_use]
-pub fn risk_level_str(level: RiskLevel) -> &'static str {
+pub const fn risk_level_str(level: RiskLevel) -> &'static str {
     match level {
         RiskLevel::Low => "low",
         RiskLevel::Moderate => "moderate",

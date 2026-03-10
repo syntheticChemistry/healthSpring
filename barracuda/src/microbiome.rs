@@ -222,7 +222,7 @@ fn tql2_symmetric_tridiagonal(d: &mut [f64], e: &mut [f64], z: &mut [f64], n: us
                 s = f / r;
                 c = g / r;
                 g = d[i + 1] - p;
-                r = (d[i] - g) * s + 2.0 * c * b;
+                r = (d[i] - g).mul_add(s, 2.0 * c * b);
                 p = s * r;
                 d[i + 1] = g + p;
                 g = c * r - b;
@@ -310,7 +310,7 @@ pub fn fmt_blend(donor: &[f64], recipient: &[f64], engraftment: f64) -> Vec<f64>
         } else {
             0.0
         };
-        blended[i] = (1.0 - engraftment) * r + engraftment * d;
+        blended[i] = (1.0 - engraftment).mul_add(r, engraftment * d);
     }
     let total: f64 = blended.iter().sum();
     if total > 0.0 {
@@ -395,7 +395,7 @@ mod tests {
     #[test]
     fn simpson_perfectly_even() {
         let d = simpson_index(&PERFECTLY_EVEN);
-        let expected = 1.0 - 10.0 * 0.01;
+        let expected = 10.0f64.mul_add(-0.01, 1.0);
         assert!((d - expected).abs() < TOL);
     }
 

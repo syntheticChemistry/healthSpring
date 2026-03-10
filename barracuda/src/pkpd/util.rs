@@ -69,7 +69,7 @@ where
             (0..n_doses)
                 .map(|i| {
                     #[expect(clippy::cast_precision_loss, reason = "n_doses always small")]
-                    let t_shifted = t - (i as f64) * interval_hr;
+                    let t_shifted = (i as f64).mul_add(-interval_hr, t);
                     if t_shifted >= 0.0 {
                         single_dose(t_shifted)
                     } else {

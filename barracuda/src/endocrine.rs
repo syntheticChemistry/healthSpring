@@ -158,11 +158,11 @@ pub fn age_at_threshold(t0: f64, rate: f64, threshold: f64, onset: f64) -> f64 {
 /// Models decelerating weight loss under TRT (Saad 2013 registry).
 #[must_use]
 pub fn weight_trajectory(month: f64, delta_final: f64, tau: f64, total_months: f64) -> f64 {
-    let norm = (1.0 + total_months / tau).ln();
+    let norm = (total_months / tau).ln_1p();
     if norm.abs() < 1e-15 {
         return 0.0;
     }
-    delta_final * (1.0 + month / tau).ln() / norm
+    delta_final * (month / tau).ln_1p() / norm
 }
 
 /// Biomarker trajectory: exponential approach to new setpoint.
@@ -173,13 +173,13 @@ pub fn weight_trajectory(month: f64, delta_final: f64, tau: f64, total_months: f
 #[must_use]
 pub fn biomarker_trajectory(month: f64, baseline: f64, endpoint: f64, tau: f64) -> f64 {
     let delta = endpoint - baseline;
-    baseline + delta * (1.0 - (-month / tau).exp())
+    delta.mul_add(1.0 - (-month / tau).exp(), baseline)
 }
 
 /// `HbA1c` trajectory (alias for biomarker trajectory with specific semantics).
 #[must_use]
 pub fn hba1c_trajectory(month: f64, baseline: f64, delta: f64, tau: f64) -> f64 {
-    baseline + delta * (1.0 - (-month / tau).exp())
+    delta.mul_add(1.0 - (-month / tau).exp(), baseline)
 }
 
 /// Cardiovascular hazard ratio model (Sharma 2015).
@@ -192,7 +192,7 @@ pub fn hazard_ratio_model(t_level: f64, threshold: f64, hr_normalized: f64) -> f
         return hr_normalized;
     }
     let ratio = t_level / threshold;
-    1.0 - (1.0 - hr_normalized) * ratio
+    (1.0 - hr_normalized).mul_add(-ratio, 1.0)
 }
 
 /// Saad 2016 cardiovascular parameters.
@@ -327,7 +327,7 @@ pub fn hrv_trt_response(
     tau_months: f64,
     months: f64,
 ) -> f64 {
-    sdnn_base_ms + delta_sdnn_ms * (1.0 - (-months / tau_months).exp())
+    delta_sdnn_ms.mul_add(1.0 - (-months / tau_months).exp(), sdnn_base_ms)
 }
 
 /// Composite cardiac risk score from HRV + testosterone level.

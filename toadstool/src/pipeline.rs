@@ -48,13 +48,13 @@ impl Pipeline {
 
     /// Number of stages in the pipeline.
     #[must_use]
-    pub fn len(&self) -> usize {
+    pub const fn len(&self) -> usize {
         self.stages.len()
     }
 
     /// Whether the pipeline has no stages.
     #[must_use]
-    pub fn is_empty(&self) -> bool {
+    pub const fn is_empty(&self) -> bool {
         self.stages.is_empty()
     }
 
@@ -225,7 +225,6 @@ impl Pipeline {
         // Collect GPU-eligible stages based on metalForge routing
         let mut gpu_ops = Vec::new();
         let mut gpu_stage_indices = Vec::new();
-        let mut cpu_stages = Vec::new();
 
         for (i, stage) in self.stages.iter().enumerate() {
             let workload = stage_to_workload(stage, input_data.as_deref());
@@ -238,8 +237,6 @@ impl Pipeline {
                     continue;
                 }
             }
-            cpu_stages.push(i);
-
             // Run CPU stages that precede GPU batch immediately
             let result = stage.execute(input_data.as_deref());
             total_time += result.elapsed_us;
@@ -299,6 +296,10 @@ impl Pipeline {
 
 /// Convert a [`GpuResult`] to a flat `Vec<f64>` for pipeline data flow.
 #[cfg(feature = "gpu")]
+#[expect(
+    clippy::tuple_array_conversions,
+    reason = "destructured (shannon, simpson) to [f64; 2] is clearer than From"
+)]
 fn gpu_result_to_vec(result: &GpuResult) -> Vec<f64> {
     match result {
         GpuResult::HillSweep(v) | GpuResult::PopulationPkBatch(v) => v.clone(),
@@ -670,7 +671,7 @@ mod tests {
         assert_eq!(out.len(), 3);
         for (i, &out_val) in out.iter().enumerate() {
             let inp = result.stage_results[0].output_data[i];
-            assert!((out_val - inp * inp).abs() < 1e-10);
+            assert!(inp.mul_add(-inp, out_val).abs() < 1e-10);
         }
     }
 

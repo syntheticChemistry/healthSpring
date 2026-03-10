@@ -14,7 +14,7 @@ pub(super) fn risk_to_health(risk: f64) -> u8 {
     h
 }
 
-pub(super) fn health_to_status(health: u8) -> &'static str {
+pub(super) const fn health_to_status(health: u8) -> &'static str {
     if health >= 90 {
         "healthy"
     } else if health >= 50 {

@@ -34,7 +34,7 @@ pub struct PatientProfile {
 
 impl PatientProfile {
     #[must_use]
-    pub fn minimal(age_years: f64, weight_kg: f64, sex: Sex) -> Self {
+    pub const fn minimal(age_years: f64, weight_kg: f64, sex: Sex) -> Self {
         Self {
             age_years,
             weight_kg,
@@ -135,10 +135,11 @@ pub struct PopulationResult {
     pub patient_percentile: f64,
 }
 
-/// Configurable pipeline parameters. All values have documented defaults
-/// sourced from published literature. Callers can override any parameter
-/// to adapt the pipeline to different drugs, populations, or clinical
-/// protocols without modifying library code.
+/// Configurable pipeline parameters.
+///
+/// All values have documented defaults sourced from published literature.
+/// Callers can override any parameter to adapt the pipeline to different
+/// drugs, populations, or clinical protocols without modifying library code.
 #[derive(Debug, Clone)]
 pub struct DiagnosticConfig {
     // PK/PD
@@ -332,7 +333,7 @@ fn assess_microbiome(profile: &PatientProfile, cfg: &DiagnosticConfig) -> Microb
         .map(|i| {
             #[expect(clippy::cast_precision_loss, reason = "lattice index fits f64")]
             let fi = i as f64;
-            disorder * (1.0 + 0.1 * ((fi * 0.7).sin()))
+            disorder * 0.1f64.mul_add((fi * 0.7).sin(), 1.0)
         })
         .collect();
     let (_eigenvalues, eigenvectors) = microbiome::anderson_diagonalize(&disorder_field, 1.0);
@@ -485,10 +486,15 @@ fn composite_risk(
     let endo_risk = endocrine.cardiac_risk;
     let cross_risk = cross_track.hrv_cardiac_composite;
 
-    (cfg.weight_microbiome * micro_risk
-        + cfg.weight_biosignal * bio_risk
-        + cfg.weight_endocrine * endo_risk
-        + cfg.weight_cross_track * cross_risk)
+    cfg.weight_cross_track
+        .mul_add(
+            cross_risk,
+            cfg.weight_endocrine.mul_add(
+                endo_risk,
+                cfg.weight_microbiome
+                    .mul_add(micro_risk, cfg.weight_biosignal * bio_risk),
+            ),
+        )
         .clamp(0.0, 1.0)
 }
 
@@ -590,7 +596,7 @@ pub fn population_montecarlo_with_config(
 
 fn profile_cv_lognormal(typical: f64, cv: f64, z: f64) -> f64 {
     let (mu, sigma) = endocrine::lognormal_params(typical, cv);
-    (mu + sigma * z).exp()
+    sigma.mul_add(z, mu).exp()
 }
 
 #[cfg(test)]
@@ -723,7 +729,10 @@ mod tests {
         let r1 = population_montecarlo(&p, 200, 99);
         let r2 = population_montecarlo(&p, 200, 99);
         assert_eq!(r1.mean_risk.to_bits(), r2.mean_risk.to_bits());
-        assert_eq!(r1.patient_percentile.to_bits(), r2.patient_percentile.to_bits());
+        assert_eq!(
+            r1.patient_percentile.to_bits(),
+            r2.patient_percentile.to_bits()
+        );
     }
 
     #[test]

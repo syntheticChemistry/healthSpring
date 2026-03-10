@@ -109,7 +109,10 @@ fn log_linear_regression(times: &[f64], concentrations: &[f64]) -> TerminalFit {
         };
     }
 
-    #[expect(clippy::cast_precision_loss, reason = "regression point count fits f64")]
+    #[expect(
+        clippy::cast_precision_loss,
+        reason = "regression point count fits f64"
+    )]
     let nf = len as f64;
     let ln_c: Vec<f64> = concentrations.iter().map(|&c| c.ln()).collect();
 
@@ -118,7 +121,7 @@ fn log_linear_regression(times: &[f64], concentrations: &[f64]) -> TerminalFit {
     let sum_t2: f64 = times.iter().map(|&t| t * t).sum();
     let sum_t_lnc: f64 = times.iter().zip(ln_c.iter()).map(|(&t, &lc)| t * lc).sum();
 
-    let denom = nf * sum_t2 - sum_t * sum_t;
+    let denom = nf.mul_add(sum_t2, -(sum_t * sum_t));
     if denom.abs() < 1e-15 {
         return TerminalFit {
             lambda_z: 0.0,
@@ -127,15 +130,15 @@ fn log_linear_regression(times: &[f64], concentrations: &[f64]) -> TerminalFit {
         };
     }
 
-    let slope = (nf * sum_t_lnc - sum_t * sum_lnc) / denom;
-    let intercept = (sum_lnc - slope * sum_t) / nf;
+    let slope = nf.mul_add(sum_t_lnc, -(sum_t * sum_lnc)) / denom;
+    let intercept = slope.mul_add(-sum_t, sum_lnc) / nf;
     let mean_lnc = sum_lnc / nf;
 
     let ss_tot: f64 = ln_c.iter().map(|&lc| (lc - mean_lnc).powi(2)).sum();
     let ss_res: f64 = times
         .iter()
         .zip(ln_c.iter())
-        .map(|(&t, &lc)| (lc - intercept - slope * t).powi(2))
+        .map(|(&t, &lc)| slope.mul_add(-t, lc - intercept).powi(2))
         .sum();
 
     let r_squared = if ss_tot > 1e-15 {
@@ -184,7 +187,12 @@ pub fn aumc_trapezoidal(times: &[f64], concentrations: &[f64]) -> f64 {
 ///
 /// Panics if `times` and `concentrations` have different lengths.
 #[must_use]
-pub fn nca_iv(times: &[f64], concentrations: &[f64], dose: f64, min_terminal_points: usize) -> NcaResult {
+pub fn nca_iv(
+    times: &[f64],
+    concentrations: &[f64],
+    dose: f64,
+    min_terminal_points: usize,
+) -> NcaResult {
     assert_eq!(times.len(), concentrations.len());
 
     let (cmax, tmax) = find_cmax_tmax(times, concentrations);
@@ -203,8 +211,7 @@ pub fn nca_iv(times: &[f64], concentrations: &[f64], dose: f64, min_terminal_poi
         } else {
             0.0
         };
-        let moment_tail =
-            c_last * t_last / fit.lambda_z + c_last / (fit.lambda_z * fit.lambda_z);
+        let moment_tail = c_last * t_last / fit.lambda_z + c_last / (fit.lambda_z * fit.lambda_z);
         (total, pct, moment_last + moment_tail)
     } else {
         (area_last, 0.0, moment_last)
@@ -222,11 +229,7 @@ pub fn nca_iv(times: &[f64], concentrations: &[f64], dose: f64, min_terminal_poi
         0.0
     };
 
-    let cl_obs = if area_inf > 0.0 {
-        dose / area_inf
-    } else {
-        0.0
-    };
+    let cl_obs = if area_inf > 0.0 { dose / area_inf } else { 0.0 };
 
     let vss_obs = cl_obs * mrt;
 
@@ -254,15 +257,16 @@ mod tests {
 
     const TOL: f64 = 1e-6;
 
-    #[expect(
-        clippy::cast_precision_loss,
-        reason = "test profile indices fit f64"
-    )]
-    fn iv_profile(dose: f64, vd: f64, ke: f64, n_points: usize, t_max: f64) -> (Vec<f64>, Vec<f64>) {
+    #[expect(clippy::cast_precision_loss, reason = "test profile indices fit f64")]
+    fn iv_profile(
+        dose: f64,
+        vd: f64,
+        ke: f64,
+        n_points: usize,
+        t_max: f64,
+    ) -> (Vec<f64>, Vec<f64>) {
         let last = (n_points - 1) as f64;
-        let times: Vec<f64> = (0..n_points)
-            .map(|i| t_max * (i as f64) / last)
-            .collect();
+        let times: Vec<f64> = (0..n_points).map(|i| t_max * (i as f64) / last).collect();
         let c0 = dose / vd;
         let concs: Vec<f64> = times.iter().map(|&t| c0 * (-ke * t).exp()).collect();
         (times, concs)
@@ -280,9 +284,16 @@ mod tests {
         assert!((result.cmax - dose / vd).abs() < TOL, "Cmax = Dose/Vd");
         assert!(result.tmax.abs() < TOL, "Tmax = 0 for IV bolus");
         assert!(result.lambda_z > 0.0, "lambda_z estimated");
-        assert!((result.lambda_z - ke).abs() < 0.01, "lambda_z ~ ke: got {}", result.lambda_z);
+        assert!(
+            (result.lambda_z - ke).abs() < 0.01,
+            "lambda_z ~ ke: got {}",
+            result.lambda_z
+        );
         let expected_half = core::f64::consts::LN_2 / ke;
-        assert!((result.half_life - expected_half).abs() < 0.1, "t½ ~ ln2/ke");
+        assert!(
+            (result.half_life - expected_half).abs() < 0.1,
+            "t½ ~ ln2/ke"
+        );
     }
 
     #[test]
@@ -296,7 +307,12 @@ mod tests {
         let result = nca_iv(&times, &concs, dose, 3);
 
         let rel_err = (result.auc_inf - analytical_auc).abs() / analytical_auc;
-        assert!(rel_err < 0.01, "AUC(0-inf) within 1%: got {}, expected {}", result.auc_inf, analytical_auc);
+        assert!(
+            rel_err < 0.01,
+            "AUC(0-inf) within 1%: got {}, expected {}",
+            result.auc_inf,
+            analytical_auc
+        );
     }
 
     #[test]
@@ -330,15 +346,22 @@ mod tests {
     fn nca_r_squared_good() {
         let (times, concs) = iv_profile(100.0, 10.0, 0.1, 1000, 48.0);
         let result = nca_iv(&times, &concs, 100.0, 3);
-        assert!(result.r_squared > 0.99, "R² > 0.99: got {}", result.r_squared);
+        assert!(
+            result.r_squared > 0.99,
+            "R² > 0.99: got {}",
+            result.r_squared
+        );
     }
 
     #[test]
     fn nca_extrapolation_reasonable() {
         let (times, concs) = iv_profile(100.0, 10.0, 0.1, 500, 24.0);
         let result = nca_iv(&times, &concs, 100.0, 3);
-        assert!(result.auc_extrap_pct > 0.0 && result.auc_extrap_pct < 30.0,
-            "AUC extrapolation 0-30%: got {:.1}%", result.auc_extrap_pct);
+        assert!(
+            result.auc_extrap_pct > 0.0 && result.auc_extrap_pct < 30.0,
+            "AUC extrapolation 0-30%: got {:.1}%",
+            result.auc_extrap_pct
+        );
     }
 
     #[test]
@@ -349,7 +372,12 @@ mod tests {
         let result = nca_iv(&times, &concs, 100.0, 3);
 
         let rel_err = (result.mrt - mrt_expected).abs() / mrt_expected;
-        assert!(rel_err < 0.05, "MRT within 5%: got {}, expected {}", result.mrt, mrt_expected);
+        assert!(
+            rel_err < 0.05,
+            "MRT within 5%: got {}, expected {}",
+            result.mrt,
+            mrt_expected
+        );
     }
 
     #[test]
@@ -367,6 +395,9 @@ mod tests {
         let times = [0.0, 1.0, 2.0];
         let concs = [1.0, 1.0, 1.0];
         let aumc = super::aumc_trapezoidal(&times, &concs);
-        assert!((aumc - 2.0).abs() < 1e-10, "AUMC of constant C=1 over [0,2]: integral of t dt = 2");
+        assert!(
+            (aumc - 2.0).abs() < 1e-10,
+            "AUMC of constant C=1 over [0,2]: integral of t dt = 2"
+        );
     }
 }

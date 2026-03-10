@@ -242,16 +242,21 @@ fn main() {
     println!();
 
     // Build dispatch scenario from actual execution results
-    let logs = stage_logs.lock().expect("lock");
-    let dispatch_stages: Vec<DispatchStageInfo> = logs
-        .iter()
-        .map(|l| DispatchStageInfo {
-            name: l.name.clone(),
-            substrate: infer_substrate(&l.name),
-            elapsed_us: l.elapsed_us,
-            output_elements: l.output_elements,
-        })
-        .collect();
+    let (dispatch_stages, logs_clone) = {
+        let logs = stage_logs.lock().expect("lock");
+        let stages: Vec<DispatchStageInfo> = logs
+            .iter()
+            .map(|l| DispatchStageInfo {
+                name: l.name.clone(),
+                substrate: infer_substrate(&l.name),
+                elapsed_us: l.elapsed_us,
+                output_elements: l.output_elements,
+            })
+            .collect();
+        let cloned = logs.clone();
+        drop(logs);
+        (stages, cloned)
+    };
 
     let (dispatch_scn, dispatch_edges) =
         dispatch_scenario("Mixed Clinical Pipeline — Execution", &dispatch_stages);
@@ -266,11 +271,13 @@ fn main() {
             println!("[dashboard] Pushed dispatch plan scenario");
         }
         let stats = s.stats();
+        let (frames, errors, cooldowns) = (stats.frames_pushed, stats.errors, stats.cooldowns);
+        let avg_latency = stats.avg_push_latency();
+        drop(s);
         println!(
-            "[dashboard] StreamSession: {} frames, {} errors, {} cooldowns",
-            stats.frames_pushed, stats.errors, stats.cooldowns,
+            "[dashboard] StreamSession: {frames} frames, {errors} errors, {cooldowns} cooldowns",
         );
-        if let Some(avg) = stats.avg_push_latency() {
+        if let Some(avg) = avg_latency {
             println!("[dashboard] Avg push latency: {avg:?}");
         }
     }
@@ -280,7 +287,7 @@ fn main() {
     // Build report
     let report = DashboardReport {
         pipeline_name: "Mixed Clinical Pipeline".into(),
-        stages: logs.clone(),
+        stages: logs_clone,
         total_time_us: result.total_time_us,
         all_success: result.success,
         petaltongue_connected: pt_connected,

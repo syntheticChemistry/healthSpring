@@ -64,6 +64,12 @@ capabilities = [
     "science.pkpd.population_pk",
     "science.pkpd.allometric_scale",
     "science.pkpd.auc_trapezoidal",
+    "science.pkpd.nlme_foce",
+    "science.pkpd.nlme_saem",
+    "science.pkpd.nca_analysis",
+    "science.pkpd.cwres_diagnostics",
+    "science.pkpd.vpc_simulate",
+    "science.pkpd.gof_compute",
 ]
 
 # --- Science: Microbiome ---
@@ -95,6 +101,7 @@ capabilities = [
     "science.biosignal.ppg_spo2",
     "science.biosignal.eda_analysis",
     "science.biosignal.fuse_channels",
+    "science.biosignal.wfdb_decode",
 ]
 
 # --- Science: Endocrine ---

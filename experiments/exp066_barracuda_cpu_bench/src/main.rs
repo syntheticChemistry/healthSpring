@@ -183,9 +183,9 @@ fn main() {
     benchmarks.push(bench_result);
 
     let n500 = 500;
-    let cl_500: Vec<f64> = (0..n500).map(|i| 8.0 + (i as f64 * 0.01)).collect();
-    let vd_500: Vec<f64> = (0..n500).map(|i| 70.0 + (i as f64 * 0.05)).collect();
-    let ka_500: Vec<f64> = (0..n500).map(|i| 1.2 + (i as f64 * 0.001)).collect();
+    let cl_500: Vec<f64> = (0..n500).map(|i| (i as f64).mul_add(0.01, 8.0)).collect();
+    let vd_500: Vec<f64> = (0..n500).map(|i| (i as f64).mul_add(0.05, 70.0)).collect();
+    let ka_500: Vec<f64> = (0..n500).map(|i| (i as f64).mul_add(0.001, 1.2)).collect();
     let bench_result = bench(
         "population_montecarlo_500",
         || {
@@ -203,9 +203,13 @@ fn main() {
     benchmarks.push(bench_result);
 
     let n5000 = 5_000;
-    let cl_5k: Vec<f64> = (0..n5000).map(|i| 8.0 + (i as f64 * 0.001)).collect();
-    let vd_5k: Vec<f64> = (0..n5000).map(|i| 70.0 + (i as f64 * 0.005)).collect();
-    let ka_5k: Vec<f64> = (0..n5000).map(|i| 1.2 + (i as f64 * 0.0001)).collect();
+    let cl_5k: Vec<f64> = (0..n5000).map(|i| (i as f64).mul_add(0.001, 8.0)).collect();
+    let vd_5k: Vec<f64> = (0..n5000)
+        .map(|i| (i as f64).mul_add(0.005, 70.0))
+        .collect();
+    let ka_5k: Vec<f64> = (0..n5000)
+        .map(|i| (i as f64).mul_add(0.0001, 1.2))
+        .collect();
     let bench_result = bench(
         "population_montecarlo_5000",
         || {

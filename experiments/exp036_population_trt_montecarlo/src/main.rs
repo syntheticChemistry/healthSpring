@@ -62,7 +62,7 @@ fn main() {
         .map(|i| {
             #[expect(clippy::cast_precision_loss, reason = "i < 100")]
             let z = -3.0 + 6.0 * (i as f64) / patient_denom;
-            (mu_vd + sig_vd * z).exp()
+            sig_vd.mul_add(z, mu_vd).exp()
         })
         .collect();
 
@@ -75,7 +75,7 @@ fn main() {
             };
             #[expect(clippy::cast_precision_loss, reason = "phase < 100")]
             let z = -2.0 + 4.0 * (phase as f64) / patient_denom;
-            (mu_ka + sig_ka * z).exp()
+            sig_ka.mul_add(z, mu_ka).exp()
         })
         .collect();
 
@@ -83,7 +83,7 @@ fn main() {
         .map(|i| {
             #[expect(clippy::cast_precision_loss, reason = "i < 100")]
             let z = 3.0 - 6.0 * (i as f64) / patient_denom;
-            (mu_ke + sig_ke * z).exp()
+            sig_ke.mul_add(z, mu_ke).exp()
         })
         .collect();
 

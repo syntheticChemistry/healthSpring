@@ -94,8 +94,8 @@ fn main() {
 
     // --- Check 4: Disorder scales with Pielou ---
     println!("\n--- Check 4: W scales linearly with J ---");
-    if (w_even - gap::DISORDER_SCALE * j_even).abs() < 1e-10
-        && (w_dom - gap::DISORDER_SCALE * j_dom).abs() < 1e-10
+    if gap::DISORDER_SCALE.mul_add(-j_even, w_even).abs() < 1e-10
+        && gap::DISORDER_SCALE.mul_add(-j_dom, w_dom).abs() < 1e-10
     {
         println!("  [PASS]");
         passed += 1;

@@ -216,14 +216,14 @@ impl PetalTonguePushClient {
 
     /// Create client with explicit socket path
     #[must_use]
-    pub fn new(socket_path: PathBuf) -> Self {
+    pub const fn new(socket_path: PathBuf) -> Self {
         Self { socket_path }
     }
 
     /// Socket path (for tests).
     #[cfg(test)]
     #[must_use]
-    pub fn socket_path(&self) -> &PathBuf {
+    pub const fn socket_path(&self) -> &PathBuf {
         &self.socket_path
     }
 
@@ -605,7 +605,10 @@ mod tests {
         );
         let op = params.get("operation").unwrap();
         assert_eq!(op.get("type").and_then(|v| v.as_str()), Some("set_value"));
-        assert_eq!(op.get("value").and_then(serde_json::Value::as_f64), Some(73.5));
+        assert_eq!(
+            op.get("value").and_then(serde_json::Value::as_f64),
+            Some(73.5)
+        );
     }
 
     fn mock_petaltongue_response(listener: &std::os::unix::net::UnixListener) -> serde_json::Value {
@@ -832,7 +835,8 @@ mod tests {
 
     #[test]
     fn query_capabilities_sends_valid_jsonrpc() {
-        let (request, result) = run_socket_test("caps", super::PetalTonguePushClient::query_capabilities);
+        let (request, result) =
+            run_socket_test("caps", super::PetalTonguePushClient::query_capabilities);
 
         assert!(result.is_ok());
         assert_eq!(request["method"], "visualization.capabilities");

@@ -121,7 +121,7 @@ pub fn execute_cpu(op: &GpuOp) -> GpuResult {
 
 /// Shader descriptor: maps a `GpuOp` to its WGSL shader source.
 #[must_use]
-pub fn shader_for_op(op: &GpuOp) -> &'static str {
+pub const fn shader_for_op(op: &GpuOp) -> &'static str {
     match op {
         GpuOp::HillSweep { .. } => shaders::HILL_DOSE_RESPONSE,
         GpuOp::PopulationPkBatch { .. } => shaders::POPULATION_PK,

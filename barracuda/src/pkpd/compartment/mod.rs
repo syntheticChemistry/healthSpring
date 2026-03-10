@@ -57,7 +57,7 @@ pub fn oral_tmax(k_a: f64, k_e: f64) -> f64 {
 pub fn micro_to_macro(k10: f64, k12: f64, k21: f64) -> (f64, f64) {
     let s = k10 + k12 + k21;
     let p = k10 * k21;
-    let disc = (s * s - 4.0 * p).max(0.0);
+    let disc = s.mul_add(s, -(4.0 * p)).max(0.0);
     let sqrt_d = disc.sqrt();
     (f64::midpoint(s, sqrt_d), s - f64::midpoint(s, sqrt_d))
 }
@@ -83,7 +83,7 @@ pub fn pk_two_compartment_iv(
     let c0 = dose_mg / v1_l;
     let a = c0 * (alpha - k21) / (alpha - beta);
     let b = c0 * (k21 - beta) / (alpha - beta);
-    a * (-alpha * t_hr).exp() + b * (-beta * t_hr).exp()
+    a.mul_add((-alpha * t_hr).exp(), b * (-beta * t_hr).exp())
 }
 
 /// Macro-coefficients A and B for the two-compartment model.

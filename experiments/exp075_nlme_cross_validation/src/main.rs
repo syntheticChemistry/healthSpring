@@ -73,27 +73,41 @@ fn validate_foce_recovery(passed: &mut u32, failed: &mut u32) {
         seed: 42,
     };
 
-    let result = foce(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &config);
+    let result = foce(
+        oral_one_compartment_model,
+        &subjects,
+        &theta_true,
+        &omega_true,
+        sigma_true,
+        &config,
+    );
 
-    println!("  Iterations: {} (converged: {})", result.iterations, result.converged);
+    println!(
+        "  Iterations: {} (converged: {})",
+        result.iterations, result.converged
+    );
     println!("  Objective: {:.4}", result.objective);
 
     for (idx, (&est, &truth)) in result.theta.iter().zip(theta_true.iter()).enumerate() {
         let rel_err = (est - truth).abs() / truth.abs().max(0.01);
         let label = ["ln(CL)", "ln(Vd)", "ln(ka)"][idx];
         println!("  {label}: est={est:.4}, true={truth:.4}, rel_err={rel_err:.4}");
-        check!(*passed, *failed,
+        check!(
+            *passed,
+            *failed,
             format!("FOCE theta[{idx}] ({label}) within 30% of truth"),
-            rel_err < 0.30);
+            rel_err < 0.30
+        );
     }
 
-    check!(*passed, *failed,
-        "FOCE sigma > 0",
-        result.sigma > 0.0);
+    check!(*passed, *failed, "FOCE sigma > 0", result.sigma > 0.0);
 
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         "FOCE has 50 individual eta vectors",
-        result.individual_etas.len() == 50);
+        result.individual_etas.len() == 50
+    );
 }
 
 fn validate_saem_recovery(passed: &mut u32, failed: &mut u32) {
@@ -124,23 +138,34 @@ fn validate_saem_recovery(passed: &mut u32, failed: &mut u32) {
         seed: 42,
     };
 
-    let result = saem(oral_one_compartment_model, &subjects, &theta_true, &omega_true, sigma_true, &config);
+    let result = saem(
+        oral_one_compartment_model,
+        &subjects,
+        &theta_true,
+        &omega_true,
+        sigma_true,
+        &config,
+    );
 
-    println!("  Iterations: {} (converged: {})", result.iterations, result.converged);
+    println!(
+        "  Iterations: {} (converged: {})",
+        result.iterations, result.converged
+    );
     println!("  Objective: {:.4}", result.objective);
 
     for (idx, (&est, &truth)) in result.theta.iter().zip(theta_true.iter()).enumerate() {
         let rel_err = (est - truth).abs() / truth.abs().max(0.01);
         let label = ["ln(CL)", "ln(Vd)", "ln(ka)"][idx];
         println!("  {label}: est={est:.4}, true={truth:.4}, rel_err={rel_err:.4}");
-        check!(*passed, *failed,
+        check!(
+            *passed,
+            *failed,
             format!("SAEM theta[{idx}] ({label}) within 30% of truth"),
-            rel_err < 0.30);
+            rel_err < 0.30
+        );
     }
 
-    check!(*passed, *failed,
-        "SAEM sigma > 0",
-        result.sigma > 0.0);
+    check!(*passed, *failed, "SAEM sigma > 0", result.sigma > 0.0);
 }
 
 fn validate_diagnostics(passed: &mut u32, failed: &mut u32) {
@@ -170,28 +195,44 @@ fn validate_diagnostics(passed: &mut u32, failed: &mut u32) {
         seed: 42,
     };
 
-    let result = foce(oral_one_compartment_model, &subjects, &theta, &omega, sigma, &config);
+    let result = foce(
+        oral_one_compartment_model,
+        &subjects,
+        &theta,
+        &omega,
+        sigma,
+        &config,
+    );
     let cwres = compute_cwres(oral_one_compartment_model, &subjects, &result);
     let summary = cwres_summary(&cwres);
 
     println!("  CWRES mean: {:.4}", summary.mean);
     println!("  CWRES std:  {:.4}", summary.std_dev);
 
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         "CWRES mean within [-3, 3]",
-        summary.mean.abs() < 3.0);
+        summary.mean.abs() < 3.0
+    );
 
     let gof = compute_gof(oral_one_compartment_model, &subjects, &result);
     println!("  GOF individual R²: {:.4}", gof.r_squared_individual);
     println!("  GOF population R²: {:.4}", gof.r_squared_population);
 
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         "GOF individual R² >= population R²",
-        gof.r_squared_individual >= gof.r_squared_population);
+        gof.r_squared_individual >= gof.r_squared_population
+    );
 
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         format!("GOF has {} observations (30 subjects × 14 times)", 30 * 14),
-        gof.observed.len() == 30 * 14);
+        gof.observed.len() == 30 * 14
+    );
 }
 
 fn validate_nca_crosscheck(passed: &mut u32, failed: &mut u32) {
@@ -215,28 +256,46 @@ fn validate_nca_crosscheck(passed: &mut u32, failed: &mut u32) {
     let analytical_half = core::f64::consts::LN_2 / ke;
 
     println!("  lambda_z: {:.6} (expected ke = {ke:.6})", nca.lambda_z);
-    println!("  AUC_inf: {:.2} (analytical = {analytical_auc:.2})", nca.auc_inf);
+    println!(
+        "  AUC_inf: {:.2} (analytical = {analytical_auc:.2})",
+        nca.auc_inf
+    );
     println!("  CL: {:.6} (analytical = {analytical_cl:.6})", nca.cl_obs);
-    println!("  t½: {:.2} (analytical = {analytical_half:.2})", nca.half_life);
+    println!(
+        "  t½: {:.2} (analytical = {analytical_half:.2})",
+        nca.half_life
+    );
 
     let lz_err = (nca.lambda_z - ke).abs() / ke;
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         format!("NCA lambda_z within 5% of ke (err={lz_err:.4})"),
-        lz_err < 0.05);
+        lz_err < 0.05
+    );
 
     let auc_err = (nca.auc_inf - analytical_auc).abs() / analytical_auc;
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         format!("NCA AUC_inf within 2% of analytical (err={auc_err:.4})"),
-        auc_err < 0.02);
+        auc_err < 0.02
+    );
 
     let cl_err = (nca.cl_obs - analytical_cl).abs() / analytical_cl;
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         format!("NCA CL within 2% of analytical (err={cl_err:.4})"),
-        cl_err < 0.02);
+        cl_err < 0.02
+    );
 
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         "NCA R² > 0.999 for mono-exponential",
-        nca.r_squared > 0.999);
+        nca.r_squared > 0.999
+    );
 }
 
 fn validate_determinism(passed: &mut u32, failed: &mut u32) {
@@ -276,19 +335,53 @@ fn validate_determinism(passed: &mut u32, failed: &mut u32) {
         tol: 1e-4,
         seed: 42,
     };
-    let r1 = foce(oral_one_compartment_model, &s1, &theta, &omega, 0.01, &foce_cfg);
-    let r2 = foce(oral_one_compartment_model, &s2, &theta, &omega, 0.01, &foce_cfg);
+    let r1 = foce(
+        oral_one_compartment_model,
+        &s1,
+        &theta,
+        &omega,
+        0.01,
+        &foce_cfg,
+    );
+    let r2 = foce(
+        oral_one_compartment_model,
+        &s2,
+        &theta,
+        &omega,
+        0.01,
+        &foce_cfg,
+    );
 
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         "FOCE objective deterministic",
-        r1.objective.to_bits() == r2.objective.to_bits());
+        r1.objective.to_bits() == r2.objective.to_bits()
+    );
 
-    let r3 = saem(oral_one_compartment_model, &s1, &theta, &omega, 0.01, &foce_cfg);
-    let r4 = saem(oral_one_compartment_model, &s2, &theta, &omega, 0.01, &foce_cfg);
+    let r3 = saem(
+        oral_one_compartment_model,
+        &s1,
+        &theta,
+        &omega,
+        0.01,
+        &foce_cfg,
+    );
+    let r4 = saem(
+        oral_one_compartment_model,
+        &s2,
+        &theta,
+        &omega,
+        0.01,
+        &foce_cfg,
+    );
 
-    check!(*passed, *failed,
+    check!(
+        *passed,
+        *failed,
         "SAEM objective deterministic",
-        r3.objective.to_bits() == r4.objective.to_bits());
+        r3.objective.to_bits() == r4.objective.to_bits()
+    );
 }
 
 fn main() {

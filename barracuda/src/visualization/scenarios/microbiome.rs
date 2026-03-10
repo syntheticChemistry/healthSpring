@@ -104,7 +104,7 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             } else {
                 -((half - i) as f64)
             };
-            w_healthy * (1.0 + 0.1 * offset)
+            w_healthy * 0.1f64.mul_add(offset, 1.0)
         })
         .collect();
     let (eigvals, eigvecs) = microbiome::anderson_diagonalize(&disorder_h, 1.0);
@@ -197,7 +197,7 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 } else {
                     -((half - i) as f64)
                 };
-                w * (1.0 + 0.1 * offset)
+                w * 0.1f64.mul_add(offset, 1.0)
             })
             .collect();
         let (_ev, vecs) = microbiome::anderson_diagonalize(&disorder_v, 1.0);

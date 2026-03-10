@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 10, 2026
-**Status**: V14. Tier 0+1+2+3 complete. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser, Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. 356 tests, 853 binary checks across 48 experiments. Industry benchmark mapping (sovereign NONMEM/Monolix/WinNonlin replacements).
+**Status**: V14.1. Tier 0+1+2+3 complete. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser, Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. 356 tests, 853 binary checks across 48 experiments. Industry benchmark mapping (sovereign NONMEM/Monolix/WinNonlin replacements). V14.1: biosignal modular refactor, `#![deny(clippy::pedantic)]` enforcement, DFT deduplication.
 
 ---
 
@@ -214,6 +214,15 @@ All previous blocking items resolved:
 - **Exp076**: Full pipeline validation — 197 binary checks across all 5 tracks + full study structure.
 - **`dump_scenarios`**: Extended to 14 scenarios (was 13), includes NLME JSON artifact.
 - **Industry benchmarks**: SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled. Sovereign replacements documented in `specs/PAPER_REVIEW_QUEUE.md`.
+
+### V14.1 additions (deep debt)
+
+- **biosignal.rs → biosignal/ submodules**: 953-line monolith split into 6 domain-coherent modules (`ecg.rs`, `hrv.rs`, `ppg.rs`, `eda.rs`, `fusion.rs`, `fft.rs`) with `mod.rs` re-exporting all public items for API compatibility
+- **`#![deny(clippy::pedantic)]` promoted**: All three lib crates (`barracuda`, `toadstool`, `metalForge/forge`) now deny pedantic lints. 62+ warnings resolved: `must_use`, `mul_add`, `branches_sharing_code`, `option_if_let_else`, `significant_drop_tightening`, `while_float`, `too_long_first_doc_paragraph`
+- **DFT deduplication**: `visualization/scenarios/biosignal.rs` HRV power spectrum now delegates to `biosignal::fft::rfft` instead of local DFT reimplementation
+- **Dead code removal**: Unused `cpu_stages` vector in `toadstool/src/pipeline.rs`
+- **Idiomatic Rust**: `if let Some/else` chains replaced with `filter().map()` in `metalForge/forge/src/dispatch.rs`. Shared code hoisted from if/else branches in experiments
+- **Provenance fixes**: `exp023_biosignal_fusion.py` → `exp023_fusion.py`, `exp040_barracuda_cpu_parity.py` → `exp040_barracuda_cpu.py`
 
 ### V13 additions (deep audit)
 

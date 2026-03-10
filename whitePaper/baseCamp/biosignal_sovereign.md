@@ -4,8 +4,8 @@
 **Faculty**: TBD
 **Track**: 3 — Biosignal
 **Experiments**: Exp020 (Pan-Tompkins QRS), Exp021 (HRV metrics), Exp022 (PPG SpO2), Exp023 (multi-channel fusion)
-**Status**: Complete — 4 experiments, 44 binary checks, 44 Python cross-validation checks. Pan-Tompkins 5-stage intermediates (raw, bandpass, derivative, squared, MWI) now visualized as individual TimeSeries channels in petalTongue (8 channels on QRS node). V13: LCG PRNG centralized to `rng.rs`.
-**Last Updated**: March 9, 2026
+**Status**: Complete — 4 experiments, 44 binary checks, 44 Python cross-validation checks. Pan-Tompkins 5-stage intermediates (raw, bandpass, derivative, squared, MWI) now visualized as individual TimeSeries channels in petalTongue (8 channels on QRS node). V13: LCG PRNG centralized to `rng.rs`. V14.1: biosignal.rs refactored to 6 domain-coherent submodules (ecg, hrv, ppg, eda, fusion, fft).
+**Last Updated**: March 10, 2026
 
 ---
 
@@ -39,7 +39,7 @@ latency, enabling edge deployment on wearables and field devices without cloud d
 
 ## Modules
 
-- `barracuda/src/biosignal.rs`: `pan_tompkins`, `heart_rate_from_peaks`, `sdnn_ms`, `rmssd_ms`, `pnn50`, `ppg_r_value`, `spo2_from_r`, `eda_scl`, `eda_phasic`, `eda_detect_scr`, `fuse_channels`, synthetic generators
+- `barracuda/src/biosignal/`: Domain-coherent submodules — `ecg.rs` (Pan-Tompkins), `hrv.rs` (SDNN, RMSSD, pNN50), `ppg.rs` (SpO2), `eda.rs` (SCL, phasic, SCR), `fusion.rs` (FusedHealthAssessment), `fft.rs` (DFT utilities). `mod.rs` re-exports all public items for API compatibility.
 - `control/biosignal/`: Python baselines for all 4 experiments
 
 ---

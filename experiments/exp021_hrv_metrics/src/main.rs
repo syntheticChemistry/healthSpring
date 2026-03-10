@@ -152,11 +152,10 @@ fn main() {
     println!("\n--- Check 9: pNN50 consistency (low jitter) ---");
     if pnn50_val < 50.0 {
         println!("  [PASS] pNN50={pnn50_val:.1}% (low jitter synthetic)");
-        passed += 1;
     } else {
         println!("  [INFO] pNN50={pnn50_val:.1}% (may vary with noise)");
-        passed += 1; // Allow higher for noisy signals
     }
+    passed += 1;
 
     // Check 10: Determinism (run twice, bit-identical)
     println!("\n--- Check 10: Determinism ---");

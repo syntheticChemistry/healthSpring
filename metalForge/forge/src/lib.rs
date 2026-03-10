@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
-#![warn(clippy::pedantic)]
+#![deny(clippy::pedantic)]
 
 //! metalForge — heterogeneous compute dispatch for healthSpring.
 //!
@@ -178,7 +178,7 @@ impl Capabilities {
             adapter.ok().map(|a| {
                 let info = a.get_info();
                 GpuInfo {
-                    name: info.name.clone(),
+                    name: info.name,
                     fp64_native: false,
                     max_workgroups: a.limits().max_compute_workgroups_per_dimension,
                 }
@@ -190,7 +190,7 @@ impl Capabilities {
         }
     }
 
-    fn probe_npu() -> Option<NpuInfo> {
+    const fn probe_npu() -> Option<NpuInfo> {
         #[cfg(feature = "npu")]
         {
             // akida-driver probe would go here
@@ -214,7 +214,7 @@ pub fn select_substrate(workload: &Workload, caps: &Capabilities) -> Substrate {
 /// biomeOS or callers can supply profiled thresholds for their specific
 /// hardware topology rather than relying on compiled-in defaults.
 #[must_use]
-pub fn select_substrate_with_thresholds(
+pub const fn select_substrate_with_thresholds(
     workload: &Workload,
     caps: &Capabilities,
     thresholds: &DispatchThresholds,

@@ -204,7 +204,7 @@ control/
 │   ├── exp020_pan_tompkins_qrs.py
 │   ├── exp021_hrv_metrics.py
 │   ├── exp022_ppg_spo2.py
-│   └── exp023_biosignal_fusion.py
+│   └── exp023_fusion.py
 ├── endocrine/
 │   ├── exp030_testosterone_im_pk.py
 │   ├── exp031_testosterone_pellet_pk.py
@@ -216,7 +216,7 @@ control/
 │   ├── exp037_testosterone_gut_axis.py
 │   └── exp038_hrv_trt_cardiovascular.py
 └── validation/
-    └── exp040_barracuda_cpu_parity.py
+    └── exp040_barracuda_cpu.py
 ```
 
 ---
