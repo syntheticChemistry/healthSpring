@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 //! Validates the petalTongue interaction subscribe + capabilities roundtrip.
 //!
 //! Spins up a mock petalTongue Unix socket server, then exercises the full

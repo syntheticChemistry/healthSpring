@@ -805,6 +805,7 @@ version = "0.1.0"
 dependencies = [
  "akida-driver",
  "approx",
+ "barracuda",
  "barracuda-core",
  "bytemuck",
  "criterion",

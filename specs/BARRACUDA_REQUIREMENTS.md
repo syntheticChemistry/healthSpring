@@ -2,7 +2,7 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: March 10, 2026
-**Status**: V14 — Tier 2+3 GPU live. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks validate GPU-portable patterns. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels. Sovereign NONMEM/Monolix/WinNonlin replacements validated.
+**Status**: V15 — Tier 2+3 GPU live. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks validate GPU-portable patterns. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels. Sovereign NONMEM/Monolix/WinNonlin replacements validated.
 
 ---
 

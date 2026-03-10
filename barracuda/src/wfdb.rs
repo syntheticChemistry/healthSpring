@@ -411,6 +411,84 @@ impl Iterator for Format212Iter<'_> {
     }
 }
 
+/// Iterator-based streaming signal reader for Format 16.
+///
+/// Yields one sample tuple per iteration (one value per channel) without
+/// buffering the entire file.
+pub struct Format16Iter<'a> {
+    data: &'a [u8],
+    pos: usize,
+    n_signals: usize,
+}
+
+impl<'a> Format16Iter<'a> {
+    /// Create a new streaming iterator over Format 16 interleaved data.
+    ///
+    /// Each call to `next()` returns a `Vec<i16>` of length `n_signals`.
+    #[must_use]
+    pub const fn new(data: &'a [u8], n_signals: usize) -> Self {
+        Self {
+            data,
+            pos: 0,
+            n_signals,
+        }
+    }
+}
+
+impl Iterator for Format16Iter<'_> {
+    type Item = Vec<i16>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let bytes_needed = self.n_signals * 2;
+        if self.pos + bytes_needed > self.data.len() {
+            return None;
+        }
+        let mut samples = Vec::with_capacity(self.n_signals);
+        for _ in 0..self.n_signals {
+            let s = i16::from_le_bytes([self.data[self.pos], self.data[self.pos + 1]]);
+            samples.push(s);
+            self.pos += 2;
+        }
+        Some(samples)
+    }
+}
+
+/// Zero-allocation ADC → physical unit conversion iterator.
+///
+/// Wraps any iterator of `i16` ADC samples and yields `f64` millivolts
+/// using the given gain and baseline. No heap allocation per sample.
+pub struct AdcToPhysicalIter<I> {
+    inner: I,
+    gain_recip: f64,
+    baseline: f64,
+}
+
+impl<I: Iterator<Item = i16>> AdcToPhysicalIter<I> {
+    /// Wrap an ADC sample iterator with physical conversion parameters.
+    pub fn new(inner: I, gain: f64, baseline: i32) -> Self {
+        let gain_recip = if gain.abs() < 1e-15 { 0.0 } else { 1.0 / gain };
+        Self {
+            inner,
+            gain_recip,
+            baseline: f64::from(baseline),
+        }
+    }
+}
+
+impl<I: Iterator<Item = i16>> Iterator for AdcToPhysicalIter<I> {
+    type Item = f64;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.inner
+            .next()
+            .map(|s| (f64::from(s) - self.baseline) * self.gain_recip)
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.inner.size_hint()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -542,5 +620,59 @@ mod tests {
     fn header_parse_error_empty() {
         let result = parse_header("");
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn format_16_iter_basic() {
+        let samples: Vec<i16> = vec![100, 200, -300, 400, -500, 600];
+        let mut data = Vec::new();
+        for &s in &samples {
+            data.extend_from_slice(&s.to_le_bytes());
+        }
+        let collected: Vec<Vec<i16>> = Format16Iter::new(&data, 2).collect();
+        assert_eq!(collected.len(), 3);
+        assert_eq!(collected[0], vec![100, 200]);
+        assert_eq!(collected[1], vec![-300, 400]);
+        assert_eq!(collected[2], vec![-500, 600]);
+    }
+
+    #[test]
+    fn format_16_iter_truncated() {
+        let data = [0u8; 5];
+        let collected: Vec<Vec<i16>> = Format16Iter::new(&data, 2).collect();
+        assert_eq!(collected.len(), 1, "only one complete pair in 5 bytes");
+    }
+
+    #[test]
+    fn adc_to_physical_iter_roundtrip() {
+        let adc_samples = vec![1024_i16, 1224, 824];
+        let physical: Vec<f64> =
+            AdcToPhysicalIter::new(adc_samples.into_iter(), 200.0, 1024).collect();
+        assert!((physical[0]).abs() < 1e-10);
+        assert!((physical[1] - 1.0).abs() < 1e-10);
+        assert!((physical[2] + 1.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn format_212_iter_matches_decode() {
+        let s1_values: Vec<i16> = vec![100, -200, 500];
+        let s2_values: Vec<i16> = vec![-50, 300, -800];
+
+        let mut data = Vec::new();
+        for (&s1, &s2) in s1_values.iter().zip(s2_values.iter()) {
+            let u1 = u16::from_ne_bytes((if s1 < 0 { s1 + 4096 } else { s1 }).to_ne_bytes());
+            let u2 = u16::from_ne_bytes((if s2 < 0 { s2 + 4096 } else { s2 }).to_ne_bytes());
+            data.push(u8::try_from(u1 & 0xFF).unwrap_or(0));
+            data.push(u8::try_from((u1 >> 8) | ((u2 >> 8) << 4)).unwrap_or(0));
+            data.push(u8::try_from(u2 & 0xFF).unwrap_or(0));
+        }
+
+        let iter_result: Vec<(i16, i16)> = Format212Iter::new(&data).collect();
+        let decode_result = decode_format_212(&data, 3, 2).unwrap();
+
+        for (i, (s1, s2)) in iter_result.iter().enumerate() {
+            assert_eq!(*s1, decode_result[0][i], "ch0 sample {i}");
+            assert_eq!(*s2, decode_result[1][i], "ch1 sample {i}");
+        }
     }
 }

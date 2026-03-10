@@ -6,6 +6,24 @@
 
 use super::fft::{idx_to_f64, irfft, rfft, u64_to_f64};
 
+/// Pan-Tompkins default parameters (Pan & Tompkins, IEEE Trans. Biomed. Eng., 1985).
+pub mod pan_tompkins_params {
+    /// Bandpass lower cutoff (Hz) — removes baseline wander.
+    pub const BANDPASS_LOW_HZ: f64 = 5.0;
+    /// Bandpass upper cutoff (Hz) — removes high-frequency noise.
+    pub const BANDPASS_HIGH_HZ: f64 = 15.0;
+    /// MWI window as fraction of sampling period (~150 ms at 360 Hz).
+    pub const MWI_WINDOW_FRACTION: f64 = 0.15;
+    /// Refractory period (ms) — minimum interval between detected R-peaks.
+    /// Physiological refractory period of the ventricle is ~200 ms.
+    pub const REFRACTORY_MS: f64 = 200.0;
+    /// Peak detection threshold as fraction of MWI maximum.
+    pub const PEAK_THRESHOLD_FRACTION: f64 = 0.4;
+    /// QRS detection tolerance (ms) for evaluation against ground truth.
+    /// ~75 ms = half the typical QRS width (80–120 ms).
+    pub const DETECTION_TOLERANCE_MS: f64 = 75.0;
+}
+
 /// Simple frequency-domain bandpass filter.
 ///
 /// Zeros out frequency components outside `[low_hz, high_hz]`.
@@ -18,12 +36,13 @@ pub fn bandpass_filter(signal: &[f64], fs: f64, low_hz: f64, high_hz: f64) -> Ve
 
     let (re, im) = rfft(signal);
     let n_freq = re.len();
+    let n_effective = (n_freq - 1) * 2;
 
     let mut out_re = vec![0.0; n_freq];
     let mut out_im = vec![0.0; n_freq];
 
     for k in 0..n_freq {
-        let freq = idx_to_f64(k) * fs / idx_to_f64(n);
+        let freq = idx_to_f64(k) * fs / idx_to_f64(n_effective);
         if freq >= low_hz && freq <= high_hz {
             out_re[k] = re[k];
             out_im[k] = im[k];
@@ -89,7 +108,8 @@ pub fn detect_peaks(mwi: &[f64], fs: f64, refractory_ms: f64) -> Vec<usize> {
     if n < 3 {
         return vec![];
     }
-    let threshold = 0.4 * mwi.iter().copied().fold(0.0_f64, f64::max);
+    let threshold =
+        pan_tompkins_params::PEAK_THRESHOLD_FRACTION * mwi.iter().copied().fold(0.0_f64, f64::max);
     let refractory_samples = (refractory_ms * fs / 1000.0) as usize;
     let mut peaks = Vec::new();
     let mut last_peak: usize = 0;
@@ -115,12 +135,13 @@ pub fn detect_peaks(mwi: &[f64], fs: f64, refractory_ms: f64) -> Vec<usize> {
     reason = "0.15 * fs is small positive — safe truncation"
 )]
 pub fn pan_tompkins(signal: &[f64], fs: f64) -> PanTompkinsResult {
-    let bp = bandpass_filter(signal, fs, 5.0, 15.0);
+    use pan_tompkins_params as pt;
+    let bp = bandpass_filter(signal, fs, pt::BANDPASS_LOW_HZ, pt::BANDPASS_HIGH_HZ);
     let deriv = derivative_filter(&bp);
     let sq = squaring(&deriv);
-    let window_size = (0.15 * fs) as usize;
+    let window_size = (pt::MWI_WINDOW_FRACTION * fs) as usize;
     let mwi = moving_window_integration(&sq, window_size);
-    let peaks = detect_peaks(&mwi, fs, 200.0);
+    let peaks = detect_peaks(&mwi, fs, pt::REFRACTORY_MS);
 
     PanTompkinsResult {
         bandpass: bp,

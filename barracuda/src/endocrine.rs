@@ -265,6 +265,17 @@ pub fn age_adjusted_t0(t0: f64, age: f64, decline_rate: f64) -> f64 {
 // Testosterone-Gut Axis (Exp037)
 // ═══════════════════════════════════════════════════════════════════════
 
+/// Anderson localization scaling parameters.
+///
+/// Power-law: `ξ = (L/2) * (W / W_ref)^ν`.
+/// ν = 1.5 gives good discrimination across the clinical Pielou range (0.3–0.95).
+pub mod anderson_scaling {
+    /// Reference disorder strength for normalization.
+    pub const W_REF: f64 = 5.0;
+    /// Localization length exponent (power-law scaling).
+    pub const NU: f64 = 1.5;
+}
+
 /// Anderson localization length from disorder strength (power-law scaling).
 ///
 /// `ξ = ξ_0 * (W / W_ref)^ν` where ν = 1.5.
@@ -274,10 +285,8 @@ pub fn anderson_localization_length(disorder_w: f64, lattice_size: f64) -> f64 {
     if disorder_w <= 0.0 {
         return 1.0;
     }
-    let w_ref = 5.0;
     let xi_0 = lattice_size * 0.5;
-    let nu = 1.5;
-    xi_0 * (disorder_w / w_ref).powf(nu)
+    xi_0 * (disorder_w / anderson_scaling::W_REF).powf(anderson_scaling::NU)
 }
 
 /// Pielou evenness → Anderson disorder (linear mapping).
@@ -330,6 +339,18 @@ pub fn hrv_trt_response(
     delta_sdnn_ms.mul_add(1.0 - (-months / tau_months).exp(), sdnn_base_ms)
 }
 
+/// Cardiac risk thresholds (Kleiger 1987, NEJM; Sharma 2015, JAMA IM).
+pub mod cardiac_risk_thresholds {
+    /// SDNN (ms) below which HRV doubles cardiac risk.
+    pub const SDNN_HIGH_RISK_MS: f64 = 50.0;
+    /// SDNN (ms) above which HRV halves cardiac risk.
+    pub const SDNN_LOW_RISK_MS: f64 = 100.0;
+    /// Testosterone (ng/dL) below which low-T doubles cardiac risk.
+    pub const T_HIGH_RISK_NGDL: f64 = 300.0;
+    /// Testosterone (ng/dL) above which normalized T halves cardiac risk.
+    pub const T_LOW_RISK_NGDL: f64 = 500.0;
+}
+
 /// Composite cardiac risk score from HRV + testosterone level.
 ///
 /// Risk = `baseline_risk` * `hrv_factor` * `testosterone_factor`
@@ -337,20 +358,23 @@ pub fn hrv_trt_response(
 /// - T factor: T < 300 ng/dL doubles risk, T > 500 ng/dL halves risk
 #[must_use]
 pub fn cardiac_risk_composite(sdnn_ms: f64, testosterone_ng_dl: f64, baseline_risk: f64) -> f64 {
-    let hrv_factor = if sdnn_ms < 50.0 {
-        2.0 - sdnn_ms / 50.0
-    } else if sdnn_ms > 100.0 {
+    use cardiac_risk_thresholds as crt;
+    let hrv_factor = if sdnn_ms < crt::SDNN_HIGH_RISK_MS {
+        2.0 - sdnn_ms / crt::SDNN_HIGH_RISK_MS
+    } else if sdnn_ms > crt::SDNN_LOW_RISK_MS {
         0.5
     } else {
-        1.0 - 0.5 * (sdnn_ms - 50.0) / 50.0
+        1.0 - 0.5 * (sdnn_ms - crt::SDNN_HIGH_RISK_MS)
+            / (crt::SDNN_LOW_RISK_MS - crt::SDNN_HIGH_RISK_MS)
     };
 
-    let t_factor = if testosterone_ng_dl < 300.0 {
-        2.0 - testosterone_ng_dl / 300.0
-    } else if testosterone_ng_dl > 500.0 {
+    let t_factor = if testosterone_ng_dl < crt::T_HIGH_RISK_NGDL {
+        2.0 - testosterone_ng_dl / crt::T_HIGH_RISK_NGDL
+    } else if testosterone_ng_dl > crt::T_LOW_RISK_NGDL {
         0.5
     } else {
-        1.0 - 0.5 * (testosterone_ng_dl - 300.0) / 200.0
+        1.0 - 0.5 * (testosterone_ng_dl - crt::T_HIGH_RISK_NGDL)
+            / (crt::T_LOW_RISK_NGDL - crt::T_HIGH_RISK_NGDL)
     };
 
     baseline_risk * hrv_factor * t_factor

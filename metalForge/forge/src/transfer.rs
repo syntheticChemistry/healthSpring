@@ -99,11 +99,14 @@ pub fn plan_transfer(
             bytes,
         }
     } else {
+        // Conservative cross-node estimate. biomeOS or the caller should
+        // override via actual link probing when the network topology is known.
+        const DEFAULT_NETWORK_BW_GBPS: f64 = 1.0;
         TransferPlan {
             src,
             dst,
             method: TransferMethod::NetworkIpc,
-            estimated_bandwidth_gbps: 1.0,
+            estimated_bandwidth_gbps: DEFAULT_NETWORK_BW_GBPS,
             bytes,
         }
     }

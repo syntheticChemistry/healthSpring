@@ -1,7 +1,7 @@
 # Sub-Thesis 04: Testosterone Replacement Therapy — Clinical Claim Verification Pipeline
 
 **Source**: Dr. Charles Mok, *If Your Testosterone Is Low, You're Gonna Get Fat* (Allure Medical Publishing, 2018, 196 pages)
-**Status**: Complete — 9 experiments validated (Exp030–038) + NLME population PK (Exp075), 96 Python + 86 Rust binary + 51 lib unit tests + 19 NLME checks. Patient-parameterized clinical scenarios (Exp063) close the per-person translation loop: `PatientTrtProfile` → scenario graph → petalTongue clinical mode. Live clinical TRT dashboard (Exp073) streams PK trough, HRV improvement, HbA1c trajectory, and cardiac risk comparison via `replace` stream operation. 5 TRT archetypes wired into `dump_scenarios`. Interaction roundtrip validated (Exp074). V14: NLME population PK (FOCE + SAEM), NCA (λz, AUC∞, MRT, CL, Vss), NLME diagnostics (CWRES, VPC, GOF) — sovereign NONMEM/Monolix/WinNonlin replacement.
+**Status**: Complete — 9 experiments validated (Exp030–038) + NLME population PK (Exp075), 96 Python + 86 Rust binary + 51 lib unit tests + 19 NLME checks. Patient-parameterized clinical scenarios (Exp063) close the per-person translation loop: `PatientTrtProfile` → scenario graph → petalTongue clinical mode. Live clinical TRT dashboard (Exp073) streams PK trough, HRV improvement, HbA1c trajectory, and cardiac risk comparison via `replace` stream operation. 5 TRT archetypes wired into `dump_scenarios`. Interaction roundtrip validated (Exp074). V15: NLME population PK (FOCE + SAEM), NCA (λz, AUC∞, MRT, CL, Vss), NLME diagnostics (CWRES, VPC, GOF) — sovereign NONMEM/Monolix/WinNonlin replacement.
 **Last Updated**: March 10, 2026
 
 ---

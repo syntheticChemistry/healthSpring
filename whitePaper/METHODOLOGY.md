@@ -73,9 +73,9 @@ const SPO2_TOL_PCT: f64 = 2.0;         // SpO2 estimation (2% clinical)
 
 Experiments are numbered sequentially: `Exp001`, `Exp002`, etc. Each experiment:
 - Has a Python control in `control/<domain>/`
-- Has a Rust validation binary in `barracuda/`
-- Has results in `experiments/results/`
-- Is documented in `whitePaper/experiments/NNN_<name>.md`
+- Has a Rust validation binary in `experiments/expNNN_<name>/`
+- Produces output to `sandbox/` (gitignored)
+- Is documented in `whitePaper/experiments/README.md` and `whitePaper/baseCamp/`
 
 ---
 

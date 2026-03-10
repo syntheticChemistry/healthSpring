@@ -1,7 +1,7 @@
 # healthSpring White Paper
 
 **Date:** March 10, 2026
-**Status:** V14.1 — 5 tracks + diagnostics + GPU + visualization + clinical TRT + streaming + interaction + NLME, 48 experiments validated (Tier 0+1+2+3). NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix), NCA (sovereign WinNonlin), diagnostics (CWRES, VPC, GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels). V14.1 deep debt: biosignal modular refactor, `#![deny(clippy::pedantic)]` enforcement, DFT deduplication.
+**Status:** V15 — 5 tracks + diagnostics + GPU + visualization + clinical TRT + streaming + interaction + NLME, 48 experiments validated (Tier 0+1+2+3). NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix), NCA (sovereign WinNonlin), diagnostics (CWRES, VPC, GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels). Upstream rewire: precision routing, barracuda::rng/special delegation, cross-spring shader evolution.
 **License:** AGPL-3.0-or-later
 
 ---

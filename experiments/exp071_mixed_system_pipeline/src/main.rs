@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![deny(clippy::all)]
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
 #![expect(
@@ -15,7 +16,7 @@ use healthspring_forge::nucleus::{
     DeviceStatus, Nest, NestId, Node, NodeId, PcieGeneration, Tower,
 };
 use healthspring_forge::transfer::TransferMethod;
-use healthspring_forge::{Capabilities, GpuInfo, NpuInfo, Substrate, Workload};
+use healthspring_forge::{Capabilities, GpuInfo, NpuInfo, PrecisionRouting, Substrate, Workload};
 use healthspring_toadstool::pipeline::Pipeline;
 use healthspring_toadstool::stage::{ReduceKind, Stage, StageOp, TransformKind};
 
@@ -83,7 +84,9 @@ fn main() {
         Some(GpuInfo {
             name: "RTX 4090".into(),
             fp64_native: false,
+            f64_shared_mem_reliable: false,
             max_workgroups: 65535,
+            precision: PrecisionRouting::Df64Only,
         }),
         Some(NpuInfo {
             name: "Akida AKD1000".into(),

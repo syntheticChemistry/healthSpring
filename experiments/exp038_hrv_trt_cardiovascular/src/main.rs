@@ -1,8 +1,11 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"
 )]
-// SPDX-License-Identifier: AGPL-3.0-or-later
 //! healthSpring Exp038 — HRV × TRT Cardiovascular Cross-Track (Mok D3)
 //!
 //! Cross-validates `endocrine::hrv_trt_response` and `cardiac_risk_composite`.

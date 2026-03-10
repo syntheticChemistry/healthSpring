@@ -149,7 +149,7 @@
 | exp069 | ExpDecay pipeline stage | 1e-10 | Machine epsilon | `y = exp(-0.01 * x)` pipeline transform; f64 transcendental at small argument. |
 | exp069 | Dispatch plan substrate consistency | 1e-10 | Machine epsilon | metalForge substrate selection must be deterministic for given workload. |
 
-### NLME / Pipeline Class (V14)
+### NLME / Pipeline Class (V15)
 
 | Experiment | Check | Tolerance | Class | Justification |
 |-----------|-------|-----------|-------|---------------|

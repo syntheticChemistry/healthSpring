@@ -172,4 +172,23 @@ mod tests {
             assert!(r > 0.99, "{}: saturation {r} at 100x IC50", drug.name);
         }
     }
+
+    /// Cross-validate: `barracuda::stats::hill(x, k, n)` produces the
+    /// same result as `hill_dose_response(x, k, n, 1.0)` for normalized
+    /// Hill (emax=1). The upstream function was absorbed from neuralSpring
+    /// and uses the same formula.
+    #[test]
+    fn cross_validate_hill_vs_upstream() {
+        let concs = [0.1, 1.0, 5.0, 10.0, 50.0, 100.0, 1000.0];
+        let k = 10.0;
+        let n = 2.0;
+        for &c in &concs {
+            let local = hill_dose_response(c, k, n, 1.0);
+            let upstream = barracuda::stats::hill(c, k, n);
+            assert!(
+                (local - upstream).abs() < 1e-12,
+                "Hill mismatch at c={c}: local={local}, upstream={upstream}"
+            );
+        }
+    }
 }

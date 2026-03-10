@@ -13,12 +13,25 @@
 //! | `PopulationPkBatch` | `population_pk_f64.wgsl` | Exp005/036 Monte Carlo |
 //! | `DiversityBatch` | `diversity_f64.wgsl` | Exp010 batch |
 //!
-//! ## ABSORPTION CANDIDATES (barraCuda / coralReef)
+//! ## ABSORPTION STATUS (barraCuda S-latest / coralReef Phase 10)
 //!
-//! - `GpuContext` (persistent device + queue, `execute_fused`) -> barraCuda compute executor
-//! - `execute_cpu()` / `execute_fused()` dual-path pattern -> barraCuda ops
-//! - `strip_f64_enable()` WGSL preprocessor -> coralReef naga pass
-//! - `shader_for_op()` mapping -> barraCuda shader registry
+//! **Absorbed upstream** (barraCuda owns canonical versions):
+//! - `HillFunctionF64` — `barracuda::ops::HillFunctionF64`
+//! - `PopulationPkF64` — `barracuda::ops::PopulationPkF64`
+//! - `DiversityFusionGpu` — `barracuda::ops::bio::DiversityFusionGpu`
+//! - LCG PRNG — `barracuda::rng::{lcg_step, LCG_MULTIPLIER}`
+//! - Eigensolver — `barracuda::special::{tridiagonal_ql, anderson_diagonalize}`
+//! - Diversity stats — `barracuda::stats::{shannon, simpson, chao1, pielou, bray_curtis}`
+//!
+//! **Pending** (local to healthSpring until next absorption):
+//! - `GpuContext` fused pipeline pattern → barraCuda compute executor
+//! - `strip_f64_enable()` WGSL preprocessor → coralReef naga pass
+//! - `shader_for_op()` mapping → barraCuda shader registry
+//!
+//! **Precision evolution**: metalForge now has `PrecisionRouting` (mirroring
+//! toadStool S128 `PrecisionRoutingAdvice`). GPU context should use this to
+//! select f64/DF64/f32 shader variants. coralReef Phase 10 provides full
+//! f64 transcendental support via DFMA polynomial lowering.
 
 use crate::microbiome;
 use crate::pkpd;
@@ -29,6 +42,28 @@ pub mod context;
 pub mod dispatch;
 
 /// WGSL shader sources — compiled into the binary.
+///
+/// ## Provenance
+///
+/// Canonical upstream versions now live in barraCuda:
+/// - `barracuda::shaders::math::hill_f64.wgsl`
+/// - `barracuda::shaders::science::population_pk_f64.wgsl`
+/// - `barracuda::shaders::bio::diversity_fusion_f64.wgsl`
+///
+/// These local copies are the Spring validation targets — bit-identical
+/// to the versions absorbed by barraCuda. When healthSpring evolves to
+/// consume `barracuda::ops::{HillFunctionF64, PopulationPkF64}` and
+/// `barracuda::ops::bio::DiversityFusionGpu`, these local copies will
+/// be removed.
+///
+/// ## Precision
+///
+/// All shaders use `f64` with f32 transcendental workarounds:
+/// - `pow(f64,f64)` → `exp(f32(n * log(c)))` (~7 decimal digits)
+/// - `log_f64(x)` → `f64(log(f32(x)))` for driver portability
+///
+/// barraCuda's `Fp64Strategy` and coralReef's f64 lowering will replace
+/// these workarounds when the sovereign pipeline is complete.
 pub mod shaders {
     pub const HILL_DOSE_RESPONSE: &str =
         include_str!("../../shaders/health/hill_dose_response_f64.wgsl");

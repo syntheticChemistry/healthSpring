@@ -29,16 +29,16 @@ fn hrv_power_spectrum(rr_intervals_ms: &[f64]) -> (Vec<f64>, Vec<f64>) {
     let centered: Vec<f64> = rr_intervals_ms.iter().map(|&r| r - mean_rr).collect();
     let (re_all, im_all) = crate::biosignal::fft::rfft(&centered);
 
-    let nf = n as f64;
+    let n_effective = ((re_all.len() - 1) * 2) as f64;
     let mut freqs = Vec::with_capacity(re_all.len());
     let mut power = Vec::with_capacity(re_all.len());
 
     for k in 1..re_all.len() {
-        let freq = k as f64 * fs / nf;
+        let freq = k as f64 * fs / n_effective;
         if freq > 0.5 {
             break;
         }
-        let psd = re_all[k].mul_add(re_all[k], im_all[k] * im_all[k]) / (nf * fs);
+        let psd = re_all[k].mul_add(re_all[k], im_all[k] * im_all[k]) / (n_effective * fs);
         freqs.push(freq);
         power.push(psd);
     }

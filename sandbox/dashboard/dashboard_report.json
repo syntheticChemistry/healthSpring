@@ -11,28 +11,28 @@
     {
       "index": 1,
       "name": "Hill Dose-Response (GPU)",
-      "elapsed_us": 1.0,
+      "elapsed_us": 5.0,
       "output_elements": 500,
       "success": true
     },
     {
       "index": 2,
       "name": "Hill Transform",
-      "elapsed_us": 18.0,
+      "elapsed_us": 20.0,
       "output_elements": 500,
       "success": true
     },
     {
       "index": 3,
       "name": "Population PK (GPU)",
-      "elapsed_us": 1.0,
+      "elapsed_us": 2.0,
       "output_elements": 200,
       "success": true
     },
     {
       "index": 4,
       "name": "AUC Trapezoidal",
-      "elapsed_us": 0.0,
+      "elapsed_us": 1.0,
       "output_elements": 1,
       "success": true
     },
@@ -51,7 +51,7 @@
       "success": true
     }
   ],
-  "total_time_us": 20.0,
+  "total_time_us": 28.0,
   "all_success": true,
-  "petaltongue_connected": false
+  "petaltongue_connected": true
 }

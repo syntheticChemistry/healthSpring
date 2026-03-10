@@ -18,10 +18,9 @@ gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck"]
 npu = ["dep:akida-driver"]
 
 [dependencies]
-# Evolution bridge — unused at Tier 1 (CPU ground-truth). Activated at Tier 3
-# when healthSpring primitives absorb into barraCuda (lifecycle, health, discovery).
-# See specs/BARRACUDA_REQUIREMENTS.md for absorption roadmap.
 barracuda-core = { path = "../../barraCuda/crates/barracuda-core", default-features = false }
+# Canonical math: CPU rng, stats, special always available; GPU ops behind `gpu`.
+barracuda = { path = "../../barraCuda/crates/barracuda", default-features = false }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
@@ -40,4 +39,8 @@ harness = false
 
 [[bench]]
 name = "kokkos_parity"
+harness = false
+
+[[bench]]
+name = "upstream_parity"
 harness = false

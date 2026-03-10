@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"
@@ -6,7 +10,6 @@
     clippy::similar_names,
     reason = "PK parameter families (ka/ke/vd) are domain-standard naming"
 )]
-// SPDX-License-Identifier: AGPL-3.0-or-later
 //! healthSpring Exp036 — Population TRT Monte Carlo (Rust validation)
 //!
 //! Cross-validates against Python control. Uses a simple deterministic

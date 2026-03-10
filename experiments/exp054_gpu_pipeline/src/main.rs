@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 #![forbid(unsafe_code)]
 
 //! Exp054: GPU-native fused pipeline benchmark.

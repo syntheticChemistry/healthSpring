@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 10, 2026
-**Status:** V14 — 5 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC + streaming + interaction + NLME, 48 experiments (356 tests, 853 binary checks, 104 cross-validation checks). NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix), NCA (sovereign WinNonlin), NLME diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. Industry benchmark mapping.
+**Status:** V15 — 5 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC + streaming + interaction + NLME, 48 experiments (368 tests, 853 binary checks, 104 cross-validation checks). NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix), NCA (sovereign WinNonlin), NLME diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. Industry benchmark mapping.
 
 ---
 

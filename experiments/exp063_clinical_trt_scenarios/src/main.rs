@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 //! healthSpring Exp063 — Clinical TRT Scenario Validation
 //!
 //! Validates that patient-parameterized TRT scenarios produce correct

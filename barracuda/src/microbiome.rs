@@ -5,6 +5,18 @@
 //! (Anderson localization in microbial communities) to clinical
 //! gut microbiome analysis.
 //!
+//! ## Cross-spring provenance
+//!
+//! - **Diversity stats** (Shannon, Simpson, Pielou, Chao1, Bray-Curtis):
+//!   Originated here, absorbed into `barracuda::stats`. Local implementations
+//!   retained as validated reference; cross-validation tests confirm parity.
+//! - **Anderson localization**: Delegates to `barracuda::special::anderson_diagonalize`
+//!   (absorbed from healthSpring V13). The QL eigensolver was originally
+//!   in this module; now canonical in barraCuda.
+//! - **wetSpring bio shaders**: `diversity_fusion_f64.wgsl` (Shannon+Simpson+Pielou
+//!   in one GPU dispatch) originated from healthSpring and was absorbed into
+//!   `barracuda::shaders::bio::diversity_fusion_f64.wgsl`, shared with wetSpring.
+//!
 //! ## Tier 1 (CPU)
 //!
 //! - [`shannon_index`]: Shannon diversity `H'`
@@ -134,109 +146,14 @@ pub fn anderson_hamiltonian_1d(disorder: &[f64], t_hop: f64) -> Vec<f64> {
 /// Diagonalize a 1D Anderson Hamiltonian via the implicit QL algorithm
 /// for symmetric tridiagonal matrices.
 ///
+/// Delegates to `barracuda::special::anderson_diagonalize` — the canonical
+/// upstream implementation (absorbed from healthSpring V13).
+///
 /// Returns `(eigenvalues, eigenvectors)` where `eigenvectors` is a flat
 /// `L × L` matrix (row-major) with eigenvector `k` in row `k`.
-///
-/// The QL algorithm is O(L²) per eigenvalue and numerically stable for
-/// the small lattice sizes used in gut microbiome models (L ≤ 200).
 #[must_use]
 pub fn anderson_diagonalize(disorder: &[f64], t_hop: f64) -> (Vec<f64>, Vec<f64>) {
-    let n = disorder.len();
-    if n == 0 {
-        return (vec![], vec![]);
-    }
-    let mut d: Vec<f64> = disorder.to_vec();
-    let mut e = vec![0.0_f64; n];
-    for item in e.iter_mut().take(n.saturating_sub(1)) {
-        *item = t_hop;
-    }
-
-    let mut z = vec![0.0_f64; n * n];
-    for i in 0..n {
-        z[i * n + i] = 1.0;
-    }
-
-    tql2_symmetric_tridiagonal(&mut d, &mut e, &mut z, n);
-
-    (d, z)
-}
-
-/// Implicit QL shifts for a symmetric tridiagonal matrix.
-/// `d` = diagonal (eigenvalues on exit), `e` = sub-diagonal (destroyed),
-/// `z` = identity on entry, eigenvectors on exit (row-major, eigenvector k
-/// in row k).
-#[expect(
-    clippy::many_single_char_names,
-    reason = "classical numerical algorithm variables"
-)]
-fn tql2_symmetric_tridiagonal(d: &mut [f64], e: &mut [f64], z: &mut [f64], n: usize) {
-    if n <= 1 {
-        return;
-    }
-    for i in 1..n {
-        e[i - 1] = e[i];
-    }
-    e[n - 1] = 0.0;
-
-    for l in 0..n {
-        let mut iter_count = 0u32;
-        loop {
-            let mut m = l;
-            while m < n - 1 {
-                let dd = d[m].abs() + d[m + 1].abs();
-                #[expect(
-                    clippy::float_cmp,
-                    reason = "standard QL convergence test: e[m] is negligible when adding it to dd doesn't change dd at f64 precision"
-                )]
-                if (e[m].abs() + dd) == dd {
-                    break;
-                }
-                m += 1;
-            }
-            if m == l {
-                break;
-            }
-            iter_count += 1;
-            if iter_count > 200 {
-                break;
-            }
-
-            let mut g = (d[l + 1] - d[l]) / (2.0 * e[l]);
-            let mut r = g.hypot(1.0);
-            g = d[m] - d[l] + e[l] / (g + r.copysign(g));
-
-            let mut s = 1.0;
-            let mut c = 1.0;
-            let mut p = 0.0;
-
-            for i in (l..m).rev() {
-                let mut f = s * e[i];
-                let b = c * e[i];
-                r = f.hypot(g);
-                e[i + 1] = r;
-                if r.abs() < 1e-300 {
-                    d[i + 1] -= p;
-                    e[m] = 0.0;
-                    break;
-                }
-                s = f / r;
-                c = g / r;
-                g = d[i + 1] - p;
-                r = (d[i] - g).mul_add(s, 2.0 * c * b);
-                p = s * r;
-                d[i + 1] = g + p;
-                g = c * r - b;
-                for k in 0..n {
-                    f = z[(i + 1) * n + k];
-                    z[(i + 1) * n + k] = s * z[i * n + k] + c * f;
-                    z[i * n + k] = c * z[i * n + k] - s * f;
-                }
-            }
-            d[l] -= p;
-            e[l] = g;
-            e[m] = 0.0;
-        }
-    }
+    barracuda::special::anderson_diagonalize(disorder, t_hop)
 }
 
 /// Inverse participation ratio: `IPR = Σ |ψ_i|⁴`.
@@ -611,5 +528,54 @@ mod tests {
         let h_pre = shannon_index(&DYSBIOTIC_GUT);
         let h_post = shannon_index(&post_fmt);
         assert!(h_post > h_pre, "FMT should improve diversity");
+    }
+
+    // Cross-validation: local implementations vs upstream barracuda::stats
+
+    #[test]
+    fn cross_validate_shannon_vs_upstream() {
+        for ab in [
+            &HEALTHY_GUT[..],
+            &DYSBIOTIC_GUT[..],
+            &CDIFF_COLONIZED[..],
+            &PERFECTLY_EVEN[..],
+        ] {
+            let local = shannon_index(ab);
+            let upstream = barracuda::stats::shannon_from_frequencies(ab);
+            assert!(
+                (local - upstream).abs() < 1e-10,
+                "Shannon mismatch: local={local}, upstream={upstream}"
+            );
+        }
+    }
+
+    #[test]
+    fn cross_validate_bray_curtis_vs_upstream() {
+        let local = bray_curtis(&HEALTHY_GUT, &DYSBIOTIC_GUT);
+        let upstream = barracuda::stats::bray_curtis(&HEALTHY_GUT, &DYSBIOTIC_GUT);
+        assert!(
+            (local - upstream).abs() < 1e-10,
+            "Bray-Curtis mismatch: local={local}, upstream={upstream}"
+        );
+    }
+
+    #[test]
+    fn cross_validate_anderson_vs_upstream() {
+        let disorder = vec![1.0, -0.5, 0.3, 0.8, -0.2];
+        let (eigs_local, vecs_local) = anderson_diagonalize(&disorder, 1.0);
+        let (eigs_upstream, vecs_upstream) =
+            barracuda::special::anderson_diagonalize(&disorder, 1.0);
+        for (a, b) in eigs_local.iter().zip(eigs_upstream.iter()) {
+            assert!(
+                (a - b).abs() < 1e-12,
+                "Eigenvalue mismatch: local={a}, upstream={b}"
+            );
+        }
+        for (a, b) in vecs_local.iter().zip(vecs_upstream.iter()) {
+            assert!(
+                (a - b).abs() < 1e-12,
+                "Eigenvector mismatch: local={a}, upstream={b}"
+            );
+        }
     }
 }

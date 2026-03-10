@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 //! Exp075: Cross-validate NLME (FOCE/SAEM) against published NONMEM
 //! testosterone PK population parameters and nlmixr-style results.
 //!

@@ -1,8 +1,11 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"
 )]
-// SPDX-License-Identifier: AGPL-3.0-or-later
 //! healthSpring Exp030 — Testosterone IM Injection PK (Rust validation)
 //!
 //! Cross-validates against Python control `exp030_testosterone_im_pk.py`.

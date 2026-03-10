@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 #![forbid(unsafe_code)]
 
 //! Exp061: Mixed hardware dispatch via `metalForge` NUCLEUS topology.
@@ -12,7 +14,7 @@ use healthspring_forge::nucleus::{
     DeviceStatus, Nest, NestId, Node, NodeId, PcieGeneration, Tower,
 };
 use healthspring_forge::transfer::TransferMethod;
-use healthspring_forge::{Capabilities, GpuInfo, NpuInfo, Substrate, Workload};
+use healthspring_forge::{Capabilities, GpuInfo, NpuInfo, PrecisionRouting, Substrate, Workload};
 
 fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
     *total += 1;
@@ -131,7 +133,9 @@ fn full_caps() -> Capabilities {
         Some(GpuInfo {
             name: "RTX 4090".into(),
             fp64_native: false,
+            f64_shared_mem_reliable: false,
             max_workgroups: 65535,
+            precision: PrecisionRouting::Df64Only,
         }),
         Some(NpuInfo {
             name: "Akida AKD1000".into(),

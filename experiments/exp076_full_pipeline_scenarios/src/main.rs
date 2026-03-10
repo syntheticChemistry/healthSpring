@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 //! Exp076: Full-pipeline petalTongue scenario validation.
 //!
 //! Builds every scenario (PK/PD, microbiome, biosignal, endocrine, NLME),

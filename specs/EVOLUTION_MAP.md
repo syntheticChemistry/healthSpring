@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 10, 2026
-**Status**: V14.1. Tier 0+1+2+3 complete. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser, Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. 356 tests, 853 binary checks across 48 experiments. Industry benchmark mapping (sovereign NONMEM/Monolix/WinNonlin replacements). V14.1: biosignal modular refactor, `#![deny(clippy::pedantic)]` enforcement, DFT deduplication.
+**Status**: V15. Tier 0+1+2+3 complete. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser, Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. 368 tests, 853 binary checks across 48 experiments. Industry benchmark mapping (sovereign NONMEM/Monolix/WinNonlin replacements). Upstream rewire: precision routing, barracuda::rng/special delegation, cross-spring shader evolution.
 
 ---
 

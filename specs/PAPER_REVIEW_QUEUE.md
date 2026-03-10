@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 10, 2026
-**Status**: 48 experiments complete — 853 Rust binary checks, 356 tests (289 barracuda + 33 forge + 30 toadStool + 4 doc-tests), 104 cross-validation checks. GPU Tier 2+3 live. V14: NLME (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels). Industry benchmark mapping.
+**Status**: 48 experiments complete — 853 Rust binary checks, 368 tests (302 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 104 cross-validation checks. GPU Tier 2+3 live. V15: NLME (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels). Industry benchmark mapping.
 
 ---
 

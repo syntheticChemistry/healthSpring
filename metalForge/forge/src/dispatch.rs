@@ -5,11 +5,18 @@
 //! `DispatchPlan` that assigns each stage to a specific `Nest` and plans
 //! inter-device data transfers between consecutive stages.
 //!
-//! ## ABSORPTION CANDIDATES (toadStool / biomeOS)
+//! ## ABSORPTION STATUS (toadStool S142 / biomeOS)
 //!
-//! - `DispatchPlan` + `plan_dispatch()` -> toadStool planner
-//! - `StageAssignment` with `NestId` -> biomeOS graph node annotations
-//! - Transfer overhead analysis -> toadStool scheduling heuristics
+//! toadStool S139–S142 has evolved:
+//! - `StreamingDispatchContext` with `StageProgress`/`ProgressCallback` (S140)
+//! - `PipelineGraph` DAG with Kahn sort and cycle detection (S139)
+//! - `PcieTransport` GPU-to-GPU topology discovery (S142)
+//! - `ResourceOrchestrator` multi-tenant GPU allocation (S142)
+//!
+//! **Pending** (local to healthSpring until next absorption):
+//! - `DispatchPlan` + `plan_dispatch()` → toadStool planner
+//! - `StageAssignment` with `NestId` → biomeOS graph node annotations
+//! - Transfer overhead analysis → toadStool scheduling heuristics
 
 use crate::nucleus::{NestId, Node, Tower};
 use crate::transfer::{TransferPlan, plan_transfer};
@@ -103,25 +110,31 @@ pub fn plan_dispatch(
 }
 
 fn find_nest(node: Option<&Node>, substrate: Substrate) -> NestId {
-    if let Some(n) = node {
-        for nest in &n.nests {
-            if nest.substrate == substrate {
-                return nest.id;
-            }
-        }
-    }
-    NestId {
-        tower: 0,
-        node: 0,
-        device: 0,
-    }
+    let Some(n) = node else {
+        return NestId {
+            tower: 0,
+            node: 0,
+            device: 0,
+        };
+    };
+    // Prefer exact substrate match, fall back to CPU nest on same node.
+    let exact = n.nests.iter().find(|nest| nest.substrate == substrate);
+    let fallback = n.nests.iter().find(|nest| nest.substrate == Substrate::Cpu);
+    exact.or(fallback).map_or(
+        NestId {
+            tower: 0,
+            node: 0,
+            device: 0,
+        },
+        |nest| nest.id,
+    )
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::nucleus::{DeviceStatus, Nest, Node, NodeId, PcieGeneration};
-    use crate::{GpuInfo, NpuInfo};
+    use crate::{GpuInfo, NpuInfo, PrecisionRouting};
 
     fn test_tower() -> Tower {
         Tower {
@@ -170,7 +183,9 @@ mod tests {
             Some(GpuInfo {
                 name: "RTX 4090".into(),
                 fp64_native: false,
+                f64_shared_mem_reliable: false,
                 max_workgroups: 65535,
+                precision: PrecisionRouting::Df64Only,
             }),
             Some(NpuInfo {
                 name: "Akida AKD1000".into(),

@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 //! Live TRT clinical dashboard: builds a patient-parameterized TRT scenario
 //! and streams PK curve updates, population comparison, and outcome gauges
 //! to petalTongue via `StreamSession`.

@@ -1,9 +1,11 @@
 #![forbid(unsafe_code)]
+// SPDX-License-Identifier: AGPL-3.0-or-later
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"
 )]
-// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Exp022 validation: PPG `SpO2` R-value calibration
 //!
 //! Cross-validates `healthspring_barracuda::biosignal` PPG pipeline:

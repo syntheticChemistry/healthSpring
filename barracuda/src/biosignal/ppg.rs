@@ -5,13 +5,28 @@
 
 use super::fft::{idx_to_f64, u64_to_f64};
 
+/// Beer-Lambert empirical calibration coefficients.
+///
+/// `SpO2 = INTERCEPT - SLOPE * R` is the standard empirical approximation
+/// from pulse oximetry (Tremper 1989; Jubran 1999).
+pub mod spo2_calibration {
+    /// Y-intercept of the SpO2-vs-R linear calibration.
+    pub const INTERCEPT: f64 = 110.0;
+    /// Slope of the SpO2-vs-R linear calibration.
+    pub const SLOPE: f64 = 25.0;
+}
+
+/// Guard against division by near-zero DC or AC components.
+const DIVISION_GUARD: f64 = 1e-15;
+
 /// PPG R-value: ratio of pulsatile-to-static components.
 ///
 /// `R = (AC_red / DC_red) / (AC_ir / DC_ir)`
 /// R ≈ 0.4–0.6 for normal oxygenation, R > 0.8 for hypoxia.
 #[must_use]
 pub fn ppg_r_value(ac_red: f64, dc_red: f64, ac_ir: f64, dc_ir: f64) -> f64 {
-    if dc_red.abs() < 1e-15 || dc_ir.abs() < 1e-15 || ac_ir.abs() < 1e-15 {
+    if dc_red.abs() < DIVISION_GUARD || dc_ir.abs() < DIVISION_GUARD || ac_ir.abs() < DIVISION_GUARD
+    {
         return f64::NAN;
     }
     (ac_red / dc_red) / (ac_ir / dc_ir)
@@ -23,7 +38,9 @@ pub fn ppg_r_value(ac_red: f64, dc_red: f64, ac_ir: f64, dc_ir: f64) -> f64 {
 /// Returns percentage [0, 100], clamped.
 #[must_use]
 pub fn spo2_from_r(r_value: f64) -> f64 {
-    25.0f64.mul_add(-r_value, 110.0).clamp(0.0, 100.0)
+    spo2_calibration::SLOPE
+        .mul_add(-r_value, spo2_calibration::INTERCEPT)
+        .clamp(0.0, 100.0)
 }
 
 /// Generate synthetic PPG signal pair (red + IR) for testing.

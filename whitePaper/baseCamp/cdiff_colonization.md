@@ -4,7 +4,7 @@
 **Faculty**: TBD (extends wetSpring Anderson framework)
 **Track**: 2 — Microbiome
 **Experiments**: Exp010 (diversity indices), Exp011 (Anderson gut lattice), Exp012 (C. diff resistance), Exp013 (FMT engraftment)
-**Status**: Complete — 4 experiments, 48 binary checks, 48 Python cross-validation checks. Anderson eigenvalue spectrum and per-eigenstate IPR spectrum now visualized in petalTongue (6 channels on Anderson node). GPU Tier 2 validated for diversity indices. V13: Anderson eigensolver (QL algorithm) fixes IPR to use true eigenvectors; `shannon_index` doc-test added; `evenness_to_disorder` deduplicated. V14.1: `#![deny(clippy::pedantic)]` enforced.
+**Status**: Complete — 4 experiments, 48 binary checks, 48 Python cross-validation checks. Anderson eigenvalue spectrum and per-eigenstate IPR spectrum now visualized in petalTongue (6 channels on Anderson node). GPU Tier 2 validated for diversity indices. V13: Anderson eigensolver (QL algorithm) fixes IPR to use true eigenvectors; `shannon_index` doc-test added; `evenness_to_disorder` deduplicated. V14.1: `#![deny(clippy::pedantic)]` enforced. V15: upstream rewire.
 **Last Updated**: March 10, 2026
 
 ---

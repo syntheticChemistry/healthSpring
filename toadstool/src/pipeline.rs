@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Compute pipeline: a sequence of stages that execute on heterogeneous hardware.
 //!
-//! ## ABSORPTION CANDIDATES (toadStool)
+//! ## ABSORPTION STATUS (toadStool)
 //!
 //! - `Pipeline::execute_auto()` with metalForge routing -> toadStool core pipeline
 //! - `stage_to_workload()` mapping -> toadStool workload classification

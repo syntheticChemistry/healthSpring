@@ -1,8 +1,11 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"
 )]
-// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Exp020 validation: Pan-Tompkins QRS Detection
 //!
 //! Cross-validates `healthspring_barracuda::biosignal` Pan-Tompkins

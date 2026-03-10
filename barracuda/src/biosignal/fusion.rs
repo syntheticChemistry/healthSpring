@@ -6,6 +6,21 @@
 
 use super::hrv::{heart_rate_from_peaks, rmssd_ms, sdnn_ms};
 
+/// Stress index normalization parameters.
+///
+/// Each biosignal component is normalized to [0, 1] before averaging.
+/// Thresholds are derived from clinical ranges (Task Force of ESC/NASPE 1996).
+pub mod stress_params {
+    /// SDNN value (ms) at which HRV stress component saturates at 0 (healthy).
+    pub const SDNN_HEALTHY_MS: f64 = 100.0;
+    /// SCR rate (events/min) at which EDA stress component saturates at 1.
+    pub const SCR_STRESS_RATE: f64 = 20.0;
+    /// `SpO2` (%) below which hypoxia stress component saturates at 1.
+    pub const SPO2_FLOOR: f64 = 90.0;
+    /// `SpO2` range (%) over which hypoxia stress interpolates to 0.
+    pub const SPO2_RANGE: f64 = 10.0;
+}
+
 /// Fused health assessment from ECG + PPG + EDA channels.
 #[derive(Debug, Clone)]
 pub struct FusedHealthAssessment {
@@ -41,9 +56,10 @@ pub fn fuse_channels(
         0.0
     };
 
-    let sdnn_stress = (1.0 - (sdnn / 100.0).min(1.0)).max(0.0);
-    let scr_stress = (scr_rate / 20.0).min(1.0);
-    let spo2_stress = (1.0 - (ppg_spo2 - 90.0) / 10.0).clamp(0.0, 1.0);
+    let sdnn_stress = (1.0 - (sdnn / stress_params::SDNN_HEALTHY_MS).min(1.0)).max(0.0);
+    let scr_stress = (scr_rate / stress_params::SCR_STRESS_RATE).min(1.0);
+    let spo2_stress =
+        (1.0 - (ppg_spo2 - stress_params::SPO2_FLOOR) / stress_params::SPO2_RANGE).clamp(0.0, 1.0);
     let stress_index = (sdnn_stress + scr_stress + spo2_stress) / 3.0;
 
     let overall_score = (100.0 * (1.0 - stress_index)).clamp(0.0, 100.0);

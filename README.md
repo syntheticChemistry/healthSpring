@@ -5,7 +5,7 @@
 **Date:** March 10, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V14.1 — 356 tests (289 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 48 experiments, 853 Rust binary checks, 104 cross-validation checks. NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix replacement). NCA (sovereign WinNonlin replacement). NLME diagnostics (CWRES, VPC, GOF). WFDB parser (PhysioNet Format 212/16). Kokkos-equivalent GPU benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, all 7 DataChannel types. Industry benchmark mapping (SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean, `cargo doc` clean.
+**Status:** V15 — 368 tests (302 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 48 experiments, 853 Rust binary checks, 104 cross-validation checks. NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix replacement). NCA (sovereign WinNonlin replacement). NLME diagnostics (CWRES, VPC, GOF). WFDB parser (PhysioNet Format 212/16). Kokkos-equivalent GPU benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, all 7 DataChannel types. Industry benchmark mapping (SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean, `cargo doc` clean. Upstream rewire: precision routing, barracuda::rng/special delegation, cross-spring shader evolution documented.
 
 ---
 
@@ -29,12 +29,12 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | **V14.1** (NLME + full pipeline + deep debt) |
-| Rust lib tests | 289 (barraCuda) |
+| Version | **V15** (upstream rewire + precision routing) |
+| Rust lib tests | 302 (barraCuda) |
 | Rust forge tests | 33 (metalForge) |
 | Rust toadStool tests | 30 |
-| Doc-tests | 4 (`shannon_index`, `hill_dose_response`, `auc_trapezoidal`, `state_to_f64`) |
-| **Total tests** | **356** |
+| Doc-tests | 3 (`shannon_index`, `hill_dose_response`, `auc_trapezoidal`) |
+| **Total tests** | **368** |
 | Rust binary checks | 853 |
 | Python control checks | 104 (cross-validation) |
 | Experiments complete | 48 (Tier 0+1+2+3 + diagnostic + visualization + clinical + streaming + interaction + NLME) |

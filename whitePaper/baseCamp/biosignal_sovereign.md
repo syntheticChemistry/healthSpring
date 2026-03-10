@@ -4,7 +4,7 @@
 **Faculty**: TBD
 **Track**: 3 — Biosignal
 **Experiments**: Exp020 (Pan-Tompkins QRS), Exp021 (HRV metrics), Exp022 (PPG SpO2), Exp023 (multi-channel fusion)
-**Status**: Complete — 4 experiments, 44 binary checks, 44 Python cross-validation checks. Pan-Tompkins 5-stage intermediates (raw, bandpass, derivative, squared, MWI) now visualized as individual TimeSeries channels in petalTongue (8 channels on QRS node). V13: LCG PRNG centralized to `rng.rs`. V14.1: biosignal.rs refactored to 6 domain-coherent submodules (ecg, hrv, ppg, eda, fusion, fft).
+**Status**: Complete — 4 experiments, 44 binary checks, 44 Python cross-validation checks. Pan-Tompkins 5-stage intermediates (raw, bandpass, derivative, squared, MWI) now visualized as individual TimeSeries channels in petalTongue (8 channels on QRS node). V13: LCG PRNG centralized to `rng.rs`. V14.1: biosignal.rs refactored to 6 domain-coherent submodules (ecg, hrv, ppg, eda, fusion, fft). V15: upstream rewire.
 **Last Updated**: March 10, 2026
 
 ---

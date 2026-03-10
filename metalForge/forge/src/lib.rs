@@ -9,7 +9,7 @@
 //! Organizes hardware via NUCLEUS atomics (Tower → Node → Nest) and plans
 //! inter-device transfers (`PCIe` P2P DMA, host-staged, network IPC).
 //!
-//! ## ABSORPTION CANDIDATES (barraCuda / toadStool / biomeOS)
+//! ## ABSORPTION STATUS (barraCuda / toadStool / biomeOS)
 //!
 //! - `Substrate` + `Workload` enum -> barraCuda workload classification
 //! - `select_substrate()` threshold routing -> toadStool dispatcher
@@ -95,12 +95,40 @@ impl Workload {
     }
 }
 
+/// Precision routing advice for f64 GPU workloads.
+///
+/// Mirrors toadStool's `PrecisionRoutingAdvice` (S128) and barraCuda's
+/// `Fp64Strategy`. Determines how shaders should handle f64 arithmetic
+/// based on discovered hardware capabilities.
+///
+/// See also: `GPU_F64_NUMERICAL_STABILITY` in wateringHole.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PrecisionRouting {
+    /// Hardware has native f64 ALUs and reliable shared memory.
+    /// Use `enable f64;` WGSL shaders directly.
+    F64Native,
+    /// Hardware has native f64 compute but shared-memory reduction
+    /// returns zeros (naga/SPIR-V bug on some drivers).
+    /// Avoid f64 workgroup shared memory; use per-thread accumulators.
+    F64NativeNoSharedMem,
+    /// No native f64; use double-float emulation (DF64).
+    /// coralReef lowers f64 ops to paired f32 arithmetic.
+    Df64Only,
+    /// f64 compute returns zeros (e.g., NVK Volta).
+    /// Fall back to f32 shaders with documented precision loss.
+    F32Only,
+}
+
 /// Discovered GPU capabilities.
 #[derive(Debug, Clone)]
 pub struct GpuInfo {
     pub name: String,
     pub fp64_native: bool,
+    /// Whether f64 shared-memory reductions are reliable on this GPU.
+    pub f64_shared_mem_reliable: bool,
     pub max_workgroups: u32,
+    /// Routing advice for f64 workloads on this GPU.
+    pub precision: PrecisionRouting,
 }
 
 /// Discovered NPU capabilities.
@@ -168,7 +196,6 @@ impl Capabilities {
     fn probe_gpu() -> Option<GpuInfo> {
         #[cfg(feature = "gpu")]
         {
-            // wgpu adapter enumeration — runtime GPU discovery
             let instance = wgpu::Instance::default();
             let adapter =
                 pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
@@ -177,10 +204,21 @@ impl Capabilities {
                 }));
             adapter.ok().map(|a| {
                 let info = a.get_info();
+                let fp64_native = a.features().contains(wgpu::Features::SHADER_F64);
+                let f64_shared_mem_reliable = fp64_native;
+                let precision = if !fp64_native {
+                    PrecisionRouting::Df64Only
+                } else if f64_shared_mem_reliable {
+                    PrecisionRouting::F64Native
+                } else {
+                    PrecisionRouting::F64NativeNoSharedMem
+                };
                 GpuInfo {
                     name: info.name,
-                    fp64_native: false,
+                    fp64_native,
+                    f64_shared_mem_reliable,
                     max_workgroups: a.limits().max_compute_workgroups_per_dimension,
+                    precision,
                 }
             })
         }
@@ -190,16 +228,14 @@ impl Capabilities {
         }
     }
 
+    /// Probe for neuromorphic accelerator.
+    ///
+    /// Returns `None` unconditionally — Akida driver integration is
+    /// feature-gated behind `npu` and requires the `akida-driver` crate
+    /// (which binds to the `BrainChip` `MetaTF` runtime). When the driver is
+    /// available, this will query device topology and inference capacity.
     const fn probe_npu() -> Option<NpuInfo> {
-        #[cfg(feature = "npu")]
-        {
-            // akida-driver probe would go here
-            None
-        }
-        #[cfg(not(feature = "npu"))]
-        {
-            None
-        }
+        None
     }
 }
 
@@ -276,7 +312,9 @@ mod tests {
             gpu: Some(GpuInfo {
                 name: "test".into(),
                 fp64_native: true,
+                f64_shared_mem_reliable: true,
                 max_workgroups: 256,
+                precision: PrecisionRouting::F64Native,
             }),
             npu: None,
         };
@@ -291,7 +329,9 @@ mod tests {
             gpu: Some(GpuInfo {
                 name: "test".into(),
                 fp64_native: true,
+                f64_shared_mem_reliable: true,
                 max_workgroups: 256,
+                precision: PrecisionRouting::F64Native,
             }),
             npu: None,
         };
@@ -306,7 +346,9 @@ mod tests {
             gpu: Some(GpuInfo {
                 name: "test".into(),
                 fp64_native: true,
+                f64_shared_mem_reliable: true,
                 max_workgroups: 256,
+                precision: PrecisionRouting::F64Native,
             }),
             npu: None,
         };
@@ -323,7 +365,9 @@ mod tests {
             gpu: Some(GpuInfo {
                 name: "test".into(),
                 fp64_native: true,
+                f64_shared_mem_reliable: true,
                 max_workgroups: 256,
+                precision: PrecisionRouting::F64Native,
             }),
             npu: None,
         };
@@ -340,7 +384,9 @@ mod tests {
             gpu: Some(GpuInfo {
                 name: "test".into(),
                 fp64_native: true,
+                f64_shared_mem_reliable: true,
                 max_workgroups: 256,
+                precision: PrecisionRouting::F64Native,
             }),
             npu: None,
         };
@@ -355,7 +401,9 @@ mod tests {
             gpu: Some(GpuInfo {
                 name: "test".into(),
                 fp64_native: true,
+                f64_shared_mem_reliable: true,
                 max_workgroups: 256,
+                precision: PrecisionRouting::F64Native,
             }),
             npu: None,
         };
@@ -399,7 +447,9 @@ mod tests {
             gpu: Some(GpuInfo {
                 name: "test".into(),
                 fp64_native: true,
+                f64_shared_mem_reliable: true,
                 max_workgroups: 256,
+                precision: PrecisionRouting::F64Native,
             }),
             npu: Some(NpuInfo {
                 name: "Akida".into(),
