@@ -395,8 +395,8 @@ mod tests {
 
     #[test]
     fn im_nonneg() {
-        let times: Vec<f64> = (0..2000).map(|i| 56.0 * f64::from(i) / 1999.0).collect();
         use testosterone_cypionate as tc;
+        let times: Vec<f64> = (0..2000).map(|i| 56.0 * f64::from(i) / 1999.0).collect();
         let concs: Vec<f64> = times
             .iter()
             .map(|&t| {
@@ -516,8 +516,7 @@ mod tests {
     fn pellet_nonneg() {
         use testosterone_cypionate as tc;
         for i in 0..3000 {
-            #[expect(clippy::cast_precision_loss, reason = "loop index fits f64")]
-            let t = 180.0 * (i as f64) / 2999.0;
+            let t = 180.0 * f64::from(i) / 2999.0;
             let c = pellet_concentration(
                 t,
                 pellet_params::RELEASE_RATE,

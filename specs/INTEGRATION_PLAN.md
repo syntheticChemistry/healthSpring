@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Integration Plan: NestGate + biomeOS + Atomic Stack
 
 **Last Updated**: March 9, 2026

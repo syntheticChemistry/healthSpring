@@ -46,7 +46,7 @@ pub fn find_cmax_tmax(times: &[f64], concentrations: &[f64]) -> (f64, f64) {
         .iter()
         .enumerate()
         .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(core::cmp::Ordering::Equal))
-        .expect("non-empty concentrations has max element");
+        .unwrap_or((0, &0.0));
     (cmax, times[idx])
 }
 

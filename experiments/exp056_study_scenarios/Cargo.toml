@@ -1,7 +1,9 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 [package]
 name = "healthspring-exp056"
 version = "0.1.0"
 edition = "2024"
+license.workspace = true
 
 [[bin]]
 name = "exp056_study_scenarios"

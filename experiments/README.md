@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: March 9, 2026
-**Status**: V13 — 47 experiments, 630 binary checks, all green. Post-deep-audit: Anderson eigensolver fix, smart refactors, math deduplication, 4 doc-tests.
+**Last Updated**: March 10, 2026
+**Status**: V14 — 48 experiments, 853 binary checks, all green. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels).
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 
@@ -79,8 +79,8 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
-| 056 | `exp056_study_scenarios` | Full 4-track scenario generation (7 channel types) | 50 |
-| 056 | `dump_scenarios` | Write 13 scenarios to disk or push via IPC | 13 files |
+| 056 | `exp056_study_scenarios` | Full 5-track scenario generation (7 channel types, 14 scenarios) | 57 |
+| 056 | `dump_scenarios` | Write 14 scenarios to disk or push via IPC | 14 files |
 
 ### CPU vs GPU + Mixed Dispatch (Exp060-062) — Tier 2+3
 
@@ -116,6 +116,13 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 |-----|--------|--------|:------:|
 | 073 | `exp073_clinical_trt_dashboard` | Live TRT dashboard (PK streaming, cardiac risk replace) | 7 |
 | 074 | `exp074_interaction_roundtrip` | Mock petalTongue interaction roundtrip | 12 |
+
+### NLME + Full Pipeline (Exp075-076) — V14
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 075 | `exp075_nlme_cross_validation` | NLME cross-validation (FOCE/SAEM, NCA, CWRES, GOF) | 19 |
+| 076 | `exp076_full_pipeline_scenarios` | Full pipeline petalTongue scenario validation (5 tracks) | 197 |
 
 ---
 

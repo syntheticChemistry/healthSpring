@@ -1,6 +1,7 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring: Compute & Data Hunger Profile
 
-**Last Updated**: March 9, 2026
+**Last Updated**: March 10, 2026
 
 ---
 
@@ -63,6 +64,19 @@ healthSpring spans four domains with dramatically different compute/data profile
 | 035 HbA1c trajectory | Kapoor 2006, Hackett 2014 | ~2s | Low | 5MB | Small RCTs |
 | 036 Pop TRT 10K | 10K patients × T PK × metabolic | ~60s CPU | **100×** → <1s GPU | 100MB | **Key GPU target** |
 | D4 Cross-track 10K | 10K × (PK + Anderson + metabolic) | ~600s CPU | **500×** → 1.2s GPU | 500MB | **Requires Northgate** |
+
+---
+
+### Track 5: NLME Population PK
+
+| Exp | Data In | CPU Time | GPU Benefit | VRAM | Notes |
+|-----|---------|----------|-------------|------|-------|
+| 075 NLME cross-validation | 30 subjects × 14 timepoints | ~0.5s CPU (FOCE 150 iter) | **50×** (per-subject gradient) | 1MB | FOCE + SAEM validated |
+| 075+ NLME 1K subjects | 1K subjects × 14 timepoints | ~15s CPU | **100×** → 0.15s GPU | 10MB | Batch-parallel per-subject |
+| 075++ NLME 10K subjects | 10K subjects | ~150s CPU | **500×** → 0.3s GPU | 100MB | **Northgate RTX 5090** |
+| 075 VPC simulation | 50 simulations × 30 subjects | ~2s CPU | **20×** (embarrassingly parallel) | 5MB | Monte Carlo |
+| 075+ VPC 1K sims | 1K simulations | ~40s CPU | **200×** → 0.2s GPU | 50MB | GPU ideal |
+| 076 Full pipeline | 28 nodes × 121 channels | <2s CPU | N/A (scenario construction) | — | Structural validation |
 
 ---
 

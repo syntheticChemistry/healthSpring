@@ -8,6 +8,7 @@
 mod biosignal;
 mod endocrine;
 mod microbiome;
+mod nlme;
 mod pkpd;
 pub mod topology;
 
@@ -19,6 +20,7 @@ use super::types::{
 pub use biosignal::biosignal_study;
 pub use endocrine::endocrine_study;
 pub use microbiome::microbiome_study;
+pub use nlme::nlme_study;
 pub use pkpd::pkpd_study;
 
 fn scaffold(name: &str, description: &str) -> HealthScenario {
@@ -221,13 +223,14 @@ pub fn full_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     let (micro, mut micro_edges) = microbiome_study();
     let (bio, mut bio_edges) = biosignal_study();
     let (endo, mut endo_edges) = endocrine_study();
+    let (nlme, mut nlme_edges) = nlme_study();
 
     let mut s = scaffold(
         "healthSpring Complete Study",
-        "All 4 tracks: PK/PD + Microbiome + Biosignal + Endocrinology — 30 experiments",
+        "All 5 tracks: PK/PD + Microbiome + Biosignal + Endocrinology + NLME — full pipeline",
     );
 
-    for track in [pkpd, micro, bio, endo] {
+    for track in [pkpd, micro, bio, endo, nlme] {
         for n in track.ecosystem.primals {
             s.ecosystem.primals.push(n);
         }
@@ -238,6 +241,7 @@ pub fn full_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     all_edges.append(&mut micro_edges);
     all_edges.append(&mut bio_edges);
     all_edges.append(&mut endo_edges);
+    all_edges.append(&mut nlme_edges);
 
     // Cross-track links
     all_edges.push(edge(
@@ -248,6 +252,7 @@ pub fn full_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     all_edges.push(edge("diversity", "gut_axis", "microbiome → TRT metabolic"));
     all_edges.push(edge("hrv", "hrv_cardiac", "biosignal HRV → TRT cardiac"));
     all_edges.push(edge("one_comp", "t_im", "PK/PD → endocrine PK"));
+    all_edges.push(edge("pop_pk", "nlme_population", "population PK → NLME"));
 
     (s, all_edges)
 }
@@ -300,9 +305,7 @@ mod tests {
         for id in expected_node_ids {
             assert!(
                 ids.contains(id),
-                "expected node id {} not found in {:?}",
-                id,
-                ids
+                "expected node id {id} not found in {ids:?}"
             );
         }
         assert_eq!(edges.len(), expected_edge_count, "edge count mismatch");
@@ -400,7 +403,12 @@ mod tests {
     #[test]
     fn biosignal_study_structure() {
         let (scenario, edges) = biosignal_study();
-        assert_study_invariants(&scenario, &edges, &["qrs", "hrv", "spo2", "fusion"], 3);
+        assert_study_invariants(
+            &scenario,
+            &edges,
+            &["qrs", "hrv", "spo2", "fusion", "wfdb_ecg"],
+            4,
+        );
     }
 
     #[test]
@@ -416,6 +424,7 @@ mod tests {
         assert!(caps.contains("science.biosignal.hrv"));
         assert!(caps.contains("science.biosignal.ppg_spo2"));
         assert!(caps.contains("science.biosignal.fusion"));
+        assert!(caps.contains("science.biosignal.wfdb_format212"));
     }
 
     #[test]
@@ -470,17 +479,54 @@ mod tests {
     }
 
     #[test]
+    fn nlme_study_structure() {
+        let (scenario, edges) = nlme_study();
+        assert_study_invariants(
+            &scenario,
+            &edges,
+            &[
+                "nlme_population",
+                "nca_metrics",
+                "cwres_diagnostics",
+                "vpc_check",
+                "gof_fit",
+            ],
+            5,
+        );
+    }
+
+    #[test]
+    fn nlme_study_capabilities() {
+        let (scenario, _) = nlme_study();
+        let caps: std::collections::HashSet<String> = scenario
+            .ecosystem
+            .primals
+            .iter()
+            .flat_map(|n| n.capabilities.clone())
+            .collect();
+        assert!(caps.contains("science.pkpd.nlme_foce"));
+        assert!(caps.contains("science.pkpd.nca"));
+        assert!(caps.contains("science.pkpd.nlme_diagnostics"));
+    }
+
+    #[test]
+    fn nlme_study_json_roundtrips() {
+        let (scenario, edges) = nlme_study();
+        assert_json_roundtrips(&scenario, &edges);
+    }
+
+    #[test]
     fn full_study_all_nodes_and_edges() {
         let (scenario, edges) = full_study();
         assert_eq!(
             scenario.ecosystem.primals.len(),
-            22,
-            "full_study must have 22 nodes"
+            28,
+            "full_study must have 28 nodes (22 original + 1 wfdb + 5 nlme)"
         );
         assert_eq!(
             edges.len(),
-            22,
-            "full_study must have 18 domain + 4 cross = 22 edges"
+            29,
+            "full_study must have 24 domain + 5 cross = 29 edges"
         );
         let ids: std::collections::HashSet<&str> = scenario
             .ecosystem
@@ -488,7 +534,7 @@ mod tests {
             .iter()
             .map(|n| n.id.as_str())
             .collect();
-        assert_eq!(ids.len(), 22, "all node IDs must be unique");
+        assert_eq!(ids.len(), 28, "all node IDs must be unique");
         for node in &scenario.ecosystem.primals {
             assert!(
                 node.health <= 100,
@@ -522,6 +568,12 @@ mod tests {
         assert!(ids.contains("hrv_cardiac"));
         assert!(ids.contains("one_comp"));
         assert!(ids.contains("t_im"));
+        assert!(ids.contains("nlme_population"));
+        assert!(ids.contains("nca_metrics"));
+        assert!(ids.contains("cwres_diagnostics"));
+        assert!(ids.contains("vpc_check"));
+        assert!(ids.contains("gof_fit"));
+        assert!(ids.contains("wfdb_ecg"));
     }
 
     #[test]
@@ -546,6 +598,10 @@ mod tests {
         assert!(
             edge_pairs.contains(&("one_comp".into(), "t_im".into())),
             "cross-track: one_comp -> t_im"
+        );
+        assert!(
+            edge_pairs.contains(&("pop_pk".into(), "nlme_population".into())),
+            "cross-track: pop_pk -> nlme_population"
         );
     }
 
@@ -600,7 +656,7 @@ mod tests {
                 assert!((*value - 50.0).abs() < 1e-9);
                 assert_eq!(unit, "unit");
             }
-            _ => panic!("expected Gauge, got {:?}", ch),
+            _ => panic!("expected Gauge, got {ch:?}"),
         }
     }
 
@@ -632,7 +688,7 @@ mod tests {
                 assert_eq!(x_values, &[1.0, 2.0]);
                 assert_eq!(y_values, &[10.0, 20.0]);
             }
-            _ => panic!("expected TimeSeries, got {:?}", ch),
+            _ => panic!("expected TimeSeries, got {ch:?}"),
         }
     }
 
@@ -660,7 +716,7 @@ mod tests {
                 assert_eq!(values, &[1.0, 2.0]);
                 assert_eq!(unit, "u");
             }
-            _ => panic!("expected Bar, got {:?}", ch),
+            _ => panic!("expected Bar, got {ch:?}"),
         }
     }
 

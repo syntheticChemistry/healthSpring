@@ -1,7 +1,8 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: March 9, 2026
-**Status**: V13 — Tier 2+3 GPU live (3 WGSL shaders, GpuContext, fused pipeline, mixed dispatch, PCIe P2P). Deep audit: Anderson eigensolver (QL algorithm), centralized RNG, math deduplication. Patient-parameterized clinical scenarios with live streaming dashboard. petalTongue: full stream ops, domain theming, capabilities query, interaction subscription.
+**Last Updated**: March 10, 2026
+**Status**: V14 — Tier 2+3 GPU live. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks validate GPU-portable patterns. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels. Sovereign NONMEM/Monolix/WinNonlin replacements validated.
 
 ---
 
@@ -48,6 +49,21 @@ These primitives have been validated in healthSpring and are ready for the barra
 | Endocrine | `testosterone_decline`, `im_injection_pk`, `pellet_pk` | TRT pharmacokinetics | CPU only | **VALIDATED** — Exp030-032 |
 | Endocrine | `hazard_ratio_model`, `cardiac_risk_composite` | Cardiovascular risk | CPU only | **VALIDATED** — Exp034-038 |
 | Visualization | `PetalTonguePushClient`, `StreamSession` | petalTongue IPC (render, append, replace, gauge, caps, subscribe) | N/A | **VALIDATED** — Exp064, Exp073, Exp074 |
+| NLME | `foce_estimate`, `saem_estimate` | FOCE + SAEM population PK estimation (sovereign NONMEM/Monolix) | CPU only | **VALIDATED** — Exp075, 30 subjects, theta/omega/sigma recovery |
+| NCA | `nca_analysis` | Non-compartmental analysis: λz, AUC∞, MRT, CL, Vss (sovereign WinNonlin) | CPU only | **VALIDATED** — Exp075, lambda_z 5%, AUC_inf 5% |
+| Diagnostics | `cwres_compute`, `vpc_simulate`, `gof_compute` | CWRES, VPC (50 sims), GOF | CPU only | **VALIDATED** — Exp075, CWRES mean <2.0, GOF R²≥0 |
+| WFDB | `decode_format_212`, `decode_format_16` | PhysioNet streaming parser + beat annotations | CPU only | **VALIDATED** — Exp076, format round-trip |
+
+### GPU Promotion Candidates (V14)
+
+| Primitive | GPU Pattern | Priority |
+|-----------|------------|----------|
+| `foce_estimate` | Per-subject gradient is independent → batch parallel | High — FOCE is the NONMEM bottleneck |
+| `vpc_simulate` | Each simulation is independent → embarrassingly parallel Monte Carlo | High — VPC with 1000+ sims needs GPU |
+| `saem_estimate` | E-step sampling is parallelizable → batched Monte Carlo | Medium — SAEM E-step maps to existing PopPK pattern |
+| `nca_analysis` | Per-subject NCA is independent → batch element-wise | Low — NCA is already fast on CPU |
+
+Kokkos-equivalent benchmarks (`barracuda/benches/kokkos_parity.rs`) validate these patterns ahead of GPU shader promotion: reduction, scatter, Monte Carlo, ODE batch, NLME iteration.
 
 ## Still Needed: Write Phase (local WGSL)
 

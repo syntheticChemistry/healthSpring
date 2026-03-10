@@ -5,7 +5,7 @@
     "script": "control/biosignal/exp022_ppg_spo2.py",
     "source": "Rust exp022_ppg_spo2 --write-baseline",
     "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
-    "git_commit": "91a718e9f357b62ca630702c1096e8a8c271a69a",
+    "git_commit": "e93a81b6bdd85d537eb5a3904847c1cfc603ab28",
     "command": "python3 control/biosignal/exp022_ppg_spo2.py"
   },
   "_source": "healthSpring Exp022: PPG SpO2 R-value Calibration",

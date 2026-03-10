@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: March 9, 2026
-**Status**: V13. Tier 0+1+2+3 complete. Deep audit: Anderson eigensolver (QL algorithm), smart clinical.rs refactor (1177→374+819), LCG PRNG centralization, math deduplication, capability-based Songbird discovery, 4 doc-tests. 3 WGSL shaders live (Hill, PopPK, Diversity). CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS (22/22). PCIe P2P transfer (26/26). Patient-parameterized clinical TRT (5 archetypes, live dashboard). petalTongue: 7-type DataChannel, full stream ops, domain theming, capabilities query, interaction subscription. 317 tests, 630 binary checks across 47 experiments.
+**Last Updated**: March 10, 2026
+**Status**: V14. Tier 0+1+2+3 complete. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser, Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. 356 tests, 853 binary checks across 48 experiments. Industry benchmark mapping (sovereign NONMEM/Monolix/WinNonlin replacements).
 
 ---
 
@@ -35,6 +35,9 @@ Python baseline → Rust CPU (Tier 1) → barraCuda CPU parity (Exp040)
 | `endocrine::anderson_localization_length` | ξ(W) power-law | Extend hotSpring Anderson | Parameterize for gut substrate |
 | `biosignal::ppg_r_value` | AC/DC ratio per channel | `batched_elementwise_f64.wgsl` | Element-wise division |
 | `microbiome::bray_curtis` | Community dissimilarity | `FusedMapReduceF64` (abs_diff→sum) | Pairwise matrix |
+| `pkpd::nlme::foce_estimate` | FOCE individual optimization | Batch-parallel per-subject gradient | Each subject's objective is independent |
+| `pkpd::nlme::saem_estimate` | SAEM E-step Monte Carlo | Batched sampling + sufficient stats | E-step is embarrassingly parallel |
+| `pkpd::diagnostics::vpc_simulate` | VPC Monte Carlo simulation | Embarrassingly parallel | 50+ simulations, each independent |
 
 ### Tier C — New Shader Required
 
@@ -77,6 +80,13 @@ Exp040 validates CPU parity (15 contracts). Exp053 validates GPU parity (17 chec
 | `fmt_blend` | `microbiome.rs` | `barraCuda::bio::ecology` | Ready |
 | `fuse_channels` | `biosignal.rs` | toadStool pipeline stage | Ready |
 | `cardiac_risk_composite` | `endocrine.rs` | `barraCuda::epi::risk` | Ready |
+| `foce_estimate` | `pkpd/nlme.rs` | `barraCuda::stats::nlme` | Ready — per-subject parallelizable |
+| `saem_estimate` | `pkpd/nlme.rs` | `barraCuda::stats::nlme` | Ready — E-step parallelizable |
+| `nca_analysis` | `pkpd/nca.rs` | `barraCuda::bio::nca` | Ready |
+| `cwres_compute` | `pkpd/diagnostics.rs` | `barraCuda::stats::diagnostics` | Ready |
+| `vpc_simulate` | `pkpd/diagnostics.rs` | `barraCuda::stats::diagnostics` | Ready — embarrassingly parallel |
+| `gof_compute` | `pkpd/diagnostics.rs` | `barraCuda::stats::diagnostics` | Ready |
+| `decode_format_212` | `wfdb.rs` | `barraCuda::signal::wfdb` | Ready — streaming parser |
 
 ---
 
@@ -120,13 +130,14 @@ petalTongue absorbed all healthSpring prototypes (commit `037caaa`). healthSprin
 
 ### Per-Track Scenario Builders (V7 → V10)
 
-| Track | Builder | Nodes | Channels | New in V10 | Experiments |
+| Track | Builder | Nodes | Channels | New in V10+ | Experiments |
 |-------|---------|-------|----------|------------|-------------|
 | PK/PD | `scenarios::pkpd_study()` | 6 | 19 | `Scatter3D` (PopPK CL/Vd/AUC) | Exp001-006 |
 | Microbiome | `scenarios::microbiome_study()` | 4 | 11 | `Heatmap` (Bray-Curtis matrix) | Exp010-013 |
-| Biosignal | `scenarios::biosignal_study()` | 4 | 16 | `Spectrum` (HRV power spectrum) | Exp020-023 |
+| Biosignal | `scenarios::biosignal_study()` | 5 | 16+ | `Spectrum` (HRV), WFDB ECG node (V14) | Exp020-023 |
 | Endocrinology | `scenarios::endocrine_study()` | 8 | 19 | — | Exp030-038 |
-| Full Study | `scenarios::full_study()` | 22 | 65 | All 3 new types | All 4 tracks |
+| NLME | `scenarios::nlme_study()` | 5 | 41 | V14: Distribution, Scatter3D, TimeSeries, Bar, Gauge | Exp075 |
+| Full Study | `scenarios::full_study()` | 28 | 121 | All 7 types, 5 tracks, cross-track edges | All 5 tracks |
 | Diagnostic | `full_scenario_json()` | 8 | 12 | — | Exp050 |
 
 ### V10: Node Positions Optional
@@ -141,7 +152,7 @@ Node positions (`ScenarioNode.position`) changed from `Position { x, y }` to `Op
 
 ### Live + Storable Visualization (V7.1)
 
-`dump_scenarios` binary writes 6 petalTongue-compatible JSON files to `sandbox/scenarios/`. Local petalTongue evolution (3 non-invasive changes) wires `PrimalDefinition.data_channels` through `PrimalInfo.properties` to `draw_node_detail()`. Loading `healthspring-full-study.json` renders 22-node topology with 65 data channels and 13 clinical ranges on node click.
+`dump_scenarios` binary writes 14 petalTongue-compatible JSON files to `sandbox/scenarios/`. Local petalTongue evolution (3 non-invasive changes) wires `PrimalDefinition.data_channels` through `PrimalInfo.properties` to `draw_node_detail()`. Loading `healthspring-full-study.json` renders 28-node topology with 121 data channels and 16 clinical ranges on node click.
 
 | Local petalTongue Change | File | Effect |
 |--------------------------|------|--------|
@@ -190,6 +201,19 @@ All previous blocking items resolved:
 - **PBPK tissue profiles**: `pbpk_iv_tissue_profiles()` returns per-tissue concentration TimeSeries; PBPK scenario node now has 5 tissue concentration curves
 - **Pan-Tompkins intermediates**: QRS detection node now includes derivative, squared, and MWI (moving window integration) TimeSeries — 5 processing stages visible
 - **Anderson lattice spectra**: Eigenvalue spectrum and per-eigenstate IPR spectrum added to microbiome Anderson node
+
+### V14 additions (NLME + full pipeline)
+
+- **NLME population PK**: `pkpd/nlme.rs` — FOCE (150 iterations) + SAEM (200 iterations) estimation on 30 subjects. Sovereign NONMEM/Monolix replacement. Theta/omega/sigma recovery validated (Exp075).
+- **NCA**: `pkpd/nca.rs` — Lambda-z terminal slope, AUC_inf, MRT, CL, Vss. Sovereign WinNonlin replacement.
+- **NLME diagnostics**: `pkpd/diagnostics.rs` — CWRES (mean <2.0), VPC (50 simulations, 5th/50th/95th percentile bands), GOF (observed vs predicted, R²≥0).
+- **WFDB parser**: `wfdb.rs` — PhysioNet Format 212/16 streaming decoder, beat annotation parsing. Biosignal scenario now includes `wfdb_ecg` node.
+- **Kokkos-equivalent benchmarks**: `benches/kokkos_parity.rs` — reduction, scatter, Monte Carlo, ODE batch, NLME iteration. Validates GPU-portable patterns ahead of promotion.
+- **Full petalTongue pipeline**: 28 nodes (was 22), 29 edges (was 22), 121 channels (was 65). NLME scenario builder (5 new nodes). All 7 DataChannel types exercised.
+- **Exp075**: NLME cross-validation — 19 binary checks (FOCE/SAEM parameter recovery, NCA λz/AUC∞, CWRES, GOF).
+- **Exp076**: Full pipeline validation — 197 binary checks across all 5 tracks + full study structure.
+- **`dump_scenarios`**: Extended to 14 scenarios (was 13), includes NLME JSON artifact.
+- **Industry benchmarks**: SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled. Sovereign replacements documented in `specs/PAPER_REVIEW_QUEUE.md`.
 
 ### V13 additions (deep audit)
 

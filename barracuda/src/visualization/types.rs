@@ -112,6 +112,7 @@ pub struct ScenarioNode {
     pub clinical_ranges: Vec<ClinicalRange>,
 }
 
+/// 2D position for manual node placement in petalTongue layouts.
 #[derive(Debug, Clone, Serialize)]
 pub struct Position {
     pub x: f64,
@@ -142,11 +143,13 @@ pub struct HealthScenario {
     pub edges: Vec<ScenarioEdge>,
 }
 
+/// Container for scenario graph nodes (primals) in the petalTongue ecosystem view.
 #[derive(Debug, Clone, Serialize)]
 pub struct Ecosystem {
     pub primals: Vec<ScenarioNode>,
 }
 
+/// Sensory requirements for petalTongue rendering (capability negotiation).
 #[derive(Debug, Clone, Serialize)]
 pub struct SensoryConfig {
     pub required_capabilities: CapReqs,
@@ -154,12 +157,14 @@ pub struct SensoryConfig {
     pub complexity_hint: String,
 }
 
+/// Capability requirements (inputs and outputs) for sensory negotiation.
 #[derive(Debug, Clone, Serialize)]
 pub struct CapReqs {
     pub outputs: Vec<String>,
     pub inputs: Vec<String>,
 }
 
+/// UI configuration passed to petalTongue for theme, animation, and panel control.
 #[derive(Debug, Clone, Serialize)]
 pub struct UiConfig {
     pub theme: String,
@@ -194,6 +199,7 @@ pub struct ShowPanels {
     pub graph_stats: bool,
 }
 
+/// Animation settings for petalTongue graph rendering.
 #[expect(clippy::struct_excessive_bools, reason = "matches petalTongue schema")]
 #[derive(Debug, Clone, Serialize)]
 pub struct Animations {
@@ -204,6 +210,7 @@ pub struct Animations {
     pub celebration_effects: bool,
 }
 
+/// Performance constraints for petalTongue rendering.
 #[derive(Debug, Clone, Serialize)]
 pub struct Performance {
     pub target_fps: u32,
@@ -211,6 +218,7 @@ pub struct Performance {
     pub hardware_acceleration: bool,
 }
 
+/// Neural API toggle for petalTongue (enables natural-language graph queries).
 #[derive(Debug, Clone, Serialize)]
 pub struct NeuralApi {
     pub enabled: bool,

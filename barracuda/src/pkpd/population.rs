@@ -158,15 +158,15 @@ mod tests {
         let cl: Vec<f64> = (0..n).map(|i| 8.0 + 0.3 * (i as f64)).collect();
         let vd: Vec<f64> = (0..n).map(|i| 70.0 + 2.0 * (i as f64)).collect();
         let ka: Vec<f64> = (0..n).map(|i| 1.0 + 0.1 * (i as f64)).collect();
-        let times: Vec<f64> = (0..100).map(|i| 24.0 * (i as f64) / 99.0).collect();
+        let times: Vec<f64> = (0..100).map(|i| 24.0 * f64::from(i) / 99.0).collect();
 
         let run1 = population_pk_cpu(n, &cl, &vd, &ka, 4.0, 0.79, &times);
         let run2 = population_pk_cpu(n, &cl, &vd, &ka, 4.0, 0.79, &times);
 
         for (r1, r2) in run1.iter().zip(run2.iter()) {
-            assert_eq!(r1.auc, r2.auc, "AUC must be deterministic");
-            assert_eq!(r1.cmax, r2.cmax, "Cmax must be deterministic");
-            assert_eq!(r1.tmax, r2.tmax, "Tmax must be deterministic");
+            assert_eq!(r1.auc.to_bits(), r2.auc.to_bits(), "AUC must be deterministic");
+            assert_eq!(r1.cmax.to_bits(), r2.cmax.to_bits(), "Cmax must be deterministic");
+            assert_eq!(r1.tmax.to_bits(), r2.tmax.to_bits(), "Tmax must be deterministic");
         }
     }
 }

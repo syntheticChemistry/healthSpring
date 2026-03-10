@@ -41,6 +41,7 @@ fn main() {
     let (micro, micro_e) = scenarios::microbiome_study();
     let (bio, bio_e) = scenarios::biosignal_study();
     let (endo, endo_e) = scenarios::endocrine_study();
+    let (nlme, nlme_e) = scenarios::nlme_study();
     let (full, full_e) = scenarios::full_study();
 
     let mut patient = PatientProfile::minimal(55.0, 85.0, Sex::Male);
@@ -138,6 +139,7 @@ fn main() {
             push("healthspring-microbiome", &micro.name, &micro);
             push("healthspring-biosignal", &bio.name, &bio);
             push("healthspring-endocrine", &endo.name, &endo);
+            push("healthspring-nlme", &nlme.name, &nlme);
             push("healthspring-full-study", &full.name, &full);
             push(
                 "healthspring-diagnostic",
@@ -154,7 +156,7 @@ fn main() {
                     println!("  pushed {sid}");
                 }
             }
-            println!("\nAll 13 scenarios pushed to petalTongue");
+            println!("\nAll 14 scenarios pushed to petalTongue");
         }
         Err(PushError::NotFound(_)) => {
             println!("petalTongue not running — writing to disk\n");
@@ -175,6 +177,10 @@ fn main() {
                 &scenarios::scenario_with_edges_json(&endo, &endo_e),
             );
             write(
+                "healthspring-nlme.json",
+                &scenarios::scenario_with_edges_json(&nlme, &nlme_e),
+            );
+            write(
                 "healthspring-full-study.json",
                 &scenarios::scenario_with_edges_json(&full, &full_e),
             );
@@ -190,7 +196,7 @@ fn main() {
             for (sid, profile) in &trt_archetypes {
                 write(&format!("{sid}.json"), &trt_clinical_json(profile));
             }
-            println!("\nAll 13 scenarios written to {}", out.display());
+            println!("\nAll 14 scenarios written to {}", out.display());
         }
         Err(e) => {
             eprintln!("petalTongue discovery failed: {e}");
@@ -212,6 +218,10 @@ fn main() {
                 &scenarios::scenario_with_edges_json(&endo, &endo_e),
             );
             write(
+                "healthspring-nlme.json",
+                &scenarios::scenario_with_edges_json(&nlme, &nlme_e),
+            );
+            write(
                 "healthspring-full-study.json",
                 &scenarios::scenario_with_edges_json(&full, &full_e),
             );
@@ -227,7 +237,7 @@ fn main() {
             for (sid, profile) in &trt_archetypes {
                 write(&format!("{sid}.json"), &trt_clinical_json(profile));
             }
-            println!("\nAll 13 scenarios written to {}", out.display());
+            println!("\nAll 14 scenarios written to {}", out.display());
         }
     }
 }

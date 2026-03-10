@@ -1,7 +1,8 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Paper Review Queue
 
-**Last Updated**: March 9, 2026
-**Status**: 47 experiments complete — 630 Rust binary checks, 317 tests (250 barracuda + 33 forge + 30 toadStool + 4 doc-tests), 104 cross-validation checks. GPU Tier 2+3 live. V13 deep audit: Anderson eigensolver, smart refactoring, math deduplication.
+**Last Updated**: March 10, 2026
+**Status**: 48 experiments complete — 853 Rust binary checks, 356 tests (289 barracuda + 33 forge + 30 toadStool + 4 doc-tests), 104 cross-validation checks. GPU Tier 2+3 live. V14: NLME (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels). Industry benchmark mapping.
 
 ---
 
@@ -46,6 +47,18 @@
 | EN-008 | Cross-track D1/D2 — Testosterone-gut axis | Exp037 | 12 | 10 | 0,1 |
 | EN-D3 | Mok D3: HRV × TRT cardiovascular cross-track | Exp038 | 10 | 10 | 0,1 |
 | VAL-001 | barraCuda CPU parity — analytical contracts | Exp040 | 15 | 15 | 0,1 |
+
+---
+
+## NLME Population PK Validation (V14)
+
+| ID | Paper / Reference | Experiment | Checks | Tier |
+|----|-------------------|-----------|:------:|:----:|
+| NLME-001 | Beal & Sheiner (NONMEM) — FOCE estimation | Exp075 | 19 | 0,1 |
+| NLME-002 | Kuhn & Lavielle (Monolix) — SAEM estimation | Exp075 | (included above) | 0,1 |
+| NCA-001 | Gabrielsson & Weiner — NCA (λz, AUC∞, MRT, CL, Vss) | Exp075 | (included above) | 0,1 |
+| WFDB-001 | Goldberger et al. — PhysioNet WFDB format specification | Exp076 | structural | 0,1 |
+| PIPE-001 | Full pipeline petalTongue scenario validation | Exp076 | 197 | 0,1 |
 
 ---
 
@@ -125,5 +138,7 @@ All experiments use publicly accessible data. No proprietary dependencies.
 | Exp063-065 | Clinical TRT (published registries) | Same open sources as Track 4 |
 | Exp066-072 | Compute benchmarks (no new data) | Existing pipelines, timing only |
 | Exp073-074 | petalTongue evolution (no new data) | Existing scenarios + mock server |
+| Exp075 | NONMEM/Monolix methods (published algorithms) | Beal & Sheiner, Kuhn & Lavielle (literature) |
+| Exp076 | Full pipeline validation (no new data) | All existing track data + scenario builders |
 
 See `specs/README.md` for full provenance table.

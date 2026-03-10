@@ -5,7 +5,7 @@
     "script": "control/biosignal/exp021_hrv_metrics.py",
     "source": "Rust exp021_hrv_metrics --write-baseline",
     "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
-    "git_commit": "91a718e9f357b62ca630702c1096e8a8c271a69a",
+    "git_commit": "e93a81b6bdd85d537eb5a3904847c1cfc603ab28",
     "command": "python3 control/biosignal/exp021_hrv_metrics.py"
   },
   "_source": "healthSpring Exp021: HRV Metrics (RMSSD, pNN50)",

@@ -19,6 +19,7 @@
 //! | [`diagnostic`] | Integrated 4-track patient pipeline | — |
 //! | [`gpu`] | GPU dispatch: `GpuOp`, `GpuContext`, fused pipeline | All shaders |
 //! | [`visualization`] | petalTongue schema: `DataChannel`, `ClinicalRange` | — |
+//! | [`wfdb`] | PhysioNet WFDB format parser (`.hea`, `.dat`, `.atr`) | — |
 
 pub mod biosignal;
 pub mod diagnostic;
@@ -28,3 +29,4 @@ pub mod microbiome;
 pub mod pkpd;
 pub mod rng;
 pub mod visualization;
+pub mod wfdb;

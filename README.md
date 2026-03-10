@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — human health applications validating PK/PD, microbiome, biosignal, and endocrine pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 9, 2026
+**Date:** March 10, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V13 — 317 tests (250 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 47 experiments, 630 Rust binary checks, 104 cross-validation checks. Deep audit complete: Anderson eigensolver fix (QL algorithm), smart `clinical.rs` refactor (1177→374+819 lines), LCG PRNG centralized (`rng.rs`), math deduplication (`evenness_to_disorder`, `lognormal_params`), capability-based Songbird discovery, flaky IPC test elimination, 4 doc-tests added. CPU vs GPU parity matrix (27/27). Mixed hardware dispatch via NUCLEUS (22/22). PCIe P2P transfer (26/26). Patient-parameterized clinical TRT (5 archetypes, live streaming dashboard). petalTongue: 7-type DataChannel, full stream ops, domain theming, capabilities query, interaction subscription. 13 scenarios. Zero unsafe code, zero clippy warnings, `cargo fmt` clean, `cargo doc` clean.
+**Status:** V14 — 356 tests (289 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 48 experiments, 853 Rust binary checks, 104 cross-validation checks. NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix replacement). NCA (sovereign WinNonlin replacement). NLME diagnostics (CWRES, VPC, GOF). WFDB parser (PhysioNet Format 212/16). Kokkos-equivalent GPU benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, all 7 DataChannel types. Industry benchmark mapping (SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled). Zero unsafe code, zero clippy warnings, `cargo fmt` clean, `cargo doc` clean.
 
 ---
 
@@ -29,26 +29,46 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | **V13** (post-deep-audit) |
-| Rust lib tests | 250 (barraCuda) |
+| Version | **V14** (NLME + full pipeline) |
+| Rust lib tests | 289 (barraCuda) |
 | Rust forge tests | 33 (metalForge) |
 | Rust toadStool tests | 30 |
 | Doc-tests | 4 (`shannon_index`, `hill_dose_response`, `auc_trapezoidal`, `state_to_f64`) |
-| **Total tests** | **317** |
-| Rust binary checks | 630 |
+| **Total tests** | **356** |
+| Rust binary checks | 853 |
 | Python control checks | 104 (cross-validation) |
-| Experiments complete | 47 (Tier 0+1+2+3 + diagnostic + visualization + clinical + streaming + interaction) |
+| Experiments complete | 48 (Tier 0+1+2+3 + diagnostic + visualization + clinical + streaming + interaction + NLME) |
 | GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity checks |
 | GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s |
 | petalTongue visualization | **Full** — 7 DataChannel types, 3 stream ops, domain theming, capabilities query, interaction subscription |
-| petalTongue scenarios | 13 scenarios (6 clinical + 5 TRT archetypes + topology + dispatch) |
+| petalTongue scenarios | 14 scenarios (6 clinical + 5 TRT archetypes + topology + dispatch + NLME) |
+| petalTongue pipeline | 28 nodes, 29 edges, 121 channels across all 7 DataChannel types |
 | Clinical TRT | 5 patient archetypes, live streaming dashboard (PK, HRV, HbA1c, cardiac risk) |
+| NLME population PK | FOCE + SAEM estimation, NCA metrics, CWRES/VPC/GOF diagnostics |
 | metalForge validation | 33 tests (NUCLEUS topology, dispatch planning, PCIe transfer) |
 | toadStool validation | 30 tests + GPU dispatch + streaming + auto-dispatch |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 | Unsafe blocks | 0 |
 | Clippy warnings | 0 (`-D clippy::all -W clippy::pedantic`) |
 | Max file size | 819 lines (all files under 1000-line wateringHole limit) |
+
+---
+
+## V14 NLME + Full Pipeline Evolution (from V13)
+
+V14 adds NLME population pharmacokinetics, NCA, WFDB parsing, diagnostics, Kokkos-equivalent benchmarks, full petalTongue pipeline visibility, and industry benchmark mapping.
+
+| Change | Impact |
+|--------|--------|
+| **NLME population PK** | FOCE + SAEM estimation in `barracuda/src/pkpd/nlme.rs` — sovereign replacement for NONMEM/Monolix. 30 subjects, 150 FOCE iterations, 200 SAEM iterations. Theta/omega/sigma recovery validated. |
+| **NCA** | Non-compartmental analysis in `barracuda/src/pkpd/nca.rs` — sovereign WinNonlin replacement. Lambda-z, AUC_inf, MRT, CL, Vss. |
+| **NLME diagnostics** | CWRES, VPC (50 simulations), GOF in `barracuda/src/pkpd/diagnostics.rs`. CWRES mean <2.0, GOF R²≥0. |
+| **WFDB parser** | PhysioNet Format 212/16 streaming parser in `barracuda/src/wfdb.rs`. Beat annotation parsing. |
+| **Kokkos-equivalent benchmarks** | Reduction, scatter, Monte Carlo, ODE batch, NLME iteration in `barracuda/benches/kokkos_parity.rs`. GPU readiness evidence. |
+| **Full petalTongue pipeline** | 28 nodes, 29 edges, 121 channels across all 7 DataChannel types. NLME scenario builder (5 nodes: population, NCA, CWRES, VPC, GOF). WFDB ECG node. |
+| **Exp075** | NLME cross-validation: FOCE/SAEM parameter recovery, NCA metrics, CWRES, GOF. 19 binary checks. |
+| **Exp076** | Full pipeline petalTongue scenario validation. 197 binary checks across all 5 tracks + full study. |
+| **Industry benchmarks** | SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled. Sovereign replacements mapped to ecoPrimals stack. |
 
 ---
 
@@ -114,6 +134,13 @@ Clinical claim verification pipeline: extracting quantifiable claims from Dr. Ch
 - Testosterone–gut axis: microbiome stratification (cross-track 2×4) — Exp037
 - HRV–TRT cardiovascular (cross-track 3×4) — Exp038
 
+### Track 5: NLME Population Pharmacokinetics (Exp075-076)
+
+Sovereign replacement for NONMEM (FOCE), Monolix (SAEM), and WinNonlin (NCA). Full population PK modeling with diagnostics.
+
+- NLME cross-validation: FOCE + SAEM parameter recovery, NCA metrics, CWRES, GOF — Exp075
+- Full pipeline petalTongue scenario validation (all 5 tracks, 28 nodes, 121 channels) — Exp076
+
 ### Integrated Diagnostics (Exp050-052)
 
 - Integrated patient diagnostic pipeline (4 tracks + cross-track + composite risk) — Exp050
@@ -128,7 +155,7 @@ Clinical claim verification pipeline: extracting quantifiable claims from Dr. Ch
 
 ### Visualization (Exp056)
 
-- Full petalTongue 4-track scenario generation (50 checks, 7 channel types) — Exp056
+- Full petalTongue 5-track scenario generation (57 checks, 7 channel types, 14 scenarios) — Exp056
 
 ### Validation Track (Exp040)
 
@@ -161,6 +188,11 @@ Clinical claim verification pipeline: extracting quantifiable claims from Dr. Ch
 - Clinical TRT live dashboard (PK trough streaming, HRV improvement, cardiac risk replace) — Exp073
 - Interaction roundtrip (mock petalTongue: render, append, replace, gauge, capabilities, subscribe — 12/12) — Exp074
 
+### NLME + Full Pipeline (Exp075-076)
+
+- NLME cross-validation: FOCE/SAEM parameter recovery, NCA (λz, AUC∞), CWRES, GOF (19 checks) — Exp075
+- Full pipeline petalTongue scenario validation: 5 tracks, 28 nodes, 29 edges, 121 channels, 197 checks — Exp076
+
 ---
 
 ## Validation Protocol
@@ -182,11 +214,12 @@ Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 healthSpring/
 ├── barracuda/           # Rust library — PK/PD, microbiome, biosignal, endocrine
 │   └── src/
-│       ├── lib.rs       # 250 tests, #![forbid(unsafe_code)]
-│       ├── pkpd/        # Track 1: Hill, 1/2-compartment, allometric, pop PK, PBPK
+│       ├── lib.rs       # 289 tests, #![forbid(unsafe_code)]
+│       ├── pkpd/        # Track 1: Hill, 1/2-compartment, allometric, pop PK, PBPK, NLME (FOCE/SAEM), NCA, diagnostics
 │       ├── microbiome.rs # Track 2: Shannon, Simpson, Pielou, Chao1, Anderson W, FMT, eigensolver
 │       ├── biosignal.rs  # Track 3: Pan-Tompkins, IIR bandpass, HRV, PPG, fusion
 │       ├── endocrine.rs  # Track 4: testosterone PK, decline, TRT outcomes, gut axis
+│       ├── wfdb.rs      # WFDB parser (PhysioNet Format 212/16, annotations)
 │       ├── rng.rs       # Deterministic LCG PRNG (centralized)
 │       ├── gpu/         # Tier 2: GPU dispatch + GpuContext + fused pipeline
 │       │   ├── mod.rs
@@ -209,7 +242,7 @@ healthSpring/
 │   ├── biosignal/       # exp020–exp023
 │   ├── endocrine/       # exp030–exp038
 │   └── validation/      # Exp040 CPU parity
-├── experiments/         # 47 validation binaries (630 binary checks)
+├── experiments/         # 48 validation binaries (853 binary checks)
 │   ├── exp001–exp006/   # Track 1: PK/PD
 │   ├── exp010–exp013/   # Track 2: Microbiome
 │   ├── exp020–exp023/   # Track 3: Biosignal
@@ -220,7 +253,9 @@ healthSpring/
 │   ├── exp060–exp062/   # CPU vs GPU + mixed dispatch + PCIe
 │   ├── exp063–exp065/   # Clinical TRT + IPC + live streaming
 │   ├── exp066–exp072/   # Compute benchmarks + dashboard
-│   └── exp073–exp074/   # petalTongue evolution (TRT dashboard, interaction roundtrip)
+│   ├── exp073–exp074/   # petalTongue evolution (TRT dashboard, interaction roundtrip)
+│   ├── exp075/          # Track 5: NLME cross-validation (FOCE/SAEM, NCA, diagnostics)
+│   └── exp076/          # Full pipeline petalTongue scenario validation (197 checks)
 ├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
 │       └── src/
@@ -247,7 +282,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 317 tests (barraCuda + forge + toadStool + doc-tests)
+cargo test --workspace                  # 356 tests (barraCuda + forge + toadStool + doc-tests)
 cargo clippy --workspace --all-features -- -D clippy::all -W clippy::pedantic  # Zero warnings
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings
@@ -273,8 +308,12 @@ cargo run --release --bin exp061_mixed_hardware_dispatch # 22 NUCLEUS dispatch c
 cargo run --release --bin exp062_pcie_transfer_validation # 26 PCIe P2P checks
 
 # Full petalTongue visualization — per-track scenario JSON generation
-cargo run --bin exp056_study_scenarios  # 50 checks across 4 tracks
-cargo run --release --bin dump_scenarios # Write 13 scenario JSON files to sandbox/scenarios/
+cargo run --bin exp056_study_scenarios  # 57 checks across 5 tracks
+cargo run --release --bin dump_scenarios # Write 14 scenario JSON files to sandbox/scenarios/
+
+# NLME + Full Pipeline
+cargo run --bin exp075_nlme_cross_validation     # 19 checks (FOCE/SAEM/NCA/CWRES/GOF)
+cargo run --bin exp076_full_pipeline_scenarios    # 197 checks (all 5 tracks + full study)
 
 # Clinical TRT patient scenarios + live dashboard
 cargo run --bin exp063_clinical_trt_scenarios      # 5 patient archetypes

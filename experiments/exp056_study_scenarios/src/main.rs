@@ -194,8 +194,8 @@ fn main() {
     let bio_val: serde_json::Value = serde_json::from_str(&bio_json).expect("valid JSON");
 
     check!("bio: valid JSON", bio_val.is_object());
-    check!("bio: 4 nodes", bio.ecosystem.primals.len() == 4);
-    check!("bio: 3 edges", bio_edges.len() == 3);
+    check!("bio: 5 nodes", bio.ecosystem.primals.len() == 5);
+    check!("bio: 4 edges", bio_edges.len() == 4);
 
     let qrs = bio
         .ecosystem
@@ -243,6 +243,17 @@ fn main() {
     check!(
         "bio: fusion has 4 channels (2 EDA + stress + score)",
         fusion.data_channels.len() == 4
+    );
+
+    let wfdb = bio
+        .ecosystem
+        .primals
+        .iter()
+        .find(|n| n.id == "wfdb_ecg")
+        .unwrap();
+    check!(
+        "bio: wfdb_ecg has 5 channels (TS + bar + 3 gauge)",
+        wfdb.data_channels.len() == 5
     );
 
     check!(
@@ -307,21 +318,53 @@ fn main() {
     );
 
     // -----------------------------------------------------------------------
+    // Track 5: NLME
+    // -----------------------------------------------------------------------
+    println!("\n=== Track 5: NLME ===");
+    let (nlme, nlme_edges) = scenarios::nlme_study();
+    let nlme_json = scenarios::scenario_with_edges_json(&nlme, &nlme_edges);
+    let nlme_val: serde_json::Value = serde_json::from_str(&nlme_json).expect("valid JSON");
+
+    check!("nlme: valid JSON", nlme_val.is_object());
+    check!("nlme: 5 nodes", nlme.ecosystem.primals.len() == 5);
+    check!("nlme: 5 edges", nlme_edges.len() == 5);
+
+    let nlme_pop = nlme
+        .ecosystem
+        .primals
+        .iter()
+        .find(|n| n.id == "nlme_population")
+        .unwrap();
+    check!(
+        "nlme: nlme_population has 18 channels",
+        nlme_pop.data_channels.len() == 18
+    );
+
+    check!(
+        "nlme: JSON has distribution",
+        nlme_json.contains("\"channel_type\": \"distribution\"")
+    );
+    check!(
+        "nlme: JSON has scatter3d",
+        nlme_json.contains("\"channel_type\": \"scatter3d\"")
+    );
+
+    // -----------------------------------------------------------------------
     // Full study (all tracks combined)
     // -----------------------------------------------------------------------
-    println!("\n=== Full Study (all 4 tracks) ===");
+    println!("\n=== Full Study (all 5 tracks) ===");
     let (full, full_edges) = scenarios::full_study();
     let full_json = scenarios::scenario_with_edges_json(&full, &full_edges);
     let full_val: serde_json::Value = serde_json::from_str(&full_json).expect("valid JSON");
 
     check!("full: valid JSON", full_val.is_object());
     check!(
-        "full: 22 nodes (6+4+4+8)",
-        full.ecosystem.primals.len() == 22
+        "full: 28 nodes (6+4+5+8+5)",
+        full.ecosystem.primals.len() == 28
     );
     check!(
-        "full: 22 edges (5+3+3+7+4 cross-track)",
-        full_edges.len() == 22
+        "full: 29 edges (5+3+4+7+5+5 cross-track)",
+        full_edges.len() == 29
     );
 
     let total_channels: usize = full

@@ -35,3 +35,24 @@ pub fn lcg_step(state: u64) -> u64 {
 pub fn state_to_f64(state: u64) -> f64 {
     (state >> 33) as f64 / f64::from(u32::MAX)
 }
+
+/// Box-Muller transform: two uniform `[0,1)` samples to one standard normal.
+///
+/// Clamps `u1` away from zero to avoid `ln(0)`.
+#[must_use]
+#[inline]
+pub fn box_muller(u1: f64, u2: f64) -> f64 {
+    (-2.0 * u1.max(1e-30).ln()).sqrt() * (std::f64::consts::TAU * u2).cos()
+}
+
+/// Draw one standard normal variate, advancing LCG state twice.
+///
+/// Returns `(z, new_state)` where `z ~ N(0,1)`.
+#[must_use]
+pub fn normal_sample(state: u64) -> (f64, u64) {
+    let s1 = lcg_step(state);
+    let u1 = state_to_f64(s1);
+    let s2 = lcg_step(s1);
+    let u2 = state_to_f64(s2);
+    (box_muller(u1, u2), s2)
+}

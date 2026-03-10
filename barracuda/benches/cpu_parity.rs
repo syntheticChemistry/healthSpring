@@ -18,6 +18,10 @@ fn hill_sweep(concs: &[f64], ic50: f64, hill_n: f64, e_max: f64) -> Vec<f64> {
         .collect()
 }
 
+#[expect(
+    clippy::cast_precision_loss,
+    reason = "benchmark indices fit f64 mantissa"
+)]
 fn pk_curve(dose: f64, f_bio: f64, vd: f64, ka: f64, ke: f64, n_points: usize) -> Vec<f64> {
     let dt = 24.0 / n_points as f64;
     (0..=n_points)
@@ -27,7 +31,7 @@ fn pk_curve(dose: f64, f_bio: f64, vd: f64, ka: f64, ke: f64, n_points: usize) -
 
 fn bench_hill_sweep_50(c: &mut Criterion) {
     let concs: Vec<f64> = (0..50)
-        .map(|i| 0.1 * 1000.0_f64.powf(i as f64 / 49.0))
+        .map(|i| 0.1 * 1000.0_f64.powf(f64::from(i) / 49.0))
         .collect();
     c.bench_function("hill_sweep_50", |b| {
         b.iter(|| hill_sweep(black_box(&concs), 10.0, 1.5, 100.0));
@@ -36,7 +40,7 @@ fn bench_hill_sweep_50(c: &mut Criterion) {
 
 fn bench_hill_sweep_10k(c: &mut Criterion) {
     let concs: Vec<f64> = (0..10_000)
-        .map(|i| 0.1 * 1000.0_f64.powf(i as f64 / 9_999.0))
+        .map(|i| 0.1 * 1000.0_f64.powf(f64::from(i) / 9_999.0))
         .collect();
     c.bench_function("hill_sweep_10K", |b| {
         b.iter(|| hill_sweep(black_box(&concs), 10.0, 1.5, 100.0));
@@ -64,6 +68,10 @@ fn bench_diversity_indices_7(c: &mut Criterion) {
     });
 }
 
+#[expect(
+    clippy::cast_precision_loss,
+    reason = "benchmark indices fit f64 mantissa"
+)]
 fn bench_diversity_batch_1k(c: &mut Criterion) {
     let communities: Vec<Vec<f64>> = (0..1_000)
         .map(|i| {
@@ -92,7 +100,7 @@ fn bench_auc_trapezoidal_101(c: &mut Criterion) {
     let cl = 0.15 * (85.0_f64 / 70.0).powf(0.75);
     let vd = 15.0 * (85.0 / 70.0);
     let ke = cl / vd;
-    let times: Vec<f64> = (0..=100).map(|i| i as f64 * 24.0 / 100.0).collect();
+    let times: Vec<f64> = (0..=100).map(|i| f64::from(i) * 24.0 / 100.0).collect();
     let concs: Vec<f64> = times
         .iter()
         .map(|&t| pk_oral_one_compartment(4.0, 0.79, vd, 1.5, ke, t))
@@ -102,12 +110,16 @@ fn bench_auc_trapezoidal_101(c: &mut Criterion) {
     });
 }
 
+#[expect(
+    clippy::cast_precision_loss,
+    reason = "benchmark indices fit f64 mantissa"
+)]
 fn bench_population_montecarlo_500(c: &mut Criterion) {
     let n = 500;
     let cl_params: Vec<f64> = (0..n).map(|i| 8.0 + (i as f64 * 0.01)).collect();
     let vd_params: Vec<f64> = (0..n).map(|i| 70.0 + (i as f64 * 0.05)).collect();
     let ka_params: Vec<f64> = (0..n).map(|i| 1.2 + (i as f64 * 0.001)).collect();
-    let times: Vec<f64> = (0..=100).map(|i| i as f64 * 24.0 / 100.0).collect();
+    let times: Vec<f64> = (0..=100).map(|i| f64::from(i) * 24.0 / 100.0).collect();
     c.bench_function("population_montecarlo_500", |b| {
         b.iter(|| {
             population_pk_cpu(
@@ -123,12 +135,16 @@ fn bench_population_montecarlo_500(c: &mut Criterion) {
     });
 }
 
+#[expect(
+    clippy::cast_precision_loss,
+    reason = "benchmark indices fit f64 mantissa"
+)]
 fn bench_population_montecarlo_5000(c: &mut Criterion) {
     let n = 5_000;
     let cl_params: Vec<f64> = (0..n).map(|i| 8.0 + (i as f64 * 0.001)).collect();
     let vd_params: Vec<f64> = (0..n).map(|i| 70.0 + (i as f64 * 0.005)).collect();
     let ka_params: Vec<f64> = (0..n).map(|i| 1.2 + (i as f64 * 0.0001)).collect();
-    let times: Vec<f64> = (0..=100).map(|i| i as f64 * 24.0 / 100.0).collect();
+    let times: Vec<f64> = (0..=100).map(|i| f64::from(i) * 24.0 / 100.0).collect();
     c.bench_function("population_montecarlo_5000", |b| {
         b.iter(|| {
             population_pk_cpu(

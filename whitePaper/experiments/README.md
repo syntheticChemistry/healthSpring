@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V13 — 47 experiments (Tier 0+1+2+3 + diagnostic + petalTongue + GPU + visualization + dispatch + clinical TRT + streaming + interaction), 317 Rust tests (250 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 630 binary checks, 104 cross-validation checks. Deep audit: Anderson eigensolver, smart refactoring, math deduplication, 4 doc-tests.
-**Last Updated**: March 9, 2026
+**Status**: V14 — 48 experiments (Tier 0+1+2+3 + diagnostic + petalTongue + GPU + visualization + dispatch + clinical TRT + streaming + interaction + NLME), 356 Rust tests (289 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 853 binary checks, 104 cross-validation checks. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels).
+**Last Updated**: March 10, 2026
 
 ---
 
@@ -78,7 +78,7 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 
 | Exp | Name | Control | Tiers | Python | Rust Binary |
 |-----|------|---------|:-----:|:------:|:-----------:|
-| 056 | Full petalTongue visualization (4 tracks, 7 channel types) | Schema validation | 1 | — | 50 |
+| 056 | Full petalTongue visualization (5 tracks, 7 channel types, 14 scenarios) | Schema validation | 1 | — | 57 |
 
 ### Dispatch and Transfer (V8)
 
@@ -114,6 +114,13 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 |-----|------|---------|:-----:|:------:|:-----------:|
 | 073 | Clinical TRT live dashboard (PK trough, HRV, cardiac risk) | Schema + stream validation | 1 | — | 7 |
 | 074 | Interaction roundtrip (mock petalTongue: caps + subscribe) | Mock server E2E | 1 | — | 12 |
+
+### NLME + Full Pipeline (V14)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 075 | NLME cross-validation (FOCE/SAEM, NCA, CWRES, GOF) | Beal & Sheiner, Kuhn & Lavielle | 0,1 | — | 19 |
+| 076 | Full pipeline petalTongue validation (5 tracks, 28 nodes) | Structural + schema | 1 | — | 197 |
 
 ### Cross-Validation
 
@@ -172,7 +179,9 @@ experiments/
 ├── exp071_mixed_system_pipeline/  # V11: Mixed CPU+GPU+NPU pipeline
 ├── exp072_compute_dashboard/      # V11: Compute dashboard → petalTongue
 ├── exp073_clinical_trt_dashboard/ # V12: Live TRT clinical dashboard
-└── exp074_interaction_roundtrip/  # V12: Interaction roundtrip validation
+├── exp074_interaction_roundtrip/  # V12: Interaction roundtrip validation
+├── exp075_nlme_cross_validation/  # V14: NLME (FOCE/SAEM, NCA, diagnostics)
+└── exp076_full_pipeline_scenarios/ # V14: Full pipeline petalTongue validation
 ```
 
 Controls live in `control/`:
@@ -227,7 +236,8 @@ control/
 - **066–068**: Compute benchmarks (CPU and GPU)
 - **069–072**: toadStool dispatch, PCIe bypass, mixed systems, compute dashboard
 - **073–074**: petalTongue evolution (interaction, streaming, capabilities)
-- **075+**: Future extensions
+- **075–076**: NLME population PK + full pipeline validation
+- **077+**: Future extensions
 
 ---
 

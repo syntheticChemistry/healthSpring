@@ -239,7 +239,7 @@ mod tests {
         let tissues = standard_human_tissues();
         let (_, profile, _) = pbpk_iv_simulate(&tissues, 100.0, 5.0, 24.0, 0.01);
         assert!(
-            profile.last().unwrap() < &profile[0],
+            profile.last().expect("non-empty profile") < &profile[0],
             "concentration decays"
         );
     }
@@ -295,8 +295,8 @@ mod tests {
     #[test]
     fn pbpk_deterministic() {
         let tissues = standard_human_tissues();
-        let (t1, p1, _) = pbpk_iv_simulate(&tissues, 100.0, 5.0, 24.0, 0.01);
-        let (t2, p2, _) = pbpk_iv_simulate(&tissues, 100.0, 5.0, 24.0, 0.01);
+        let (_t1, p1, _) = pbpk_iv_simulate(&tissues, 100.0, 5.0, 24.0, 0.01);
+        let (_t2, p2, _) = pbpk_iv_simulate(&tissues, 100.0, 5.0, 24.0, 0.01);
         for (a, b) in p1.iter().zip(p2.iter()) {
             assert_eq!(a.to_bits(), b.to_bits(), "PBPK must be bit-identical");
         }

@@ -57,6 +57,8 @@ members = [
     "experiments/exp072_compute_dashboard",
     "experiments/exp073_clinical_trt_dashboard",
     "experiments/exp074_interaction_roundtrip",
+    "experiments/exp075_nlme_cross_validation",
+    "experiments/exp076_full_pipeline_scenarios",
 ]
 
 [workspace.package]

@@ -1,7 +1,9 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 [package]
 name = "healthspring-exp063-clinical-trt-scenarios"
 version = "0.1.0"
 edition = "2024"
+license.workspace = true
 
 [[bin]]
 name = "exp063_clinical_trt_scenarios"

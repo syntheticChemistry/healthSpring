@@ -9,6 +9,8 @@ use std::io::{Read, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
 
+const RPC_RESPONSE_BUF: usize = 4096;
+
 /// All capabilities that healthSpring can announce.
 pub const CAPABILITIES: &[&str] = &[
     "health.metrics",
@@ -129,7 +131,7 @@ pub fn query(capability: &str) -> CapResult<String> {
         .map_err(CapabilityError::ConnectionFailed)?;
     stream.flush().map_err(CapabilityError::ConnectionFailed)?;
 
-    let mut buf = vec![0u8; 4096];
+    let mut buf = vec![0u8; RPC_RESPONSE_BUF];
     let n = stream
         .read(&mut buf)
         .map_err(CapabilityError::ConnectionFailed)?;
@@ -229,7 +231,7 @@ fn send_songbird_rpc(socket_path: &PathBuf, request: &serde_json::Value) -> CapR
         .map_err(CapabilityError::ConnectionFailed)?;
     stream.flush().map_err(CapabilityError::ConnectionFailed)?;
 
-    let mut buf = vec![0u8; 4096];
+    let mut buf = vec![0u8; RPC_RESPONSE_BUF];
     let n = stream
         .read(&mut buf)
         .map_err(CapabilityError::ConnectionFailed)?;

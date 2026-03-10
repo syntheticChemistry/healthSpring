@@ -9,6 +9,8 @@ use std::io::{Read, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
 
+const RPC_RESPONSE_BUF: usize = 65_536;
+
 use super::types::{ClinicalRange, DataChannel, HealthScenario};
 
 /// Client for pushing visualization data to petalTongue
@@ -382,7 +384,7 @@ impl PetalTonguePushClient {
             .map_err(PushError::ConnectionFailed)?;
         stream.flush().map_err(PushError::ConnectionFailed)?;
 
-        let mut buf = vec![0u8; 65_536];
+        let mut buf = vec![0u8; RPC_RESPONSE_BUF];
         let n = stream.read(&mut buf).map_err(PushError::ConnectionFailed)?;
 
         let response: serde_json::Value = serde_json::from_slice(&buf[..n])
@@ -603,7 +605,7 @@ mod tests {
         );
         let op = params.get("operation").unwrap();
         assert_eq!(op.get("type").and_then(|v| v.as_str()), Some("set_value"));
-        assert_eq!(op.get("value").and_then(|v| v.as_f64()), Some(73.5));
+        assert_eq!(op.get("value").and_then(serde_json::Value::as_f64), Some(73.5));
     }
 
     fn mock_petaltongue_response(listener: &std::os::unix::net::UnixListener) -> serde_json::Value {
@@ -830,7 +832,7 @@ mod tests {
 
     #[test]
     fn query_capabilities_sends_valid_jsonrpc() {
-        let (request, result) = run_socket_test("caps", |c| c.query_capabilities());
+        let (request, result) = run_socket_test("caps", super::PetalTonguePushClient::query_capabilities);
 
         assert!(result.is_ok());
         assert_eq!(request["method"], "visualization.capabilities");

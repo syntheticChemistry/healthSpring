@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** March 9, 2026
-**Status:** V13 — 4 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC + streaming + interaction, 47 experiments (317 tests, 630 binary checks, 104 cross-validation checks). Deep audit: Anderson eigensolver (QL algorithm), smart clinical.rs refactor, math deduplication, centralized RNG, 4 doc-tests, capability-based discovery. Tier 2+3 GPU live. Patient-parameterized clinical scenarios (5 archetypes, live streaming dashboard). petalTongue: 7-type DataChannel, full stream ops, domain theming, capabilities query, interaction subscription. 13 scenarios.
+**Last Updated:** March 10, 2026
+**Status:** V14 — 5 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC + streaming + interaction + NLME, 48 experiments (356 tests, 853 binary checks, 104 cross-validation checks). NLME population PK (FOCE + SAEM — sovereign NONMEM/Monolix), NCA (sovereign WinNonlin), NLME diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. Industry benchmark mapping.
 
 ---
 
@@ -15,6 +15,7 @@ Per-person translation of validated science into usable health applications. Met
 | 2 — Microbiome | Gut diversity, Anderson lattice, colonization resistance, FMT | Exp010-013 | **Complete** (Tier 0+1) |
 | 3 — Biosignal | ECG detection, HRV, PPG SpO2, EDA, multi-channel fusion | Exp020-023 | **Complete** (Tier 0+1) |
 | 4 — Endocrinology | Testosterone PK, TRT outcomes, gut axis, HRV cross-track | Exp030-038 | **Complete** (Tier 0+1) |
+| 5 — NLME | FOCE/SAEM population PK, NCA, CWRES/VPC/GOF diagnostics | Exp075-076 | **Complete** (Tier 0+1) |
 
 ---
 
@@ -60,11 +61,12 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | Clinical TRT + IPC + streaming (Exp063-065) | — | — | Structural | — |
 | Compute + benchmark (Exp066-072) | — | — | Structural | — |
 | petalTongue evolution (Exp073-074) | — | — | 19 | 19 |
-| **Lib unit tests** | — | — | **250** | 250 |
+| NLME + Full Pipeline (Exp075-076) | — | — | 216 | 216 |
+| **Lib unit tests** | — | — | **289** | 289 |
 | **metalForge tests** | — | — | **33** | 33 |
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **4** | 4 |
-| **Total** | **688** | **287** (Tier 0) | **630** (binary) + **317** (tests) = **947** | **1,922+** |
+| **Total** | **688** | **287** (Tier 0) | **853** (binary) + **356** (tests) = **1,209** | **2,184+** |
 
 ---
 
@@ -193,15 +195,17 @@ All 24 Tier 0+1 experiments validated. GPU pipeline live (Exp053-055). CPU vs GP
 
 ---
 
-## Next Steps: Deeper Integration and Field Deployment
+## Next Steps: GPU Promotion and Field Deployment
 
-1. **Full patient diagnostic scenarios** — extend beyond TRT to full 4-track diagnostic scenarios (PK/PD + microbiome + biosignal + endocrine per patient)
-2. **petalTongue interaction loop** — clinician selects node in petalTongue → healthSpring drills down (Exp074 validates the roundtrip; now wire to clinical scenarios)
-3. **Anderson eigensolve** — GPU shader for gut lattice localization length (Exp011/037)
-4. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG processing (Exp020-023)
-5. **Field deployment** — validate on Raspberry Pi + eGPU (same WGSL, portable pipeline)
-6. **NPU streaming** — toadStool backend swap for Akida NPU (Pan-Tompkins streaming via PCIe P2P bypass)
-7. **biomeOS atomic deployment** — healthspring_deploy.toml → live NUCLEUS orchestration across node/tower topologies
+1. **NLME GPU shaders** — FOCE per-subject gradient and VPC Monte Carlo are embarrassingly parallel (Kokkos benchmarks validate patterns)
+2. **NLME at scale** — 10K+ subjects requires GPU (CPU bottleneck at >1K subjects with FOCE)
+3. **Real-time diagnostics** — live VPC/CWRES streaming to petalTongue during NLME estimation
+4. **petalTongue interaction loop** — clinician selects node in petalTongue → healthSpring drills down (Exp074 validates the roundtrip; now wire to clinical scenarios)
+5. **Anderson eigensolve** — GPU shader for gut lattice localization length (Exp011/037)
+6. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG processing (Exp020-023)
+7. **Field deployment** — validate on Raspberry Pi + eGPU (same WGSL, portable pipeline)
+8. **NPU streaming** — toadStool backend swap for Akida NPU (Pan-Tompkins streaming via PCIe P2P bypass)
+9. **biomeOS atomic deployment** — healthspring_deploy.toml → live NUCLEUS orchestration across node/tower topologies
 
 ---
 

@@ -1175,6 +1175,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "healthspring-exp075"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+]
+
+[[package]]
+name = "healthspring-exp076"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "serde_json",
+]
+
+[[package]]
 name = "healthspring-forge"
 version = "0.1.0"
 dependencies = [

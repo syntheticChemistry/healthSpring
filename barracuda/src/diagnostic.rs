@@ -547,23 +547,15 @@ pub fn population_montecarlo_with_config(
     let mut risks = Vec::with_capacity(n_patients);
 
     for _ in 0..n_patients {
-        rng = crate::rng::lcg_step(rng);
-        let u1 = (rng >> 33) as f64 / (1u64 << 31) as f64;
-        rng = crate::rng::lcg_step(rng);
-        let u2 = (rng >> 33) as f64 / (1u64 << 31) as f64;
-
-        let u1_safe = u1.max(1e-10);
-        let z = (-2.0 * u1_safe.ln()).sqrt() * (std::f64::consts::TAU * u2).cos();
+        let (z, next_rng) = crate::rng::normal_sample(rng);
+        rng = next_rng;
 
         let age_var = (profile_cv_lognormal(base_profile.age_years, cfg.mc_age_cv, z)).max(18.0);
         let weight_var =
             profile_cv_lognormal(base_profile.weight_kg, cfg.mc_weight_cv, z).max(30.0);
 
-        rng = crate::rng::lcg_step(rng);
-        let z2_u1 = ((rng >> 33) as f64 / (1u64 << 31) as f64).max(1e-10);
-        rng = crate::rng::lcg_step(rng);
-        let z2_u2 = (rng >> 33) as f64 / (1u64 << 31) as f64;
-        let z2 = (-2.0 * z2_u1.ln()).sqrt() * (std::f64::consts::TAU * z2_u2).cos();
+        let (z2, next_rng2) = crate::rng::normal_sample(rng);
+        rng = next_rng2;
 
         let t_var = base_profile
             .testosterone_ng_dl
@@ -686,12 +678,14 @@ mod tests {
         let p = test_profile();
         let default_result = assess_patient(&p);
 
-        let mut custom_cfg = DiagnosticConfig::default();
-        custom_cfg.dose_mg = 8.0;
-        custom_cfg.weight_microbiome = 0.5;
-        custom_cfg.weight_biosignal = 0.2;
-        custom_cfg.weight_endocrine = 0.2;
-        custom_cfg.weight_cross_track = 0.1;
+        let custom_cfg = DiagnosticConfig {
+            dose_mg: 8.0,
+            weight_microbiome: 0.5,
+            weight_biosignal: 0.2,
+            weight_endocrine: 0.2,
+            weight_cross_track: 0.1,
+            ..DiagnosticConfig::default()
+        };
 
         let custom_result = assess_patient_with_config(&p, &custom_cfg);
 
@@ -728,8 +722,8 @@ mod tests {
         let p = test_profile();
         let r1 = population_montecarlo(&p, 200, 99);
         let r2 = population_montecarlo(&p, 200, 99);
-        assert_eq!(r1.mean_risk, r2.mean_risk);
-        assert_eq!(r1.patient_percentile, r2.patient_percentile);
+        assert_eq!(r1.mean_risk.to_bits(), r2.mean_risk.to_bits());
+        assert_eq!(r1.patient_percentile.to_bits(), r2.patient_percentile.to_bits());
     }
 
     #[test]

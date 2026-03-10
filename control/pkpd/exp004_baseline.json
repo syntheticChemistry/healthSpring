@@ -31,6 +31,9 @@
   "_provenance": {
     "date": "2026-03-08",
     "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
-    "numpy": "2.1.3"
+    "numpy": "2.1.3",
+    "git_commit": "e93a81b6bdd85d537eb5a3904847c1cfc603ab28",
+    "command": "python3 control/pkpd/exp004_mab_pk_transfer.py",
+    "script": "control/pkpd/exp004_mab_pk_transfer.py"
   }
 }

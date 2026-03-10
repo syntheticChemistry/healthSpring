@@ -149,6 +149,22 @@
 | exp069 | ExpDecay pipeline stage | 1e-10 | Machine epsilon | `y = exp(-0.01 * x)` pipeline transform; f64 transcendental at small argument. |
 | exp069 | Dispatch plan substrate consistency | 1e-10 | Machine epsilon | metalForge substrate selection must be deterministic for given workload. |
 
+### NLME / Pipeline Class (V14)
+
+| Experiment | Check | Tolerance | Class | Justification |
+|-----------|-------|-----------|-------|---------------|
+| exp075 | FOCE theta recovery (CL, Vd, Ka) | 0.30 rel | Population | FOCE on 30 subjects with IIV; 30% relative for parameter recovery is standard in NLME literature. |
+| exp075 | SAEM theta recovery | 0.50 rel | Population | SAEM with stochastic E-step; wider tolerance than FOCE due to Monte Carlo noise in 200 iterations. |
+| exp075 | NCA lambda_z | 0.05 rel | Numerical | Terminal slope from log-linear regression; 5% for discrete sampling. |
+| exp075 | NCA AUC_inf | 0.05 rel | Numerical | AUC∞ = AUC_last + C_last/λz; 5% propagated from λz tolerance. |
+| exp075 | CWRES mean | 2.0 abs | Population | CWRES should be ~N(0,1); mean <2.0 is a standard NLME diagnostic criterion. |
+| exp075 | GOF R-squared | ≥0 | Population | Observed vs predicted R²≥0; any positive correlation indicates model captures signal. |
+| exp075 | FOCE objective deterministic | 1e-10 | Machine epsilon | Same seed → same objective function value. |
+| exp075 | SAEM objective deterministic | 1e-10 | Machine epsilon | Same seed → same objective function value. |
+| exp076 | Node/edge counts per track | exact | Structural | Scenario builders must produce exact topology. |
+| exp076 | Channel type presence | exact | Structural | All 7 DataChannel types must appear in full study. |
+| exp076 | Full study totals | 28 nodes, 29 edges | Structural | Regression guard against missing/extra nodes. |
+
 ### Summary by Experiment
 
 | Experiment | Key Tolerances | Primary Class |
@@ -176,3 +192,5 @@
 | exp062 | 1e-15 | Machine epsilon |
 | exp067 | 1e-10 | Machine epsilon (CPU parity) |
 | exp069 | 1e-10 | Machine epsilon (dispatch) |
+| exp075 | 0.30, 0.50, 0.05, 2.0, ≥0, 1e-10 | Population + numerical + machine epsilon |
+| exp076 | exact (structural) | Structural (node/edge/channel counts) |

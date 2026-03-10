@@ -9,6 +9,11 @@
 //! - Heart rate variability (HRV) analysis
 //! - Wearable sensor fusion (IMU + PPG + temperature)
 //!
+//! ## Constants
+//!
+//! ECG bandpass range and MWI window follow Pan & Tompkins (1985).
+//! `SpO2` calibration coefficients are from Beer-Lambert linearization.
+//!
 //! ## Tier 1 (CPU) — Exp020
 //!
 //! Pan-Tompkins QRS detection algorithm:
@@ -386,16 +391,11 @@ pub fn generate_synthetic_ecg(
 
     if noise_std > 0.0 {
         for sample in &mut ecg {
-            rng_state = rng_state
-                .wrapping_mul(crate::rng::LCG_MULTIPLIER)
-                .wrapping_add(1);
-            let u1 = u64_to_f64(rng_state >> 33) / f64::from(u32::MAX);
-            rng_state = rng_state
-                .wrapping_mul(crate::rng::LCG_MULTIPLIER)
-                .wrapping_add(1);
-            let u2 = u64_to_f64(rng_state >> 33) / f64::from(u32::MAX);
-            let z = (-2.0 * u1.max(1e-30).ln()).sqrt() * (2.0 * PI * u2).cos();
-            *sample += noise_std * z;
+            rng_state = crate::rng::lcg_step(rng_state);
+            let u1 = crate::rng::state_to_f64(rng_state);
+            rng_state = crate::rng::lcg_step(rng_state);
+            let u2 = crate::rng::state_to_f64(rng_state);
+            *sample += noise_std * crate::rng::box_muller(u1, u2);
         }
     }
 
@@ -725,7 +725,7 @@ mod tests {
         let (ecg, r_peaks) = generate_synthetic_ecg(360.0, 10.0, 72.0, 0.0, 42);
         assert_eq!(ecg.len(), 3600);
         assert!(
-            (r_peaks.len() as i32 - 12).abs() <= 1,
+            (i32::try_from(r_peaks.len()).unwrap_or(0) - 12).abs() <= 1,
             "~12 beats at 72bpm in 10s"
         );
     }
@@ -740,6 +740,11 @@ mod tests {
         assert_eq!(result.mwi.len(), ecg.len());
         assert!(!result.peaks.is_empty(), "should detect at least one peak");
 
+        #[expect(
+            clippy::cast_possible_truncation,
+            clippy::cast_sign_loss,
+            reason = "constant arithmetic produces known-small positive result"
+        )]
         let tol = (75.0 * FS / 1000.0) as usize;
         let metrics = evaluate_detection(&result.peaks, &true_peaks, tol);
         assert!(metrics.sensitivity > 0.8, "Se={}", metrics.sensitivity);
@@ -867,6 +872,10 @@ mod tests {
     fn eda_scl_near_baseline() {
         let eda = generate_synthetic_eda(32.0, 30.0, 2.0, &[5.0, 12.0, 20.0, 25.0], 0.5, 42);
         let scl = eda_scl(&eda, 32);
+        #[expect(
+            clippy::cast_precision_loss,
+            reason = "EDA sample count fits f64 mantissa"
+        )]
         let mean_scl: f64 = scl.iter().sum::<f64>() / scl.len() as f64;
         assert!(
             (mean_scl - 2.0).abs() < 0.5,

@@ -464,7 +464,7 @@ mod tests {
         let result = p.execute_cpu();
         assert!(result.success);
         assert!(result.stage_results.is_empty());
-        assert_eq!(result.total_time_us, 0.0);
+        assert!(result.total_time_us.abs() < f64::EPSILON);
     }
 
     #[test]
@@ -668,9 +668,9 @@ mod tests {
         assert!(result.success);
         let out = &result.stage_results[1].output_data;
         assert_eq!(out.len(), 3);
-        for i in 0..3 {
+        for (i, &out_val) in out.iter().enumerate() {
             let inp = result.stage_results[0].output_data[i];
-            assert!((out[i] - inp * inp).abs() < 1e-10);
+            assert!((out_val - inp * inp).abs() < 1e-10);
         }
     }
 

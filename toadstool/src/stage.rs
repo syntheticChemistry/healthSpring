@@ -333,7 +333,7 @@ mod tests {
         };
         let r = stage.execute(None);
         for &v in &r.output_data {
-            assert!(v >= 0.0 && v <= 1.0, "value {v} outside [0,1]");
+            assert!((0.0..=1.0).contains(&v), "value {v} outside [0,1]");
         }
     }
 
@@ -366,7 +366,7 @@ mod tests {
         };
         let input = [0.0];
         let r = stage.execute(Some(&input));
-        assert_eq!(r.output_data[0], 0.0);
+        assert!(r.output_data[0].abs() < f64::EPSILON);
     }
 
     #[test]

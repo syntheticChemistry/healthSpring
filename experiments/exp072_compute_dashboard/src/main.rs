@@ -341,17 +341,17 @@ fn main() {
     );
     check(
         "report_json_valid",
-        { serde_json::from_str::<serde_json::Value>(&report_json).is_ok() },
+        serde_json::from_str::<serde_json::Value>(&report_json).is_ok(),
         &mut passed,
     );
     check(
         "topo_json_valid",
-        { serde_json::from_str::<serde_json::Value>(&topo_json).is_ok() },
+        serde_json::from_str::<serde_json::Value>(&topo_json).is_ok(),
         &mut passed,
     );
     check(
         "dispatch_json_valid",
-        { serde_json::from_str::<serde_json::Value>(&dispatch_json).is_ok() },
+        serde_json::from_str::<serde_json::Value>(&dispatch_json).is_ok(),
         &mut passed,
     );
 

@@ -1,8 +1,8 @@
 # Sub-Thesis 04: Testosterone Replacement Therapy — Clinical Claim Verification Pipeline
 
 **Source**: Dr. Charles Mok, *If Your Testosterone Is Low, You're Gonna Get Fat* (Allure Medical Publishing, 2018, 196 pages)
-**Status**: Complete — 9 experiments validated (Exp030–038), 96 Python + 86 Rust binary + 51 lib unit tests. Patient-parameterized clinical scenarios (Exp063) close the per-person translation loop: `PatientTrtProfile` → scenario graph → petalTongue clinical mode. Live clinical TRT dashboard (Exp073) streams PK trough, HRV improvement, HbA1c trajectory, and cardiac risk comparison via `replace` stream operation. 5 TRT archetypes wired into `dump_scenarios`. Interaction roundtrip validated (Exp074). V13: smart clinical.rs refactor (1177→374+819 lines), math deduplication (lognormal_params delegates to pkpd).
-**Last Updated**: March 9, 2026
+**Status**: Complete — 9 experiments validated (Exp030–038) + NLME population PK (Exp075), 96 Python + 86 Rust binary + 51 lib unit tests + 19 NLME checks. Patient-parameterized clinical scenarios (Exp063) close the per-person translation loop: `PatientTrtProfile` → scenario graph → petalTongue clinical mode. Live clinical TRT dashboard (Exp073) streams PK trough, HRV improvement, HbA1c trajectory, and cardiac risk comparison via `replace` stream operation. 5 TRT archetypes wired into `dump_scenarios`. Interaction roundtrip validated (Exp074). V14: NLME population PK (FOCE + SAEM), NCA (λz, AUC∞, MRT, CL, Vss), NLME diagnostics (CWRES, VPC, GOF) — sovereign NONMEM/Monolix/WinNonlin replacement.
+**Last Updated**: March 10, 2026
 
 ---
 
@@ -171,6 +171,17 @@ Streaming clinical visualization of TRT treatment over time.
 4. Domain theming: `domain=clinical` with `UiConfig` passthrough for clinical mode rendering — **Exp073**
 5. Capability querying and interaction subscription validated end-to-end — **Exp074** (mock petalTongue, 12/12)
 6. 5 TRT archetypes wired into `dump_scenarios` pipeline (13 total scenarios) — **Exp056**
+
+### Phase 6: NLME Population PK (V14) — COMPLETE
+
+Sovereign replacement for NONMEM (FOCE), Monolix (SAEM), and WinNonlin (NCA). Applied to testosterone cypionate population PK using Mok 2018 / Shoskes 2016 parameters.
+
+1. FOCE estimation (150 iterations, 30 subjects) — theta, omega, sigma recovery validated (Exp075)
+2. SAEM estimation (200 iterations, 30 subjects) — stochastic E-step, wider tolerance than FOCE (Exp075)
+3. NCA metrics: lambda-z terminal slope, AUC∞ extrapolation, MRT, clearance, Vss (Exp075)
+4. NLME diagnostics: CWRES (mean <2.0), VPC (50 simulations, 5th/50th/95th percentile bands), GOF (R²≥0) (Exp075)
+5. Full petalTongue pipeline: 5 new NLME nodes (population, NCA, CWRES, VPC, GOF) wired into full study (28 nodes, 121 channels) (Exp076)
+6. Deterministic reproducibility: same seed → identical FOCE/SAEM objective function values (Exp075)
 
 ---
 

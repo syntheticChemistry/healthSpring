@@ -439,8 +439,11 @@ mod tests {
         let counts_d: Vec<u64> = vec![850, 50, 30, 20, 15, 10, 5, 5, 3, 2, 1, 1];
         let c_h = chao1(&counts_h);
         let c_d = chao1(&counts_d);
-        assert!(c_h >= counts_h.len() as f64, "Chao1 ≥ S_obs");
-        assert!(c_d >= counts_d.len() as f64, "Chao1 ≥ S_obs");
+        #[expect(clippy::cast_precision_loss, reason = "species count fits f64")]
+        {
+            assert!(c_h >= counts_h.len() as f64, "Chao1 ≥ S_obs");
+            assert!(c_d >= counts_d.len() as f64, "Chao1 ≥ S_obs");
+        }
         assert!(c_h > c_d, "healthy Chao1 > depleted");
     }
 
@@ -500,12 +503,16 @@ mod tests {
         let disorder = vec![0.0; 4];
         let l = 4;
         let h = anderson_hamiltonian_1d(&disorder, 2.5);
-        assert!((h[0 * l + 1] - 2.5).abs() < TOL);
-        assert!((h[1 * l + 0] - 2.5).abs() < TOL);
-        assert!(h[0 * l + 2].abs() < TOL, "no long-range hopping");
+        assert!((h[1] - 2.5).abs() < TOL);
+        assert!((h[l] - 2.5).abs() < TOL);
+        assert!(h[2].abs() < TOL, "no long-range hopping");
     }
 
     #[test]
+    #[expect(
+        clippy::cast_precision_loss,
+        reason = "test lattice size fits f64 mantissa"
+    )]
     fn ipr_uniform_state() {
         let l = 100;
         let val = 1.0 / (l as f64).sqrt();
@@ -538,12 +545,12 @@ mod tests {
 
     #[test]
     fn level_spacing_ratio_few_values() {
-        assert_eq!(level_spacing_ratio(&[1.0, 2.0]), 0.0);
+        assert!((level_spacing_ratio(&[1.0, 2.0])).abs() < f64::EPSILON);
     }
 
     #[test]
     fn level_spacing_ratio_uniform() {
-        let eigs: Vec<f64> = (0..100).map(|i| i as f64).collect();
+        let eigs: Vec<f64> = (0..100).map(f64::from).collect();
         let r = level_spacing_ratio(&eigs);
         assert!((r - 1.0).abs() < 0.01, "uniform spacing → r=1.0, got {r}");
     }

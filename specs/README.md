@@ -1,7 +1,8 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Specifications
 
-**Last Updated**: March 9, 2026
-**Status**: V13 — 47 experiments, 317 Rust tests (250 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 630 binary checks, 104 cross-validation checks. Deep audit: Anderson eigensolver (QL), smart refactoring, math deduplication, centralized RNG, 4 doc-tests, capability-based discovery. GPU Tier 2+3 live. CPU vs GPU parity matrix. Mixed hardware dispatch via NUCLEUS topology. PCIe P2P transfer validation. Patient-parameterized clinical TRT scenarios (5 archetypes, live streaming dashboard). petalTongue: full stream ops, domain theming, capabilities query, interaction subscription. 13 scenarios.
+**Last Updated**: March 10, 2026
+**Status**: V14 — 48 experiments, 356 Rust tests (289 barraCuda + 33 forge + 30 toadStool + 4 doc-tests), 853 binary checks, 104 cross-validation checks. NLME population PK (FOCE + SAEM), NCA, NLME diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. Industry benchmark mapping (sovereign NONMEM/Monolix/WinNonlin replacements).
 **Domain**: Human health applications — PK/PD, gut microbiome, biosignal, endocrinology
 
 ---
@@ -10,12 +11,13 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust lib tests | 317 (250 barraCuda + 33 forge + 30 toadStool + 4 doc-tests) |
+| Rust lib tests | 356 (289 barraCuda + 33 forge + 30 toadStool + 4 doc-tests) |
 | Python control checks | 104 (cross-validation) |
-| Rust binary checks | 630 |
-| Experiments | 47 (24 Tier 0+1 + 3 diagnostic + 3 GPU + 1 visualization + 3 dispatch + 3 clinical + 2 streaming + 7 compute/bench + 1 interaction) |
+| Rust binary checks | 853 |
+| Experiments | 48 (24 Tier 0+1 + 3 diagnostic + 3 GPU + 1 visualization + 3 dispatch + 3 clinical + 2 streaming + 7 compute/bench + 1 interaction + 2 NLME/pipeline) |
 | GPU validation (Tier 2) | **Live** — 3 WGSL shaders, fused pipeline, 17/17 parity, 27/27 CPU-GPU matrix |
 | metalForge validation (Tier 3) | 33 tests (substrate routing + dispatch planning + transfer) |
+| NLME population PK | FOCE + SAEM estimation, NCA, CWRES/VPC/GOF diagnostics |
 | Paper queue | 24/30 complete |
 | Faculty | Gonzales (MSU), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
 
@@ -41,7 +43,8 @@ Papers queued for reproduction and extension. Organized by track. See [PAPER_REV
 | Clinical | TRT + IPC + streaming | 3 (Exp063-065) | — | structural | — | **Complete** |
 | Compute | Benchmarks + dashboard | 7 (Exp066-072) | — | structural | — | **Complete** |
 | petalTongue | Evolution + interaction | 2 (Exp073-074) | — | 19 | — | **Complete** |
-| **Total** | | **47** | **289** | **630** | **317** | **All green** |
+| NLME | Pop PK + full pipeline | 2 (Exp075-076) | — | 216 | — | **Complete** |
+| **Total** | | **48** | **289** | **853** | **356** | **All green** |
 
 ---
 
