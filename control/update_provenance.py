@@ -44,6 +44,12 @@ FILES = [
     ("control/endocrine/exp036_baseline.json", "python3 control/endocrine/exp036_population_trt_montecarlo.py"),
     ("control/endocrine/exp037_baseline.json", "python3 control/endocrine/exp037_testosterone_gut_axis.py"),
     ("control/endocrine/exp038_baseline.json", "python3 control/endocrine/exp038_hrv_trt_cardiovascular.py"),
+    ("control/pkpd/exp077_baseline.json", "python3 control/pkpd/exp077_michaelis_menten_pk.py"),
+    ("control/microbiome/exp078_baseline.json", "python3 control/microbiome/exp078_antibiotic_perturbation.py"),
+    ("control/microbiome/exp079_baseline.json", "python3 control/microbiome/exp079_scfa_production.py"),
+    ("control/microbiome/exp080_baseline.json", "python3 control/microbiome/exp080_gut_brain_serotonin.py"),
+    ("control/biosignal/exp081_baseline.json", "python3 control/biosignal/exp081_eda_stress.py"),
+    ("control/biosignal/exp082_baseline.json", "python3 control/biosignal/exp082_arrhythmia_classification.py"),
 ]
 
 

@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 10, 2026
-**Status**: V19 — 59 experiments, all 30 paper queue entries complete. V19: GPU scaling bench (Exp085, 47/47), toadStool V16 dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch (Exp087, 35/35). V18: CPU parity (Exp084, Rust 84× faster). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: 6 new domain primitives (Exp077-082).
+**Status**: V20 — 61 experiments, all 30 paper queue entries complete. V20: petalTongue V16 visualization (Exp088, 326/326), patient explorer (Exp089, 14/14). V19: GPU scaling bench (Exp085, 47/47), toadStool V16 dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch (Exp087, 35/35). V18: CPU parity (Exp084, Rust 84× faster). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: 6 new domain primitives (Exp077-082).
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 
@@ -80,7 +80,7 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
 | 056 | `exp056_study_scenarios` | Full 5-track scenario generation (7 channel types, 14 scenarios) | 57 |
-| 056 | `dump_scenarios` | Write 14 scenarios to disk or push via IPC | 14 files |
+| 056 | `dump_scenarios` | Write 16 scenarios to disk or push via IPC | 14 files |
 
 ### CPU vs GPU + Mixed Dispatch (Exp060-062) — Tier 2+3
 
@@ -155,6 +155,13 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 086 | `exp086_toadstool_v16_dispatch` | toadStool streaming dispatch + callbacks + GPU-mappability | 24 |
 | 087 | `exp087_mixed_nucleus_v16` | NUCLEUS Tower/Node/Nest + PCIe P2P bypass + plan_dispatch | 35 |
 
+### petalTongue V16 Visualization + Patient Explorer (Exp088-089) — V20
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 088 | `exp088_unified_dashboard` | Unified dashboard — all scenarios (original + V16 + compute) validated, pushed, or dumped | 326 |
+| 089 | `exp089_patient_explorer` | Patient explorer — diagnostic + V16 analysis, CLI params, streaming to petalTongue | 14 |
+
 ---
 
 ## Running Experiments
@@ -176,6 +183,11 @@ cargo run --release --bin exp073_clinical_trt_dashboard
 
 # Run petalTongue scenario generation
 cargo run --release --bin dump_scenarios
+
+# petalTongue V16 visualization + patient explorer
+cargo run --release --bin exp088_unified_dashboard              # 326 checks
+cargo run --release --bin exp089_patient_explorer               # 14 checks
+cargo run --release --bin exp089_patient_explorer -- --age 55 --weight 220 --baseline-t 280
 ```
 
 ---

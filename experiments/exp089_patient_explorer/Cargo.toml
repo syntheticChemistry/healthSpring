@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp089"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+description = "Exp089: patient explorer — interactive diagnostic pipeline with V16 analysis and petalTongue streaming"
+
+[[bin]]
+name = "exp089_patient_explorer"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+serde_json = "1"

@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 10, 2026
-**Status**: 59 experiments complete — 395 tests (329 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 59 validation binaries. GPU Tier 2+3 live (6 WGSL shaders). V19: Exp085 GPU scaling bench (47/47), Exp086 toadStool V16 streaming dispatch (24/24), Exp087 mixed NUCLEUS V16 dispatch (35/35). V18: Exp084 CPU parity benchmarks — Rust 84× faster than Python (33 checks). V17: GPU portability — 3 new compute shaders, metalForge cross-system routing, toadStool streaming dispatch. All 30 queued papers complete.
+**Status**: 61 experiments complete — 395 tests (329 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 61 validation binaries. GPU Tier 2+3 live (6 WGSL shaders). V19: Exp085 GPU scaling bench (47/47), Exp086 toadStool V16 streaming dispatch (24/24), Exp087 mixed NUCLEUS V16 dispatch (35/35). V18: Exp084 CPU parity benchmarks — Rust 84× faster than Python (33 checks). V17: GPU portability — 3 new compute shaders, metalForge cross-system routing, toadStool streaming dispatch. All 30 queued papers complete.
 
 ---
 
@@ -124,6 +124,7 @@ All 30 queued papers complete at Tier 0+1. Six have Tier 2 GPU validation. Full-
 2. ~~**GPU scaling + fused pipeline**~~: **DONE** (V19) — Exp085, linear scaling confirmed at 4 scales
 3. ~~**toadStool V16 dispatch**~~: **DONE** (V19) — Exp086, streaming + callbacks + GPU-mappability
 4. ~~**metalForge NUCLEUS V16 dispatch**~~: **DONE** (V19) — Exp087, PCIe P2P bypass, mixed pipeline
+4b. ~~**petalTongue V16 visualization**~~: **DONE** (V20) — Exp088 (326/326), Exp089 (14/14), 34-node full study, 16 scenarios
 5. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
 6. **GPU Tier 2**: Biosignal FFT (Exp020-023) → GPU radix-2 FFT for real-time ECG/PPG
 7. **GPU Tier 2**: Michaelis-Menten population (Exp077) → batch parallel ODE
@@ -185,5 +186,7 @@ All experiments use publicly accessible data. No proprietary dependencies.
 | Exp085 | GPU vs CPU V16 scaling bench (no new data) | CPU execute_cpu as GPU ground truth |
 | Exp086 | toadStool V16 streaming dispatch (no new data) | Pipeline CPU reference as ground truth |
 | Exp087 | Mixed NUCLEUS V16 dispatch (no new data) | Tower topology + PCIe Gen4 specs |
+| Exp088 | Unified dashboard (no new data) | All existing scenarios |
+| Exp089 | Patient explorer (no new data) | Diagnostic pipeline + V16 primitives |
 
 See `specs/README.md` for full provenance table.

@@ -5,7 +5,7 @@
 **Date:** March 10, 2026
 **License:** AGPL-3.0-or-later
 **MSRV:** 1.87
-**Status:** V19 — 395 tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 59 experiments, 194 Python cross-validation checks, full-stack portability validated (barraCuda CPU → GPU → toadStool dispatch → metalForge NUCLEUS routing). V19: GPU scaling bench (Exp085, 47/47), toadStool V16 streaming dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch with PCIe P2P bypass (Exp087, 35/35). V18: CPU parity benchmarks (Exp084, Rust 84× faster than Python). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: 6 new domain primitives (Exp077-082) + paper queue complete (30/30). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean.
+**Status:** V20 — 395 tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 61 experiments, 194 Python cross-validation checks, full-stack portability validated (barraCuda CPU → GPU → toadStool dispatch → metalForge NUCLEUS routing). V19: GPU scaling bench (Exp085, 47/47), toadStool V16 streaming dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch with PCIe P2P bypass (Exp087, 35/35). V20: petalTongue V16 visualization (Exp088, 326/326), patient explorer with V16 analysis (Exp089, 14/14). V18: CPU parity benchmarks (Exp084, Rust 84× faster than Python). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: 6 new domain primitives (Exp077-082) + paper queue complete (30/30). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean.
 
 ---
 
@@ -29,7 +29,7 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | **V19** (full-stack portability: CPU → GPU → toadStool → NUCLEUS) |
+| Version | **V20** (full-stack portability + petalTongue V16 visualization) |
 | Rust lib tests | 329 (barraCuda) |
 | Rust forge tests | 33 (metalForge) |
 | Rust toadStool tests | 30 |
@@ -37,14 +37,14 @@ The other springs do the chemistry. healthSpring makes the drug.
 | **Total tests** | **395** |
 | Paper queue | **30/30 complete** |
 | Python control checks | 194 (cross-validation) |
-| Experiments complete | 59 (Tier 0+1+2+3 + diagnostics + GPU + clinical + NLME + V16 primitives + GPU scaling + dispatch + NUCLEUS) |
+| Experiments complete | 61 (Tier 0+1+2+3 + diagnostics + GPU + clinical + NLME + V16 primitives + GPU scaling + dispatch + NUCLEUS) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity checks |
 | GPU V16 shaders | `michaelis_menten_batch_f64.wgsl`, `scfa_batch_f64.wgsl`, `beat_classify_batch_f64.wgsl` |
 | GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s; V16 linear scaling confirmed |
 | CPU parity | Rust 84× faster than Python across V16 primitives (SCFA 160×, antibiotic 233×, beat 149×) |
 | petalTongue visualization | **Full** — 7 DataChannel types, 3 stream ops, domain theming, capabilities query, interaction subscription |
-| petalTongue scenarios | 14 scenarios (6 clinical + 5 TRT archetypes + topology + dispatch + NLME) |
-| petalTongue pipeline | 28 nodes, 29 edges, 121 channels across all 7 DataChannel types |
+| petalTongue scenarios | 16 scenarios (6 clinical + 5 TRT archetypes + topology + dispatch + NLME + V16 + compute) |
+| petalTongue pipeline | 34 nodes, 38 edges across all 7 DataChannel types (V16 primitives + compute pipeline) |
 | Clinical TRT | 5 patient archetypes, live streaming dashboard (PK, HRV, HbA1c, cardiac risk) |
 | NLME population PK | FOCE + SAEM estimation, NCA metrics, CWRES/VPC/GOF diagnostics |
 | metalForge validation | 33 tests (NUCLEUS topology, dispatch planning, PCIe transfer) |
@@ -220,6 +220,11 @@ Six new domain experiments closing the paper queue (30/30):
 - toadStool V16 streaming dispatch (execute_cpu + streaming callbacks, GPU-mappability) — Exp086
 - metalForge mixed NUCLEUS V16 dispatch (Tower/Node/Nest topology, PCIe P2P bypass, plan_dispatch) — Exp087
 
+### petalTongue V16 Visualization + Patient Explorer (Exp088-089)
+
+- Unified dashboard: all scenarios (5 tracks + V16 + compute), 326 validation checks, JSON dump + IPC push — Exp088
+- Patient explorer: CLI-parameterized diagnostic + V16 analysis, streaming to petalTongue — Exp089
+
 ---
 
 ## Validation Protocol
@@ -231,7 +236,7 @@ Tier 2: Rust GPU (barraCuda WGSL shaders, math parity with CPU)
 Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 ```
 
-**Current state**: Tier 0+1 complete for 30 experiments (paper queue 30/30). **Tier 2 live**: 6 WGSL shaders (3 original + 3 V16), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **V19**: GPU scaling bench (linear scaling confirmed at 4 scales), toadStool V16 dispatch (streaming + callbacks), mixed NUCLEUS V16 dispatch (Tower/Node/Nest + PCIe P2P GPU↔NPU). **V18**: CPU parity — Rust 84× faster than Python across V16 primitives.
+**Current state**: Tier 0+1 complete for 30 experiments (paper queue 30/30). **Tier 2 live**: 6 WGSL shaders (3 original + 3 V16), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **V19**: GPU scaling bench (linear scaling confirmed at 4 scales), toadStool V16 dispatch (streaming + callbacks), mixed NUCLEUS V16 dispatch (Tower/Node/Nest + PCIe P2P GPU↔NPU). **V20**: petalTongue V16 visualization — 34-node full study with 6 V16 nodes, compute pipeline scenarios, unified dashboard (326 checks), patient explorer with streaming. **V18**: CPU parity — Rust 84× faster than Python across V16 primitives.
 
 ---
 
@@ -280,7 +285,7 @@ healthSpring/
 │   ├── endocrine/       # exp030–exp038
 │   ├── validation/      # Exp040 CPU parity
 │   └── scripts/         # Benchmark scripts + timing JSON results
-├── experiments/         # 59 validation binaries
+├── experiments/         # 61 validation binaries
 │   ├── exp001–exp006/   # Track 1: PK/PD
 │   ├── exp010–exp013/   # Track 2: Microbiome
 │   ├── exp020–exp023/   # Track 3: Biosignal
@@ -296,7 +301,8 @@ healthSpring/
 │   ├── exp077–exp082/   # V16 primitives (MM PK, antibiotic, SCFA, serotonin, EDA, arrhythmia)
 │   ├── exp083/          # GPU V16 parity (25/25)
 │   ├── exp084/          # CPU parity bench (Rust 84× faster)
-│   └── exp085–exp087/   # GPU scaling + toadStool dispatch + NUCLEUS routing
+│   ├── exp085–exp087/   # GPU scaling + toadStool dispatch + NUCLEUS routing
+│   └── exp088–exp089/   # petalTongue V16 visualization + patient explorer
 ├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
 │       └── src/
@@ -314,7 +320,7 @@ healthSpring/
 ├── wateringHole/        # Cross-spring handoffs
 │   └── handoffs/        # → barraCuda, toadStool, petalTongue
 ├── scripts/             # Dashboard, visualization, sync scripts
-├── Cargo.toml           # Workspace (59 members)
+├── Cargo.toml           # Workspace (61 members)
 └── README.md            # This file
 ```
 
@@ -350,7 +356,7 @@ cargo run --release --bin exp062_pcie_transfer_validation # 26 PCIe P2P checks
 
 # Full petalTongue visualization — per-track scenario JSON generation
 cargo run --bin exp056_study_scenarios  # 57 checks across 5 tracks
-cargo run --release --bin dump_scenarios # Write 14 scenario JSON files to sandbox/scenarios/
+cargo run --release --bin dump_scenarios # Write 16 scenario JSON files to sandbox/scenarios/
 
 # NLME + Full Pipeline
 cargo run --bin exp075_nlme_cross_validation     # 19 checks (FOCE/SAEM/NCA/CWRES/GOF)
@@ -364,6 +370,11 @@ cargo run --release --bin exp084_v16_cpu_parity_bench     # CPU parity: Rust 84�
 cargo run --release --bin exp085_gpu_vs_cpu_v16_bench     # 47 checks — GPU scaling
 cargo run --release --bin exp086_toadstool_v16_dispatch   # 24 checks — toadStool dispatch
 cargo run --release --bin exp087_mixed_nucleus_v16        # 35 checks — NUCLEUS routing
+
+# petalTongue V16 visualization + patient explorer
+cargo run --release --bin exp088_unified_dashboard             # 326 checks — all scenarios
+cargo run --release --bin exp089_patient_explorer              # 14 checks — patient diagnostic + V16
+cargo run --release --bin exp089_patient_explorer -- --age 55 --weight 220 --baseline-t 280
 
 # Python controls
 python3 control/scripts/bench_v16_cpu_vs_python.py       # V16 Python timing baseline

@@ -83,8 +83,9 @@ The Rust mirror is `cargo bench --bench cpu_parity` (Criterion).
 
 ## Tier 2/3 Experiments (No Python Baseline)
 
-Experiments exp053–exp076 validate Rust-internal parity (CPU vs GPU,
-dispatch routing, pipeline topology, petalTongue scenarios). These are
-Tier 2/3 checks that do not require Python baselines — correctness is
-established by Tier 1 parity, then GPU/dispatch checks confirm compute
-substrate independence.
+Experiments exp053–exp089 (excluding exp077–082 which have Python baselines)
+validate Rust-internal parity (CPU vs GPU, dispatch routing, pipeline
+topology, petalTongue scenarios, V16 visualization, patient explorer). These
+are Tier 2/3 checks that do not require Python baselines — correctness is
+established by Tier 1 parity, then GPU/dispatch/visualization checks confirm
+compute substrate independence and pipeline visibility.

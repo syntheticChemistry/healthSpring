@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 10, 2026
-**Status**: V19 — 59 experiments, 395 Rust tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 194 Python cross-validation checks. Full-stack portability: barraCuda CPU → GPU (6 WGSL shaders) → toadStool streaming dispatch → metalForge NUCLEUS routing (PCIe P2P bypass). Paper queue 30/30 complete. V19: GPU scaling bench + toadStool dispatch + mixed NUCLEUS (106 new checks). V18: Rust 84× faster than Python (Exp084). V16-V17: 6 new domain primitives + 3 new WGSL shaders.
+**Status**: V20 — 61 experiments, 395 Rust tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 194 Python cross-validation checks. Full-stack portability: barraCuda CPU → GPU (6 WGSL shaders) → toadStool streaming dispatch → metalForge NUCLEUS routing (PCIe P2P bypass). Paper queue 30/30 complete. V20: petalTongue V16 visualization (Exp088) + patient explorer (Exp089). V19: GPU scaling bench + toadStool dispatch + mixed NUCLEUS (106 new checks). V18: Rust 84× faster than Python (Exp084). V16-V17: 6 new domain primitives + 3 new WGSL shaders.
 **Domain**: Human health applications — PK/PD, gut microbiome, biosignal, endocrinology
 
 ---
@@ -13,7 +13,7 @@
 |--------|-------|
 | Rust lib tests | 395 (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests) |
 | Python control checks | 194 (cross-validation) |
-| Experiments | 59 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack) |
+| Experiments | 61 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
 | toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |
@@ -49,7 +49,8 @@ Papers queued for reproduction and extension. Organized by track. See [PAPER_REV
 | GPU V16 | GPU parity for V16 ops | 1 (Exp083) | — | 25 | — | **Complete** |
 | CPU Parity | Rust vs Python bench | 1 (Exp084) | 17 | 33 | — | **Complete** |
 | V19 Full-Stack | GPU scaling + dispatch + NUCLEUS | 3 (Exp085-087) | 10 | 106 | — | **Complete** |
-| **Total** | | **59** | **379** | | **395** | **All green** |
+| V20 Visualization | petalTongue V16 + patient explorer | 2 (Exp088-089) | — | 340 | — | **Complete** |
+| **Total** | | **61** | **379** | | **395** | **All green** |
 
 ---
 
@@ -112,6 +113,13 @@ Tier 3: metalForge + toadStool dispatch ← LIVE
   └─ plan_dispatch: 5-stage mixed pipeline (GPU→GPU→GPU→NPU→CPU) validated
   └─ biomeOS atomic graphs for node and tower deployments
   └─ Validated: Exp060-062 (original), Exp086 (V16 dispatch), Exp087 (V16 NUCLEUS)
+
+Visualization: petalTongue V16 + compute
+  └─ V16 scenario builder: 6 nodes (MM PK, antibiotic, SCFA, serotonin, EDA, arrhythmia)
+  └─ Compute pipeline: GPU scaling, NUCLEUS topology, mixed dispatch
+  └─ Full study: 34 nodes, 38 edges (all 7 DataChannel types)
+  └─ Unified dashboard: 326 validation checks (Exp088)
+  └─ Patient explorer: CLI-parameterized diagnostic + V16 + streaming (Exp089)
 ```
 
 ---

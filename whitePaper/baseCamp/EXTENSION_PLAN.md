@@ -2,7 +2,7 @@
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
 **Last Updated**: March 10, 2026
-**Status**: V19 baseline — 59 experiments, 395 tests, 6 WGSL shaders, 30/30 papers complete. Full-stack portability proven (CPU → GPU → toadStool → NUCLEUS).
+**Status**: V20 baseline — 61 experiments, 395 tests, 6 WGSL shaders, 30/30 papers complete. Full-stack portability proven (CPU → GPU → toadStool → NUCLEUS).
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, and cross-track integration.
@@ -182,7 +182,7 @@ and functional signaling capacity.
 ```
 Phase 1 (Now, Eastgate only):
   - Synthetic data, published parameters
-  - All existing 59 experiments
+  - All existing 61 experiments
   - QS gene matrix building (NCBI Gene API, small)
   - ChEMBL drug panel extraction
   - MIT-BIH full dataset (100MB, open, WFDB parser ready)

@@ -362,12 +362,12 @@ fn main() {
 
     check!("full: valid JSON", full_val.is_object());
     check!(
-        "full: 28 nodes (6+4+5+8+5)",
-        full.ecosystem.primals.len() == 28
+        "full: 34 nodes (6+4+5+8+5+6 V16)",
+        full.ecosystem.primals.len() == 34
     );
     check!(
-        "full: 29 edges (5+3+4+7+5+5 cross-track)",
-        full_edges.len() == 29
+        "full: 38 edges (29 intra + 5 cross + 4 V16 cross)",
+        full_edges.len() == 38
     );
 
     let total_channels: usize = full

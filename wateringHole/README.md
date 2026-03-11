@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V19 — 59 experiments, full-stack portability validated (barraCuda CPU → GPU → toadStool streaming dispatch → metalForge NUCLEUS routing with PCIe P2P bypass). 395 tests, 194 Python cross-validation checks. 6 WGSL shaders. Rust 84× faster than Python (V18). GPU scaling linear, toadStool V16 dispatch, mixed NUCLEUS V16 with PCIe P2P GPU↔NPU bypass (V19).
+**Status**: V20 — 61 experiments, full-stack portability validated (barraCuda CPU → GPU → toadStool streaming dispatch → metalForge NUCLEUS routing with PCIe P2P bypass). 395 tests, 194 Python cross-validation checks. 6 WGSL shaders. Rust 84× faster than Python (V18). GPU scaling linear, toadStool V16 dispatch, mixed NUCLEUS V16 with PCIe P2P GPU↔NPU bypass (V19). V20: petalTongue V16 visualization (34-node full study, 16 scenarios, patient explorer).
 **Last Updated**: March 10, 2026
 
 ---
@@ -22,6 +22,7 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
+| **V20** | [V20 petalTongue V16 Visualization Handoff](handoffs/HEALTHSPRING_V20_PETALTONGUE_V16_VIZ_BARRACUDA_TOADSTOOL_HANDOFF_MAR10_2026.md) | Mar 10 | petalTongue V16 scenarios (34 nodes, 38 edges), compute pipeline viz, unified dashboard (Exp088, 326/326), patient explorer (Exp089, 14/14), 16 scenario JSONs. |
 | **V19** | [V19 Full-Stack Portability Handoff](handoffs/HEALTHSPRING_V19_FULLSTACK_BARRACUDA_TOADSTOOL_HANDOFF_MAR10_2026.md) | Mar 10 | GPU scaling (Exp085, 47/47), toadStool V16 dispatch (Exp086, 24/24), mixed NUCLEUS (Exp087, 35/35), PCIe P2P bypass, barraCuda absorption guidance, EDA SIMD optimization target. |
 | **V15** | [V15 Upstream Rewire Handoff](handoffs/HEALTHSPRING_V15_UPSTREAM_REWIRE_HANDOFF_MAR10_2026.md) | Mar 10 | Upstream rewire: precision routing, upstream `barracuda` dependency, WGSL shader provenance, ecosystem catch-up. |
 | | *V1–V14.1 → `handoffs/archive/`* | | Fossil record |

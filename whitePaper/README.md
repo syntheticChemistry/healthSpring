@@ -1,7 +1,7 @@
 # healthSpring White Paper
 
 **Date:** March 10, 2026
-**Status:** V19 — 5 tracks + diagnostics + GPU + visualization + clinical TRT + streaming + interaction + NLME + V16 primitives + GPU scaling + toadStool dispatch + mixed NUCLEUS, 59 experiments validated (Tier 0+1+2+3). Full-stack portability: barraCuda CPU → GPU (6 WGSL shaders) → toadStool dispatch → metalForge NUCLEUS routing (PCIe P2P bypass). Rust 84× faster than Python (V18). 395 tests, 194 Python cross-validation checks.
+**Status:** V20 — 5 tracks + diagnostics + GPU + visualization + clinical TRT + streaming + interaction + NLME + V16 primitives + GPU scaling + toadStool dispatch + mixed NUCLEUS, 61 experiments validated (Tier 0+1+2+3). Full-stack portability: barraCuda CPU → GPU (6 WGSL shaders) → toadStool dispatch → metalForge NUCLEUS routing (PCIe P2P bypass). Rust 84× faster than Python (V18). 395 tests, 194 Python cross-validation checks. V20: petalTongue V16 visualization (34-node full study, 16 scenarios, patient explorer).
 **License:** AGPL-3.0-or-later
 
 ---

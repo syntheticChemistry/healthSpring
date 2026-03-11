@@ -6,11 +6,13 @@
 //! render them directly.
 
 mod biosignal;
+pub mod compute;
 mod endocrine;
 mod microbiome;
 mod nlme;
 mod pkpd;
 pub mod topology;
+mod v16;
 
 use super::types::{
     Animations, CapReqs, ClinicalRange, DataChannel, Ecosystem, HealthScenario, NeuralApi,
@@ -18,10 +20,14 @@ use super::types::{
 };
 
 pub use biosignal::biosignal_study;
+pub use compute::{
+    compute_pipeline_study, gpu_scaling_study, v16_dispatch_study, v16_topology_study,
+};
 pub use endocrine::endocrine_study;
 pub use microbiome::microbiome_study;
 pub use nlme::nlme_study;
 pub use pkpd::pkpd_study;
+pub use v16::v16_study;
 
 fn scaffold(name: &str, description: &str) -> HealthScenario {
     HealthScenario {
@@ -224,13 +230,14 @@ pub fn full_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     let (bio, mut bio_edges) = biosignal_study();
     let (endo, mut endo_edges) = endocrine_study();
     let (nlme, mut nlme_edges) = nlme_study();
+    let (v16, mut v16_edges) = v16_study();
 
     let mut s = scaffold(
         "healthSpring Complete Study",
-        "All 5 tracks: PK/PD + Microbiome + Biosignal + Endocrinology + NLME — full pipeline",
+        "All 6 tracks: PK/PD + Microbiome + Biosignal + Endocrinology + NLME + V16 Primitives — full pipeline",
     );
 
-    for track in [pkpd, micro, bio, endo, nlme] {
+    for track in [pkpd, micro, bio, endo, nlme, v16] {
         for n in track.ecosystem.primals {
             s.ecosystem.primals.push(n);
         }
@@ -242,8 +249,9 @@ pub fn full_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     all_edges.append(&mut bio_edges);
     all_edges.append(&mut endo_edges);
     all_edges.append(&mut nlme_edges);
+    all_edges.append(&mut v16_edges);
 
-    // Cross-track links
+    // Cross-track links (original)
     all_edges.push(edge(
         "pop_pk",
         "diversity",
@@ -253,6 +261,12 @@ pub fn full_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     all_edges.push(edge("hrv", "hrv_cardiac", "biosignal HRV → TRT cardiac"));
     all_edges.push(edge("one_comp", "t_im", "PK/PD → endocrine PK"));
     all_edges.push(edge("pop_pk", "nlme_population", "population PK → NLME"));
+
+    // V16 cross-track links (bridging existing tracks to V16 nodes)
+    all_edges.push(edge("one_comp", "mm_nonlinear_pk", "linear → nonlinear PK"));
+    all_edges.push(edge("diversity", "abx_perturbation", "diversity source"));
+    all_edges.push(edge("fusion", "eda_stress", "biosignal → EDA"));
+    all_edges.push(edge("qrs", "arrhythmia_classify", "QRS → classification"));
 
     (s, all_edges)
 }
@@ -520,13 +534,13 @@ mod tests {
         let (scenario, edges) = full_study();
         assert_eq!(
             scenario.ecosystem.primals.len(),
-            28,
-            "full_study must have 28 nodes (22 original + 1 wfdb + 5 nlme)"
+            34,
+            "full_study must have 34 nodes (28 original + 6 V16)"
         );
         assert_eq!(
             edges.len(),
-            29,
-            "full_study must have 24 domain + 5 cross = 29 edges"
+            38,
+            "full_study must have 29 intra + 5 cross + 4 V16 cross = 38 edges"
         );
         let ids: std::collections::HashSet<&str> = scenario
             .ecosystem
@@ -534,7 +548,7 @@ mod tests {
             .iter()
             .map(|n| n.id.as_str())
             .collect();
-        assert_eq!(ids.len(), 28, "all node IDs must be unique");
+        assert_eq!(ids.len(), 34, "all node IDs must be unique");
         for node in &scenario.ecosystem.primals {
             assert!(
                 node.health <= 100,
@@ -561,6 +575,7 @@ mod tests {
                 e.to
             );
         }
+        // Original nodes
         assert!(ids.contains("pop_pk"));
         assert!(ids.contains("diversity"));
         assert!(ids.contains("gut_axis"));
@@ -574,6 +589,13 @@ mod tests {
         assert!(ids.contains("vpc_check"));
         assert!(ids.contains("gof_fit"));
         assert!(ids.contains("wfdb_ecg"));
+        // V16 nodes
+        assert!(ids.contains("mm_nonlinear_pk"));
+        assert!(ids.contains("abx_perturbation"));
+        assert!(ids.contains("scfa_prod"));
+        assert!(ids.contains("gut_serotonin"));
+        assert!(ids.contains("eda_stress"));
+        assert!(ids.contains("arrhythmia_classify"));
     }
 
     #[test]
@@ -583,6 +605,7 @@ mod tests {
             .iter()
             .map(|e| (e.from.clone(), e.to.clone()))
             .collect();
+        // Original cross-track
         assert!(
             edge_pairs.contains(&("pop_pk".into(), "diversity".into())),
             "cross-track: pop_pk -> diversity"
@@ -603,6 +626,73 @@ mod tests {
             edge_pairs.contains(&("pop_pk".into(), "nlme_population".into())),
             "cross-track: pop_pk -> nlme_population"
         );
+        // V16 cross-track
+        assert!(
+            edge_pairs.contains(&("one_comp".into(), "mm_nonlinear_pk".into())),
+            "cross-track: one_comp -> mm_nonlinear_pk"
+        );
+        assert!(
+            edge_pairs.contains(&("diversity".into(), "abx_perturbation".into())),
+            "cross-track: diversity -> abx_perturbation"
+        );
+        assert!(
+            edge_pairs.contains(&("fusion".into(), "eda_stress".into())),
+            "cross-track: fusion -> eda_stress"
+        );
+        assert!(
+            edge_pairs.contains(&("qrs".into(), "arrhythmia_classify".into())),
+            "cross-track: qrs -> arrhythmia_classify"
+        );
+    }
+
+    #[test]
+    fn v16_study_structure() {
+        let (scenario, edges) = v16_study();
+        assert_study_invariants(
+            &scenario,
+            &edges,
+            &[
+                "mm_nonlinear_pk",
+                "abx_perturbation",
+                "scfa_prod",
+                "gut_serotonin",
+                "eda_stress",
+                "arrhythmia_classify",
+            ],
+            5,
+        );
+    }
+
+    #[test]
+    fn v16_study_capabilities() {
+        let (scenario, _) = v16_study();
+        let caps: std::collections::HashSet<String> = scenario
+            .ecosystem
+            .primals
+            .iter()
+            .flat_map(|n| n.capabilities.clone())
+            .collect();
+        assert!(caps.contains("science.pkpd.michaelis_menten_nonlinear"));
+        assert!(caps.contains("science.microbiome.antibiotic_perturbation"));
+        assert!(caps.contains("science.microbiome.scfa_production"));
+        assert!(caps.contains("science.microbiome.gut_brain_serotonin"));
+        assert!(caps.contains("science.biosignal.eda_stress_detection"));
+        assert!(caps.contains("science.biosignal.arrhythmia_classification"));
+    }
+
+    #[test]
+    fn v16_study_json_roundtrips() {
+        let (scenario, edges) = v16_study();
+        assert_json_roundtrips(&scenario, &edges);
+    }
+
+    #[test]
+    fn compute_pipeline_study_structure() {
+        let (scenario, edges) = compute_pipeline_study();
+        assert_eq!(scenario.ecosystem.primals.len(), 10);
+        assert!(edges.len() >= 5);
+        let json = scenario_with_edges_json(&scenario, &edges);
+        let _: serde_json::Value = serde_json::from_str(&json).expect("valid JSON");
     }
 
     #[test]

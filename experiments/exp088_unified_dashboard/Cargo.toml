@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp088"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+description = "Exp088: unified dashboard — all scenarios (original + V16 + compute) validated, pushed, or dumped"
+
+[[bin]]
+name = "exp088_unified_dashboard"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../barracuda" }
+serde_json = "1"

@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Push healthSpring scenarios to petalTongue via IPC, or write JSON to disk.
+//! Push healthSpring scenarios to `petalTongue` via IPC, or write JSON to disk.
 //!
-//! When petalTongue is running (discovered via socket), pushes live visualization
-//! data via visualization.render. Otherwise falls back to writing scenario JSON files.
+//! When `petalTongue` is running (discovered via socket), pushes live visualization
+//! data via `visualization.render`. Otherwise falls back to writing scenario JSON files.
 
 use healthspring_barracuda::diagnostic::{
     PatientProfile, Sex, assess_patient, population_montecarlo,
 };
 use healthspring_barracuda::visualization::{
-    HealthScenario, annotate_population, assessment_to_scenario,
+    HealthScenario, ScenarioEdge, annotate_population, assessment_to_scenario,
     clinical::{PatientTrtProfile, TrtProtocol, trt_clinical_json, trt_clinical_scenario},
-    full_scenario_json,
     ipc_push::{PetalTonguePushClient, PushError},
     scenarios,
+    scenarios::scenario_with_edges_json,
     scenarios::topology::{
         DispatchStageInfo, TopologyNest, TopologyNode, TopologyTransfer, dispatch_scenario,
         topology_scenario,
@@ -21,27 +21,88 @@ use healthspring_barracuda::visualization::{
 use std::fs;
 use std::path::Path;
 
-#[expect(
-    clippy::too_many_lines,
-    reason = "scenario dump orchestrator — linear sequence of scenario builds and writes"
-)]
 fn main() {
     let out = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/scenarios");
     fs::create_dir_all(&out).expect("create sandbox/scenarios/");
 
-    let write = |name: &str, json: &str| {
-        let path = out.join(name);
-        fs::write(&path, json).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
-        println!("  wrote {} ({} KB)", name, json.len() / 1024);
-    };
-
     println!("=== healthSpring scenario dump ===\n");
 
+    let named_scenarios = build_all_scenarios();
+    let trt_archetypes = build_trt_archetypes();
+
+    let write_to_disk = |entries: &[(&str, String)], trt: &[(String, PatientTrtProfile)]| {
+        for (name, json) in entries {
+            let path = out.join(name);
+            fs::write(&path, json).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
+            println!("  wrote {} ({} KB)", name, json.len() / 1024);
+        }
+        for (sid, profile) in trt {
+            let json = trt_clinical_json(profile);
+            let path = out.join(format!("{sid}.json"));
+            fs::write(&path, &json).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
+            println!("  wrote {sid}.json ({} KB)", json.len() / 1024);
+        }
+        println!(
+            "\nAll {} scenarios written to {}",
+            entries.len() + trt.len(),
+            out.display()
+        );
+    };
+
+    let file_entries: Vec<(&str, String)> = named_scenarios
+        .iter()
+        .map(|(name, scenario, edges)| (*name, scenario_with_edges_json(scenario, edges)))
+        .collect();
+
+    match PetalTonguePushClient::discover() {
+        Ok(client) => {
+            println!("petalTongue found — pushing via IPC\n");
+            let push = |session_id: &str, title: &str, scenario: &HealthScenario| {
+                if let Err(e) = client.push_render(session_id, title, scenario) {
+                    println!("  [WARN] {session_id}: {e}");
+                } else {
+                    println!("  pushed {session_id}");
+                }
+            };
+            for (name, scenario, _) in &named_scenarios {
+                let sid = name.trim_end_matches(".json");
+                push(sid, &scenario.name, scenario);
+            }
+            for (sid, profile) in &trt_archetypes {
+                let (scn, _) = trt_clinical_scenario(profile);
+                if let Err(e) = client.push_render_with_config(sid, &scn.name, &scn, "clinical") {
+                    println!("  [WARN] {sid}: {e}");
+                } else {
+                    println!("  pushed {sid}");
+                }
+            }
+            println!(
+                "\nAll {} scenarios pushed to petalTongue",
+                named_scenarios.len() + trt_archetypes.len()
+            );
+            println!("\nAlso writing to disk...");
+            write_to_disk(&file_entries, &trt_archetypes);
+        }
+        Err(PushError::NotFound(_)) => {
+            println!("petalTongue not running — writing to disk\n");
+            write_to_disk(&file_entries, &trt_archetypes);
+        }
+        Err(e) => {
+            eprintln!("petalTongue discovery failed: {e}");
+            eprintln!("Falling back to file write.\n");
+            write_to_disk(&file_entries, &trt_archetypes);
+        }
+    }
+}
+
+fn build_all_scenarios() -> Vec<(&'static str, HealthScenario, Vec<ScenarioEdge>)> {
     let (pkpd, pkpd_e) = scenarios::pkpd_study();
     let (micro, micro_e) = scenarios::microbiome_study();
     let (bio, bio_e) = scenarios::biosignal_study();
     let (endo, endo_e) = scenarios::endocrine_study();
     let (nlme, nlme_e) = scenarios::nlme_study();
+    let (v16, v16_e) = scenarios::v16_study();
+    let (compute, compute_e) = scenarios::compute_pipeline_study();
     let (full, full_e) = scenarios::full_study();
 
     let mut patient = PatientProfile::minimal(55.0, 85.0, Sex::Male);
@@ -55,9 +116,7 @@ fn main() {
         assessment_to_scenario(&assessment, "Male 55y, TRT 12mo"),
         &pop,
     );
-    let diagnostic_json = full_scenario_json(&assessment, &pop, "Male 55y, TRT 12mo");
 
-    // Topology scenario
     let topo_nodes = vec![TopologyNode {
         node_id: 0,
         pcie_gen: "Gen4".to_string(),
@@ -98,7 +157,6 @@ fn main() {
     }];
     let (topo_scenario, topo_edges) = topology_scenario(0, &topo_nodes, &topo_transfers);
 
-    // Dispatch plan scenario
     let dispatch_stages = vec![
         DispatchStageInfo {
             name: "ECG Streaming".to_string(),
@@ -122,124 +180,19 @@ fn main() {
     let (dispatch_scn, dispatch_edges) =
         dispatch_scenario("Mixed Clinical Dispatch", &dispatch_stages);
 
-    // Clinical TRT archetypes
-    let trt_archetypes = build_trt_archetypes();
-
-    match PetalTonguePushClient::discover() {
-        Ok(client) => {
-            println!("petalTongue found — pushing via IPC\n");
-            let push = |session_id: &str, title: &str, scenario: &HealthScenario| {
-                if let Err(e) = client.push_render(session_id, title, scenario) {
-                    println!("  [WARN] {session_id}: {e}");
-                } else {
-                    println!("  pushed {session_id}");
-                }
-            };
-            push("healthspring-pkpd", &pkpd.name, &pkpd);
-            push("healthspring-microbiome", &micro.name, &micro);
-            push("healthspring-biosignal", &bio.name, &bio);
-            push("healthspring-endocrine", &endo.name, &endo);
-            push("healthspring-nlme", &nlme.name, &nlme);
-            push("healthspring-full-study", &full.name, &full);
-            push(
-                "healthspring-diagnostic",
-                &diagnostic_scenario.name,
-                &diagnostic_scenario,
-            );
-            push("healthspring-topology", &topo_scenario.name, &topo_scenario);
-            push("healthspring-dispatch", &dispatch_scn.name, &dispatch_scn);
-            for (sid, profile) in &trt_archetypes {
-                let (scn, _) = trt_clinical_scenario(profile);
-                if let Err(e) = client.push_render_with_config(sid, &scn.name, &scn, "clinical") {
-                    println!("  [WARN] {sid}: {e}");
-                } else {
-                    println!("  pushed {sid}");
-                }
-            }
-            println!("\nAll 14 scenarios pushed to petalTongue");
-        }
-        Err(PushError::NotFound(_)) => {
-            println!("petalTongue not running — writing to disk\n");
-            write(
-                "healthspring-pkpd.json",
-                &scenarios::scenario_with_edges_json(&pkpd, &pkpd_e),
-            );
-            write(
-                "healthspring-microbiome.json",
-                &scenarios::scenario_with_edges_json(&micro, &micro_e),
-            );
-            write(
-                "healthspring-biosignal.json",
-                &scenarios::scenario_with_edges_json(&bio, &bio_e),
-            );
-            write(
-                "healthspring-endocrine.json",
-                &scenarios::scenario_with_edges_json(&endo, &endo_e),
-            );
-            write(
-                "healthspring-nlme.json",
-                &scenarios::scenario_with_edges_json(&nlme, &nlme_e),
-            );
-            write(
-                "healthspring-full-study.json",
-                &scenarios::scenario_with_edges_json(&full, &full_e),
-            );
-            write("healthspring-diagnostic.json", &diagnostic_json);
-            write(
-                "healthspring-topology.json",
-                &scenarios::scenario_with_edges_json(&topo_scenario, &topo_edges),
-            );
-            write(
-                "healthspring-dispatch.json",
-                &scenarios::scenario_with_edges_json(&dispatch_scn, &dispatch_edges),
-            );
-            for (sid, profile) in &trt_archetypes {
-                write(&format!("{sid}.json"), &trt_clinical_json(profile));
-            }
-            println!("\nAll 14 scenarios written to {}", out.display());
-        }
-        Err(e) => {
-            eprintln!("petalTongue discovery failed: {e}");
-            eprintln!("Falling back to file write.\n");
-            write(
-                "healthspring-pkpd.json",
-                &scenarios::scenario_with_edges_json(&pkpd, &pkpd_e),
-            );
-            write(
-                "healthspring-microbiome.json",
-                &scenarios::scenario_with_edges_json(&micro, &micro_e),
-            );
-            write(
-                "healthspring-biosignal.json",
-                &scenarios::scenario_with_edges_json(&bio, &bio_e),
-            );
-            write(
-                "healthspring-endocrine.json",
-                &scenarios::scenario_with_edges_json(&endo, &endo_e),
-            );
-            write(
-                "healthspring-nlme.json",
-                &scenarios::scenario_with_edges_json(&nlme, &nlme_e),
-            );
-            write(
-                "healthspring-full-study.json",
-                &scenarios::scenario_with_edges_json(&full, &full_e),
-            );
-            write("healthspring-diagnostic.json", &diagnostic_json);
-            write(
-                "healthspring-topology.json",
-                &scenarios::scenario_with_edges_json(&topo_scenario, &topo_edges),
-            );
-            write(
-                "healthspring-dispatch.json",
-                &scenarios::scenario_with_edges_json(&dispatch_scn, &dispatch_edges),
-            );
-            for (sid, profile) in &trt_archetypes {
-                write(&format!("{sid}.json"), &trt_clinical_json(profile));
-            }
-            println!("\nAll 14 scenarios written to {}", out.display());
-        }
-    }
+    vec![
+        ("healthspring-pkpd.json", pkpd, pkpd_e),
+        ("healthspring-microbiome.json", micro, micro_e),
+        ("healthspring-biosignal.json", bio, bio_e),
+        ("healthspring-endocrine.json", endo, endo_e),
+        ("healthspring-nlme.json", nlme, nlme_e),
+        ("healthspring-v16.json", v16, v16_e),
+        ("healthspring-compute.json", compute, compute_e),
+        ("healthspring-full-study.json", full, full_e),
+        ("healthspring-diagnostic.json", diagnostic_scenario, vec![]),
+        ("healthspring-topology.json", topo_scenario, topo_edges),
+        ("healthspring-dispatch.json", dispatch_scn, dispatch_edges),
+    ]
 }
 
 fn build_trt_archetypes() -> Vec<(String, PatientTrtProfile)> {
