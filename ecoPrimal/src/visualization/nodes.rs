@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Node and edge construction for the healthSpring diagnostic scenario.
 //!
 //! Converts `DiagnosticAssessment` data into `ScenarioNode` and `ScenarioEdge`
@@ -455,7 +455,11 @@ pub(super) fn build_edges() -> Vec<ScenarioEdge> {
 }
 
 #[cfg(test)]
-#[allow(clippy::expect_used, clippy::unwrap_used)]
+#[expect(
+    clippy::expect_used,
+    clippy::unwrap_used,
+    reason = "test assertions use expect/unwrap for clarity"
+)]
 mod tests {
     use super::{build_edges, build_nodes, health_to_status, risk_to_health};
     use crate::diagnostic::{PatientProfile, Sex, assess_patient};

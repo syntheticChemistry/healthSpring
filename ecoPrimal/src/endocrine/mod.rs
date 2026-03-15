@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Endocrine modeling: testosterone PK, age-related decline, TRT outcomes.
 //!
 //! ## Tier 1 (CPU)

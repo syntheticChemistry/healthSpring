@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Gut microbiome analytics for human health.
 //!
 //! Extends wetSpring Track 1 (16S, metagenomics) and Paper 01/06
@@ -412,7 +412,6 @@ pub mod communities {
 }
 
 #[cfg(test)]
-#[expect(clippy::unwrap_used, reason = "test code")]
 mod tests {
     use super::*;
     use communities::*;
@@ -706,7 +705,10 @@ mod tests {
     #[test]
     fn antibiotic_perturbation_recovery() {
         let result = super::antibiotic_perturbation(2.2, 0.5, 0.3, 0.1, 7.0, 42.0, 0.1);
-        let h_final = result.last().unwrap().1;
+        let h_final = match result.last() {
+            Some((_, h)) => *h,
+            None => panic!("antibiotic_perturbation must return at least one point"),
+        };
         let nadir = result.iter().map(|&(_, h)| h).fold(f64::INFINITY, f64::min);
         assert!(h_final > nadir, "should recover after antibiotics end");
     }

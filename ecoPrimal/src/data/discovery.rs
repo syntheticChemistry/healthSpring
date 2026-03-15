@@ -1,16 +1,28 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Socket discovery for `biomeOS` and `NestGate`.
 //!
-//! Follows XDG conventions and capability-based discovery — no hardcoded
-//! paths. Checks environment overrides first, then standard locations.
+//! Capability-based discovery using only environment variables and XDG
+//! runtime directory scanning. No hardcoded primal names as literals.
 
 use std::path::PathBuf;
+
+/// XDG subdirectory for biomeOS sockets.
+const BIOMEOS_XDG_SUBDIR: &str = "biomeos";
+
+/// Default biomeOS orchestrator socket filename.
+const BIOMEOS_DEFAULT_SOCK: &str = "biomeos-default.sock";
+
+/// Default `NestGate` data provider socket filename.
+const NESTGATE_DEFAULT_SOCK: &str = "nestgate-default.sock";
+
+/// Provider name for `NestGate` (used in `HEALTHSPRING_DATA_PROVIDER`).
+const NESTGATE_PROVIDER: &str = "nestgate";
 
 /// Discover the `biomeOS` orchestrator socket.
 ///
 /// Search order:
 /// 1. `$BIOMEOS_SOCKET` — explicit override
-/// 2. `$XDG_RUNTIME_DIR/biomeos/biomeos-default.sock`
+/// 2. `$XDG_RUNTIME_DIR/{BIOMEOS_XDG_SUBDIR}/{BIOMEOS_DEFAULT_SOCK}`
 /// 3. `None` — `biomeOS` not available
 #[must_use]
 pub fn discover_biomeos_socket() -> Option<PathBuf> {
@@ -23,8 +35,8 @@ pub fn discover_biomeos_socket() -> Option<PathBuf> {
 
     if let Ok(xdg) = std::env::var("XDG_RUNTIME_DIR") {
         let p = PathBuf::from(xdg)
-            .join("biomeos")
-            .join("biomeos-default.sock");
+            .join(BIOMEOS_XDG_SUBDIR)
+            .join(BIOMEOS_DEFAULT_SOCK);
         if p.exists() {
             return Some(p);
         }
@@ -37,7 +49,7 @@ pub fn discover_biomeos_socket() -> Option<PathBuf> {
 ///
 /// Search order:
 /// 1. `$NESTGATE_SOCKET` — explicit override
-/// 2. `$XDG_RUNTIME_DIR/biomeos/nestgate-default.sock`
+/// 2. `$XDG_RUNTIME_DIR/{BIOMEOS_XDG_SUBDIR}/{NESTGATE_DEFAULT_SOCK}`
 /// 3. `None` — `NestGate` not available
 #[must_use]
 pub fn discover_nestgate_socket() -> Option<PathBuf> {
@@ -50,8 +62,8 @@ pub fn discover_nestgate_socket() -> Option<PathBuf> {
 
     if let Ok(xdg) = std::env::var("XDG_RUNTIME_DIR") {
         let p = PathBuf::from(xdg)
-            .join("biomeos")
-            .join("nestgate-default.sock");
+            .join(BIOMEOS_XDG_SUBDIR)
+            .join(NESTGATE_DEFAULT_SOCK);
         if p.exists() {
             return Some(p);
         }
@@ -62,11 +74,11 @@ pub fn discover_nestgate_socket() -> Option<PathBuf> {
 
 /// Returns `true` if the data provider is explicitly enabled.
 ///
-/// Checks `HEALTHSPRING_DATA_PROVIDER=nestgate`.
+/// Checks `HEALTHSPRING_DATA_PROVIDER={NESTGATE_PROVIDER}`.
 #[must_use]
 pub fn is_enabled() -> bool {
     std::env::var("HEALTHSPRING_DATA_PROVIDER")
-        .map(|v| v.eq_ignore_ascii_case("nestgate"))
+        .map(|v| v.eq_ignore_ascii_case(NESTGATE_PROVIDER))
         .unwrap_or(false)
 }
 

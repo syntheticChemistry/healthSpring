@@ -1,1 +1,18 @@
-lets take time to find what we can now extend eand evovel from the papers. what data sets can we exapnd too? what new systems? with the anderson qs we profiled qs genes to add so we would have more micorbes to review. how do we extend the absecmapes for tehse papesr.		 first lets udapte teh gen3/ basecamp with our work, and our local basecamp. tehn we can begin to write upa dn plan on all tehse extensions? how data hungry and compute hungry are we talking? in time i polan to lan my towers (gne3/about/ has my hardware) and i belive phase1/nestgate/ alredy ahs ncbi data interactions. before we start building thius may be teh tiem to strat incopraoting otehr priamsl into our systems (white phase2/biomeOS/ beign teh oirchestort it alrtedy ahs NUCLEUS systems, adn we can use teh atomic tower, node and nest lcoally be fore we extend to lan hpc
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+# Fajgenbaum Extension Planning Notes
+
+**Status**: Addressed in V21–V23. See EXTENSION_PLAN.md for the structured plan.
+
+The original informal planning questions (dataset expansion, new systems, Anderson QS
+gene profiling, compute/data hunger, LAN tower deployment, NestGate NCBI integration,
+biomeOS orchestration) were addressed across V21 (domain evolution, data hunger profile),
+V22 (biomeOS niche deployment, NestGate routing), and V23 (three-tier data fetch,
+capability-based discovery).
+
+Key deliverables:
+- `specs/COMPUTE_DATA_PROFILE.md` — compute and data hunger assessment
+- `specs/NESTGATE_DATA_PROVIDER.md` — NestGate integration design
+- `specs/QS_GENE_PROFILING.md` — QS gene profiling design
+- `data/fetch_qs_genes.py` — NCBI/UniProt/KEGG gene matrix fetcher
+- `ecoPrimal/src/data/fetch.rs` — three-tier fetch (biomeOS → NestGate → local)
+- `graphs/healthspring_niche_deploy.toml` — biomeOS niche deployment graph

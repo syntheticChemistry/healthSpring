@@ -1,10 +1,10 @@
 # healthSpring V6 → barraCuda / toadStool GPU Pipeline Handoff
 
-**SPDX-License-Identifier:** AGPL-3.0-only
+**SPDX-License-Identifier:** AGPL-3.0-or-later
 **Date:** March 8, 2026
 **From:** healthSpring V6
 **To:** barraCuda / toadStool / coralReef teams
-**License:** AGPL-3.0-only
+**License:** AGPL-3.0-or-later
 **Status:** Complete — Tier 2 GPU live, fused pipeline validated, scaling benchmarked
 
 ---

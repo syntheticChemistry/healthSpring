@@ -1,10 +1,10 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring V20 — petalTongue V16 Visualization: barraCuda/toadStool/petalTongue Evolution Handoff
 
 **Date**: March 10, 2026
 **From**: healthSpring V20 (Eastgate)
 **To**: barraCuda / toadStool / petalTongue / coralReef
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later
 **Covers**: V20 (Exp088–Exp089)
 
 ---

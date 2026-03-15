@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Kokkos-equivalent benchmarks for healthSpring workloads.
 //!
 //! These benchmarks measure CPU performance of patterns commonly benchmarked

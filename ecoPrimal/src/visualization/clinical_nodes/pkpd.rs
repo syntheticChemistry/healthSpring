@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! PK/PD clinical node builders for TRT protocols and population comparison.
 
 use crate::endocrine::{self, testosterone_cypionate as tc};

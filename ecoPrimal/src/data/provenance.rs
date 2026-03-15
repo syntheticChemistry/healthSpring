@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Provenance trio integration for data fetch sessions.
 //!
 //! Follows the `SPRING_PROVENANCE_TRIO_INTEGRATION_PATTERN.md` from
@@ -91,12 +91,8 @@ fn capability_call(
 
     let mut stream = std::os::unix::net::UnixStream::connect(socket_path)
         .map_err(|e| format!("connect: {e}"))?;
-    stream
-        .set_read_timeout(Some(Duration::from_secs(10)))
-        .ok();
-    stream
-        .set_write_timeout(Some(Duration::from_secs(10)))
-        .ok();
+    stream.set_read_timeout(Some(Duration::from_secs(10))).ok();
+    stream.set_write_timeout(Some(Duration::from_secs(10))).ok();
 
     let payload = serde_json::to_string(&request).map_err(|e| format!("serialize: {e}"))?;
     stream
@@ -147,6 +143,7 @@ fn unavailable_result(id: &str) -> ProvenanceResult {
 /// Creates a rhizoCrypt DAG session via the Neural API. If the trio
 /// is unavailable, returns a local fallback ID and the fetch proceeds
 /// without provenance tracking.
+#[must_use]
 pub fn begin_data_session(dataset_name: &str) -> ProvenanceResult {
     let Some(socket) = neural_api_socket_path() else {
         return unavailable_result(&format!("local-{dataset_name}"));
@@ -163,8 +160,9 @@ pub fn begin_data_session(dataset_name: &str) -> ProvenanceResult {
         "description": format!("Data fetch: {dataset_name}"),
     });
 
-    match capability_call(&socket, "dag", "create_session", &args) {
-        Ok(result) => {
+    capability_call(&socket, "dag", "create_session", &args).map_or_else(
+        |_| unavailable_result(&format!("local-{dataset_name}")),
+        |result| {
             let session_id = result
                 .get("session_id")
                 .and_then(serde_json::Value::as_str)
@@ -175,12 +173,12 @@ pub fn begin_data_session(dataset_name: &str) -> ProvenanceResult {
                 available: true,
                 data: serde_json::json!({ "session_id": session_id }),
             }
-        }
-        Err(_) => unavailable_result(&format!("local-{dataset_name}")),
-    }
+        },
+    )
 }
 
 /// Record a data fetch step (e.g., NCBI query, `UniProt` scan) in the DAG.
+#[must_use]
 pub fn record_fetch_step(session_id: &str, step: &serde_json::Value) -> ProvenanceResult {
     let Some(socket) = neural_api_socket_path() else {
         return unavailable_result("unavailable");
@@ -191,8 +189,9 @@ pub fn record_fetch_step(session_id: &str, step: &serde_json::Value) -> Provenan
         "event": step,
     });
 
-    match capability_call(&socket, "dag", "append_event", &args) {
-        Ok(result) => {
+    capability_call(&socket, "dag", "append_event", &args).map_or_else(
+        |_| unavailable_result("unavailable"),
+        |result| {
             let vertex_id = result
                 .get("vertex_id")
                 .or_else(|| result.get("id"))
@@ -204,9 +203,8 @@ pub fn record_fetch_step(session_id: &str, step: &serde_json::Value) -> Provenan
                 available: true,
                 data: serde_json::json!({ "vertex_id": vertex_id }),
             }
-        }
-        Err(_) => unavailable_result("unavailable"),
-    }
+        },
+    )
 }
 
 /// Complete a data fetch session: dehydrate → commit → attribute.
@@ -214,10 +212,7 @@ pub fn record_fetch_step(session_id: &str, step: &serde_json::Value) -> Provenan
 /// Returns the full provenance chain. Each step degrades gracefully:
 /// if dehydrate fails, we stop. If commit fails, dehydration is preserved.
 /// If braid fails, commit is preserved.
-pub fn complete_data_session(
-    session_id: &str,
-    license: &str,
-) -> DataProvenanceChain {
+pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceChain {
     let unavailable = DataProvenanceChain {
         status: "unavailable".into(),
         session_id: session_id.into(),
@@ -293,7 +288,7 @@ pub fn complete_data_session(
     .ok()
     .and_then(|r| {
         r.get("braid_id")
-            .or(r.get("id"))
+            .or_else(|| r.get("id"))
             .and_then(serde_json::Value::as_str)
             .map(str::to_owned)
     })
@@ -340,7 +335,7 @@ mod tests {
 
     #[test]
     fn complete_session_degrades_gracefully() {
-        let chain = complete_data_session("nonexistent-session", "AGPL-3.0-only");
+        let chain = complete_data_session("nonexistent-session", "AGPL-3.0-or-later");
         assert_eq!(chain.status, "unavailable");
         assert!(chain.merkle_root.is_empty());
     }

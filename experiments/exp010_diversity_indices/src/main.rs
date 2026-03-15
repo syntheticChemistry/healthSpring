@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -279,7 +279,10 @@ fn main() {
     std::process::exit(i32::from(failed > 0));
 }
 
-#[allow(clippy::too_many_arguments)]
+#[expect(
+    clippy::too_many_arguments,
+    reason = "validation helper checks all diversity metrics in one call"
+)]
 fn check_baseline(
     b: &serde_json::Value,
     h_even: f64,

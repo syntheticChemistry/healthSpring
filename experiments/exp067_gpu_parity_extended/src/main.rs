@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 #![deny(clippy::all)]
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
@@ -11,8 +11,7 @@
 use healthspring_barracuda::gpu::{GpuOp, GpuResult, execute_cpu};
 use healthspring_barracuda::microbiome::{bray_curtis, simpson_index};
 use healthspring_barracuda::pkpd::{auc_trapezoidal, pk_oral_one_compartment};
-
-const NUMERICAL_TOL: f64 = 1e-10;
+use healthspring_barracuda::tolerances::{CPU_PARITY, MACHINE_EPSILON};
 
 macro_rules! check {
     ($passed:expr, $failed:expr, $name:expr, $cond:expr) => {
@@ -48,7 +47,7 @@ fn validate_simpson(passed: &mut u32, failed: &mut u32) {
                 passed,
                 failed,
                 &format!("simpson_community_{idx}_parity (diff={diff:.2e})"),
-                diff < NUMERICAL_TOL
+                diff < CPU_PARITY
             );
         }
     }
@@ -65,13 +64,13 @@ fn validate_simpson(passed: &mut u32, failed: &mut u32) {
         passed,
         failed,
         "simpson_uniform_near_0.75",
-        (even_simpson - 0.75).abs() < 1e-10
+        (even_simpson - 0.75).abs() < MACHINE_EPSILON
     );
     check!(
         passed,
         failed,
         "simpson_monoculture_zero",
-        simpson_index(&[1.0]).abs() < 1e-10
+        simpson_index(&[1.0]).abs() < MACHINE_EPSILON
     );
 }
 
@@ -101,7 +100,7 @@ fn validate_auc_and_bray_curtis(passed: &mut u32, failed: &mut u32) {
         passed,
         failed,
         "auc_triangle_exact_1.0",
-        (tri_auc - 1.0).abs() < 1e-10
+        (tri_auc - 1.0).abs() < MACHINE_EPSILON
     );
 
     let rect_times: Vec<f64> = (0..=10).map(f64::from).collect();
@@ -111,7 +110,7 @@ fn validate_auc_and_bray_curtis(passed: &mut u32, failed: &mut u32) {
         passed,
         failed,
         "auc_rectangle_exact_50.0",
-        (rect_auc - 50.0).abs() < 1e-10
+        (rect_auc - 50.0).abs() < MACHINE_EPSILON
     );
 
     let auc2 = auc_trapezoidal(&times, &concs);
@@ -130,7 +129,7 @@ fn validate_auc_and_bray_curtis(passed: &mut u32, failed: &mut u32) {
         passed,
         failed,
         "bray_curtis_identical_zero",
-        bc_identical.abs() < 1e-10
+        bc_identical.abs() < MACHINE_EPSILON
     );
 
     let sample_c = [1.0, 0.0, 0.0, 0.0, 0.0];
@@ -140,7 +139,7 @@ fn validate_auc_and_bray_curtis(passed: &mut u32, failed: &mut u32) {
         passed,
         failed,
         "bray_curtis_disjoint_one",
-        (bc_disjoint - 1.0).abs() < 1e-10
+        (bc_disjoint - 1.0).abs() < MACHINE_EPSILON
     );
 
     let sample_e = [0.4, 0.3, 0.2, 0.05, 0.05];
@@ -165,7 +164,7 @@ fn validate_auc_and_bray_curtis(passed: &mut u32, failed: &mut u32) {
         passed,
         failed,
         "bray_curtis_symmetric",
-        (bc_ef - bc_fe).abs() < 1e-10
+        (bc_ef - bc_fe).abs() < MACHINE_EPSILON
     );
 
     println!("\n=== GPU Parity (feature-gated) ===");

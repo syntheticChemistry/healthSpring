@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: March 14, 2026
-**Status**: V21 — Tier 2+3 GPU live. NLME population PK (FOCE + SAEM), NCA, diagnostics. V21: New absorption targets for Track 6 (Comparative Medicine) and Track 7 (Drug Discovery) — species-agnostic PK, MATRIX scoring, HTS analysis, cross-species Anderson, QS-informed drug targets.
+**Last Updated**: March 15, 2026
+**Status**: V23 — Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Tier A rewire ready (Hill → `HillFunctionF64`, PopPK → `PopulationPkF64`, Diversity → `DiversityFusionGpu`). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). NLME inner loop identified as new GPU primitive candidate. See V23 handoff.
 
 ---
 

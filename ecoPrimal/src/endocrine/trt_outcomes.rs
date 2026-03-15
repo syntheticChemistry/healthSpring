@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! TRT outcome models: weight/waist, cardiovascular, diabetes, gut axis.
 //!
 //! - [`weight_trajectory`]: Logarithmic weight change under TRT

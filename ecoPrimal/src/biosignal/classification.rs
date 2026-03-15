@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Beat morphology classification for arrhythmia detection.
 //!
 //! Template-matching approach: compare each detected QRS complex
@@ -236,7 +236,6 @@ pub fn confusion_for_class(
 }
 
 #[cfg(test)]
-#[expect(clippy::unwrap_used, reason = "test code")]
 mod tests {
     use super::*;
 
@@ -247,9 +246,9 @@ mod tests {
         let max_idx = t
             .iter()
             .enumerate()
-            .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
-            .unwrap()
-            .0;
+            .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal))
+            .map(|(i, _)| i)
+            .unwrap_or(0);
         let center = n / 2;
         assert!(
             max_idx.abs_diff(center) <= 1,

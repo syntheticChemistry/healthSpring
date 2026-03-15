@@ -3,7 +3,7 @@
 **Date**: March 9, 2026
 **From**: healthSpring
 **To**: barraCuda, toadStool, petalTongue, metalForge
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later
 **Covers**: V10→V12 evolution — petalTongue stream completeness, domain theming, clinical TRT wiring, capability querying, interaction subscription, missing visualizations, validation
 
 ---

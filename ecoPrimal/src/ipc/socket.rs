@@ -1,15 +1,22 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Unix socket discovery and path resolution for `biomeOS` niche deployment.
 //!
 //! Follows XDG runtime conventions:
 //! 1. `HEALTHSPRING_SOCKET` environment override
-//! 2. `BIOMEOS_SOCKET_DIR` / `healthspring-{family_id}.sock`
-//! 3. `$XDG_RUNTIME_DIR/biomeos/healthspring-{family_id}.sock`
-//! 4. `/tmp/biomeos/healthspring-{family_id}.sock` (fallback)
+//! 2. `BIOMEOS_SOCKET_DIR` / `{PRIMAL_NAME}-{family_id}.sock`
+//! 3. `$XDG_RUNTIME_DIR/biomeos/{PRIMAL_NAME}-{family_id}.sock`
+//! 4. `/tmp/biomeos/{PRIMAL_NAME}-{family_id}.sock` (fallback)
 
 use std::path::PathBuf;
 
+/// This primal's socket name (healthSpring).
 const PRIMAL_NAME: &str = "healthspring";
+
+/// Default compute primal name when `HEALTHSPRING_COMPUTE_PRIMAL` is unset.
+const COMPUTE_PRIMAL_DEFAULT: &str = "toadstool";
+
+/// Default data primal name when `HEALTHSPRING_DATA_PRIMAL` is unset.
+const DATA_PRIMAL_DEFAULT: &str = "nestgate";
 
 /// Return the biomeOS socket directory, with XDG fallback.
 #[must_use]
@@ -26,8 +33,7 @@ pub fn resolve_socket_dir() -> PathBuf {
 /// Stable family identifier, overridable via `HEALTHSPRING_FAMILY_ID`.
 #[must_use]
 pub fn get_family_id() -> String {
-    std::env::var("HEALTHSPRING_FAMILY_ID")
-        .unwrap_or_else(|_| "default".to_owned())
+    std::env::var("HEALTHSPRING_FAMILY_ID").unwrap_or_else(|_| "default".to_owned())
 }
 
 /// Full socket path for this primal instance.
@@ -44,8 +50,8 @@ pub fn resolve_bind_path() -> PathBuf {
 /// Discover the orchestrator socket.
 #[must_use]
 pub fn orchestrator_socket() -> PathBuf {
-    let name = std::env::var("BIOMEOS_ORCHESTRATOR_SOCKET")
-        .unwrap_or_else(|_| "biomeOS.sock".to_owned());
+    let name =
+        std::env::var("BIOMEOS_ORCHESTRATOR_SOCKET").unwrap_or_else(|_| "biomeOS.sock".to_owned());
     resolve_socket_dir().join(name)
 }
 
@@ -91,7 +97,7 @@ pub fn discover_compute_primal() -> Option<PathBuf> {
     std::env::var("HEALTHSPRING_COMPUTE_PRIMAL")
         .ok()
         .and_then(|name| discover_primal(&name))
-        .or_else(|| discover_primal("toadstool"))
+        .or_else(|| discover_primal(COMPUTE_PRIMAL_DEFAULT))
 }
 
 /// Probe for a data primal (`NestGate`).
@@ -100,7 +106,7 @@ pub fn discover_data_primal() -> Option<PathBuf> {
     std::env::var("HEALTHSPRING_DATA_PRIMAL")
         .ok()
         .and_then(|name| discover_primal(&name))
-        .or_else(|| discover_primal("nestgate"))
+        .or_else(|| discover_primal(DATA_PRIMAL_DEFAULT))
 }
 
 /// Probe for a fallback registration primal.

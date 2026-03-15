@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! One- and two-compartment PK models (IV bolus, oral Bateman, biexponential).
 
 use core::f64::consts::LN_2;

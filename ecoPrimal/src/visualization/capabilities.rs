@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Songbird capability announcement for healthSpring.
 //!
 //! Announces health-domain capabilities so that petalTongue (and other

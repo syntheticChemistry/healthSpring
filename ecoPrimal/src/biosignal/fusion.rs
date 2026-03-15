@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Multi-channel biosignal fusion (ECG + PPG + EDA).
 //!
 //! Combines HRV, `SpO2`, and electrodermal metrics into a unified health

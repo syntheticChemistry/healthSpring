@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Pharmacokinetic / pharmacodynamic modeling pipelines.
 //!
 //! Extends neuralSpring nS-601–605 (veterinary PK/PD) to human therapeutics.

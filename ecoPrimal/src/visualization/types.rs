@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Type definitions for the petalTongue-compatible scenario schema.
 
 use serde::Serialize;
@@ -225,7 +225,7 @@ pub struct NeuralApi {
 }
 
 #[cfg(test)]
-#[allow(clippy::expect_used)]
+#[expect(clippy::expect_used, reason = "test assertions use expect for clarity")]
 mod tests {
     use super::*;
 

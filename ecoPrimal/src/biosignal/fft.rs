@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Real FFT — radix-2 Cooley-Tukey with zero-pad to power-of-two.
 //!
 //! Pure Rust, no external dependency. Replaces the previous O(n²) DFT with
@@ -145,7 +145,6 @@ pub fn irfft(re: &[f64], im: &[f64], n: usize) -> Vec<f64> {
 }
 
 #[cfg(test)]
-#[expect(clippy::unwrap_used, reason = "test code")]
 mod tests {
     use super::*;
 
@@ -200,9 +199,9 @@ mod tests {
         let peak_bin = magnitudes
             .iter()
             .enumerate()
-            .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
-            .unwrap()
-            .0;
+            .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal))
+            .map(|(i, _)| i)
+            .unwrap_or(0);
         assert_eq!(peak_bin, 4, "peak at bin 4 for 4-cycle sine");
     }
 

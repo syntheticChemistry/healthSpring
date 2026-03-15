@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: March 10, 2026
-**Status**: V22 — 61 experiments, all 30 paper queue entries complete, healthSpring now a biomeOS niche. V22: `healthspring_primal` binary (55+ JSON-RPC capabilities), IPC module, 5 workflow graphs, 414 tests (8 new IPC tests). V20: petalTongue V16 visualization (Exp088, 326/326), patient explorer (Exp089, 14/14). V19: GPU scaling bench (Exp085, 47/47), toadStool V16 dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch (Exp087, 35/35). V18: CPU parity (Exp084, Rust 84× faster). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: 6 new domain primitives (Exp077-082).
+**Last Updated**: March 15, 2026
+**Status**: V23 — 61 experiments, 435 tests. V23 deep debt: 15 experiments migrated from inline magic numbers to `tolerances::*` constants; 10 experiments migrated from ad-hoc pass/fail counters to `ValidationHarness` (hotSpring pattern). All 30 paper queue entries complete. `UniBin`-compliant primal binary with 55+ wired JSON-RPC capabilities.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 

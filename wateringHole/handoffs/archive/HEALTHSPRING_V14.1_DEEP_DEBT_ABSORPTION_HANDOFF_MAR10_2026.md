@@ -3,7 +3,7 @@
 **Date**: March 10, 2026
 **From**: healthSpring V14.1
 **To**: barraCuda, toadStool, petalTongue, metalForge
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later
 **Covers**: V14→V14.1 — Deep debt resolution: biosignal modular refactor, `#![deny(clippy::pedantic)]` enforcement across all lib crates, DFT deduplication, idiomatic Rust evolution, provenance fixes. Complete absorption guidance for the barraCuda/toadStool team.
 
 ---

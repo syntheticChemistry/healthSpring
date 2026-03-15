@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! NUCLEUS atomics — hierarchical compute topology for sovereign hardware.
 //!
 //! The NUCLEUS model organizes heterogeneous compute resources into three

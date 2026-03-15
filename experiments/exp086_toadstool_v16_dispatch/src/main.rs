@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -18,6 +18,7 @@
 
 use healthspring_barracuda::biosignal::classification;
 use healthspring_barracuda::microbiome;
+use healthspring_barracuda::tolerances::MACHINE_EPSILON;
 use healthspring_forge::Substrate;
 use healthspring_toadstool::pipeline::Pipeline;
 use healthspring_toadstool::stage::{Stage, StageOp};
@@ -172,19 +173,19 @@ fn main() {
     let beat_data = &beat_result.stage_results[0].output_data;
     check(
         "Beat pipe: beat[0] → Normal (0.0)",
-        beat_data[0].abs() < 1e-10,
+        beat_data[0].abs() < MACHINE_EPSILON,
         &mut passed,
         &mut total,
     );
     check(
         "Beat pipe: beat[1] → PVC (1.0)",
-        (beat_data[2] - 1.0).abs() < 1e-10,
+        (beat_data[2] - 1.0).abs() < MACHINE_EPSILON,
         &mut passed,
         &mut total,
     );
     check(
         "Beat pipe: beat[2] → PAC (2.0)",
-        (beat_data[4] - 2.0).abs() < 1e-10,
+        (beat_data[4] - 2.0).abs() < MACHINE_EPSILON,
         &mut passed,
         &mut total,
     );

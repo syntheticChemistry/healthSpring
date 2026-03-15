@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Compute pipeline: a sequence of stages that execute on heterogeneous hardware.
 //!
 //! ## ABSORPTION STATUS (toadStool)

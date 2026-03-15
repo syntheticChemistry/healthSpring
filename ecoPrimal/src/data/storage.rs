@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Content-addressed local storage for cached NCBI data.
 //!
 //! Keys follow `NestGate` convention: `ncbi:{db}:{id}`.
@@ -21,7 +21,10 @@ pub fn content_key(db: &str, id: &str) -> String {
 /// Maps `ncbi:{db}:{id}` to `$HEALTHSPRING_DATA_ROOT/ncbi_cache/{db}/{id}.json`.
 #[must_use]
 pub fn local_cache_path(db: &str, id: &str) -> PathBuf {
-    data_root().join("ncbi_cache").join(db).join(format!("{id}.json"))
+    data_root()
+        .join("ncbi_cache")
+        .join(db)
+        .join(format!("{id}.json"))
 }
 
 /// Path to the QS gene matrix JSON file.

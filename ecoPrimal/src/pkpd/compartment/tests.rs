@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 use super::*;
 use crate::pkpd::{auc_trapezoidal, find_cmax_tmax, pk_multiple_dose};

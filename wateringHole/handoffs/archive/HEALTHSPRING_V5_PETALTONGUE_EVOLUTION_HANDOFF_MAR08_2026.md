@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring V5 → petalTongue Evolution Handoff
 
 **Date**: March 8, 2026

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Electrodermal Activity (EDA) processing.
 //!
 //! Tonic SCL extraction, phasic SCR detection, and synthetic signal generation.

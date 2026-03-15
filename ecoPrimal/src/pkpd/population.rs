@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Lognormal params, population PK CPU, `PatientExposure`.
 
 use super::compartment::pk_oral_one_compartment;
@@ -102,7 +102,10 @@ pub fn population_pk_cpu(
 /// Uses the LCG PRNG with given `seed` for reproducible simulations.
 /// Same seed produces bit-identical results across runs.
 #[must_use]
-#[allow(clippy::too_many_arguments)]
+#[expect(
+    clippy::too_many_arguments,
+    reason = "PK/PD simulation API requires all pharmacokinetic params"
+)]
 pub fn population_pk_monte_carlo(
     n_patients: usize,
     seed: u64,

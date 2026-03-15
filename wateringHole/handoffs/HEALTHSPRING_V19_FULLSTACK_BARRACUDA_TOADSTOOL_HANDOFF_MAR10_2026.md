@@ -1,10 +1,10 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring V19 — Full-Stack Portability: barraCuda/toadStool Evolution Handoff
 
 **Date**: March 10, 2026
 **From**: healthSpring V19 (Eastgate)
 **To**: barraCuda / toadStool / coralReef
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later
 **Covers**: V16–V19 (Exp077–Exp087)
 
 ---

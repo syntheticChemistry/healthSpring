@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Heart Rate Variability (HRV) metrics.
 //!
 //! Time-domain HRV from R-peak intervals: heart rate, SDNN, RMSSD, pNN50.

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Push healthSpring scenarios to `petalTongue` via IPC, or write JSON to disk.
 //!
 //! When `petalTongue` is running (discovered via socket), pushes live visualization

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
 #![forbid(unsafe_code)]
@@ -10,14 +10,10 @@
 //! `execute_cpu()`, `execute_gpu()`, and `execute_auto()`.
 
 use healthspring_barracuda::gpu::GpuContext;
+use healthspring_barracuda::tolerances::{GPU_F32_TRANSCENDENTAL, GPU_STATISTICAL_PARITY};
 use healthspring_forge::{Capabilities, Substrate};
 use healthspring_toadstool::pipeline::Pipeline;
 use healthspring_toadstool::stage::{Stage, StageOp, TransformKind};
-
-const TOL_TRANSCENDENTAL: f64 = 1e-4;
-// CPU uses LCG PRNG, GPU uses xorshift32+Wang hash — distributions differ
-// structurally so mean AUC comparison tolerates up to 25% relative error.
-const TOL_STATISTICAL: f64 = 0.25;
 
 fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
     *total += 1;
@@ -109,8 +105,8 @@ async fn main() {
             .map(|(a, b)| (a - b).abs())
             .fold(0.0_f64, f64::max);
         check(
-            &format!("hill_{n_concs}: max error {max_err:.2e} < {TOL_TRANSCENDENTAL:.0e}"),
-            max_err < TOL_TRANSCENDENTAL,
+            &format!("hill_{n_concs}: max error {max_err:.2e} < {GPU_F32_TRANSCENDENTAL:.0e}"),
+            max_err < GPU_F32_TRANSCENDENTAL,
             &mut passed,
             &mut total,
         );
@@ -122,7 +118,7 @@ async fn main() {
             .fold(0.0_f64, f64::max);
         check(
             &format!("hill_{n_concs}: auto max error {auto_max:.2e}"),
-            auto_max < TOL_TRANSCENDENTAL,
+            auto_max < GPU_F32_TRANSCENDENTAL,
             &mut passed,
             &mut total,
         );
@@ -199,8 +195,10 @@ async fn main() {
         let gpu_mean: f64 = gpu_data.iter().sum::<f64>() / gpu_data.len() as f64;
         let rel_err = (cpu_mean - gpu_mean).abs() / cpu_mean;
         check(
-            &format!("pop_pk_{n_patients}: mean AUC rel err {rel_err:.4} < {TOL_STATISTICAL}"),
-            rel_err < TOL_STATISTICAL,
+            &format!(
+                "pop_pk_{n_patients}: mean AUC rel err {rel_err:.4} < {GPU_STATISTICAL_PARITY}"
+            ),
+            rel_err < GPU_STATISTICAL_PARITY,
             &mut passed,
             &mut total,
         );
@@ -213,7 +211,7 @@ async fn main() {
         let auto_rel = (cpu_mean - auto_mean).abs() / cpu_mean;
         check(
             &format!("pop_pk_{n_patients}: auto mean rel err {auto_rel:.4}"),
-            auto_rel < TOL_STATISTICAL,
+            auto_rel < GPU_STATISTICAL_PARITY,
             &mut passed,
             &mut total,
         );
@@ -288,8 +286,8 @@ async fn main() {
             .map(|(a, b)| (a - b).abs())
             .fold(0.0_f64, f64::max);
         check(
-            &format!("div_{n_communities}: max error {max_err:.2e} < {TOL_TRANSCENDENTAL:.0e}"),
-            max_err < TOL_TRANSCENDENTAL,
+            &format!("div_{n_communities}: max error {max_err:.2e} < {GPU_F32_TRANSCENDENTAL:.0e}"),
+            max_err < GPU_F32_TRANSCENDENTAL,
             &mut passed,
             &mut total,
         );
@@ -301,7 +299,7 @@ async fn main() {
             .fold(0.0_f64, f64::max);
         check(
             &format!("div_{n_communities}: auto max error {auto_max:.2e}"),
-            auto_max < TOL_TRANSCENDENTAL,
+            auto_max < GPU_F32_TRANSCENDENTAL,
             &mut passed,
             &mut total,
         );

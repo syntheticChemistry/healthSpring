@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Streaming session manager for live petalTongue visualization.
 //!
 //! Wraps `PetalTonguePushClient` with session lifecycle, typed push helpers

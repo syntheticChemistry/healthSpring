@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -11,6 +11,7 @@
 //! Cross-validates `endocrine::hrv_trt_response` and `cardiac_risk_composite`.
 
 use healthspring_barracuda::endocrine;
+use healthspring_barracuda::tolerances::{MACHINE_EPSILON, MACHINE_EPSILON_TIGHT};
 
 const SDNN_BASE_MS: f64 = 35.0;
 const DELTA_SDNN_MS: f64 = 20.0;
@@ -27,7 +28,7 @@ fn main() {
     // --- Check 1: HRV at t=0 equals baseline SDNN ---
     println!("\n--- Check 1: HRV at t=0 equals baseline SDNN ---");
     let sdnn_0 = endocrine::hrv_trt_response(SDNN_BASE_MS, DELTA_SDNN_MS, TAU_MONTHS, 0.0);
-    if (sdnn_0 - SDNN_BASE_MS).abs() < 1e-10 {
+    if (sdnn_0 - SDNN_BASE_MS).abs() < MACHINE_EPSILON {
         println!("  [PASS] SDNN(0) = {sdnn_0:.1} ms");
         passed += 1;
     } else {
@@ -43,7 +44,7 @@ fn main() {
             endocrine::hrv_trt_response(SDNN_BASE_MS, DELTA_SDNN_MS, TAU_MONTHS, f64::from(m - 1));
         let curr =
             endocrine::hrv_trt_response(SDNN_BASE_MS, DELTA_SDNN_MS, TAU_MONTHS, f64::from(m));
-        if curr < prev - 1e-12 {
+        if curr < prev - MACHINE_EPSILON_TIGHT {
             monotonic = false;
             break;
         }
@@ -95,7 +96,7 @@ fn main() {
     // --- Check 6: High SDNN (>100ms) → risk factor = 0.5 ---
     println!("\n--- Check 6: High SDNN (>100ms) → risk factor = 0.5 ---");
     let risk_sdnn_120_t500 = endocrine::cardiac_risk_composite(120.0, 500.0, 1.0);
-    if (risk_sdnn_120_t500 - 0.25).abs() < 1e-10 {
+    if (risk_sdnn_120_t500 - 0.25).abs() < MACHINE_EPSILON {
         println!("  [PASS] risk(120ms, 500ng/dL) = 0.25 (hrv_factor=0.5)");
         passed += 1;
     } else {
@@ -117,7 +118,7 @@ fn main() {
     // --- Check 8: High T (>500) → risk factor = 0.5 ---
     println!("\n--- Check 8: High T (>500) → risk factor = 0.5 ---");
     let risk_high_t = endocrine::cardiac_risk_composite(80.0, 600.0, 1.0);
-    if (risk_high_t - 0.35).abs() < 1e-10 {
+    if (risk_high_t - 0.35).abs() < MACHINE_EPSILON {
         println!("  [PASS] risk(80ms, 600ng/dL) = 0.35 (t_factor=0.5)");
         passed += 1;
     } else {

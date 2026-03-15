@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -14,6 +14,7 @@
 
 use healthspring_barracuda::endocrine::{self, gut_axis_params as gap};
 use healthspring_barracuda::microbiome;
+use healthspring_barracuda::tolerances::MACHINE_EPSILON;
 
 fn main() {
     let mut passed = 0u32;
@@ -97,8 +98,8 @@ fn main() {
 
     // --- Check 4: Disorder scales with Pielou ---
     println!("\n--- Check 4: W scales linearly with J ---");
-    if gap::DISORDER_SCALE.mul_add(-j_even, w_even).abs() < 1e-10
-        && gap::DISORDER_SCALE.mul_add(-j_dom, w_dom).abs() < 1e-10
+    if gap::DISORDER_SCALE.mul_add(-j_even, w_even).abs() < MACHINE_EPSILON
+        && gap::DISORDER_SCALE.mul_add(-j_dom, w_dom).abs() < MACHINE_EPSILON
     {
         println!("  [PASS]");
         passed += 1;
@@ -160,7 +161,7 @@ fn main() {
     // --- Check 10: Zero disorder → ξ = 1 ---
     println!("\n--- Check 10: Zero disorder → minimal ξ ---");
     let xi_zero = endocrine::anderson_localization_length(0.0, gap::LATTICE_SIZE);
-    if (xi_zero - 1.0).abs() < 1e-10 {
+    if (xi_zero - 1.0).abs() < MACHINE_EPSILON {
         println!("  [PASS] ξ(W=0) = {xi_zero}");
         passed += 1;
     } else {

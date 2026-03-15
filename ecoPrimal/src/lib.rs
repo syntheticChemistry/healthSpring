@@ -1,7 +1,8 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![deny(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![deny(clippy::unwrap_used)]
 #![deny(clippy::expect_used)]
 

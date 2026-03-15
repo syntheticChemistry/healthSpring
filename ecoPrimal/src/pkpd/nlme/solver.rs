@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Shared numerical infrastructure for NLME estimation.
 //!
 //! Provides the inner-loop helpers used by both FOCE and SAEM:

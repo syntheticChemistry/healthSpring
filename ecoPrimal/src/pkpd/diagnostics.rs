@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Population PK diagnostics — CWRES, VPC, and GOF (Goodness-of-Fit).
 //!
 //! Standard population PK model evaluation plots as described in FDA

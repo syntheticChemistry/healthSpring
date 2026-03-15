@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Quorum sensing (QS) gene profiling for functional Anderson disorder.
 //!
 //! Extends the structural disorder parameter `W` (derived from Pielou evenness)

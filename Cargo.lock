@@ -793,6 +793,7 @@ dependencies = [
  "barracuda",
  "barracuda-core",
  "bytemuck",
+ "clap",
  "criterion",
  "serde",
  "serde_json",

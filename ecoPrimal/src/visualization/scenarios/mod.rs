@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Per-track petalTongue scenario builders.
 //!
 //! Each builder calls real healthSpring math and wraps the outputs in

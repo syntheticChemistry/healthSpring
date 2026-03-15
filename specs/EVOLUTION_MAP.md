@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: March 14, 2026
-**Status**: V22. V22: healthSpring evolved from experiment binaries to a **biomeOS BYOB niche deployment** via `healthspring_primal` — 50+ science capabilities served over JSON-RPC 2.0 Unix socket. Niche deploy graph created. Prior: V21 domain evolution to **health of living systems** — Tracks 1–7 (Comparative Medicine, Drug Discovery).
+**Last Updated**: March 15, 2026
+**Status**: V23 — production-hardened biomeOS niche. 55+ wired JSON-RPC capabilities (all 13 V22 stubs implemented). `ipc/dispatch.rs` refactored from 1193-line monolith into domain modules (pkpd, microbiome, biosignal, clinical). GPU Tier A rewire documented. Three-tier data fetch implemented.
 
 ---
 

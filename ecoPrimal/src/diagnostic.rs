@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Integrated diagnostic pipeline composing all four healthSpring tracks.
 //!
 //! Takes a patient profile and runs PK/PD modeling, microbiome risk assessment,

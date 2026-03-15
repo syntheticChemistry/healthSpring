@@ -1,11 +1,11 @@
 # healthSpring V4 → barraCuda + toadStool + metalForge Evolution Handoff
 #
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Date**: March 8, 2026
 **From**: healthSpring (human health applications)
 **To**: barraCuda (GPU math), toadStool (heterogeneous dispatch), metalForge (substrate routing)
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later
 **healthSpring Version**: V4 (Tier 0+1 complete — all 4 tracks + validation)
 **barraCuda Version**: v0.3.3 (`a898dee`)
 **toadStool Version**: S130+ (`bfe7977b`)
@@ -221,4 +221,4 @@ Unchanged from V3: gut microbiome diversity (Pielou evenness) correlates with TR
 
 ---
 
-**License:** AGPL-3.0-only
+**License:** AGPL-3.0-or-later

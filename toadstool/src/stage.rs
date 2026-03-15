@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Pipeline stage: a single compute operation within a pipeline.
 
 use healthspring_barracuda::gpu::GpuOp;
@@ -165,11 +165,9 @@ impl Stage {
 
     /// Execute this stage on CPU.
     ///
-    /// # Panics
-    ///
-    /// Panics if a GPU-native stage (`MichaelisMentenBatch`, `ScfaBatch`,
-    /// `BeatClassifyBatch`) fails `to_gpu_op`, which cannot happen for
-    /// valid inputs.
+    /// Returns a failed [`StageResult`] (empty output, `success: false`) if a
+    /// GPU-native stage cannot be mapped to a `GpuOp`; this cannot happen for
+    /// valid `StageOp` variants.
     #[must_use]
     #[expect(clippy::cast_precision_loss)]
     #[expect(
@@ -232,14 +230,18 @@ impl Stage {
             }
             StageOp::BrayCurtis { communities } => compute_bray_curtis_matrix(communities),
             StageOp::MichaelisMentenBatch { .. } => {
-                let op = self.to_gpu_op(input).unwrap();
+                let Some(op) = self.to_gpu_op(input) else {
+                    return failed_stage_result(self, &start);
+                };
                 match gpu_cpu(&op) {
                     GpuResult::MichaelisMentenBatch(v) => v,
                     _ => unreachable!(),
                 }
             }
             StageOp::ScfaBatch { .. } => {
-                let op = self.to_gpu_op(input).unwrap();
+                let Some(op) = self.to_gpu_op(input) else {
+                    return failed_stage_result(self, &start);
+                };
                 match gpu_cpu(&op) {
                     GpuResult::ScfaBatch(triples) => {
                         triples.iter().flat_map(|&(a, p, b)| [a, p, b]).collect()
@@ -248,7 +250,9 @@ impl Stage {
                 }
             }
             StageOp::BeatClassifyBatch { .. } => {
-                let op = self.to_gpu_op(input).unwrap();
+                let Some(op) = self.to_gpu_op(input) else {
+                    return failed_stage_result(self, &start);
+                };
                 match gpu_cpu(&op) {
                     GpuResult::BeatClassifyBatch(pairs) => pairs
                         .iter()
@@ -267,6 +271,20 @@ impl Stage {
             elapsed_us: elapsed,
             success: true,
         }
+    }
+}
+
+#[expect(
+    clippy::cast_precision_loss,
+    reason = "elapsed microseconds fits f64 for timing"
+)]
+fn failed_stage_result(stage: &Stage, start: &std::time::Instant) -> StageResult {
+    StageResult {
+        stage_name: stage.name.clone(),
+        substrate: stage.substrate,
+        output_data: vec![],
+        elapsed_us: start.elapsed().as_micros() as f64,
+        success: false,
     }
 }
 
@@ -538,8 +556,11 @@ mod tests {
             },
         };
         let op = stage.to_gpu_op(None);
-        assert!(op.is_some());
-        assert!(matches!(op.unwrap(), GpuOp::PopulationPkBatch { .. }));
+        let op = match op {
+            Some(o) => o,
+            None => panic!("to_gpu_op returns Some for PopulationPk"),
+        };
+        assert!(matches!(op, GpuOp::PopulationPkBatch { .. }));
     }
 
     #[test]
@@ -569,7 +590,10 @@ mod tests {
             },
         };
         let op = stage.to_gpu_op(None);
-        assert!(op.is_some());
-        assert!(matches!(op.unwrap(), GpuOp::DiversityBatch { .. }));
+        let op = match op {
+            Some(o) => o,
+            None => panic!("to_gpu_op returns Some for DiversityReduce"),
+        };
+        assert!(matches!(op, GpuOp::DiversityBatch { .. }));
     }
 }

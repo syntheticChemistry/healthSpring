@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 use super::super::types::{ClinicalRange, DataChannel, HealthScenario, ScenarioEdge};
 use super::{bar, edge, gauge, node, scaffold, scatter3d, timeseries};

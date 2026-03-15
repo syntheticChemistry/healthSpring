@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Python Control Baselines
 
 Tier 0 reference implementations for all healthSpring experiments.

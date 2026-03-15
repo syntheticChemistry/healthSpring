@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! `PetalTongue` push client: discovery, connection, and push methods.
 //!
 //! Springs discover petalTongue at runtime and push `DataChannel` payloads

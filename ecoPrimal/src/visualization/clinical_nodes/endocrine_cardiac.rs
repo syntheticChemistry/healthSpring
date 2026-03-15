@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Endocrine cardiac monitoring node (HRV, SDNN, composite risk).
 
 use crate::endocrine;

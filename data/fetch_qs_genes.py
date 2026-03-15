@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: AGPL-3.0-or-later
 """
 Fetch QS gene presence/absence matrix from NCBI Gene + UniProt + KEGG.
 

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Paper Review Queue
 
-**Last Updated**: March 14, 2026
-**Status**: V21 — 61 experiments complete (Tracks 1–5), 395 tests, 61 validation binaries. GPU Tier 2+3 live (6 WGSL shaders). All 30 queued papers complete. V21: Domain evolution to **health of living systems** — Track 6 (Comparative Medicine / One Health) and Track 7 (Drug Discovery / ADDRC) queued, drug discovery front-loaded for Gonzales/ADDRC meeting.
+**Last Updated**: March 15, 2026
+**Status**: V23 — 61 experiments complete (Tracks 1–5), 435 tests, 55+ wired JSON-RPC capabilities. All 30 queued papers complete. Tracks 6–7 queued. V23 deep debt: production-hardened codebase with zero `#[allow()]`, zero TODO/FIXME, AGPL-3.0-or-later license, `UniBin` compliance.
 
 ---
 

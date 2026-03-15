@@ -3,7 +3,7 @@
 **Date**: March 9, 2026
 **From**: healthSpring
 **To**: barraCuda, toadStool, petalTongue, metalForge
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later
 **Covers**: V12→V13 — deep code audit, Anderson eigensolver, smart refactoring, math deduplication, centralized RNG, capability-based discovery, flaky test elimination, doc-tests
 
 ---
@@ -214,4 +214,4 @@ Full stream ops (append, set_value, replace). Domain theming. UiConfig passthrou
 
 ---
 
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later

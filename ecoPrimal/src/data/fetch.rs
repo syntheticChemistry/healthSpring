@@ -1,11 +1,12 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Three-tier fetch logic: `biomeOS` → `NestGate` cache → direct NCBI HTTP.
 
 use std::path::PathBuf;
 
-use super::discovery;
-use super::storage;
 use super::DataError;
+use super::discovery;
+use super::rpc;
+use super::storage;
 
 /// NCBI data provider with three-tier fetch support.
 ///
@@ -33,7 +34,7 @@ impl NcbiProvider {
 
     /// Which tier is the highest available.
     #[must_use]
-    pub fn highest_tier(&self) -> u8 {
+    pub const fn highest_tier(&self) -> u8 {
         if self.biomeos_socket.is_some() {
             1
         } else if self.nestgate_socket.is_some() {
@@ -80,6 +81,26 @@ impl NcbiProvider {
     }
 }
 
+/// Extract string content from a JSON-RPC result (handles string or object with "content"/"data").
+fn extract_content(value: serde_json::Value) -> Result<String, DataError> {
+    match value {
+        serde_json::Value::String(s) => Ok(s),
+        serde_json::Value::Object(obj) => {
+            if let Some(v) = obj.get("content").or_else(|| obj.get("data")) {
+                if let Some(s) = v.as_str() {
+                    return Ok(s.to_owned());
+                }
+                if let Ok(ser) = serde_json::to_string(v) {
+                    return Ok(ser);
+                }
+            }
+            serde_json::to_string(&serde_json::Value::Object(obj))
+                .map_err(|e| DataError::Parse(e.to_string()))
+        }
+        other => serde_json::to_string(&other).map_err(|e| DataError::Parse(e.to_string())),
+    }
+}
+
 /// Three-tier fetch: `biomeOS` → `NestGate` cache → direct NCBI HTTP.
 ///
 /// This is the standalone function form; prefer `NcbiProvider::fetch` for
@@ -89,34 +110,60 @@ impl NcbiProvider {
 ///
 /// Returns `DataError` if all tiers fail.
 pub fn fetch_tiered(
-    _biomeos_socket: Option<&std::path::Path>,
-    _nestgate_socket: Option<&std::path::Path>,
+    biomeos_socket: Option<&std::path::Path>,
+    nestgate_socket: Option<&std::path::Path>,
     db: &str,
     id: &str,
     _api_key: &str,
 ) -> Result<String, DataError> {
     // Tier 1: biomeOS capability.call
-    // TODO: Implement when biomeOS IPC client is ready.
-    // If biomeos_socket is available, attempt:
-    //   capability.call("data.ncbi_fetch", { db, id })
-    // On success, return the result.
+    if let Some(socket) = biomeos_socket {
+        let params = serde_json::json!({
+            "capability": "data.ncbi_fetch",
+            "params": { "db": db, "id": id }
+        });
+        match rpc::rpc_call(socket, "capability.call", &params) {
+            Ok(result) => return extract_content(result),
+            Err(e) => {
+                // Fall through to tier 2
+                let _ = e;
+            }
+        }
+    }
 
-    // Tier 2: NestGate cache
-    // TODO: Implement when NestGate socket protocol is finalized.
-    // If nestgate_socket is available:
-    //   Check: rpc_call(socket, "storage.exists", { key: content_key(db, id) })
-    //   If exists: rpc_call(socket, "storage.retrieve", { key })
-    //   Else: fetch from NCBI, then store via NestGate
+    // Tier 2: NestGate cache — storage.exists then storage.retrieve or data.fetch
+    if let Some(socket) = nestgate_socket {
+        let key = storage::content_key(db, id);
 
-    // Tier 3: Direct NCBI HTTP (stub)
-    // The actual HTTP client will be added when the nestgate feature is enabled.
-    // For now, check local cache.
+        // Try storage.retrieve first (content-addressed cache)
+        let exists_params = serde_json::json!({ "key": key });
+        if let Ok(exists_result) = rpc::rpc_call(socket, "storage.exists", &exists_params) {
+            if exists_result.as_bool().unwrap_or(false) {
+                let retrieve_params = serde_json::json!({ "key": key });
+                if let Ok(result) = rpc::rpc_call(socket, "storage.retrieve", &retrieve_params) {
+                    return extract_content(result);
+                }
+            }
+        }
+
+        // Fallback: data.fetch (NestGate may fetch from NCBI and return)
+        let fetch_params = serde_json::json!({ "db": db, "id": id });
+        if let Ok(result) = rpc::rpc_call(socket, "data.fetch", &fetch_params) {
+            return extract_content(result);
+        }
+    }
+
+    // Tier 3: Local cache fallback (no direct NCBI HTTP client yet)
     let cache = storage::local_cache_path(db, id);
     if cache.exists() {
         return std::fs::read_to_string(&cache).map_err(DataError::from);
     }
 
-    Err(DataError::SocketNotFound)
+    Err(DataError::Rpc(format!(
+        "NCBI fetch failed: no biomeOS or NestGate socket available, and local cache miss. \
+         Set BIOMEOS_SOCKET or NESTGATE_SOCKET, or pre-populate cache at \
+         HEALTHSPRING_DATA_ROOT/ncbi_cache/{db}/{id}.json"
+    )))
 }
 
 #[cfg(test)]

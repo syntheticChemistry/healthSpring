@@ -3,7 +3,7 @@
 **Date**: March 10, 2026
 **From**: healthSpring V15
 **To**: barraCuda, toadStool, coralReef, metalForge
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later
 **Covers**: V14.1→V15 — Upstream rewire: pull and integrate ecosystem evolutions from toadStool (S128–S142), barraCuda (absorption sprint), and coralReef (Phase 10). Precision routing, provenance documentation, dependency wiring, and handoff catch-up.
 
 ---

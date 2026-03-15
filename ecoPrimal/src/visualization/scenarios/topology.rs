@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! NUCLEUS topology scenario builder for petalTongue visualization.
 //!
 //! Renders a Tower/Node/Nest hardware topology as a petalTongue scenario graph,

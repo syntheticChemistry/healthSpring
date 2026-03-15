@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! JSON-RPC wire protocol helpers for petalTongue push visualization.
 //!
 //! Builds params for `visualization.render` and `visualization.render.stream`

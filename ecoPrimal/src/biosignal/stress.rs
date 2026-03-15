@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Autonomic stress detection from EDA and HRV.
 //!
 //! Combines skin conductance (SCR frequency, SCL level) with HRV

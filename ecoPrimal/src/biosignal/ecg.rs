@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Pan-Tompkins QRS detection and ECG signal processing.
 //!
 //! Implements the Pan & Tompkins (1985) five-stage pipeline:

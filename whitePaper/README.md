@@ -1,9 +1,9 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** March 14, 2026
-**Status:** V21 — 61 experiments, 395 tests, 30/30 papers complete (Tracks 1–5). Full-stack portability: Python → Rust CPU → GPU (6 WGSL shaders) → toadStool dispatch → metalForge NUCLEUS. Rust 84× faster than Python. V21: Domain evolution from human health to **health of living systems** — Track 6 (Comparative Medicine) and Track 7 (Drug Discovery / ADDRC).
-**License:** scyBorg (AGPL-3.0 code + ORC mechanics + CC-BY-SA 4.0 creative content)
+**Date:** March 15, 2026
+**Status:** V23 — 61 experiments, 435 tests, 55+ wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–5). Deep debt remediation: `clippy::nursery` enforced, all `#[allow()]` eliminated, `UniBin` compliance, three-tier data fetch, centralized tolerances, `ValidationHarness` adoption. AGPL-3.0-or-later across all files.
+**License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
 

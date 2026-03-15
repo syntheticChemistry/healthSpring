@@ -3,7 +3,7 @@
 **Date**: March 8, 2026
 **From**: healthSpring (human health applications)
 **To**: barraCuda (GPU math), toadStool (heterogeneous dispatch)
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later
 **healthSpring Version**: V1 (Tier 0+1 complete)
 **barraCuda Version**: v0.3.3
 **toadStool Version**: S130+

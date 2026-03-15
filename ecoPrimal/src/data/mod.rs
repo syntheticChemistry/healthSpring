@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Data provider: three-tier fetch (`biomeOS` → `NestGate` → direct HTTP).
 //!
 //! Follows the wetSpring pattern for transparent data access with provenance.
@@ -25,20 +25,17 @@
 mod discovery;
 mod fetch;
 pub mod provenance;
-#[cfg(feature = "nestgate")]
 mod rpc;
 mod storage;
 
 pub use discovery::{discover_biomeos_socket, discover_nestgate_socket, is_enabled};
-pub use fetch::{fetch_tiered, NcbiProvider};
+pub use fetch::{NcbiProvider, fetch_tiered};
 pub use provenance::{
-    begin_data_session, complete_data_session, record_fetch_step, trio_available,
-    DataProvenanceChain, ProvenanceResult,
+    DataProvenanceChain, ProvenanceResult, begin_data_session, complete_data_session,
+    record_fetch_step, trio_available,
 };
+pub use rpc::{RpcError, rpc_call};
 pub use storage::{content_key, exists_local, local_cache_path, store_local};
-
-#[cfg(feature = "nestgate")]
-pub use rpc::{rpc_call, RpcError};
 
 /// Errors from the data provider.
 #[derive(Debug)]
@@ -64,7 +61,7 @@ impl std::fmt::Display for DataError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::SocketNotFound => write!(f, "NestGate/biomeOS socket not found"),
-            Self::Rpc(msg) => write!(f, "NestGate RPC error: {msg}"),  // runtime string, no backticks
+            Self::Rpc(msg) => write!(f, "NestGate RPC error: {msg}"), // runtime string, no backticks
             Self::NcbiHttp { status, url } => {
                 write!(f, "NCBI HTTP error: {status} for {url}")
             }

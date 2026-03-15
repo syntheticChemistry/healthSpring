@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** March 14, 2026
-**Status:** V22 — biomeOS BYOB niche deployment. healthSpring is now a **niche**: `healthspring_primal` serves 55+ science capabilities via JSON-RPC 2.0 over Unix socket; 5 workflow graphs define diagnostic pipelines as biomeOS compositions. 7 tracks (5 complete + 2 queued), 61 experiments, 414 tests (337 ecoPrimal + 33 forge + 30 toadStool + 8 IPC + 3 doc-tests + 3 integration), 194 Python cross-validation checks, 6 WGSL shaders. V22: IPC module (`ecoPrimal/src/ipc/`), primal binary, niche manifest + 5 workflow graphs in `graphs/`. Prior: full-stack portability (CPU → GPU → toadStool → NUCLEUS), V21 deep debt + health of living systems domain expansion (Tracks 6–7 queued).
+**Last Updated:** March 15, 2026
+**Status:** V23 — deep debt remediation + production hardening. All V22 audit findings resolved: AGPL-3.0-or-later license compliance, `clippy::nursery` enforcement, `UniBin`-compliant primal binary, 13 new dispatch handlers wired, three-tier data fetch, centralized tolerances, `ValidationHarness` adoption. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. Zero `#[allow()]`, zero TODO/FIXME, zero unsafe code, all files under 1000 LOC.
 
 ---
 

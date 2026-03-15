@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! AUC trapezoidal, `find_cmax_tmax`, multiple dose superposition.
 
 /// AUC by trapezoidal rule over `(time, concentration)` pairs.

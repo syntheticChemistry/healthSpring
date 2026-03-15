@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Centralized tolerance constants sourced from `specs/TOLERANCE_REGISTRY.md`.
 //!
 //! Every constant here maps to a documented, justified entry in the registry.

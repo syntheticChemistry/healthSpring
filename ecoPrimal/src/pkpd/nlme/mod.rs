@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Non-Linear Mixed-Effects (NLME) population PK — sovereign replacement for NONMEM/Monolix.
 //!
 //! Implements two estimation algorithms:

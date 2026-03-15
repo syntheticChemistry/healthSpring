@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Push visualization data to petalTongue via JSON-RPC IPC.
 //!
 //! Springs discover petalTongue at runtime and push `DataChannel` payloads

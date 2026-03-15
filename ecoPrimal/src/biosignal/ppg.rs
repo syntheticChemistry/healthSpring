@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! PPG (photoplethysmography) `SpO2` estimation.
 //!
 //! Beer-Lambert empirical calibration: `SpO2 = 110 - 25 * R`.

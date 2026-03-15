@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V20 — 61 experiments, full-stack portability validated (barraCuda CPU → GPU → toadStool streaming dispatch → metalForge NUCLEUS routing with PCIe P2P bypass). 395 tests, 194 Python cross-validation checks. 6 WGSL shaders. Rust 84× faster than Python (V18). GPU scaling linear, toadStool V16 dispatch, mixed NUCLEUS V16 with PCIe P2P GPU↔NPU bypass (V19). V20: petalTongue V16 visualization (34-node full study, 16 scenarios, patient explorer).
-**Last Updated**: March 10, 2026
+**Status**: V23 — deep debt remediation + production hardening. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. AGPL-3.0-or-later across all files. `clippy::nursery` enforced, zero `#[allow()]`, zero TODO/FIXME, `UniBin`-compliant primal binary. barraCuda v0.3.5 pinned.
+**Last Updated**: March 15, 2026
 
 ---
 
@@ -22,10 +22,10 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V20** | [V20 petalTongue V16 Visualization Handoff](handoffs/HEALTHSPRING_V20_PETALTONGUE_V16_VIZ_BARRACUDA_TOADSTOOL_HANDOFF_MAR10_2026.md) | Mar 10 | petalTongue V16 scenarios (34 nodes, 38 edges), compute pipeline viz, unified dashboard (Exp088, 326/326), patient explorer (Exp089, 14/14), 16 scenario JSONs. |
-| **V19** | [V19 Full-Stack Portability Handoff](handoffs/HEALTHSPRING_V19_FULLSTACK_BARRACUDA_TOADSTOOL_HANDOFF_MAR10_2026.md) | Mar 10 | GPU scaling (Exp085, 47/47), toadStool V16 dispatch (Exp086, 24/24), mixed NUCLEUS (Exp087, 35/35), PCIe P2P bypass, barraCuda absorption guidance, EDA SIMD optimization target. |
-| **V15** | [V15 Upstream Rewire Handoff](handoffs/HEALTHSPRING_V15_UPSTREAM_REWIRE_HANDOFF_MAR10_2026.md) | Mar 10 | Upstream rewire: precision routing, upstream `barracuda` dependency, WGSL shader provenance, ecosystem catch-up. |
-| | *V1–V14.1 → `handoffs/archive/`* | | Fossil record |
+| **V23** | [V23 Deep Remediation Handoff](handoffs/HEALTHSPRING_V23_DEEP_REMEDIATION_BARRACUDA_TOADSTOOL_HANDOFF_MAR15_2026.md) | Mar 15 | Deep debt remediation, Tier A/B GPU rewire plan, NLME absorption candidates, quality standards. Supersedes V22 + V15 absorption. |
+| **V20** | [V20 petalTongue V16 Visualization Handoff](handoffs/HEALTHSPRING_V20_PETALTONGUE_V16_VIZ_BARRACUDA_TOADSTOOL_HANDOFF_MAR10_2026.md) | Mar 10 | petalTongue V16 scenarios, compute pipeline viz, unified dashboard, patient explorer. |
+| **V19** | [V19 Full-Stack Portability Handoff](handoffs/HEALTHSPRING_V19_FULLSTACK_BARRACUDA_TOADSTOOL_HANDOFF_MAR10_2026.md) | Mar 10 | GPU scaling, toadStool V16 dispatch, mixed NUCLEUS, PCIe P2P bypass. |
+| | *V1–V22 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 
@@ -37,7 +37,7 @@ Superseded handoffs in `handoffs/archive/` — preserved as fossil record.
 
 | From | What | Version | Status |
 |------|------|---------|--------|
-| **barraCuda** | Core math, PK/PD ops, diversity, LCG PRNG, eigensolver, `Fp64Strategy`, V16 GPU ops (MM batch, SCFA batch, Beat classify) | v0.3.3+ | **Live** — Tier 2+3 GPU via 6 WGSL shaders + `GpuContext` + `execute_fused`. V16 scaling validated. |
+| **barraCuda** | Core math, PK/PD ops, diversity, LCG PRNG, eigensolver, `Fp64Strategy`, V16 GPU ops (MM batch, SCFA batch, Beat classify) | v0.3.5 (`a60819c`) | **Live** — Tier 2+3 GPU via 6 WGSL shaders + `GpuContext` + `execute_fused`. Tier A rewire ready (Hill, PopPK, Diversity → upstream ops). |
 | **toadStool** | Compute pipeline dispatch (CPU/GPU/NPU routing, streaming, callbacks) | S142+ | **Live** — V16 StageOps dispatched via `execute_cpu`, `execute_streaming`, `execute_auto`. |
 | **metalForge** | NUCLEUS topology, substrate capabilities, PCIe P2P transfer planning, `plan_dispatch` | local | **Live** — 9 Workload variants, mixed Tower/Node/Nest dispatch, PCIe Gen4 P2P (31.5 GB/s). |
 | **wetSpring** | 16S pipeline, Anderson lattice, Gonzales immunology | V107 | Validated (9,060+ checks) |

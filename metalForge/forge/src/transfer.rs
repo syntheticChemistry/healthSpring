@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Inter-device data transfer planning for mixed hardware systems.
 //!
 //! When a pipeline stage on one Nest produces output consumed by a stage

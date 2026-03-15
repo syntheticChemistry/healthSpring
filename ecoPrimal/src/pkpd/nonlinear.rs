@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Nonlinear (Michaelis-Menten) pharmacokinetics.
 //!
 //! Capacity-limited elimination: `dC/dt = -Vmax·C/(Km + C)`.
@@ -125,7 +125,6 @@ pub fn mm_nonlinearity_ratio(params: &MichaelisMentenParams, dose1: f64, dose2: 
 }
 
 #[cfg(test)]
-#[expect(clippy::unwrap_used, reason = "test code")]
 mod tests {
     use super::*;
 
@@ -149,7 +148,10 @@ mod tests {
 
     #[test]
     fn mm_css_below_vmax() {
-        let css = mm_css_infusion(&PHENYTOIN_PARAMS, 250.0).unwrap();
+        let css = match mm_css_infusion(&PHENYTOIN_PARAMS, 250.0) {
+            Some(c) => c,
+            None => panic!("250 mg/day < vmax 500 should yield Some"),
+        };
         assert!(css > 0.0 && css.is_finite());
     }
 

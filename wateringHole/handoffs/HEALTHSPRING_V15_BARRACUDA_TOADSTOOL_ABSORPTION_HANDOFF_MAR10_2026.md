@@ -3,7 +3,7 @@
 **Date**: March 10, 2026
 **From**: healthSpring V15
 **To**: barraCuda team, toadStool team
-**License**: AGPL-3.0-only
+**License**: AGPL-3.0-or-later
 **Purpose**: Absorption guidance — what healthSpring has validated, what's ready for upstream consumption, and what we learned about precision, shaders, and clinical compute.
 
 ---

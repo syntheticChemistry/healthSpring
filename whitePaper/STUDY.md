@@ -1,7 +1,7 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.3 (V21 — health of living systems)
-**Date**: March 14, 2026
+**Version**: 0.4 (V23 — deep debt remediation + production hardening)
+**Date**: March 15, 2026
 
 ---
 

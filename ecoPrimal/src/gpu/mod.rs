@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! GPU-dispatchable operations for healthSpring.
 //!
 //! Defines operations that can execute on either CPU (pure Rust) or GPU
@@ -18,7 +18,7 @@
 //!
 //! ## ABSORPTION STATUS (barraCuda S-latest / coralReef Phase 10)
 //!
-//! **Absorbed upstream** (barraCuda owns canonical versions):
+//! **Tier A — Absorbed upstream** (barraCuda owns canonical ops, rewire ready):
 //! - `HillFunctionF64` — `barracuda::ops::HillFunctionF64`
 //! - `PopulationPkF64` — `barracuda::ops::PopulationPkF64`
 //! - `DiversityFusionGpu` — `barracuda::ops::bio::DiversityFusionGpu`
@@ -26,10 +26,25 @@
 //! - Eigensolver — `barracuda::special::{tridiagonal_ql, anderson_diagonalize}`
 //! - Diversity stats — `barracuda::stats::{shannon, simpson, chao1, pielou, bray_curtis}`
 //!
-//! **Pending** (local to healthSpring until next absorption):
-//! - `GpuContext` fused pipeline pattern → barraCuda compute executor
+//! **Tier B — Absorption candidates** (local shaders, barraCuda design pending):
+//! - `MichaelisMentenBatch` — Euler ODE per patient, bio module candidate
+//! - `ScfaBatch` — element-wise Michaelis-Menten ×3, bio module candidate
+//! - `BeatClassifyBatch` — template correlation + argmax, biosignal candidate
+//!
+//! **Pending architectural** (local to healthSpring until next absorption):
+//! - `GpuContext` fused pipeline → `barracuda::session::TensorSession`
 //! - `strip_f64_enable()` WGSL preprocessor → coralReef naga pass
 //! - `shader_for_op()` mapping → barraCuda shader registry
+//!
+//! **Rewire plan** (Tier A → barraCuda GPU ops):
+//!
+//! When `gpu` feature is active and `barracuda::WgpuDevice` is available:
+//!
+//! 1. `HillSweep` → `barracuda::ops::HillFunctionF64::dose_response()`
+//! 2. `PopulationPkBatch` → `barracuda::ops::PopulationPkF64::new()`
+//! 3. `DiversityBatch` → `barracuda::ops::bio::DiversityFusionGpu::new()`
+//!
+//! CPU fallback in `execute_cpu()` remains the reference implementation.
 //!
 //! **Precision evolution**: metalForge now has `PrecisionRouting` (mirroring
 //! toadStool S128 `PrecisionRoutingAdvice`). GPU context should use this to

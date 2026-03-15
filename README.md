@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 14, 2026
-**License:** scyBorg (AGPL-3.0 code + ORC mechanics + CC-BY-SA 4.0 creative content)
+**Date:** March 15, 2026
+**License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V22 — biomeOS BYOB niche deployment. healthSpring is now a **niche**: `healthspring_primal` serves 55+ capabilities via JSON-RPC 2.0 over Unix socket; 5 workflow graphs define the diagnostic pipeline as biomeOS compositions. 414 tests (337 ecoPrimal + 33 forge + 30 toadStool + 8 IPC + 3 doc-tests + 3 integration), 61 experiments (Tracks 1–5), 194 Python cross-validation checks. V22 adds IPC module (`ecoPrimal/src/ipc/`), primal binary (`ecoPrimal/src/bin/healthspring_primal.rs`), niche manifest + 5 workflow graphs in `graphs/`. Prior: full-stack portability validated (CPU → GPU → toadStool dispatch → metalForge NUCLEUS routing), V21 domain evolution to health of living systems (Tracks 6–7 queued). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean.
+**Status:** V23 — deep debt remediation + production hardening. 435 tests, 61 experiments, 55+ JSON-RPC capabilities (all wired), `UniBin` compliant primal binary with `clap` subcommands. `clippy::pedantic` + `clippy::nursery` enforced with zero warnings. All `#[allow()]` eliminated (migrated to `#[expect()]` with reasons). All inline tolerance magic numbers centralized to `tolerances::*`. 10 experiments migrated to `ValidationHarness` (hotSpring pattern). Three-tier data fetch (biomeOS → NestGate → local) fully implemented. Capability-based primal discovery with zero hardcoded names. `ipc/dispatch.rs` refactored from 1193-line monolith into 5 domain modules. AGPL-3.0-or-later across all files (.rs, .py, .sh, .toml, .md). Zero unsafe code, zero TODO/FIXME in production code, all files under 1000 LOC.
 
 ---
 
@@ -33,33 +33,48 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V22** (biomeOS niche deployment + IPC primal + workflow graphs) |
-| Rust ecoPrimal tests | 337 |
-| Rust forge tests | 33 (metalForge) |
-| Rust toadStool tests | 30 |
-| IPC tests | 8 (dispatch, rpc, socket) |
-| Doc-tests | 3 (`shannon_index`, `hill_dose_response`, `auc_trapezoidal`) |
-| Integration tests | 3 (primal lifecycle) |
-| **Total tests** | **414** |
+| Version | **V23** (deep debt remediation + production hardening) |
+| **Total tests** | **435** |
+| Experiments complete | 61 (Tracks 1–5, Tier 0+1+2+3) |
+| JSON-RPC capabilities | 55+ (all wired — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 15 queued (Tracks 6–7) |
 | Python control checks | 194 (cross-validation) |
-| Experiments complete | 61 (Tier 0+1+2+3 + diagnostics + GPU + clinical + NLME + V16 primitives + GPU scaling + dispatch + NUCLEUS) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity checks |
-| GPU V16 shaders | `michaelis_menten_batch_f64.wgsl`, `scfa_batch_f64.wgsl`, `beat_classify_batch_f64.wgsl` |
-| GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s; V16 linear scaling confirmed |
-| CPU parity | Rust 84× faster than Python across V16 primitives (SCFA 160×, antibiotic 233×, beat 149×) |
-| biomeOS niche | **Live** — `healthspring_primal` binary, 55+ JSON-RPC capabilities, 5 workflow graphs (ConditionalDag, Sequential, Continuous) |
-| petalTongue visualization | **Full** — 7 DataChannel types, 3 stream ops, domain theming, capabilities query, interaction subscription |
-| petalTongue scenarios | 16 scenarios (6 clinical + 5 TRT archetypes + topology + dispatch + NLME + V16 + compute) |
-| petalTongue pipeline | 34 nodes, 38 edges across all 7 DataChannel types (V16 primitives + compute pipeline) |
-| Clinical TRT | 5 patient archetypes, live streaming dashboard (PK, HRV, HbA1c, cardiac risk) |
+| CPU parity | Rust 84× faster than Python across V16 primitives |
+| biomeOS niche | **Live** — `UniBin`-compliant primal binary (`serve`/`version`/`capabilities` subcommands), SIGTERM/SIGINT handling |
 | NLME population PK | FOCE + SAEM estimation, NCA metrics, CWRES/VPC/GOF diagnostics |
-| metalForge validation | 33 tests (NUCLEUS topology, dispatch planning, PCIe transfer) |
-| toadStool validation | 30 tests + GPU dispatch + streaming + auto-dispatch |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Ellsworth (Med Chem), Mok (Allure Medical) |
-| Unsafe blocks | 0 |
-| Clippy warnings | 0 (`#![deny(clippy::pedantic)]` in all lib crates, `-W clippy::nursery`) |
-| Max file size | 819 lines (all files under 1000-line wateringHole limit) |
+| Unsafe blocks | **0** (`#![forbid(unsafe_code)]`) |
+| `#[allow()]` in production | **0** (all migrated to `#[expect()]` with reasons) |
+| TODO/FIXME in production | **0** |
+| Clippy | **0 warnings** (`#![deny(clippy::pedantic, clippy::nursery)]`) |
+| `cargo fmt` | **0 diffs** |
+| `cargo doc` | **0 warnings** |
+| Max file size | 968 lines (`gpu/context.rs` — all files under 1000-line limit) |
+| License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V23 Deep Debt Remediation + Production Hardening (from V22)
+
+V23 is a zero-debt deep evolution. Every audit finding from the V22 comprehensive audit is resolved.
+
+| Change | Impact |
+|--------|--------|
+| **License compliance** | AGPL-3.0-or-later across all files (was AGPL-3.0-only). Includes .rs, .py, .sh, .toml, .md. scyBorg trio compliant. |
+| **clippy::nursery enforced** | `#![deny(clippy::nursery)]` added to crate root. 5 nursery findings fixed (`const fn`, `map_or_else`, `or_fun_call`, `suboptimal_flops`, `must_use_candidate`). |
+| **#[allow] → #[expect]** | All `#[allow()]` in production code eliminated. Replaced with `#[expect()]` with explicit `reason` strings. |
+| **UniBin compliance** | Primal binary now uses `clap` with `serve`, `version`, `capabilities` subcommands. `--help` and `--version` flags. |
+| **SIGTERM handling** | Accept loop handles `Interrupted` errors; clean socket removal on shutdown. |
+| **13 capabilities wired** | NLME (FOCE, SAEM), CWRES, VPC, GOF, QS gene profile, QS effective disorder, WFDB decode, population TRT, population Monte Carlo, TRT scenario, patient parameterize, risk annotate. |
+| **dispatch.rs refactored** | 1193-line monolith → 5 domain modules (pkpd 363, microbiome 174, biosignal 186, clinical 295, mod 149). All under 400 LOC. |
+| **Discovery unified** | Capability-based primal discovery. Zero hardcoded primal names — all use named constants and env var overrides. |
+| **Three-tier fetch** | biomeOS → NestGate → local cache fully implemented (was TODO stubs). |
+| **Tolerances centralized** | 15 experiments migrated from inline magic numbers to `tolerances::*` constants. |
+| **ValidationHarness** | 10 experiments migrated from ad-hoc counters to `ValidationHarness` (hotSpring pattern). |
+| **unwrap/expect eliminated** | All production `.unwrap()` and `.expect()` replaced with safe patterns. |
+| **GPU rewire documented** | Tier A → barraCuda upstream ops (Hill, PopPK, Diversity) with clear rewire plan. |
+| **435 tests** | Up from 414. Zero failures, zero clippy warnings (pedantic + nursery). |
 
 ---
 
@@ -343,13 +358,15 @@ healthSpring/
 │   ├── exp084/          # CPU parity bench (Rust 84× faster)
 │   ├── exp085–exp087/   # GPU scaling + toadStool dispatch + NUCLEUS routing
 │   └── exp088–exp089/   # petalTongue V16 visualization + patient explorer
-│       ├── ipc/          # biomeOS IPC (JSON-RPC 2.0 dispatch)
-│       │   ├── mod.rs
-│       │   ├── dispatch.rs  # 55+ method → science function routing
-│       │   ├── rpc.rs       # JSON-RPC response helpers + client
-│       │   └── socket.rs    # XDG socket path resolution + primal discovery
-│       └── bin/
-│           └── healthspring_primal.rs  # biomeOS primal binary
+│   ├── ipc/              # biomeOS IPC (JSON-RPC 2.0 dispatch)
+│   │   ├── mod.rs
+│   │   ├── dispatch/     # 55+ method → science function routing
+│   │   │   ├── mod.rs    # Central dispatch table
+│   │   │   └── handlers/ # Domain handlers (pkpd, microbiome, biosignal, clinical)
+│   │   ├── rpc.rs        # JSON-RPC response helpers + client
+│   │   └── socket.rs     # XDG socket path resolution + primal discovery
+│   └── bin/
+│       └── healthspring_primal.rs  # UniBin-compliant biomeOS primal binary
 ├── graphs/             # biomeOS niche definition + workflow graphs
 │   ├── healthspring_niche.toml              # Niche manifest
 │   ├── healthspring_niche_deploy.toml       # Primal startup order
@@ -383,7 +400,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 414 tests (337 ecoPrimal + 33 forge + 30 toadStool + 8 IPC + 3 doc-tests + 3 integration)
+cargo test --workspace                  # 435 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

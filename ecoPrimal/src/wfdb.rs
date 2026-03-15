@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Streaming WFDB format parser for `PhysioNet` MIT-BIH database loading.
 //!
 //! Implements the WFDB (Waveform Database) format used by `PhysioNet` for

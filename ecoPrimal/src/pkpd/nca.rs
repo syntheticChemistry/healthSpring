@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Non-Compartmental Analysis (NCA) — sovereign replacement for Phoenix `WinNonlin`.
 //!
 //! Computes standard NCA metrics from concentration-time data:

@@ -1,26 +1,22 @@
-// SPDX-License-Identifier: AGPL-3.0-only
-//! JSON-RPC 2.0 over Unix domain socket — `NestGate` protocol.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+//! JSON-RPC 2.0 over Unix domain socket — `NestGate` and `biomeOS` protocol.
 //!
 //! Newline-delimited JSON-RPC matching wetSpring's transport exactly.
-//! Only compiled when the `nestgate` feature is enabled.
 
 use std::io::{BufRead, BufReader, Write};
 use std::os::unix::net::UnixStream;
 use std::path::Path;
 
 /// RPC transport errors.
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug)]
 pub enum RpcError {
     /// Socket connection failed.
-    #[error("connection failed: {0}")]
-    Connection(#[from] std::io::Error),
+    Connection(std::io::Error),
 
     /// JSON serialization/deserialization error.
-    #[error("JSON error: {0}")]
-    Json(#[from] serde_json::Error),
+    Json(serde_json::Error),
 
     /// Server returned an error response.
-    #[error("server error {code}: {message}")]
     Server {
         /// JSON-RPC error code.
         code: i64,
@@ -29,8 +25,40 @@ pub enum RpcError {
     },
 
     /// Unexpected response shape.
-    #[error("unexpected response: {0}")]
     Unexpected(String),
+}
+
+impl std::fmt::Display for RpcError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Connection(e) => write!(f, "connection failed: {e}"),
+            Self::Json(e) => write!(f, "JSON error: {e}"),
+            Self::Server { code, message } => write!(f, "server error {code}: {message}"),
+            Self::Unexpected(msg) => write!(f, "unexpected response: {msg}"),
+        }
+    }
+}
+
+impl std::error::Error for RpcError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            Self::Connection(e) => Some(e),
+            Self::Json(e) => Some(e),
+            _ => None,
+        }
+    }
+}
+
+impl From<std::io::Error> for RpcError {
+    fn from(err: std::io::Error) -> Self {
+        Self::Connection(err)
+    }
+}
+
+impl From<serde_json::Error> for RpcError {
+    fn from(err: serde_json::Error) -> Self {
+        Self::Json(err)
+    }
 }
 
 /// Send a JSON-RPC 2.0 request and receive the result.
@@ -41,7 +69,7 @@ pub enum RpcError {
 pub fn rpc_call(
     socket_path: &Path,
     method: &str,
-    params: serde_json::Value,
+    params: &serde_json::Value,
 ) -> Result<serde_json::Value, RpcError> {
     let mut stream = UnixStream::connect(socket_path)?;
 
@@ -64,7 +92,10 @@ pub fn rpc_call(
     let resp: serde_json::Value = serde_json::from_str(line.trim())?;
 
     if let Some(error) = resp.get("error") {
-        let code = error.get("code").and_then(serde_json::Value::as_i64).unwrap_or(-1);
+        let code = error
+            .get("code")
+            .and_then(serde_json::Value::as_i64)
+            .unwrap_or(-1);
         let message = error
             .get("message")
             .and_then(serde_json::Value::as_str)
@@ -97,7 +128,7 @@ mod tests {
         let result = rpc_call(
             Path::new("/tmp/nonexistent_healthspring_test.sock"),
             "test.ping",
-            serde_json::json!({}),
+            &serde_json::json!({}),
         );
         assert!(result.is_err());
     }

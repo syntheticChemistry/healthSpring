@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: March 14, 2026
-**Status**: V21 — 61 experiments, 458 Rust tests (392 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 194 Python cross-validation checks. Full-stack portability: barraCuda CPU → GPU (6 WGSL shaders) → toadStool streaming dispatch → metalForge NUCLEUS routing (PCIe P2P bypass). Paper queue 30/30 complete (Tracks 1–5). V21: Deep debt execution — smart module refactors (`pkpd/nlme/`, `endocrine/`, `visualization/ipc_push/`, `visualization/clinical_nodes/`), AGPL-3.0-only alignment, named tolerances (`tolerances::*`), provenance DOIs, `XDG_RUNTIME_DIR/biomeos/` discovery, determinism tests + domain evolution to **health of living systems** — new Track 6 (Comparative Medicine / One Health) and Track 7 (Drug Discovery / ADDRC). V20: petalTongue V16 visualization (Exp088) + patient explorer (Exp089). V19: GPU scaling bench + toadStool dispatch + mixed NUCLEUS (106 new checks). V18: Rust 84× faster than Python (Exp084).
+**Last Updated**: March 15, 2026
+**Status**: V23 — deep debt remediation + production hardening. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. `clippy::pedantic` + `clippy::nursery` enforced (0 warnings). Zero `#[allow()]`, zero TODO/FIXME in production. AGPL-3.0-or-later across all files. `UniBin`-compliant primal binary. Three-tier data fetch implemented. All tolerances centralized. 10 experiments on `ValidationHarness`. V22: biomeOS BYOB niche deployment. V21: domain evolution to health of living systems. V20: petalTongue V16 visualization. V19: GPU scaling + toadStool dispatch + NUCLEUS. Paper queue 30/30 complete (Tracks 1–5), 15 queued (Tracks 6–7).
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---
@@ -11,7 +11,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust lib tests | 458 (392 barraCuda + 33 forge + 30 toadStool + 3 doc-tests) |
+| Rust tests (workspace) | 435 |
 | Python control checks | 194 (cross-validation) |
 | Experiments | 61 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |

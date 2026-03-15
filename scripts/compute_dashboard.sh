@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Compute dashboard: runs toadStool dispatch matrix (exp069), PCIe P2P
 # validation (exp070), and mixed system pipeline (exp071) with results

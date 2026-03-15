@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! Criterion benchmarks for healthSpring Rust CPU operations.
 //!
 //! Mirrors the Python benchmark suite in `control/scripts/bench_barracuda_cpu_vs_python.py`

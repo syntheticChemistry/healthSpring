@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Patient Assessment — Full Diagnostic Pipeline via Neural API
 #
@@ -128,4 +128,4 @@ depends_on = ["store_results", "visualize"]
 budget_ms = 100
 
 [nodes.config]
-license = "AGPL-3.0-only"
+license = "AGPL-3.0-or-later"

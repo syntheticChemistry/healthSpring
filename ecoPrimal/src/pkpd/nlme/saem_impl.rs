@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //! SAEM (Stochastic Approximation Expectation-Maximization) — Monolix's algorithm.
 //!
 //! Alternates:
