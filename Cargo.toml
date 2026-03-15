@@ -72,6 +72,18 @@ members = [
     "experiments/exp087_mixed_nucleus_v16",
     "experiments/exp088_unified_dashboard",
     "experiments/exp089_patient_explorer",
+    "experiments/exp090_matrix_scoring",
+    "experiments/exp091_addrc_hts",
+    "experiments/exp092_compound_library",
+    "experiments/exp093_chembl_jak_panel",
+    "experiments/exp100_canine_il31",
+    "experiments/exp101_canine_jak1",
+    "experiments/exp094_rho_mrtf_fibrosis",
+    "experiments/exp102_il31_pruritus_timecourse",
+    "experiments/exp103_lokivetmab_duration",
+    "experiments/exp104_cross_species_pk",
+    "experiments/exp105_canine_gut_anderson",
+    "experiments/exp106_feline_hyperthyroid",
 ]
 
 [workspace.package]

@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp103"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+description = "Exp103: Lokivetmab dose-duration relationship (Fleck/Gonzales 2021, CM-004)"
+
+[[bin]]
+name = "exp103_lokivetmab_duration"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../ecoPrimal" }

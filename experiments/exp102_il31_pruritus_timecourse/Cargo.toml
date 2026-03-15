@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp102"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+description = "Exp102: Canine IL-31 pruritus time-course recovery (Gonzales 2016, CM-003)"
+
+[[bin]]
+name = "exp102_il31_pruritus_timecourse"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../ecoPrimal" }

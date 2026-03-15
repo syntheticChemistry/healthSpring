@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp105"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+description = "Exp105: Canine gut microbiome Anderson lattice (CM-006)"
+
+[[bin]]
+name = "exp105_canine_gut_anderson"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../ecoPrimal" }

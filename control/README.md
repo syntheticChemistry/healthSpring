@@ -21,6 +21,8 @@ numpy  == 2.1.3   (pinned in requirements.txt)
 | `biosignal/` | Biosignal | exp020–exp023 |
 | `endocrine/` | Endocrinology | exp030–exp038 |
 | `validation/` | barraCuda CPU parity | exp040 |
+| `comparative/` | Track 6 baselines (exp100–106): canine IL-31, JAK1, pruritus, lokivetmab, cross-species PK, canine gut, feline PK | exp100–exp106 |
+| `discovery/` | Track 7 baselines (exp090–094): MATRIX scoring, ADDRC HTS, compound library, ChEMBL JAK, fibrosis | exp090–exp094 |
 | `scripts/` | Benchmarks | CPU timing comparison |
 
 ## Regenerating Baselines

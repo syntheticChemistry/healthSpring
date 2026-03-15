@@ -1,6 +1,6 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.5 (V24 — deep audit execution + modern Rust evolution)
+**Version**: 0.5 (V25 — Track 6+7 complete)
 **Date**: March 15, 2026
 
 ---
@@ -132,6 +132,10 @@ all validated, all AGPL-3.0, all zero-dependency.
 **Foundation**: Gonzales canine work (G1–G6, 688/688 checks across wetSpring + neuralSpring),
 species-agnostic PK/PD mathematics.
 
+**V25: VALIDATED.** 7 experiments (Exp100–106) validate canine IL-31 kinetics, JAK1
+selectivity, pruritus time-course, lokivetmab dose-duration, cross-species allometric PK,
+canine gut Anderson, and feline hyperthyroidism PK.
+
 **The causal inversion principle**: Current practice tests human drugs on animals — this
 establishes correlation, not causation. PCP makes a chimp sleepy. healthSpring inverts
 this: study disease where it naturally occurs (dogs get atopic dermatitis, cats get
@@ -147,6 +151,11 @@ allometric bridges.
 
 **Foundation**: Fajgenbaum MATRIX framework (nS-605), Anderson geometry scoring (Exp011),
 Lisabeth ADDRC HTS infrastructure, Gonzales iPSC skin models.
+
+**V25: Partially VALIDATED.** 5 experiments (Exp090–094) validate Anderson-augmented
+MATRIX scoring, ADDRC HTS pipeline, compound IC50 profiling, ChEMBL JAK panel, and
+Rho/MRTF/SRF fibrosis scoring. Remaining: iPSC validation (DD-006), Ellsworth med chem
+(DD-007).
 
 **Extension**: Anderson-augmented MATRIX scoring ranks compounds by predicted tissue
 penetration. ADDRC screens the top candidates. Gonzales validates hits in iPSC skin
@@ -172,7 +181,7 @@ analysis pipeline, and integration of QS gene profiling for microbial drug targe
 
 ## 3. What We Have Learned
 
-Six months of validation across 61 experiments, 395 tests, and 30 reproduced papers
+Six months of validation across 73 experiments, 501 tests, and 45 reproduced papers
 have produced several key insights:
 
 ### 3.1 Species-agnostic mathematics works
@@ -216,7 +225,9 @@ attribution and derivation machine-verifiable.
 
 Every Cure's MATRIX platform ($48.3M ARPA-H, Fajgenbaum) scores ~3,000 FDA-approved
 drugs against ~12,000 diseases using AI on knowledge graphs. healthSpring extends this
-with three dimensions MATRIX lacks:
+with three dimensions MATRIX lacks — **now VALIDATED** (not just proposed): Track 7
+DD-001–005 has implemented and validated the Anderson-augmented MATRIX scoring, HTS
+analysis, compound IC50 profiling, and fibrosis pathway scoring.
 
 - **Physics**: Anderson geometry scoring predicts tissue-specific drug penetration from
   first principles — not just pathway overlap from literature
@@ -228,8 +239,8 @@ Anderson-augmented scoring takes ~2 seconds on a consumer GPU. Population PK for
 top 1% takes ~100 seconds. The entire Every Cure scale, extended across species and
 tissues, fits on hardware costing less than one month of ARPA-H funding.
 
-See [baseCamp/drug_matrix_comparison.md](baseCamp/drug_matrix_comparison.md) for the
-full comparative analysis.
+See [baseCamp/fajgenbaum/README.md](baseCamp/fajgenbaum/README.md) for the full
+comparative analysis.
 
 ---
 

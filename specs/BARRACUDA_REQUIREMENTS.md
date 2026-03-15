@@ -2,7 +2,7 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: March 15, 2026
-**Status**: V24 — Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Tier A rewire ready (Hill → `HillFunctionF64`, PopPK → `PopulationPkF64`, Diversity → `DiversityFusionGpu`). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). NLME inner loop GPU primitive candidate. `fused.rs` extraction documents exact buffer layouts for `TensorSession` design. See V24 handoff.
+**Status**: V25 — Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Tier A rewire ready (Hill → `HillFunctionF64`, PopPK → `PopulationPkF64`, Diversity → `DiversityFusionGpu`). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). NLME inner loop GPU primitive candidate. `fused.rs` extraction documents exact buffer layouts for `TensorSession` design. See V25 handoff.
 
 ---
 

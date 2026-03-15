@@ -20,6 +20,8 @@
 //! | [`biosignal`] | Pan-Tompkins QRS, HRV, PPG SpO2, fusion | — (NPU target) |
 //! | [`endocrine`] | Testosterone PK, TRT outcomes, decline models | — |
 //! | [`diagnostic`] | Integrated 4-track patient pipeline | — |
+//! | [`discovery`] | MATRIX scoring, HTS analysis, compound IC50, fibrosis | — (GPU: Hill sweep) |
+//! | [`comparative`] | Species PK, canine IL-31/JAK1, feline MM PK, allometric | — |
 //! | [`gpu`] | GPU dispatch: `GpuOp`, `GpuContext`, fused pipeline | All shaders |
 //! | [`validation`] | Shared `ValidationHarness` (hotSpring pattern) | — |
 //! | [`tolerances`] | Centralized tolerance constants from `TOLERANCE_REGISTRY.md` | — |
@@ -30,8 +32,10 @@
 //! | [`wfdb`] | PhysioNet WFDB format parser (`.hea`, `.dat`, `.atr`) | — |
 
 pub mod biosignal;
+pub mod comparative;
 pub mod data;
 pub mod diagnostic;
+pub mod discovery;
 pub mod endocrine;
 pub mod gpu;
 pub mod ipc;

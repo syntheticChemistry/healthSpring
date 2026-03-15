@@ -1,6 +1,6 @@
 # Cross-Spring Shader Evolution — healthSpring Perspective
 
-**Updated**: March 15, 2026 (V24)
+**Updated**: March 15, 2026 (V25)
 **License**: AGPL-3.0-or-later
 
 This document tracks how WGSL shaders and math primitives flow between
@@ -43,6 +43,10 @@ is cross-spring evolution.
 | Michaelis-Menten batch PK | Exp077/083 | `shaders/health/michaelis_menten_batch_f64.wgsl` | (healthSpring-specific) | Mar 2026 |
 | SCFA batch production | Exp079/083 | `shaders/health/scfa_batch_f64.wgsl` | wetSpring (microbiome) | Mar 2026 |
 | Beat classification batch | Exp082/083 | `shaders/health/beat_classify_batch_f64.wgsl` | (healthSpring-specific) | Mar 2026 |
+| Batch IC50 compound sweep | Exp092 | Reuses `ops::HillFunctionF64` | wetSpring (ecology), neuralSpring (kinetics) | Mar 2026 |
+| MATRIX panel scoring | Exp090 | `ops::bio::MatrixPanelScore` (candidate) | (healthSpring-specific) | Mar 2026 |
+| Fibrotic geometry | Exp094 | Sign variant of `tissue_geometry_factor` | (healthSpring-specific) | Mar 2026 |
+| Feline MM PK | Exp106 | Reuses `MichaelisMentenBatchF64` params | (healthSpring-specific) | Mar 2026 |
 
 ### healthSpring ← Other Springs (Consumed via barraCuda)
 

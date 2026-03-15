@@ -195,6 +195,85 @@ pub const BIOMARKER_ENDPOINT: f64 = 0.5;
 /// Lognormal mean recovery.
 pub const LOGNORMAL_MEAN: f64 = 0.01;
 
+// ── Track 7: Drug Discovery Class ───────────────────────────────────
+
+/// MATRIX pathway selectivity score — closed-form from IC50 ratios.
+pub const MATRIX_PATHWAY: f64 = 1e-10;
+
+/// Anderson tissue geometry factor — closed-form exponential.
+pub const TISSUE_GEOMETRY: f64 = 1e-10;
+
+/// Disorder impact factor — ratio of W values.
+pub const DISORDER_IMPACT: f64 = 1e-10;
+
+/// Combined MATRIX-Anderson score — product of three factors.
+pub const MATRIX_COMBINED: f64 = 1e-10;
+
+/// Z'-factor — closed-form from control statistics.
+pub const HTS_Z_PRIME: f64 = 1e-10;
+
+/// SSMD — closed-form standardized difference.
+pub const HTS_SSMD: f64 = 1e-10;
+
+/// Percent inhibition — linear normalization.
+pub const HTS_PERCENT_INHIBITION: f64 = 1e-10;
+
+/// IC50 estimation from Hill fit — iterative bisection.
+pub const IC50_ESTIMATION: f64 = 0.10;
+
+/// Selectivity index — ratio of IC50 values.
+pub const SELECTIVITY_INDEX: f64 = 1e-10;
+
+// ── Track 6: Comparative Medicine Class ─────────────────────────────
+
+/// IL-31 kinetics at t=0 — initial condition identity.
+pub const IL31_INITIAL: f64 = 1e-10;
+
+/// IL-31 steady-state recovery — first-order kinetics.
+pub const IL31_STEADY_STATE: f64 = 0.01;
+
+/// Pruritus VAS at EC50 — Hill identity (`VAS_max` / 2).
+pub const PRURITUS_AT_EC50: f64 = 1e-10;
+
+/// Lokivetmab PK decay — exponential elimination.
+pub const LOKIVETMAB_DECAY: f64 = 1e-10;
+
+/// JAK1 selectivity ratio — ratio of geometric means.
+pub const JAK1_SELECTIVITY: f64 = 1e-10;
+
+/// Cross-species allometric roundtrip — same-weight identity.
+pub const ALLOMETRIC_ROUNDTRIP: f64 = 1e-6;
+
+/// Cross-species PK scaling — allometric exponent precision.
+pub const CROSS_SPECIES_PK: f64 = 0.05;
+
+/// Pruritus time-course VAS monotonicity check.
+pub const PRURITUS_TIME_COURSE: f64 = 0.01;
+
+/// Lokivetmab effective duration (days above threshold).
+pub const LOKIVETMAB_DURATION: f64 = 1.0;
+
+/// Lokivetmab onset time (hours to therapeutic level).
+pub const LOKIVETMAB_ONSET: f64 = 1.0;
+
+/// Fibrotic geometry factor — inverse of standard tissue geometry.
+pub const FIBROTIC_GEOMETRY: f64 = 1e-10;
+
+/// Anti-fibrotic pathway score — weighted sum.
+pub const ANTI_FIBROTIC_SCORE: f64 = 1e-10;
+
+/// Fractional inhibition at IC50 — Hill identity.
+pub const FRACTIONAL_AT_IC50: f64 = 1e-10;
+
+/// Feline methimazole PK simulation — Euler integration.
+pub const FELINE_MM_PK: f64 = 0.01;
+
+/// Feline T4 response — first-order normalization.
+pub const FELINE_T4_RESPONSE: f64 = 0.01;
+
+/// Canine gut Anderson disorder — cross-species diversity.
+pub const CANINE_GUT_ANDERSON: f64 = 0.01;
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 15, 2026
-**Status:** V24 — deep audit execution + modern Rust evolution. toadStool Hill/AUC duplication eliminated, `gpu/context.rs` smart refactor (968→350 LOC), hardcoded primal names evolved to capability-based runtime discovery, Songbird announcement wired, 12 new tolerance constants, ValidationHarness migrations (exp050/070/080), CI clippy nursery aligned. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. Zero `#[allow()]`, zero TODO/FIXME, zero unsafe code, all files under 1000 LOC.
+**Status:** V25 — Track 6+7 complete. 501 tests, 73 experiments. Zero `#[allow()]`, zero TODO/FIXME, zero unsafe code, all files under 1000 LOC.
 
 ---
 
@@ -16,8 +16,8 @@ Per-person translation of validated science into usable health applications. Met
 | 3 — Biosignal | ECG detection, HRV, PPG SpO2, EDA stress, arrhythmia classification, multi-channel fusion | Exp020-023, 081-082 | **Complete** (Tier 0+1+2) |
 | 4 — Endocrinology | Testosterone PK, TRT outcomes, gut axis, HRV cross-track | Exp030-038 | **Complete** (Tier 0+1) |
 | 5 — NLME | FOCE/SAEM population PK, NCA, CWRES/VPC/GOF diagnostics | Exp075-076 | **Complete** (Tier 0+1) |
-| 6 — Comparative Medicine | Species-agnostic PK, cross-species Anderson, canine AD models | Queued (8 papers) | **Queued** (V21) |
-| 7 — Drug Discovery | MATRIX scoring, ADDRC HTS, compound screening, iPSC validation | Queued (7 papers) | **Queued** (V21, front-loaded) |
+| 6 — Comparative Medicine | Species-agnostic PK, cross-species Anderson, canine AD models | Exp100-106 | **Complete** (V25) |
+| 7 — Drug Discovery | MATRIX scoring, ADDRC HTS, compound screening, iPSC validation | Exp090-094 | **Complete** (V25) |
 
 ---
 
@@ -29,7 +29,7 @@ for onboarding that group.
 
 | # | Directory | Faculty | Domain | Status | Python | Rust |
 |---|-----------|---------|--------|--------|:------:|:----:|
-| 01 | [gonzales/](gonzales/) | Gonzales, Lisabeth, Neubig, Ellsworth | PK/PD → living systems + drug discovery (Tracks 1, 6, 7) | **Complete** (T1), **Queued** (T6–7) | 73 | 79 |
+| 01 | [gonzales/](gonzales/) | Gonzales, Lisabeth, Neubig, Ellsworth | PK/PD → living systems + drug discovery (Tracks 1, 6, 7) | **Complete** (T1, T6, T7) | 73 | 79 |
 | 02 | [fajgenbaum/](fajgenbaum/) | Fajgenbaum (Every Cure) | MATRIX drug repurposing + Anderson geometry (Track 7) | **Ingested + Extended** | — | — |
 | 03 | [mok/](mok/) | Dr. Charles Mok | Testosterone PK, TRT outcomes, HRV cross-track (Track 4) | **Complete** | 96 | 86 |
 | 04 | [cdiff_colonization.md](cdiff_colonization.md) | TBD | Anderson localization → gut colonization, FMT (Track 2) | **Complete** | 36 | 48 |
@@ -50,14 +50,10 @@ baseCamp/
 ├── mok/
 │   └── README.md                ← Sub-thesis: TRT claim verification + endocrinology
 ├── cdiff_colonization.md        ← Sub-thesis: Anderson → gut colonization (to be promoted to subdir)
-├── biosignal_sovereign.md       ← Sub-thesis: Edge biosignal (to be promoted to subdir)
-├── gonzales.md                  ← Legacy (→ gonzales/README.md)
-├── mok_testosterone.md          ← Legacy (→ mok/README.md)
-└── drug_matrix_comparison.md    ← Legacy (→ fajgenbaum/README.md)
+└── biosignal_sovereign.md       ← Sub-thesis: Edge biosignal (to be promoted to subdir)
 ```
 
-Legacy flat files are preserved for backward compatibility. The authoritative versions
-are in the per-org subdirectories.
+The authoritative versions are in the per-org subdirectories.
 
 ---
 
@@ -94,17 +90,19 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | petalTongue evolution (Exp073-074) | — | — | 19 | 19 |
 | NLME + Full Pipeline (Exp075-076) | — | — | 216 | 216 |
 | Paper Queue (Exp077-082) | — | 6 controls | 6 binaries | — |
+| Comparative Medicine (Exp100-106) | Gonzales 688 | 7 controls | 7 binaries (103 checks) | — |
+| Drug Discovery (Exp090-094) | Fajgenbaum MATRIX | 5 controls | 5 binaries (70 checks) | — |
 | GPU V16 Parity (Exp083) | — | — | 25 | 25 |
 | CPU Parity Bench (Exp084) | — | 17 | 33 | 50 |
 | GPU Scaling Bench (Exp085) | — | 10 | 47 | 57 |
 | toadStool V16 Dispatch (Exp086) | — | — | 24 | 24 |
 | Mixed NUCLEUS V16 (Exp087) | — | — | 35 | 35 |
-| **Lib unit tests** | — | — | **365** | 365 |
+| **Lib unit tests** | — | — | **501** | 501 |
 | **metalForge tests** | — | — | **33** | 33 |
 | **toadStool tests** | — | — | **36** | 36 |
 | **Doc-tests** | — | — | **4** | 4 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **458** (tests) | **2,560+** |
+| **Total** | **688** | **287+** (Tier 0) | **594** (tests) | **2,696+** |
 
 ---
 
@@ -212,7 +210,7 @@ neuralSpring (V90)
     └─ nS-601 (Hill/IC50) → Exp001 (human JAK inhibitors)
     └─ nS-603 (lokivetmab PK) → Exp004 (mAb cross-species transfer)
     └─ nS-604 (tissue lattice) → planned tissue lattice extension
-    └─ nS-605 (MATRIX) → planned ADDRC integration
+    └─ nS-605 (MATRIX) → **VALIDATED** — Exp090 MATRIX scoring
 
 groundSpring (V100) → planned uncertainty propagation on clinical models
 hotSpring → planned lattice tissue finite-size scaling
@@ -282,25 +280,18 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 
 ## Next Steps (V22+)
 
-### Front-Loaded (Drug Discovery — for Gonzales/ADDRC meeting)
+### Remaining (Post V25)
 
-1. **MATRIX + Anderson scoring** (DD-001) — ADDRC 8K compound library
-2. **Lisabeth Brucella screen analysis** (DD-002) — HTS pipeline demonstration
-3. **ADDRC 8K compound IC50 sweep** (DD-003) — GPU Hill shader ready
-4. **Gonzales canine models as Track 6** (CM-001/002) — reframe existing work
-
-### Near-Term (Species-Agnostic Infrastructure)
-
-5. **Species-agnostic PK refactor** (CM-005) — parameterize all models by species
-6. **QS gene profiling** — functional Anderson dimension (NCBI Gene)
-7. **ChEMBL JAK panel** (DD-004) — 50+ compound IC50 sweep
+1. **DD-006 iPSC validation** — Gonzales iPSC skin model validation
+2. **DD-007 Ellsworth med chem** — Medicinal chemistry lead optimization
+3. **CM-008 equine laminitis** — Species-agnostic laminitis model
 
 ### GPU + Scale
 
-8. **NLME GPU shaders** — FOCE per-subject gradient, VPC Monte Carlo
-9. **Anderson eigensolve** — GPU shader for gut lattice localization length
-10. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG
-11. **DNA/protein integration** — neuralSpring + wetSpring convergence for drug targets
+4. **NLME GPU shaders** — FOCE per-subject gradient, VPC Monte Carlo
+5. **Anderson eigensolve** — GPU shader for gut lattice localization length
+6. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG
+7. **DNA/protein integration** — neuralSpring + wetSpring convergence for drug targets
 
 ---
 

@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 15, 2026
-**Status**: V24 — audit-hardened biomeOS niche. 55+ wired JSON-RPC capabilities. `gpu/context.rs` smart refactor (968→350 LOC, per-op prep in `fused.rs`). toadStool Hill/AUC delegation. Tier A GPU rewire documented. Capability-based primal discovery.
+**Status**: V25 — Track 6+7 complete. 73 experiments, 501 lib tests + 173 validation checks. Modules: `discovery/` (MATRIX, HTS, compound, fibrosis) and `comparative/` (species_params, canine, feline). 12 new experiments (Exp090–094, Exp100–106). GPU Tier A candidates: batch Hill sweep, batch MATRIX scoring. Species-agnostic PK bridge validated across 5 species.
 
 ---
 
@@ -27,6 +27,12 @@ Species-specific model → Species-agnostic math → Cross-species parameter bri
 | `pkpd::population_pk_cpu` | Per-patient Bateman ODE | `PopulationPkBatch` | `population_pk_f64.wgsl` | 1 workgroup/patient, independent | **P0** |
 | `pkpd::hill_dose_response` | Per-concentration Hill eq | `HillSweep` | `hill_dose_response_f64.wgsl` | Element-wise, f32 pow() intermediates | **P0 — LIVE** |
 | `microbiome::shannon_index` | -Σ p·ln(p) batch | `DiversityBatch` | `diversity_f64.wgsl` | Workgroup reduction | **P0 — LIVE** |
+| `discovery::compound::batch_ic50_sweep` | N compounds × K targets Hill fit | `HillSweep` (reuse) | `hill_dose_response_f64.wgsl` | Batch per-compound, independent | **P0** |
+| `discovery::matrix_score::score_panel` | Panel MATRIX scoring | — (compound of ops) | CPU-side compound | Pathway × geometry × disorder | P1 |
+| `comparative::species_params::scale_across_species` | Allometric scaling | — | CPU-side utility | Parameter transform, not GPU | P2 |
+| `comparative::canine::pruritus_time_course` | VAS trajectory over time | — | CPU-side compound | IL-31 kinetics → VAS response | P2 |
+| `comparative::feline::methimazole_simulate` | Feline MM PK Euler | — | CPU-side ODE | Similar to `mm_pk_simulate` | P2 |
+| `discovery::fibrosis::score_anti_fibrotic` | Rho/MRTF/SRF scoring | — | CPU-side compound | Fractional inhibition × weights | P2 |
 | `endocrine::lognormal_params` | μ,σ from typical+CV | — | CPU-side utility | Parameter setup, not GPU | P2 |
 
 ### Tier B — Adapt (Decompose into Existing Primitives)

@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 15, 2026
-**Status**: V24 — 61 experiments complete (Tracks 1–5), 435 tests, 55+ wired JSON-RPC capabilities. All 30 queued papers complete. Tracks 6–7 queued. V24 audit execution: zero duplicate math, zero hardcoded primal names, capability-based discovery, ValidationHarness adopted.
+**Status**: V25 — 73 experiments complete (Tracks 1–7), 501 library tests + 173 validation checks, 55+ wired JSON-RPC capabilities. All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. New modules: `discovery/fibrosis`, `comparative/feline`.
 
 ---
 
@@ -16,9 +16,9 @@
 | Track 4: Endocrinology | 9 | 9 | 9 |
 | Validation | 1 | 1 | 1 |
 | **Tracks 1–5 Total** | **30** | **30** | **30** |
-| Track 6: Comparative Medicine | 8 | 0 | 0 |
-| Track 7: Drug Discovery | 7 | 0 | 0 |
-| **Grand Total** | **45** | **30** | **30** |
+| Track 6: Comparative Medicine | 8 | 3 | 3 |
+| Track 7: Drug Discovery | 7 | 4 | 4 |
+| **Grand Total** | **45** | **37** | **37** |
 
 ---
 
@@ -56,6 +56,13 @@
 | BS-005 | Boucsein 2012 — EDA autonomic stress detection | Exp081 | 11 | 11 | 0,1 |
 | BS-006 | MIT-BIH / AAMI EC57 — Arrhythmia beat classification | Exp082 | 12 | 12 | 0,1 |
 | VAL-001 | barraCuda CPU parity — analytical contracts | Exp040 | 15 | 15 | 0,1 |
+| DD-001 | Fajgenbaum 2018 — Anderson-augmented MATRIX scoring | Exp090 | 15 | 15 | 0,1 |
+| DD-002 | Lisabeth 2024 — ADDRC HTS analysis pipeline | Exp091 | 12 | 12 | 0,1 |
+| DD-003 | ADDRC compound library — batch IC50 profiling | Exp092 | 12 | 12 | 0,1 |
+| DD-004 | ChEMBL JAK inhibitor bioactivity panel | Exp093 | 21 | 21 | 0,1 |
+| CM-001 | Gonzales 2013 — Canine IL-31 serum kinetics | Exp100 | 14 | 14 | 0,1 |
+| CM-002 | Gonzales 2014 — Oclacitinib JAK1 selectivity | Exp101 | 15 | 15 | 0,1 |
+| CM-005 | Cross-species allometric PK bridge | Exp104 | 15 | 15 | 0,1 |
 
 ---
 
@@ -209,8 +216,10 @@ All 30 queued papers complete at Tier 0+1. Six have Tier 2 GPU validation. Full-
 3. ~~**toadStool V16 dispatch**~~: **DONE** (V19) — Exp086, streaming + callbacks + GPU-mappability
 4. ~~**metalForge NUCLEUS V16 dispatch**~~: **DONE** (V19) — Exp087, PCIe P2P bypass, mixed pipeline
 4b. ~~**petalTongue V16 visualization**~~: **DONE** (V20) — Exp088 (326/326), Exp089 (14/14), 34-node full study, 16 scenarios
-5. **Track 7 DD-001–003**: MATRIX + ADDRC pipeline (front-loaded for Gonzales meeting)
-6. **Track 6 CM-001–004**: Gonzales canine models as independent validation systems
+5. ~~**Track 7 DD-001–004**~~: **DONE** (V25) — Exp090–093, MATRIX scoring + HTS + compound library + ChEMBL panel
+6. ~~**Track 6 CM-001–007**~~: **DONE** (V25) — Exp100–106, canine IL-31/JAK1/pruritus/lokivetmab/gut + feline MM PK + cross-species PK
+6b. ~~**Track 7 DD-001–005**~~: **DONE** (V25) — Exp090–094, MATRIX/HTS/compound/ChEMBL/fibrosis
+6c. **Track 7 DD-006–007**: iPSC validation, Ellsworth med chem (next)
 7. **QS gene profiling**: Extend Anderson disorder with functional dimension (NCBI Gene)
 8. **Species-agnostic PK refactor**: Parameterize compartment models by species
 9. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
@@ -270,6 +279,17 @@ All experiments use publicly accessible data. No proprietary dependencies.
 | Exp081 | EDA stress norms (Boucsein 2012) | Published SCR/SCL reference values |
 | Exp082 | MIT-BIH beat morphology (Moody & Mark 2001) | PhysioNet (open) |
 
+| Exp090 | Fajgenbaum 2018 + Anderson 1958 (pathway × geometry) | Published IC50 + analytical |
+| Exp091 | Zhang 1999 (Z'-factor) + Lisabeth 2024 (HTS) | Published HTS methods |
+| Exp092 | Hill 1910 (dose-response) + synthetic library | Analytical + literature IC50 |
+| Exp093 | ChEMBL bioactivity (JAK1/2/3/TYK2) | ChEMBL (EBI, CC-BY-SA) + literature |
+| Exp100 | Gonzales 2013 (IL-31 in AD dogs) | Peer-reviewed (Vet Dermatol) |
+| Exp101 | Gonzales 2014 (oclacitinib JAK1) | Peer-reviewed (JVPT) + FDA CVM |
+| Exp102 | Gonzales 2016 (IL-31 pruritus beagle model) | Peer-reviewed (Vet Dermatol) |
+| Exp103 | Fleck/Gonzales 2021 (lokivetmab dose-duration) | Peer-reviewed (Vet Dermatol) |
+| Exp104 | Mahmood 2006 (allometric exponents) | Published textbook parameters |
+| Exp105 | Shannon 1948 + Anderson 1958 (canine gut diversity) | Analytical + published |
+| Exp106 | Trepanier 2006 (feline methimazole PK) | Peer-reviewed (JVIM) |
 | Exp083 | GPU V16 parity (no new data) | CPU baseline as ground truth |
 | Exp084 | V16 CPU parity bench (no new data) | Python baseline as timing ground truth |
 | Exp085 | GPU vs CPU V16 scaling bench (no new data) | CPU execute_cpu as GPU ground truth |

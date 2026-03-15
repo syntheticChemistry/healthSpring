@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 15, 2026
-**Status**: V24 — deep audit execution + modern Rust evolution. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. `clippy::pedantic` + `clippy::nursery` enforced in CI (0 warnings). Zero `#[allow()]`, zero TODO/FIXME, zero duplicate math, zero hardcoded primal names. toadStool Hill/AUC delegation, gpu/context.rs smart refactor (968→350 LOC), capability-based discovery, Songbird wired. Paper queue 30/30 complete (Tracks 1–5), 15 queued (Tracks 6–7).
+**Status**: V25 — deep audit execution + modern Rust evolution. 501 tests, 73 experiments, 55+ wired JSON-RPC capabilities. `clippy::pedantic` + `clippy::nursery` enforced in CI (0 warnings). Zero `#[allow()]`, zero TODO/FIXME, zero duplicate math, zero hardcoded primal names. toadStool Hill/AUC delegation, gpu/context.rs smart refactor (968→350 LOC), capability-based discovery, Songbird wired. Paper queue 30/30 complete (Tracks 1–5), 15 queued (Tracks 6–7).
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---

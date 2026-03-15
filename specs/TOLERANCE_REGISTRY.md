@@ -68,6 +68,13 @@
 | ecoPrimal/endocrine | biomarker at 10τ | 0.5 | Numerical | Trajectory approaches endpoint; 0.5 unit absolute at t=10τ. |
 | ecoPrimal/endocrine | lognormal mean | 0.01 | Numerical | Mean of lognormal from μ,σ; 1% relative. |
 | ecoPrimal/biosignal | Perfect detection sensitivity | 1e-10 | Machine epsilon | No noise → Se=1 exactly. |
+| ecoPrimal/discovery/fibrosis | Fractional at IC50 | 1e-10 | Machine epsilon | Analytical identity: E(IC50) = 0.5. |
+| ecoPrimal/discovery/fibrosis | Fibrotic geometry + standard = 1 | 1e-10 | Machine epsilon | exp(-ξ/L) + (1 - exp(-ξ/L)) = 1. |
+| ecoPrimal/discovery/fibrosis | Anti-fibrotic score at 0 | 1e-10 | Machine epsilon | All fractional inhibitions zero → score zero. |
+| ecoPrimal/comparative/feline | T4 at t=0 = baseline | 1e-10 | Machine epsilon | exp(0) = 1. |
+| ecoPrimal/comparative/feline | Half-life increases with C | ordinal | Machine epsilon | Nonlinear PK hallmark. |
+| ecoPrimal/comparative/canine | Onset in [1, 12] hr | 1.0 hr | Clinical | Clamp range from Fleck 2021. |
+| ecoPrimal/comparative/canine | Lokivetmab duration | 1.0 day | Clinical | Duration from published dose-response. |
 
 ### Numerical Method Class (1e-6 to 0.01)
 
@@ -194,3 +201,15 @@
 | exp069 | 1e-10 | Machine epsilon (dispatch) |
 | exp075 | 0.30, 0.50, 0.05, 2.0, ≥0, 1e-10 | Population + numerical + machine epsilon |
 | exp076 | exact (structural) | Structural (node/edge/channel counts) |
+| exp090 | 1e-10 (pathway, tissue, disorder, combined), 1e-12 (determinism) | Machine epsilon |
+| exp091 | 1e-10 (Z', SSMD, %inhib), exact (classification) | Machine epsilon |
+| exp092 | 1e-10 (SI), 0.10 (IC50 estimation), 0.90 (R²) | Machine epsilon + numerical |
+| exp093 | 1e-10 (IC50, SI, pathway), 1.0 (Hill at EC50), 1e-12 (det) | Machine epsilon |
+| exp100 | 1e-10 (t=0, VAS at EC50), 0.01 (steady-state), 1e-12 (det) | Machine epsilon + numerical |
+| exp101 | 1e-10 (IC50, SI), 0.20 (JAK1/2 ratio), 1e-12 (det) | Machine epsilon |
+| exp094 | 1e-10 (fractional, geometry, score), 1e-12 (det) | Machine epsilon |
+| exp102 | 0.01 (VAS time-course), 1e-10 (baseline), 1e-12 (det) | Numerical + machine epsilon |
+| exp103 | 1.0 (duration days), 1.0 (onset hours), 1e-10 (decay), 1e-12 (det) | Clinical + machine epsilon |
+| exp104 | 1e-10 (identity), 1e-6 (allometric roundtrip), 1e-12 (det) | Machine epsilon + numerical |
+| exp105 | 0.01 (gut Anderson), 1e-10 (Shannon analytical), 1e-12 (det) | Numerical + machine epsilon |
+| exp106 | 0.01 (MM PK, T4), 1e-10 (half-life, Css), 1e-12 (det) | Numerical + machine epsilon |

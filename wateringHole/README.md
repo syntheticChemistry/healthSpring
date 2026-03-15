@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V24 — deep audit execution + modern Rust evolution. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. toadStool Hill/AUC delegation, `gpu/context.rs` smart refactor (968→350 LOC), capability-based primal discovery, Songbird wired, CI clippy::nursery aligned. barraCuda v0.3.5 pinned.
+**Status**: V25 — Track 6+7 complete. 501 tests, 73 experiments, 173 validation checks. Comparative medicine (canine, feline) + drug discovery (matrix_score, hts, compound, fibrosis). barraCuda v0.3.5 pinned.
 **Last Updated**: March 15, 2026
 
 ---
@@ -22,8 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V24** | [V24 Audit Execution Handoff](handoffs/HEALTHSPRING_V24_AUDIT_EXECUTION_BARRACUDA_TOADSTOOL_HANDOFF_MAR15_2026.md) | Mar 15 | Audit execution: Hill/AUC delegation, smart refactor, capability-based discovery, fused pipeline documentation for TensorSession design. Supersedes all prior. |
-| | *V1–V23 → `handoffs/archive/`* | | Fossil record |
+| **V25** | [V25 Track 6+7 Handoff](handoffs/HEALTHSPRING_V25_TRACK6_7_BARRACUDA_TOADSTOOL_HANDOFF_MAR15_2026.md) | Mar 15 | Track 6+7 complete: absorption + evolution. 12 new experiments (Exp090–094, Exp100–106), 8 library modules, batch IC50 GPU candidate, TissueContext pattern. Supersedes V24. |
+| | *V1–V24 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

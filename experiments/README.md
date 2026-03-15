@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 15, 2026
-**Status**: V23 — 61 experiments, 435 tests. V23 deep debt: 15 experiments migrated from inline magic numbers to `tolerances::*` constants; 10 experiments migrated from ad-hoc pass/fail counters to `ValidationHarness` (hotSpring pattern). All 30 paper queue entries complete. `UniBin`-compliant primal binary with 55+ wired JSON-RPC capabilities.
+**Status**: V25 — 73 experiments, 501 tests. Track 6+7 complete: 12 new experiments (Exp090–094, Exp100–106) with 173 validation checks.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 
@@ -162,6 +162,28 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 088 | `exp088_unified_dashboard` | Unified dashboard — all scenarios (original + V16 + compute) validated, pushed, or dumped | 326 |
 | 089 | `exp089_patient_explorer` | Patient explorer — diagnostic + V16 analysis, CLI params, streaming to petalTongue | 14 |
 
+### Track 7: Drug Discovery (Exp090-094) — V25
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 090 | `exp090_matrix_scoring` | Anderson-augmented MATRIX scoring (pathway × geometry × disorder) | 14 |
+| 091 | `exp091_addrc_hts` | ADDRC high-throughput screening analysis (Z'-factor, SSMD, %inhibition) | 14 |
+| 092 | `exp092_compound_library` | Batch IC50 profiling + selectivity ranking | 14 |
+| 093 | `exp093_chembl_jak_panel` | ChEMBL JAK kinase selectivity panel | 14 |
+| 094 | `exp094_rho_mrtf_fibrosis` | Rho/MRTF/SRF fibrosis pathway scoring (Neubig) | 14 |
+
+### Track 6: Comparative Medicine (Exp100-106) — V25
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 100 | `exp100_canine_il31` | Canine IL-31 serum kinetics (Gonzales 2013) | 14 |
+| 101 | `exp101_canine_jak1` | Canine JAK1 selectivity panel (Gonzales 2014) | 15 |
+| 102 | `exp102_il31_pruritus_timecourse` | IL-31 pruritus time-course recovery (Gonzales 2016) | 13 |
+| 103 | `exp103_lokivetmab_duration` | Lokivetmab dose-duration relationship (Fleck 2021) | 15 |
+| 104 | `exp104_cross_species_pk` | Cross-species allometric PK scaling | 12 |
+| 105 | `exp105_canine_gut_anderson` | Canine gut microbiome Anderson lattice | 13 |
+| 106 | `exp106_feline_hyperthyroid` | Feline hyperthyroidism methimazole PK | 14 |
+
 ---
 
 ## Running Experiments
@@ -188,6 +210,11 @@ cargo run --release --bin dump_scenarios
 cargo run --release --bin exp088_unified_dashboard              # 326 checks
 cargo run --release --bin exp089_patient_explorer               # 14 checks
 cargo run --release --bin exp089_patient_explorer -- --age 55 --weight 220 --baseline-t 280
+
+# Track 6+7: Comparative Medicine + Drug Discovery
+cargo run --release --bin exp090_matrix_scoring
+cargo run --release --bin exp100_canine_il31
+cargo run --release --bin exp106_feline_hyperthyroid
 ```
 
 ---
