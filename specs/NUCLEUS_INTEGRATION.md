@@ -1,8 +1,8 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # biomeOS NUCLEUS Local Integration Plan
 
-**Last Updated**: March 10, 2026
-**Status**: Design — ready for phased implementation
+**Last Updated**: March 14, 2026
+**Status**: V22 — `healthspring_primal` binary built. Niche deploy graph ready. Next: activate Nest Atomic locally.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---
@@ -36,7 +36,15 @@ locally on Eastgate and extending to LAN HPC as cables are connected.
    ```
    This starts beardog (identity), songbird (discovery), and nestgate (data + storage).
 
-2. **Register healthSpring capabilities**:
+2. **Start healthSpring primal**:
+   ```bash
+   cargo run --bin healthspring_primal
+   # or, with the niche deploy graph:
+   biomeos deploy --graph graphs/healthspring_niche_deploy.toml
+   ```
+   healthSpring registers 50+ capabilities with the orchestrator via `capability.register`.
+
+3. **Register healthSpring capabilities**:
    NestGate advertises `data.ncbi_search`, `data.ncbi_fetch`, `storage.store`, `storage.retrieve`.
    healthSpring discovers these via songbird capability matching (no hardcoded endpoints).
 
@@ -75,7 +83,7 @@ locally on Eastgate and extending to LAN HPC as cables are connected.
 ### What Already Exists
 
 - `toadstool/` — streaming pipeline with `StageOp` → `GpuOp` conversion
-- `barracuda/src/gpu/` — `GpuContext`, 6 WGSL shaders, `execute_fused()`
+- `ecoPrimal/src/gpu/` — `GpuContext`, 6 WGSL shaders, `execute_fused()`
 - `metalForge/forge/` — `Workload` routing with 9 variants, `select_substrate()`
 - `wateringHole/healthspring_deploy.toml` — toadstool stage with `compute.execute`, `compute.submit`, `compute.gpu.dispatch`
 
@@ -270,7 +278,7 @@ biomeOS NUCLEUS provides:
 | metalForge | healthSpring/metalForge/ | Existing (33 tests, 9 Workloads) |
 | healthspring_deploy.toml | wateringHole/ | Existing (10 stages, 5 primals) |
 | 10GbE cables | Physical | **Pending** — switches + NICs installed |
-| NestGate data provider | barracuda/src/data/ | **Planned** (see NestGate design) |
+| NestGate data provider | ecoPrimal/src/data/ | **Planned** (see NestGate design) |
 
 ---
 

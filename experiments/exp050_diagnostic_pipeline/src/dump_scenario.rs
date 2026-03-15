@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 // Quick scenario JSON dump — run with: cargo run --bin exp050_scenario_dump
 use healthspring_barracuda::diagnostic::{
     PatientProfile, Sex, assess_patient, population_montecarlo,

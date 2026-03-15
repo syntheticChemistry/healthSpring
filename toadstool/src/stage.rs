@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 //! Pipeline stage: a single compute operation within a pipeline.
 
 use healthspring_barracuda::gpu::GpuOp;

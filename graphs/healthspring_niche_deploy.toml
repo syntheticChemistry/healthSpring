@@ -1,0 +1,228 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# biomeOS Niche Deployment Graph — healthSpring health science niche
+#
+# healthSpring is a NICHE, not a node. This graph brings up the primals that
+# compose the health diagnostic niche. Once deployed, the workflow graphs
+# (patient_assessment, trt_scenario, microbiome_analysis, biosignal_monitor)
+# define what the primals do together via capability.call routing.
+#
+# Deploy order:
+#   Tower Atomic (BearDog + Songbird) → Provenance Trio → NestGate → ToadStool → healthSpring
+#
+# With just the primals and graphs, biomeOS recreates the entire diagnostic
+# pipeline. The Neural API Pathway Learner optimizes it over time.
+#
+# STATUS: v0.1.0 — initial niche (Mar 14, 2026)
+# Niche manifest: graphs/healthspring_niche.toml
+#
+# Usage:
+#   biomeos deploy --graph graphs/healthspring_niche_deploy.toml
+
+[graph]
+name = "healthspring_health_niche"
+description = "Full healthSpring niche: Tower + Provenance Trio + NestGate + ToadStool + healthSpring"
+version = "0.1.0"
+
+# ── Node 1: BearDog (crypto + identity) ─────────────────────────────
+[[graph.node]]
+name = "beardog"
+binary = "beardog_primal"
+order = 1
+required = true
+health_method = "health"
+capabilities = [
+    "crypto.identity",
+    "crypto.verify",
+    "crypto.sign",
+    "crypto.encrypt",
+    "crypto.keygen",
+]
+
+# ── Node 2: Songbird (network + sovereign TLS 1.3) ──────────────────
+[[graph.node]]
+name = "songbird"
+binary = "songbird_primal"
+order = 2
+required = true
+depends_on = ["beardog"]
+health_method = "health"
+capabilities = [
+    "net.http",
+    "net.discovery",
+    "network.tls_connect",
+    "network.http_fetch",
+    "network.dns_resolve",
+]
+
+# ── Node 3: rhizoCrypt (ephemeral DAG sessions) ─────────────────────
+[[graph.node]]
+name = "rhizocrypt"
+binary = "rhizocrypt_primal"
+order = 3
+required = false
+depends_on = ["beardog"]
+health_method = "dag.health"
+by_capability = "dag"
+capabilities = [
+    "dag.create_session",
+    "dag.append_event",
+    "dag.dehydrate",
+    "dag.merkle_root",
+    "dag.health",
+]
+
+# ── Node 4: loamSpine (immutable linear ledger) ─────────────────────
+[[graph.node]]
+name = "loamspine"
+binary = "loamspine_primal"
+order = 4
+required = false
+depends_on = ["beardog", "rhizocrypt"]
+health_method = "commit.health"
+by_capability = "commit"
+capabilities = [
+    "commit.session",
+    "commit.entry",
+    "commit.health",
+]
+
+# ── Node 5: sweetGrass (semantic provenance braids) ──────────────────
+[[graph.node]]
+name = "sweetgrass"
+binary = "sweetgrass_primal"
+order = 5
+required = false
+depends_on = ["beardog", "loamspine"]
+health_method = "provenance.health"
+by_capability = "provenance"
+capabilities = [
+    "provenance.create_braid",
+    "provenance.lineage",
+    "provenance.graph",
+    "provenance.attribution",
+    "provenance.health",
+]
+
+# ── Node 6: NestGate (content-addressed data storage) ────────────────
+[[graph.node]]
+name = "nestgate"
+binary = "nestgate_primal"
+order = 6
+required = false
+depends_on = ["beardog", "songbird"]
+health_method = "health"
+by_capability = "storage"
+capabilities = [
+    "data.ncbi_search",
+    "data.ncbi_fetch",
+    "storage.store",
+    "storage.retrieve",
+    "storage.snapshot",
+    "storage.health",
+]
+
+# ── Node 7: ToadStool (GPU/CPU compute dispatch) ────────────────────
+[[graph.node]]
+name = "toadstool"
+binary = "toadstool_primal"
+order = 7
+required = false
+depends_on = ["beardog", "songbird"]
+health_method = "compute.health"
+capabilities = [
+    "compute.execute",
+    "compute.submit",
+    "compute.gpu.dispatch",
+    "compute.gpu.fused_pipeline",
+    "compute.gpu.mm_batch",
+    "compute.gpu.scfa_batch",
+    "compute.gpu.beat_classify_batch",
+    "compute.npu.dispatch",
+    "compute.streaming.execute",
+    "compute.nucleus.plan_dispatch",
+    "compute.pcie.p2p_transfer",
+    "compute.health",
+]
+
+[graph.node.env]
+TOADSTOOL_PRECISION = "auto"
+TOADSTOOL_MULTI_DEVICE = "true"
+
+# ── Node 8: healthSpring (health science primal) ─────────────────────
+[[graph.node]]
+name = "healthspring"
+binary = "healthspring_primal"
+order = 8
+required = true
+depends_on = ["beardog", "songbird"]
+health_method = "health.check"
+by_capability = "health"
+capabilities = [
+    # ── PK/PD (14) ────────────────────────────────────────────────────
+    "science.pkpd.hill_dose_response",
+    "science.pkpd.one_compartment_pk",
+    "science.pkpd.two_compartment_pk",
+    "science.pkpd.pbpk_simulate",
+    "science.pkpd.population_pk",
+    "science.pkpd.allometric_scale",
+    "science.pkpd.auc_trapezoidal",
+    "science.pkpd.nlme_foce",
+    "science.pkpd.nlme_saem",
+    "science.pkpd.nca_analysis",
+    "science.pkpd.cwres_diagnostics",
+    "science.pkpd.vpc_simulate",
+    "science.pkpd.gof_compute",
+    "science.pkpd.michaelis_menten_nonlinear",
+    # ── Microbiome (13) ───────────────────────────────────────────────
+    "science.microbiome.shannon_index",
+    "science.microbiome.simpson_index",
+    "science.microbiome.pielou_evenness",
+    "science.microbiome.chao1",
+    "science.microbiome.anderson_gut",
+    "science.microbiome.colonization_resistance",
+    "science.microbiome.fmt_blend",
+    "science.microbiome.bray_curtis",
+    "science.microbiome.antibiotic_perturbation",
+    "science.microbiome.scfa_production",
+    "science.microbiome.gut_brain_serotonin",
+    "science.microbiome.qs_gene_profile",
+    "science.microbiome.qs_effective_disorder",
+    # ── Biosignal (8) ────────────────────────────────────────────────
+    "science.biosignal.pan_tompkins",
+    "science.biosignal.hrv_metrics",
+    "science.biosignal.ppg_spo2",
+    "science.biosignal.eda_analysis",
+    "science.biosignal.eda_stress_detection",
+    "science.biosignal.arrhythmia_classification",
+    "science.biosignal.fuse_channels",
+    "science.biosignal.wfdb_decode",
+    # ── Endocrine (5) ────────────────────────────────────────────────
+    "science.endocrine.testosterone_pk",
+    "science.endocrine.trt_outcomes",
+    "science.endocrine.population_trt",
+    "science.endocrine.hrv_trt_response",
+    "science.endocrine.cardiac_risk",
+    # ── Diagnostic (3) ───────────────────────────────────────────────
+    "science.diagnostic.assess_patient",
+    "science.diagnostic.population_montecarlo",
+    "science.diagnostic.composite_risk",
+    # ── Clinical (3) ─────────────────────────────────────────────────
+    "science.clinical.trt_scenario",
+    "science.clinical.patient_parameterize",
+    "science.clinical.risk_annotate",
+    # ── Provenance trio (biomeOS composition) (4) ────────────────────
+    "provenance.begin",
+    "provenance.record",
+    "provenance.complete",
+    "provenance.status",
+    # ── Cross-primal (5) ─────────────────────────────────────────────
+    "primal.forward",
+    "primal.discover",
+    "capability.list",
+    "compute.offload",
+    "data.fetch",
+]
+
+[graph.node.env]
+HEALTHSPRING_FAMILY_ID = "default"

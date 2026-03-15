@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -12,6 +12,7 @@
 //! against the Python control (`exp005_population_pk.py`).
 
 use healthspring_barracuda::pkpd::{self, pop_baricitinib};
+use healthspring_barracuda::tolerances;
 
 fn main() {
     let mut passed = 0u32;
@@ -29,7 +30,7 @@ fn main() {
     println!("\n--- Check 1: Lognormal μ recovers typical ---");
     let recovered = mu.exp();
     let err = (recovered - 10.0).abs() / 10.0;
-    if err < 0.05 {
+    if err < tolerances::LOGNORMAL_RECOVERY {
         println!(
             "  [PASS] exp(μ) = {recovered:.4}, typical = 10.0, err = {:.4}%",
             err * 100.0
@@ -55,7 +56,7 @@ fn main() {
     let vd_p = pop_baricitinib::VD;
     let (mu_vd, sigma_vd) = vd_p.to_normal_params();
     let rec_vd = mu_vd.exp();
-    if (rec_vd - 80.0).abs() / 80.0 < 0.05 && sigma_vd > 0.0 {
+    if (rec_vd - 80.0).abs() / 80.0 < tolerances::POP_VD_MEDIAN && sigma_vd > 0.0 {
         println!("  [PASS] Vd: exp(μ) = {rec_vd:.2}, σ = {sigma_vd:.4}");
         passed += 1;
     } else {
@@ -68,7 +69,7 @@ fn main() {
     let ka_p = pop_baricitinib::KA;
     let (mu_ka, sigma_ka) = ka_p.to_normal_params();
     let rec_ka = mu_ka.exp();
-    if (rec_ka - 1.5).abs() / 1.5 < 0.1 && sigma_ka > 0.0 {
+    if (rec_ka - 1.5).abs() / 1.5 < tolerances::POP_KA_MEDIAN && sigma_ka > 0.0 {
         println!("  [PASS] Ka: exp(μ) = {rec_ka:.4}, σ = {sigma_ka:.4}");
         passed += 1;
     } else {
@@ -173,7 +174,7 @@ fn main() {
     println!("\n--- Check 10: AUC ≈ F*D/CL ---");
     let theoretical = pop_baricitinib::F_BIOAVAIL * pop_baricitinib::DOSE_MG / cl_vals[0];
     let err = (first.auc - theoretical).abs() / theoretical;
-    if err < 0.10 {
+    if err < tolerances::AUC_TRUNCATED {
         println!(
             "  [PASS] AUC={:.6}, F*D/CL={theoretical:.6}, err={:.3}%",
             first.auc,
@@ -195,7 +196,7 @@ fn main() {
         cl_vals[0] / vd_vals[0],
         0.0,
     );
-    if c0.abs() < 1e-12 {
+    if c0.abs() < tolerances::MACHINE_EPSILON_TIGHT {
         println!("  [PASS] C(0) = {c0:.2e}");
         passed += 1;
     } else {

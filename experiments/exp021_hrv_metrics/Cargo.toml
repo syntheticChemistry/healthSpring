@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
 name = "healthspring-exp021"
@@ -13,5 +13,5 @@ name = "exp021_hrv_metrics"
 path = "src/main.rs"
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda" }
+healthspring-barracuda = { path = "../../ecoPrimal" }
 serde_json = "1"

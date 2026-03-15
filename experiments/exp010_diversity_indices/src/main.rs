@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -13,8 +13,7 @@
 //! against the Python control baseline (`control/microbiome/exp010_baseline.json`).
 
 use healthspring_barracuda::microbiome::{self, communities};
-
-const TOL: f64 = 1e-8;
+use healthspring_barracuda::tolerances;
 const W_SCALE: f64 = 10.0;
 
 // Chao1 count data (from Python baseline)
@@ -40,7 +39,7 @@ fn main() {
     let h_even = microbiome::shannon_index(even);
     #[expect(clippy::cast_precision_loss, reason = "species count (10) fits f64")]
     let expected_h = (even.len() as f64).ln();
-    if (h_even - expected_h).abs() < TOL {
+    if (h_even - expected_h).abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
         println!(
             "  [PASS] H' = {h_even:.10} = ln({}) = {expected_h:.10}",
             even.len()
@@ -54,7 +53,7 @@ fn main() {
     // Check 2: Shannon — monoculture = 0
     println!("\n--- Check 2: Shannon monoculture = 0 ---");
     let h_mono = microbiome::shannon_index(mono);
-    if h_mono.abs() < TOL {
+    if h_mono.abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
         println!("  [PASS] H' = {h_mono:.10}");
         passed += 1;
     } else {
@@ -84,7 +83,7 @@ fn main() {
     let d_even = microbiome::simpson_index(even);
     #[expect(clippy::cast_precision_loss, reason = "species count (10) fits f64")]
     let expected_d = (even.len() as f64).mul_add(-0.01, 1.0);
-    if (d_even - expected_d).abs() < TOL {
+    if (d_even - expected_d).abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
         println!("  [PASS] D = {d_even:.10}");
         passed += 1;
     } else {
@@ -95,7 +94,7 @@ fn main() {
     // Check 5: Simpson — monoculture = 0
     println!("\n--- Check 5: Simpson monoculture = 0 ---");
     let d_mono = microbiome::simpson_index(mono);
-    if d_mono.abs() < TOL {
+    if d_mono.abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
         println!("  [PASS] D = {d_mono:.10}");
         passed += 1;
     } else {
@@ -118,7 +117,7 @@ fn main() {
     // Check 7: Inverse Simpson — even = S
     println!("\n--- Check 7: Inverse Simpson even = S ---");
     let inv_even = microbiome::inverse_simpson(even);
-    if (inv_even - 10.0).abs() < TOL {
+    if (inv_even - 10.0).abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
         println!("  [PASS] 1/D = {inv_even:.10} = S=10");
         passed += 1;
     } else {
@@ -129,7 +128,7 @@ fn main() {
     // Check 8: Pielou — even = 1.0
     println!("\n--- Check 8: Pielou evenness even = 1.0 ---");
     let j_even = microbiome::pielou_evenness(even);
-    if (j_even - 1.0).abs() < TOL {
+    if (j_even - 1.0).abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
         println!("  [PASS] J = {j_even:.10}");
         passed += 1;
     } else {
@@ -197,9 +196,13 @@ fn main() {
         let h = microbiome::shannon_index(ab);
         let d = microbiome::simpson_index(ab);
         let j = microbiome::pielou_evenness(ab);
-        h >= -TOL
-            && (-TOL..=1.0 + TOL).contains(&d)
-            && (ab.len() <= 1 || (-TOL..=1.0 + TOL).contains(&j))
+        h >= -tolerances::DIVERSITY_CROSS_VALIDATE
+            && (-tolerances::DIVERSITY_CROSS_VALIDATE..=1.0 + tolerances::DIVERSITY_CROSS_VALIDATE)
+                .contains(&d)
+            && (ab.len() <= 1
+                || (-tolerances::DIVERSITY_CROSS_VALIDATE
+                    ..=1.0 + tolerances::DIVERSITY_CROSS_VALIDATE)
+                    .contains(&j))
     });
     if all_valid {
         println!("  [PASS] H' ≥ 0, 0 ≤ D ≤ 1, 0 ≤ J ≤ 1 for all communities");
@@ -213,7 +216,7 @@ fn main() {
     println!("\n--- Check 14: Abundance normalization ---");
     let all_normalized = [healthy, dysbiotic, cdiff, even, mono]
         .iter()
-        .all(|ab| (ab.iter().sum::<f64>() - 1.0).abs() < 1e-6);
+        .all(|ab| (ab.iter().sum::<f64>() - 1.0).abs() < tolerances::ABUNDANCE_NORMALIZATION);
     if all_normalized {
         println!("  [PASS] All communities sum to 1.0");
         passed += 1;
@@ -304,43 +307,44 @@ fn check_baseline(
             .unwrap_or(f64::NAN)
     };
     let shannon_all = b.get("shannon_all").and_then(serde_json::Value::as_object);
-    let shannon_ok = (f("shannon_even") - h_even).abs() < TOL
-        && (f("shannon_mono") - h_mono).abs() < TOL
+    let shannon_ok = (f("shannon_even") - h_even).abs() < tolerances::DIVERSITY_CROSS_VALIDATE
+        && (f("shannon_mono") - h_mono).abs() < tolerances::DIVERSITY_CROSS_VALIDATE
         && shannon_all.is_some_and(|o| {
             (o.get("healthy_gut")
                 .and_then(serde_json::Value::as_f64)
                 .unwrap_or(0.0)
                 - h_healthy)
                 .abs()
-                < TOL
+                < tolerances::DIVERSITY_CROSS_VALIDATE
                 && (o
                     .get("dysbiotic_gut")
                     .and_then(serde_json::Value::as_f64)
                     .unwrap_or(0.0)
                     - h_dysbiotic)
                     .abs()
-                    < TOL
+                    < tolerances::DIVERSITY_CROSS_VALIDATE
                 && (o
                     .get("cdiff_colonized")
                     .and_then(serde_json::Value::as_f64)
                     .unwrap_or(0.0)
                     - h_cdiff)
                     .abs()
-                    < TOL
+                    < tolerances::DIVERSITY_CROSS_VALIDATE
         });
-    let simpson_ok = (f("simpson_even") - d_even).abs() < TOL
-        && (f("simpson_mono") - d_mono).abs() < TOL
-        && (f("simpson_healthy") - d_healthy).abs() < TOL
-        && (f("simpson_dysbiotic") - d_dysbiotic).abs() < TOL;
-    let inv_ok = (f("inv_simpson_even") - inv_even).abs() < TOL;
-    let pielou_ok = (f("pielou_even") - j_even).abs() < TOL
-        && (f("pielou_healthy") - j_healthy).abs() < TOL
-        && (f("pielou_dysbiotic") - j_dysbiotic).abs() < TOL
-        && (f("pielou_cdiff") - j_cdiff).abs() < TOL;
-    let chao1_ok =
-        (f("chao1_healthy") - chao1_h).abs() < TOL && (f("chao1_depleted") - chao1_d).abs() < TOL;
-    let anderson_ok = (f("anderson_w_healthy") - w_healthy).abs() < TOL
-        && (f("anderson_w_dysbiotic") - w_dysbiotic).abs() < TOL;
+    let simpson_ok = (f("simpson_even") - d_even).abs() < tolerances::DIVERSITY_CROSS_VALIDATE
+        && (f("simpson_mono") - d_mono).abs() < tolerances::DIVERSITY_CROSS_VALIDATE
+        && (f("simpson_healthy") - d_healthy).abs() < tolerances::DIVERSITY_CROSS_VALIDATE
+        && (f("simpson_dysbiotic") - d_dysbiotic).abs() < tolerances::DIVERSITY_CROSS_VALIDATE;
+    let inv_ok = (f("inv_simpson_even") - inv_even).abs() < tolerances::DIVERSITY_CROSS_VALIDATE;
+    let pielou_ok = (f("pielou_even") - j_even).abs() < tolerances::DIVERSITY_CROSS_VALIDATE
+        && (f("pielou_healthy") - j_healthy).abs() < tolerances::DIVERSITY_CROSS_VALIDATE
+        && (f("pielou_dysbiotic") - j_dysbiotic).abs() < tolerances::DIVERSITY_CROSS_VALIDATE
+        && (f("pielou_cdiff") - j_cdiff).abs() < tolerances::DIVERSITY_CROSS_VALIDATE;
+    let chao1_ok = (f("chao1_healthy") - chao1_h).abs() < tolerances::DIVERSITY_CROSS_VALIDATE
+        && (f("chao1_depleted") - chao1_d).abs() < tolerances::DIVERSITY_CROSS_VALIDATE;
+    let anderson_ok = (f("anderson_w_healthy") - w_healthy).abs()
+        < tolerances::DIVERSITY_CROSS_VALIDATE
+        && (f("anderson_w_dysbiotic") - w_dysbiotic).abs() < tolerances::DIVERSITY_CROSS_VALIDATE;
 
     shannon_ok && simpson_ok && inv_ok && pielou_ok && chao1_ok && anderson_ok
 }

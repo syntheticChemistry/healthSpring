@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -12,12 +12,56 @@
 //! against the Python control (`exp012_cdiff_resistance.py`).
 
 use healthspring_barracuda::microbiome::{self, communities};
+use healthspring_barracuda::tolerances;
 
 const W_SCALE: f64 = 10.0;
 
 fn main() {
     let mut passed = 0u32;
     let mut failed = 0u32;
+
+    let baseline_str = include_str!("../../../control/microbiome/exp012_baseline.json");
+    let baseline: serde_json::Value = match serde_json::from_str(baseline_str) {
+        Ok(b) => b,
+        Err(e) => {
+            eprintln!("Failed to parse exp012_baseline.json: {e}");
+            std::process::exit(1);
+        }
+    };
+
+    let w_healthy_py = baseline
+        .get("scores")
+        .and_then(|s| s.get("healthy"))
+        .and_then(|h| h.get("disorder_W"))
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or_else(|| {
+            eprintln!("Missing or invalid scores.healthy.disorder_W in baseline JSON");
+            std::process::exit(1);
+        });
+    let w_dysbiotic_py = baseline
+        .get("scores")
+        .and_then(|s| s.get("dysbiotic"))
+        .and_then(|d| d.get("disorder_W"))
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or_else(|| {
+            eprintln!("Missing or invalid scores.dysbiotic.disorder_W in baseline JSON");
+            std::process::exit(1);
+        });
+
+    if let Some(prov) = baseline
+        .get("_provenance")
+        .and_then(serde_json::Value::as_object)
+    {
+        let date = prov
+            .get("date")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("?");
+        let git = prov
+            .get("git_commit")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("?");
+        println!("Baseline provenance: date={date}, git={git}");
+    }
 
     println!("{}", "=".repeat(72));
     println!("healthSpring Exp012 — Rust CPU Validation: C. diff Resistance");
@@ -49,7 +93,7 @@ fn main() {
     println!("\n--- Check 2: All Pielou in [0, 1] ---");
     if [j_h, j_d, j_c, j_e]
         .iter()
-        .all(|&j| (0.0..=1.0 + 1e-10).contains(&j))
+        .all(|&j| (0.0..=1.0 + tolerances::MACHINE_EPSILON).contains(&j))
     {
         println!("  [PASS]");
         passed += 1;
@@ -132,7 +176,9 @@ fn main() {
     println!("\n--- Check 8: Hamiltonian structure ---");
     let disorder: Vec<f64> = (0..20).map(|i| f64::from(i) * 0.5).collect();
     let h = microbiome::anderson_hamiltonian_1d(&disorder, 1.0);
-    let sym = (0..20).all(|i| (0..20).all(|j| (h[i * 20 + j] - h[j * 20 + i]).abs() < 1e-14));
+    let sym = (0..20).all(|i| {
+        (0..20).all(|j| (h[i * 20 + j] - h[j * 20 + i]).abs() < tolerances::ANDERSON_IDENTITY)
+    });
     if sym && h.len() == 400 {
         println!("  [PASS] 20×20 symmetric");
         passed += 1;
@@ -141,11 +187,11 @@ fn main() {
         failed += 1;
     }
 
-    // Check 9: W values match Python baseline
+    // Check 9: W values match Python baseline (from exp012_baseline.json)
     println!("\n--- Check 9: W values match Python ---");
-    let w_healthy_py = 8.63;
-    let w_dysbiotic_py = 3.03;
-    if (w_h - w_healthy_py).abs() < 0.01 && (w_d - w_dysbiotic_py).abs() < 0.01 {
+    if (w_h - w_healthy_py).abs() < tolerances::W_CROSS_VALIDATE
+        && (w_d - w_dysbiotic_py).abs() < tolerances::W_CROSS_VALIDATE
+    {
         println!(
             "  [PASS] W(healthy)={w_h:.2}≈{w_healthy_py}, W(dysbiotic)={w_d:.2}≈{w_dysbiotic_py}"
         );

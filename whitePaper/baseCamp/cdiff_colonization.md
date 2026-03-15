@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # Sub-Thesis: Anderson Localization → Gut Colonization Resistance
 
 **Faculty**: TBD (extends wetSpring Anderson framework)
@@ -44,7 +44,7 @@ localized states are vulnerable. FMT engraftment models the transition from loca
 
 ## Modules
 
-- `barracuda/src/microbiome.rs`: `shannon_index`, `simpson_index`, `pielou_evenness`, `chao1`, `evenness_to_disorder`, `anderson_hamiltonian_1d`, `inverse_participation_ratio`, `localization_length_from_ipr`, `colonization_resistance`, `fmt_blend`, `bray_curtis`
+- `ecoPrimal/src/microbiome.rs`: `shannon_index`, `simpson_index`, `pielou_evenness`, `chao1`, `evenness_to_disorder`, `anderson_hamiltonian_1d`, `inverse_participation_ratio`, `localization_length_from_ipr`, `colonization_resistance`, `fmt_blend`, `bray_curtis`
 - `control/microbiome/`: Python baselines for all 4 experiments
 
 ---

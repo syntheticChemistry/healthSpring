@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
 name = "healthspring-forge"
@@ -14,7 +14,7 @@ gpu = ["dep:wgpu", "dep:pollster"]
 npu = []
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda" }
+healthspring-barracuda = { path = "../../ecoPrimal" }
 wgpu = { version = "28", optional = true }
 pollster = { version = "0.4", optional = true }
 

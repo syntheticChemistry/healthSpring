@@ -1,0 +1,45 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+#![deny(clippy::pedantic)]
+#![deny(clippy::unwrap_used)]
+#![deny(clippy::expect_used)]
+
+//! healthSpring barraCuda — health science compute library.
+//!
+//! Pure Rust implementations of PK/PD, microbiome, biosignal, endocrine, and
+//! diagnostic models. GPU-accelerated via WGSL shaders behind the `gpu` feature.
+//!
+//! ## Modules
+//!
+//! | Module | Domain | GPU Shader |
+//! |--------|--------|-----------|
+//! | [`pkpd`] | Hill dose-response, compartmental PK, population MC | `hill_dose_response_f64.wgsl`, `population_pk_f64.wgsl` |
+//! | [`microbiome`] | Shannon, Simpson, Pielou, Chao1, Anderson lattice | `diversity_f64.wgsl` |
+//! | [`biosignal`] | Pan-Tompkins QRS, HRV, PPG SpO2, fusion | — (NPU target) |
+//! | [`endocrine`] | Testosterone PK, TRT outcomes, decline models | — |
+//! | [`diagnostic`] | Integrated 4-track patient pipeline | — |
+//! | [`gpu`] | GPU dispatch: `GpuOp`, `GpuContext`, fused pipeline | All shaders |
+//! | [`validation`] | Shared `ValidationHarness` (hotSpring pattern) | — |
+//! | [`tolerances`] | Centralized tolerance constants from `TOLERANCE_REGISTRY.md` | — |
+//! | [`provenance`] | Baseline provenance tracking (script, commit, date) | — |
+//! | [`qs`] | QS gene profiling: functional Anderson disorder | — |
+//! | [`data`] | Three-tier fetch: biomeOS → NestGate → NCBI HTTP | — |
+//! | [`visualization`] | petalTongue schema: `DataChannel`, `ClinicalRange` | — |
+//! | [`wfdb`] | PhysioNet WFDB format parser (`.hea`, `.dat`, `.atr`) | — |
+
+pub mod biosignal;
+pub mod data;
+pub mod diagnostic;
+pub mod endocrine;
+pub mod gpu;
+pub mod ipc;
+pub mod microbiome;
+pub mod pkpd;
+pub mod provenance;
+pub mod qs;
+pub mod rng;
+pub mod tolerances;
+pub mod validation;
+pub mod visualization;
+pub mod wfdb;

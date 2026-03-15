@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 [package]
 name = "healthspring-exp051"
 version = "0.1.0"
@@ -9,4 +9,4 @@ name = "exp051_population_diagnostic"
 path = "src/main.rs"
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda" }
+healthspring-barracuda = { path = "../../ecoPrimal" }

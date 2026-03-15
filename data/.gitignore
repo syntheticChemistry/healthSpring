@@ -1,0 +1,28 @@
+# Downloaded datasets — large, reproducible from scripts
+*.fastq
+*.fastq.gz
+*.fasta
+*.fasta.gz
+*.sra
+*.dat
+*.hea
+*.atr
+*.csv
+*.tsv
+*.h5
+*.hdf5
+
+# Fetched gene/protein records
+ncbi_cache/
+
+# Generated matrices and intermediate outputs
+qs_gene_matrix.json
+chembl_hill_panel.json
+mitbih/
+
+# Keep scripts, manifest, and README
+!README.md
+!manifest.toml
+!fetch_*.py
+!fetch_*.sh
+!requirements.txt

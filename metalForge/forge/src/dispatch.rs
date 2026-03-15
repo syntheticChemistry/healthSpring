@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 //! Pipeline dispatch planning — maps stages to NUCLEUS Nests with transfer plans.
 //!
 //! Given a sequence of workloads and a hardware topology (`Tower`), produces a

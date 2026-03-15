@@ -3,7 +3,7 @@
 **Date**: March 8, 2026
 **From**: healthSpring (human health applications)
 **To**: barraCuda (GPU math), toadStool (heterogeneous dispatch)
-**License**: AGPL-3.0-or-later
+**License**: AGPL-3.0-only
 **healthSpring Version**: V3 (Tier 0+1 complete — all 4 tracks)
 **barraCuda Version**: v0.3.3 (`a898dee`)
 **toadStool Version**: S130+ (`bfe7977b`)
@@ -212,4 +212,4 @@ The cross-track model in `endocrine::gut_metabolic_response` uses `anderson_loca
 
 ---
 
-**License:** AGPL-3.0-or-later
+**License:** AGPL-3.0-only

@@ -1,11 +1,19 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 #
-# biomeOS deployment graph for healthSpring diagnostic pipeline.
+# biomeOS capability graph for healthSpring diagnostic niche.
 #
-# Defines the DAG of stages that biomeOS orchestrates when running a
-# patient diagnostic. Each stage declares capabilities it requires and
-# which primal provides them. biomeOS discovers primals at runtime via
-# capability matching — no hardcoded endpoints.
+# healthSpring is a NICHE — the diagnostic pipeline emerges from primal
+# composition, not from a monolithic binary. This graph declares which
+# capabilities each stage requires; biomeOS resolves providers at runtime.
+#
+# The workflow graphs in graphs/ define the actual execution:
+#   graphs/healthspring_patient_assessment.toml  (ConditionalDag)
+#   graphs/healthspring_trt_scenario.toml        (Sequential)
+#   graphs/healthspring_microbiome_analysis.toml (Sequential)
+#   graphs/healthspring_biosignal_monitor.toml   (Continuous @ 250 Hz)
+#
+# Niche manifest: graphs/healthspring_niche.toml
+# Niche deployment: graphs/healthspring_niche_deploy.toml
 
 [graph]
 name = "healthspring-diagnostic"
@@ -98,6 +106,8 @@ capabilities = [
     "science.microbiome.antibiotic_perturbation",
     "science.microbiome.scfa_production",
     "science.microbiome.gut_brain_serotonin",
+    "science.microbiome.qs_gene_profile",
+    "science.microbiome.qs_effective_disorder",
 ]
 
 # --- Science: Biosignal ---

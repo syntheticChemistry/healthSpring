@@ -1,19 +1,23 @@
-# healthSpring — Human Health Applications of Sovereign Scientific Computing
+# healthSpring — Health of Living Systems via Sovereign Scientific Computing
 
-**An ecoPrimals Spring** — human health applications validating PK/PD, microbiome, biosignal, and endocrine pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
+**An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 10, 2026
-**License:** AGPL-3.0-or-later
+**Date:** March 14, 2026
+**License:** scyBorg (AGPL-3.0 code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V20 — 395 tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 61 experiments, 194 Python cross-validation checks, full-stack portability validated (barraCuda CPU → GPU → toadStool dispatch → metalForge NUCLEUS routing). V19: GPU scaling bench (Exp085, 47/47), toadStool V16 streaming dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch with PCIe P2P bypass (Exp087, 35/35). V20: petalTongue V16 visualization (Exp088, 326/326), patient explorer with V16 analysis (Exp089, 14/14). V18: CPU parity benchmarks (Exp084, Rust 84× faster than Python). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: 6 new domain primitives (Exp077-082) + paper queue complete (30/30). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean.
+**Status:** V22 — biomeOS BYOB niche deployment. healthSpring is now a **niche**: `healthspring_primal` serves 55+ capabilities via JSON-RPC 2.0 over Unix socket; 5 workflow graphs define the diagnostic pipeline as biomeOS compositions. 414 tests (337 ecoPrimal + 33 forge + 30 toadStool + 8 IPC + 3 doc-tests + 3 integration), 61 experiments (Tracks 1–5), 194 Python cross-validation checks. V22 adds IPC module (`ecoPrimal/src/ipc/`), primal binary (`ecoPrimal/src/bin/healthspring_primal.rs`), niche manifest + 5 workflow graphs in `graphs/`. Prior: full-stack portability validated (CPU → GPU → toadStool dispatch → metalForge NUCLEUS routing), V21 domain evolution to health of living systems (Tracks 6–7 queued). Zero unsafe code, zero clippy warnings (`#![deny(clippy::pedantic)]`), `cargo fmt` clean.
 
 ---
 
 ## What This Is
 
-healthSpring is the sixth ecoPrimals spring. Where the other five springs validate published science — reproducing papers to prove the pipeline — healthSpring builds **usable applications** of that validated science for human health.
+healthSpring is the sixth ecoPrimals spring. Where the other five springs validate published science — reproducing papers to prove the pipeline — healthSpring builds **usable applications** of that validated science for the health of living systems.
 
 The other springs do the chemistry. healthSpring makes the drug.
+
+**New in V22**: healthSpring becomes a **biomeOS niche** — a composed set of primals and workflow graphs orchestrated by the Neural API. The `healthspring_primal` binary exposes all science capabilities via JSON-RPC 2.0 over Unix sockets. biomeOS graphs compose these capabilities into diagnostic pipelines (patient assessment, TRT scenario, microbiome analysis, biosignal monitoring). The primal provides the science; the graphs define the workflows; biomeOS orchestrates the composition.
+
+See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_GUIDE.md) for how this pattern applies to all springs.
 
 | Spring | Role | healthSpring relationship |
 |--------|------|--------------------------|
@@ -29,19 +33,22 @@ The other springs do the chemistry. healthSpring makes the drug.
 
 | Metric | Value |
 |--------|-------|
-| Version | **V20** (full-stack portability + petalTongue V16 visualization) |
-| Rust lib tests | 329 (barraCuda) |
+| Version | **V22** (biomeOS niche deployment + IPC primal + workflow graphs) |
+| Rust ecoPrimal tests | 337 |
 | Rust forge tests | 33 (metalForge) |
 | Rust toadStool tests | 30 |
+| IPC tests | 8 (dispatch, rpc, socket) |
 | Doc-tests | 3 (`shannon_index`, `hill_dose_response`, `auc_trapezoidal`) |
-| **Total tests** | **395** |
-| Paper queue | **30/30 complete** |
+| Integration tests | 3 (primal lifecycle) |
+| **Total tests** | **414** |
+| Paper queue | **30/30 complete** (Tracks 1–5), 15 queued (Tracks 6–7) |
 | Python control checks | 194 (cross-validation) |
 | Experiments complete | 61 (Tier 0+1+2+3 + diagnostics + GPU + clinical + NLME + V16 primitives + GPU scaling + dispatch + NUCLEUS) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity checks |
 | GPU V16 shaders | `michaelis_menten_batch_f64.wgsl`, `scfa_batch_f64.wgsl`, `beat_classify_batch_f64.wgsl` |
 | GPU scaling | Hill crossover 100K, PK crossover 5M, peak 207 M elements/s; V16 linear scaling confirmed |
 | CPU parity | Rust 84× faster than Python across V16 primitives (SCFA 160×, antibiotic 233×, beat 149×) |
+| biomeOS niche | **Live** — `healthspring_primal` binary, 55+ JSON-RPC capabilities, 5 workflow graphs (ConditionalDag, Sequential, Continuous) |
 | petalTongue visualization | **Full** — 7 DataChannel types, 3 stream ops, domain theming, capabilities query, interaction subscription |
 | petalTongue scenarios | 16 scenarios (6 clinical + 5 TRT archetypes + topology + dispatch + NLME + V16 + compute) |
 | petalTongue pipeline | 34 nodes, 38 edges across all 7 DataChannel types (V16 primitives + compute pipeline) |
@@ -49,10 +56,29 @@ The other springs do the chemistry. healthSpring makes the drug.
 | NLME population PK | FOCE + SAEM estimation, NCA metrics, CWRES/VPC/GOF diagnostics |
 | metalForge validation | 33 tests (NUCLEUS topology, dispatch planning, PCIe transfer) |
 | toadStool validation | 30 tests + GPU dispatch + streaming + auto-dispatch |
-| Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Mok (Allure Medical) |
+| Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Ellsworth (Med Chem), Mok (Allure Medical) |
 | Unsafe blocks | 0 |
 | Clippy warnings | 0 (`#![deny(clippy::pedantic)]` in all lib crates, `-W clippy::nursery`) |
 | Max file size | 819 lines (all files under 1000-line wateringHole limit) |
+
+---
+
+## V22 biomeOS BYOB Niche Deployment (from V21)
+
+V22 transforms healthSpring from experiment binaries into a biomeOS niche — a composed set of primals and workflow graphs discoverable and orchestrable by the Neural API.
+
+| Change | Impact |
+|--------|--------|
+| **healthspring_primal binary** | `ecoPrimal/src/bin/healthspring_primal.rs` — JSON-RPC 2.0 server over Unix socket, XDG path, biomeOS registration + heartbeat, SIGTERM cleanup. |
+| **IPC dispatch module** | `ecoPrimal/src/ipc/dispatch.rs` — maps 55+ JSON-RPC methods to science functions across 6 domains (PK/PD, microbiome, biosignal, endocrine, diagnostic, clinical). |
+| **IPC infrastructure** | `ecoPrimal/src/ipc/{rpc,socket}.rs` — JSON-RPC response formatting, Unix socket path resolution, primal discovery. |
+| **Niche manifest** | `graphs/healthspring_niche.toml` — declares healthSpring as a niche, lists primals + workflow graphs. |
+| **Patient assessment graph** | `graphs/healthspring_patient_assessment.toml` — ConditionalDag: 4 parallel science tracks → cross-track → composite → visualize. |
+| **TRT scenario graph** | `graphs/healthspring_trt_scenario.toml` — Sequential: testosterone PK → outcomes → HRV → cardiac → gut → scenario → visualize. |
+| **Microbiome analysis graph** | `graphs/healthspring_microbiome_analysis.toml` — Sequential: diversity (parallel) → Anderson → resistance → SCFA → gut-brain → Bray-Curtis → antibiotic. |
+| **Biosignal monitor graph** | `graphs/healthspring_biosignal_monitor.toml` — Continuous @ 250 Hz: ECG/PPG/EDA → QRS → HRV (feedback) → stress → arrhythmia → fusion → render. |
+| **Niche deploy graph** | `graphs/healthspring_niche_deploy.toml` — startup ordering for all primals in the niche. |
+| **414 tests** | 337 ecoPrimal + 33 forge + 30 toadStool + 8 IPC + 3 doc-tests + 3 integration. |
 
 ---
 
@@ -62,11 +88,11 @@ V14 adds NLME population pharmacokinetics, NCA, WFDB parsing, diagnostics, Kokko
 
 | Change | Impact |
 |--------|--------|
-| **NLME population PK** | FOCE + SAEM estimation in `barracuda/src/pkpd/nlme.rs` — sovereign replacement for NONMEM/Monolix. 30 subjects, 150 FOCE iterations, 200 SAEM iterations. Theta/omega/sigma recovery validated. |
-| **NCA** | Non-compartmental analysis in `barracuda/src/pkpd/nca.rs` — sovereign WinNonlin replacement. Lambda-z, AUC_inf, MRT, CL, Vss. |
-| **NLME diagnostics** | CWRES, VPC (50 simulations), GOF in `barracuda/src/pkpd/diagnostics.rs`. CWRES mean <2.0, GOF R²≥0. |
-| **WFDB parser** | PhysioNet Format 212/16 streaming parser in `barracuda/src/wfdb.rs`. Beat annotation parsing. |
-| **Kokkos-equivalent benchmarks** | Reduction, scatter, Monte Carlo, ODE batch, NLME iteration in `barracuda/benches/kokkos_parity.rs`. GPU readiness evidence. |
+| **NLME population PK** | FOCE + SAEM estimation in `ecoPrimal/src/pkpd/nlme.rs` — sovereign replacement for NONMEM/Monolix. 30 subjects, 150 FOCE iterations, 200 SAEM iterations. Theta/omega/sigma recovery validated. |
+| **NCA** | Non-compartmental analysis in `ecoPrimal/src/pkpd/nca.rs` — sovereign WinNonlin replacement. Lambda-z, AUC_inf, MRT, CL, Vss. |
+| **NLME diagnostics** | CWRES, VPC (50 simulations), GOF in `ecoPrimal/src/pkpd/diagnostics.rs`. CWRES mean <2.0, GOF R²≥0. |
+| **WFDB parser** | PhysioNet Format 212/16 streaming parser in `ecoPrimal/src/wfdb.rs`. Beat annotation parsing. |
+| **Kokkos-equivalent benchmarks** | Reduction, scatter, Monte Carlo, ODE batch, NLME iteration in `ecoPrimal/benches/kokkos_parity.rs`. GPU readiness evidence. |
 | **Full petalTongue pipeline** | 28 nodes, 29 edges, 121 channels across all 7 DataChannel types. NLME scenario builder (5 nodes: population, NCA, CWRES, VPC, GOF). WFDB ECG node. |
 | **Exp075** | NLME cross-validation: FOCE/SAEM parameter recovery, NCA metrics, CWRES, GOF. 19 binary checks. |
 | **Exp076** | Full pipeline petalTongue scenario validation. 197 binary checks across all 5 tracks + full study. |
@@ -142,6 +168,20 @@ Sovereign replacement for NONMEM (FOCE), Monolix (SAEM), and WinNonlin (NCA). Fu
 
 - NLME cross-validation: FOCE + SAEM parameter recovery, NCA metrics, CWRES, GOF — Exp075
 - Full pipeline petalTongue scenario validation (all 5 tracks, 28 nodes, 121 channels) — Exp076
+
+### Track 6: Comparative Medicine / One Health (V21 — Queued)
+
+Species-agnostic mathematics validated on animal models. Study disease where it naturally occurs, gain causal insight, translate to humans via parameter substitution.
+
+- 8 papers queued (CM-001 through CM-008): canine AD, species-agnostic PK, cross-species gut microbiome, feline/equine models
+- See [specs/PAPER_REVIEW_QUEUE.md](specs/PAPER_REVIEW_QUEUE.md) for details
+
+### Track 7: Drug Discovery / ADDRC (V21 — Queued, Front-Loaded)
+
+Anderson-augmented MATRIX scoring → ADDRC HTS → Gonzales iPSC → Ellsworth med chem pipeline. Front-loaded for Gonzales/ADDRC meeting.
+
+- 7 papers queued (DD-001 through DD-007): MATRIX scoring, ADDRC 8K compound screen, ChEMBL panel, Neubig fibrosis, iPSC protocol
+- See [specs/PAPER_REVIEW_QUEUE.md](specs/PAPER_REVIEW_QUEUE.md) for details
 
 ### Integrated Diagnostics (Exp050-052)
 
@@ -244,7 +284,7 @@ Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 
 ```
 healthSpring/
-├── barracuda/           # Rust library — PK/PD, microbiome, biosignal, endocrine
+├── ecoPrimal/           # Rust library — PK/PD, microbiome, biosignal, endocrine
 │   └── src/
 │       ├── lib.rs       # 289 tests, #![forbid(unsafe_code)]
 │       ├── pkpd/        # Track 1: Hill, 1/2-compartment, allometric, pop PK, PBPK, NLME (FOCE/SAEM), NCA, diagnostics
@@ -303,6 +343,20 @@ healthSpring/
 │   ├── exp084/          # CPU parity bench (Rust 84× faster)
 │   ├── exp085–exp087/   # GPU scaling + toadStool dispatch + NUCLEUS routing
 │   └── exp088–exp089/   # petalTongue V16 visualization + patient explorer
+│       ├── ipc/          # biomeOS IPC (JSON-RPC 2.0 dispatch)
+│       │   ├── mod.rs
+│       │   ├── dispatch.rs  # 55+ method → science function routing
+│       │   ├── rpc.rs       # JSON-RPC response helpers + client
+│       │   └── socket.rs    # XDG socket path resolution + primal discovery
+│       └── bin/
+│           └── healthspring_primal.rs  # biomeOS primal binary
+├── graphs/             # biomeOS niche definition + workflow graphs
+│   ├── healthspring_niche.toml              # Niche manifest
+│   ├── healthspring_niche_deploy.toml       # Primal startup order
+│   ├── healthspring_patient_assessment.toml # ConditionalDag diagnostic pipeline
+│   ├── healthspring_trt_scenario.toml       # Sequential TRT workflow
+│   ├── healthspring_microbiome_analysis.toml # Sequential microbiome pipeline
+│   └── healthspring_biosignal_monitor.toml  # Continuous 250 Hz monitoring
 ├── metalForge/          # Cross-substrate dispatch (Tier 3)
 │   └── forge/
 │       └── src/
@@ -329,7 +383,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 395 tests (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests)
+cargo test --workspace                  # 414 tests (337 ecoPrimal + 33 forge + 30 toadStool + 8 IPC + 3 doc-tests + 3 integration)
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings
@@ -386,9 +440,9 @@ python3 control/scripts/control_exp085_gpu_scaling.py    # GPU scaling validatio
 
 ## Relationship to ecoPrimals
 
-healthSpring is a public scientific validation repository in the ecoPrimals ecosystem. It consumes `barraCuda` (vendor-agnostic GPU math library) and validates health application pipelines using the same constrained evolution methodology as the other five springs.
+healthSpring is a biomeOS **niche** in the ecoPrimals ecosystem. It consumes `barraCuda` (vendor-agnostic GPU math library) and exposes health science capabilities as a discoverable primal via JSON-RPC 2.0. biomeOS composes these capabilities into diagnostic workflows via TOML graphs. The Neural API orchestrates, and the Pathway Learner optimizes.
 
-The springs validate science. healthSpring applies it.
+The springs validate science. healthSpring applies it — as a deployable niche.
 
 ---
 

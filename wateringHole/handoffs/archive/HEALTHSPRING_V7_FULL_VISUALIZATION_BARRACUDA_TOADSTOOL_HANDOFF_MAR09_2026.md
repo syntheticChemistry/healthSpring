@@ -1,11 +1,11 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
 # healthSpring V7 → barraCuda / toadStool Full Visualization Handoff
 
 **Date:** March 9, 2026
 **From:** healthSpring V7
 **To:** barraCuda / toadStool / coralReef / petalTongue teams
 **Covers:** V6 → V7 (GPU pipeline + petalTongue absorption + full visualization)
-**License:** AGPL-3.0-or-later
+**License:** AGPL-3.0-only
 **Status:** Complete — 31 experiments, 201 unit tests, 418 binary checks, full petalTongue visualization
 
 ---

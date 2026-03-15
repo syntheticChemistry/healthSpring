@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
 name = "healthspring-exp061"
@@ -9,7 +9,7 @@ license.workspace = true
 description = "Exp061: Mixed hardware dispatch via metalForge NUCLEUS topology"
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda" }
+healthspring-barracuda = { path = "../../ecoPrimal" }
 healthspring-forge = { path = "../../metalForge/forge" }
 
 [[bin]]

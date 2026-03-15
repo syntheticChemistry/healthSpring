@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -9,6 +9,7 @@
 //! Python control baseline (`control/pkpd/exp001_baseline.json`).
 
 use healthspring_barracuda::pkpd::{self, ALL_INHIBITORS, compute_ec_values, hill_dose_response};
+use healthspring_barracuda::tolerances;
 
 fn main() {
     let mut passed = 0_u32;
@@ -22,7 +23,7 @@ fn main() {
     for drug in ALL_INHIBITORS {
         print!("\n--- Check: {} at IC50 → 50% --- ", drug.name);
         let r = hill_dose_response(drug.ic50_jak1_nm, drug.ic50_jak1_nm, drug.hill_n, 1.0);
-        if (r - 0.5).abs() < 1e-10 {
+        if (r - 0.5).abs() < tolerances::MACHINE_EPSILON {
             println!("[PASS] response={r:.10}");
             passed += 1;
         } else {
@@ -38,7 +39,9 @@ fn main() {
     for drug in ALL_INHIBITORS {
         print!("\n--- Check: {} monotonicity --- ", drug.name);
         let responses = pkpd::hill_sweep(drug.ic50_jak1_nm, drug.hill_n, 1.0, &concs);
-        let monotonic = responses.windows(2).all(|w| w[0] <= w[1] + 1e-15);
+        let monotonic = responses
+            .windows(2)
+            .all(|w| w[0] <= w[1] + tolerances::MACHINE_EPSILON_STRICT);
         if monotonic {
             println!("[PASS]");
             passed += 1;

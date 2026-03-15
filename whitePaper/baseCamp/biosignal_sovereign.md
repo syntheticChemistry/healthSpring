@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # Sub-Thesis: Sovereign Edge Biosignal Processing
 
 **Faculty**: TBD
@@ -41,7 +41,7 @@ latency, enabling edge deployment on wearables and field devices without cloud d
 
 ## Modules
 
-- `barracuda/src/biosignal/`: Domain-coherent submodules — `ecg.rs` (Pan-Tompkins), `hrv.rs` (SDNN, RMSSD, pNN50), `ppg.rs` (SpO2), `eda.rs` (SCL, phasic, SCR), `fusion.rs` (FusedHealthAssessment), `fft.rs` (DFT utilities). `mod.rs` re-exports all public items for API compatibility.
+- `ecoPrimal/src/biosignal/`: Domain-coherent submodules — `ecg.rs` (Pan-Tompkins), `hrv.rs` (SDNN, RMSSD, pNN50), `ppg.rs` (SpO2), `eda.rs` (SCL, phasic, SCR), `fusion.rs` (FusedHealthAssessment), `fft.rs` (DFT utilities). `mod.rs` re-exports all public items for API compatibility.
 - `control/biosignal/`: Python baselines for all 4 experiments
 
 ---

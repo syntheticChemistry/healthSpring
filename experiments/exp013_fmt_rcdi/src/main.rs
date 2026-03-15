@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -13,8 +13,7 @@
 //! - Shannon, Pielou, CR improvement with engraftment
 
 use healthspring_barracuda::microbiome::{self, communities};
-
-const TOL: f64 = 1e-10;
+use healthspring_barracuda::tolerances;
 const ENGRAFTMENT_LEVELS: [f64; 4] = [0.3, 0.5, 0.7, 0.9];
 
 fn main() {
@@ -79,8 +78,8 @@ fn main() {
     println!("\n--- Check 4: Bray-Curtis range [0, 1] ---");
     let bc_healthy_dys = microbiome::bray_curtis(donor, recipient);
     let bc_identical = microbiome::bray_curtis(donor, donor);
-    let in_range =
-        (0.0..=1.0 + TOL).contains(&bc_healthy_dys) && (0.0..=1.0 + TOL).contains(&bc_identical);
+    let in_range = (0.0..=1.0 + tolerances::MACHINE_EPSILON).contains(&bc_healthy_dys)
+        && (0.0..=1.0 + tolerances::MACHINE_EPSILON).contains(&bc_identical);
     if in_range {
         println!(
             "  [PASS] BC(healthy,dysbiotic)={bc_healthy_dys:.4}, BC(identical)={bc_identical:.4}"
@@ -95,7 +94,7 @@ fn main() {
     println!("\n--- Check 5: Bray-Curtis symmetry BC(a,b) = BC(b,a) ---");
     let bc_ab = microbiome::bray_curtis(donor, recipient);
     let bc_ba = microbiome::bray_curtis(recipient, donor);
-    if (bc_ab - bc_ba).abs() < TOL {
+    if (bc_ab - bc_ba).abs() < tolerances::MACHINE_EPSILON {
         println!("  [PASS] BC(donor,recipient)={bc_ab:.4} = BC(recipient,donor)={bc_ba:.4}");
         passed += 1;
     } else {
@@ -109,7 +108,7 @@ fn main() {
     let match_donor = blended_100
         .iter()
         .zip(donor.iter())
-        .all(|(a, b)| (a - b).abs() < TOL)
+        .all(|(a, b)| (a - b).abs() < tolerances::MACHINE_EPSILON)
         && blended_100.len() == donor.len();
     if match_donor {
         println!("  [PASS] fmt_blend(., ., 1.0) == donor");
@@ -125,7 +124,7 @@ fn main() {
     let match_recipient = blended_0
         .iter()
         .zip(recipient.iter())
-        .all(|(a, b)| (a - b).abs() < TOL)
+        .all(|(a, b)| (a - b).abs() < tolerances::MACHINE_EPSILON)
         && blended_0.len() == recipient.len();
     if match_recipient {
         println!("  [PASS] fmt_blend(., ., 0.0) == recipient");
@@ -139,7 +138,7 @@ fn main() {
     println!("\n--- Check 8: All abundances sum to 1.0 ---");
     let all_sum_one = ENGRAFTMENT_LEVELS.iter().all(|&e| {
         let b = microbiome::fmt_blend(donor, recipient, e);
-        (b.iter().sum::<f64>() - 1.0).abs() < TOL
+        (b.iter().sum::<f64>() - 1.0).abs() < tolerances::MACHINE_EPSILON
     });
     if all_sum_one {
         println!("  [PASS] All blended communities sum to 1.0");
@@ -182,7 +181,7 @@ fn main() {
     // Check 11: Bray-Curtis(identical) = 0
     println!("\n--- Check 11: Bray-Curtis(identical) = 0 ---");
     let bc_id = microbiome::bray_curtis(donor, donor);
-    if bc_id.abs() < TOL {
+    if bc_id.abs() < tolerances::MACHINE_EPSILON {
         println!("  [PASS] BC(donor, donor)={bc_id:.6} ≈ 0");
         passed += 1;
     } else {
@@ -195,7 +194,7 @@ fn main() {
     let all_nonneg = ENGRAFTMENT_LEVELS.iter().all(|&e| {
         microbiome::fmt_blend(donor, recipient, e)
             .iter()
-            .all(|&v| v >= -TOL)
+            .all(|&v| v >= -tolerances::MACHINE_EPSILON)
     });
     if all_nonneg {
         println!("  [PASS] All abundances ≥ 0");

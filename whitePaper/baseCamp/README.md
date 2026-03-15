@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** March 10, 2026
-**Status:** V19 — 5 tracks + diagnostics + GPU pipeline + visualization + clinical TRT + IPC + streaming + interaction + NLME + paper queue + GPU V16 + CPU parity + GPU scaling + toadStool dispatch + mixed NUCLEUS, 59 experiments (395 tests, 194 Python cross-validation checks, 14 Criterion benchmarks). V19: GPU scaling bench (Exp085, 47/47), toadStool V16 streaming dispatch (Exp086, 24/24), mixed NUCLEUS V16 dispatch (Exp087, 35/35) — proves full-stack portability from barraCuda math through toadStool pipeline to metalForge NUCLEUS routing with PCIe P2P bypass. V18: CPU parity (Exp084, Rust 84× faster). V17: GPU portability (3 new WGSL shaders, Exp083 25/25). V16: paper queue complete (30/30). 6 total WGSL shaders.
+**Last Updated:** March 14, 2026
+**Status:** V22 — biomeOS BYOB niche deployment. healthSpring is now a **niche**: `healthspring_primal` serves 55+ science capabilities via JSON-RPC 2.0 over Unix socket; 5 workflow graphs define diagnostic pipelines as biomeOS compositions. 7 tracks (5 complete + 2 queued), 61 experiments, 414 tests (337 ecoPrimal + 33 forge + 30 toadStool + 8 IPC + 3 doc-tests + 3 integration), 194 Python cross-validation checks, 6 WGSL shaders. V22: IPC module (`ecoPrimal/src/ipc/`), primal binary, niche manifest + 5 workflow graphs in `graphs/`. Prior: full-stack portability (CPU → GPU → toadStool → NUCLEUS), V21 deep debt + health of living systems domain expansion (Tracks 6–7 queued).
 
 ---
 
@@ -16,17 +16,48 @@ Per-person translation of validated science into usable health applications. Met
 | 3 — Biosignal | ECG detection, HRV, PPG SpO2, EDA stress, arrhythmia classification, multi-channel fusion | Exp020-023, 081-082 | **Complete** (Tier 0+1+2) |
 | 4 — Endocrinology | Testosterone PK, TRT outcomes, gut axis, HRV cross-track | Exp030-038 | **Complete** (Tier 0+1) |
 | 5 — NLME | FOCE/SAEM population PK, NCA, CWRES/VPC/GOF diagnostics | Exp075-076 | **Complete** (Tier 0+1) |
+| 6 — Comparative Medicine | Species-agnostic PK, cross-species Anderson, canine AD models | Queued (8 papers) | **Queued** (V21) |
+| 7 — Drug Discovery | MATRIX scoring, ADDRC HTS, compound screening, iPSC validation | Queued (7 papers) | **Queued** (V21, front-loaded) |
 
 ---
 
-## Sub-Theses
+## Sub-Theses (per-org subdirectories)
 
-| # | File | Faculty | Domain | Status | Python | Rust |
-|---|------|---------|--------|--------|:------:|:----:|
-| 01 | [gonzales.md](gonzales.md) | Gonzales, Lisabeth, Neubig | PK/PD + immunology → human therapeutics + MM PK | **Complete** | 73 | 79 |
-| 02 | [cdiff_colonization.md](cdiff_colonization.md) | TBD | Anderson localization → gut colonization, FMT, antibiotics, SCFA, serotonin | **Complete** | 36 | 48 |
-| 03 | [biosignal_sovereign.md](biosignal_sovereign.md) | TBD | Edge biosignal processing, PPG SpO2, EDA stress, arrhythmia | **Complete** | 44 | 44 |
-| 04 | [mok_testosterone.md](mok_testosterone.md) | Dr. Charles Mok | Testosterone PK, TRT outcomes, HRV cross-track | **Complete** | 96 | 86 |
+Each targeted organization/group has a dedicated subdirectory containing a README
+(the sub-thesis narrative), a cost/access/methods comparison, and any useful data
+for onboarding that group.
+
+| # | Directory | Faculty | Domain | Status | Python | Rust |
+|---|-----------|---------|--------|--------|:------:|:----:|
+| 01 | [gonzales/](gonzales/) | Gonzales, Lisabeth, Neubig, Ellsworth | PK/PD → living systems + drug discovery (Tracks 1, 6, 7) | **Complete** (T1), **Queued** (T6–7) | 73 | 79 |
+| 02 | [fajgenbaum/](fajgenbaum/) | Fajgenbaum (Every Cure) | MATRIX drug repurposing + Anderson geometry (Track 7) | **Ingested + Extended** | — | — |
+| 03 | [mok/](mok/) | Dr. Charles Mok | Testosterone PK, TRT outcomes, HRV cross-track (Track 4) | **Complete** | 96 | 86 |
+| 04 | [cdiff_colonization.md](cdiff_colonization.md) | TBD | Anderson localization → gut colonization, FMT (Track 2) | **Complete** | 36 | 48 |
+| 05 | [biosignal_sovereign.md](biosignal_sovereign.md) | TBD | Edge biosignal processing (Track 3) | **Complete** | 44 | 44 |
+
+### Per-Org Directory Contents
+
+```
+baseCamp/
+├── README.md                    ← This file
+├── EXTENSION_PLAN.md            ← Datasets, new tracks, living systems roadmap
+├── gonzales/
+│   ├── README.md                ← Sub-thesis: PK/PD → human → living systems
+│   └── cost_access_methods.md   ← Cost/access/methods vs. traditional PK pipeline
+├── fajgenbaum/
+│   ├── README.md                ← MATRIX comparison: healthSpring vs. $48.3M Every Cure
+│   └── cost_access_methods.md   ← Deep cost/access/data/methods breakdown
+├── mok/
+│   └── README.md                ← Sub-thesis: TRT claim verification + endocrinology
+├── cdiff_colonization.md        ← Sub-thesis: Anderson → gut colonization (to be promoted to subdir)
+├── biosignal_sovereign.md       ← Sub-thesis: Edge biosignal (to be promoted to subdir)
+├── gonzales.md                  ← Legacy (→ gonzales/README.md)
+├── mok_testosterone.md          ← Legacy (→ mok/README.md)
+└── drug_matrix_comparison.md    ← Legacy (→ fajgenbaum/README.md)
+```
+
+Legacy flat files are preserved for backward compatibility. The authoritative versions
+are in the per-org subdirectories.
 
 ---
 
@@ -68,12 +99,12 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | GPU Scaling Bench (Exp085) | — | 10 | 47 | 57 |
 | toadStool V16 Dispatch (Exp086) | — | — | 24 | 24 |
 | Mixed NUCLEUS V16 (Exp087) | — | — | 35 | 35 |
-| **Lib unit tests** | — | — | **302** | 302 |
+| **Lib unit tests** | — | — | **365** | 365 |
 | **metalForge tests** | — | — | **33** | 33 |
 | **toadStool tests** | — | — | **36** | 36 |
 | **Doc-tests** | — | — | **4** | 4 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **395** (tests) | **2,500+** |
+| **Total** | **688** | **287+** (Tier 0) | **458** (tests) | **2,560+** |
 
 ---
 
@@ -208,8 +239,8 @@ All 24 Tier 0+1 experiments validated. GPU pipeline live (Exp053-055). CPU vs GP
 
 | Component | Purpose | Location |
 |-----------|---------|----------|
-| `GpuContext` | Persistent device/queue, shader reuse | `barracuda/src/gpu/context.rs` |
-| `execute_fused()` | All ops in one encoder, no CPU roundtrips | `barracuda/src/gpu/mod.rs` |
+| `GpuContext` | Persistent device/queue, shader reuse | `ecoPrimal/src/gpu/context.rs` |
+| `execute_fused()` | All ops in one encoder, no CPU roundtrips | `ecoPrimal/src/gpu/mod.rs` |
 | `Pipeline::execute_gpu()` | toadStool dispatches stages via `GpuContext` | `toadstool/src/pipeline.rs` |
 | `Stage::to_gpu_op()` | Stage → GpuOp conversion | `toadstool/src/stage.rs` |
 
@@ -231,17 +262,54 @@ All 24 Tier 0+1 experiments validated. GPU pipeline live (Exp053-055). CPU vs GP
 
 ---
 
-## Next Steps: GPU Promotion and Field Deployment
+## V22 — biomeOS Niche Architecture
 
-1. **NLME GPU shaders** — FOCE per-subject gradient and VPC Monte Carlo are embarrassingly parallel (Kokkos benchmarks validate patterns)
-2. **NLME at scale** — 10K+ subjects requires GPU (CPU bottleneck at >1K subjects with FOCE)
-3. **Real-time diagnostics** — live VPC/CWRES streaming to petalTongue during NLME estimation
-4. **petalTongue interaction loop** — clinician selects node in petalTongue → healthSpring drills down (Exp074 validates the roundtrip; now wire to clinical scenarios)
-5. **Anderson eigensolve** — GPU shader for gut lattice localization length (Exp011/037)
-6. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG processing (Exp020-023)
-7. **Field deployment** — validate on Raspberry Pi + eGPU (same WGSL, portable pipeline)
-8. **NPU streaming** — toadStool backend swap for Akida NPU (Pan-Tompkins streaming via PCIe P2P bypass)
-9. **biomeOS atomic deployment** — healthspring_deploy.toml → live NUCLEUS orchestration across node/tower topologies
+healthSpring evolved from experiment binaries into a biomeOS niche in V22:
+
+| Component | File | Purpose |
+|-----------|------|---------|
+| Primal binary | `ecoPrimal/src/bin/healthspring_primal.rs` | 55+ capabilities via JSON-RPC 2.0 over Unix socket |
+| IPC dispatch | `ecoPrimal/src/ipc/dispatch.rs` | Method→science function routing for 6 domains |
+| Niche manifest | `graphs/healthspring_niche.toml` | Declares the niche: primals + workflow graphs |
+| Patient assessment | `graphs/healthspring_patient_assessment.toml` | ConditionalDag: 4 parallel science tracks → composite |
+| TRT scenario | `graphs/healthspring_trt_scenario.toml` | Sequential TRT clinical workflow |
+| Microbiome analysis | `graphs/healthspring_microbiome_analysis.toml` | Sequential diversity → Anderson → SCFA pipeline |
+| Biosignal monitor | `graphs/healthspring_biosignal_monitor.toml` | Continuous 250 Hz real-time monitoring |
+
+The primal provides the science. The graphs define the composition. biomeOS's Neural API orchestrates and optimizes via the Pathway Learner.
+
+---
+
+## Next Steps (V22+)
+
+### Front-Loaded (Drug Discovery — for Gonzales/ADDRC meeting)
+
+1. **MATRIX + Anderson scoring** (DD-001) — ADDRC 8K compound library
+2. **Lisabeth Brucella screen analysis** (DD-002) — HTS pipeline demonstration
+3. **ADDRC 8K compound IC50 sweep** (DD-003) — GPU Hill shader ready
+4. **Gonzales canine models as Track 6** (CM-001/002) — reframe existing work
+
+### Near-Term (Species-Agnostic Infrastructure)
+
+5. **Species-agnostic PK refactor** (CM-005) — parameterize all models by species
+6. **QS gene profiling** — functional Anderson dimension (NCBI Gene)
+7. **ChEMBL JAK panel** (DD-004) — 50+ compound IC50 sweep
+
+### GPU + Scale
+
+8. **NLME GPU shaders** — FOCE per-subject gradient, VPC Monte Carlo
+9. **Anderson eigensolve** — GPU shader for gut lattice localization length
+10. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG
+11. **DNA/protein integration** — neuralSpring + wetSpring convergence for drug targets
+
+---
+
+## MATRIX Comparison
+
+See [fajgenbaum/](fajgenbaum/) for the full comparison of healthSpring's Anderson-augmented
+MATRIX vs. Every Cure's $48.3M ARPA-H platform:
+- [fajgenbaum/README.md](fajgenbaum/README.md) — What we do differently, scaling analysis, onboarding for ingested researchers
+- [fajgenbaum/cost_access_methods.md](fajgenbaum/cost_access_methods.md) — Deep cost/access/data-source/methods breakdown ($48.3M vs. ~$5K)
 
 ---
 
@@ -249,5 +317,7 @@ All 24 Tier 0+1 experiments validated. GPU pipeline live (Exp053-055). CPU vs GP
 
 - **NestGate**: `data.ncbi_search` / `data.ncbi_fetch` for PubMed literature
 - **biomeOS NUCLEUS**: Atomic deployment (Nest for data storage, Node for GPU compute)
+- **biomeOS Neural API**: Graph execution, capability routing, Pathway Learner optimization
+- **Provenance Trio**: `rhizoCrypt` (ephemeral DAG) + `loamSpine` (immutable ledger) + `sweetGrass` (semantic attribution)
 - **toadStool/barraCuda**: GPU population PK Monte Carlo, fused diagnostic pipeline
 - **wetSpring**: Diversity primitives (reuse `science.diversity`), Anderson lattice (cross-spring)

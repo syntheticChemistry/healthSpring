@@ -3,7 +3,7 @@
 **Date**: March 10, 2026
 **From**: healthSpring V15
 **To**: barraCuda team, toadStool team
-**License**: AGPL-3.0-or-later
+**License**: AGPL-3.0-only
 **Purpose**: Absorption guidance — what healthSpring has validated, what's ready for upstream consumption, and what we learned about precision, shaders, and clinical compute.
 
 ---
@@ -89,7 +89,7 @@ Pan-Tompkins QRS detection and PPG SpO2 estimation are streaming pipelines:
 
 ### 2.1 Kokkos Crossover Thresholds
 
-From `barracuda/benches/kokkos_parity.rs`, recommended dispatch thresholds:
+From `ecoPrimal/benches/kokkos_parity.rs`, recommended dispatch thresholds:
 
 | Pattern | GPU Crossover (N) | Workload Type | Source |
 |---------|-------------------|---------------|--------|

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
 name = "healthspring-toadstool"
@@ -13,6 +13,6 @@ default = []
 gpu = ["healthspring-barracuda/gpu", "dep:tokio"]
 
 [dependencies]
-healthspring-barracuda = { path = "../barracuda" }
+healthspring-barracuda = { path = "../ecoPrimal" }
 healthspring-forge = { path = "../metalForge/forge" }
 tokio = { version = "1", features = ["rt"], optional = true }

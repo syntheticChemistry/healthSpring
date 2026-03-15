@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 #!/usr/bin/env python3
 """
 healthSpring Exp081 — EDA Autonomic Stress Detection (Python Baseline)

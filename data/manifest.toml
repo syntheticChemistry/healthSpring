@@ -1,0 +1,109 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# healthSpring Data Manifest — Pinned dataset registry
+#
+# Every dataset used by healthSpring is listed here with accession IDs,
+# URLs, expected checksums, and license information. This manifest is the
+# single source of truth for data reproducibility.
+#
+# Checksums are populated after first download (sha256).
+# Size estimates are approximate pre-download values.
+
+[meta]
+last_updated = "2026-03-14"
+maintainer = "ecoPrimals"
+
+# ---------------------------------------------------------------------------
+# Track 2: Microbiome — QS Gene Profiling
+# ---------------------------------------------------------------------------
+
+[datasets.qs_gene_matrix]
+description = "QS gene presence/absence matrix: 6 families × ~200 gut species"
+source = "NCBI Gene + NCBI Protein"
+accessions = [
+    "Gene:luxI", "Gene:luxR", "Gene:luxS",
+    "Gene:agrA", "Gene:agrB", "Gene:agrC", "Gene:agrD",
+    "Gene:comA", "Gene:comB", "Gene:comC", "Gene:comD", "Gene:comE",
+    "Gene:lasI", "Gene:lasR", "Gene:rhlI", "Gene:rhlR",
+    "Gene:fsrA", "Gene:fsrB", "Gene:fsrC",
+]
+license = "Public domain (NCBI)"
+size_estimate = "~50MB (gene records + protein hits)"
+output = "qs_gene_matrix.json"
+script = "fetch_qs_genes.py"
+tracks = [2, 6]
+sha256 = ""  # populated after first download
+
+# ---------------------------------------------------------------------------
+# Track 3: Biosignal — MIT-BIH Arrhythmia Database
+# ---------------------------------------------------------------------------
+
+[datasets.mitbih]
+description = "MIT-BIH Arrhythmia Database — 48 half-hour ECG recordings"
+source = "PhysioNet"
+url = "https://physionet.org/content/mitdb/1.0.0/"
+accessions = [
+    "100", "101", "102", "103", "104", "105", "106", "107",
+    "108", "109", "111", "112", "113", "114", "115", "116",
+    "117", "118", "119", "121", "122", "123", "124",
+    "200", "201", "202", "203", "205", "207", "208", "209",
+    "210", "212", "213", "214", "215", "217", "219", "220",
+    "221", "222", "223", "228", "230", "231", "232", "233", "234",
+]
+license = "ODC-By 1.0"
+size_estimate = "~100MB"
+output = "mitbih/"
+script = "fetch_mitbih.sh"
+tracks = [3]
+sha256 = ""  # populated after first download (directory hash)
+
+# ---------------------------------------------------------------------------
+# Track 1 + 7: PK/PD + Drug Discovery — ChEMBL Hill Panel
+# ---------------------------------------------------------------------------
+
+[datasets.chembl_hill_panel]
+description = "IC50/Ki/EC50 bioactivity data for 50+ compounds (JAK inhibitors + repurposing candidates)"
+source = "ChEMBL REST API"
+url = "https://www.ebi.ac.uk/chembl/api/data/"
+targets = [
+    "JAK1 (CHEMBL2835)", "JAK2 (CHEMBL2971)", "JAK3 (CHEMBL2148)",
+    "TYK2 (CHEMBL3905)",
+]
+license = "CC-BY-SA 3.0"
+size_estimate = "~200MB (API responses)"
+output = "chembl_hill_panel.json"
+script = "fetch_chembl.py"
+tracks = [1, 7]
+sha256 = ""  # populated after first download
+
+# ---------------------------------------------------------------------------
+# Track 2: Microbiome — HMP 16S Profiles (planned)
+# ---------------------------------------------------------------------------
+
+[datasets.hmp_16s]
+description = "Human Microbiome Project 16S rRNA amplicon sequencing"
+source = "NCBI SRA"
+accessions = ["PRJNA48479", "PRJNA275349"]
+license = "Public domain (NIH)"
+size_estimate = "~50GB raw FASTQ"
+output = "hmp_16s/"
+script = "fetch_hmp_16s.py"
+tracks = [2]
+sha256 = ""
+status = "planned"
+
+# ---------------------------------------------------------------------------
+# Track 4: Endocrinology — GEO Androgen Receptor Expression (planned)
+# ---------------------------------------------------------------------------
+
+[datasets.geo_androgen_receptor]
+description = "Androgen receptor expression across tissues (GEO series)"
+source = "NCBI GEO"
+accessions = []  # specific GSE to be determined
+license = "Public domain (NCBI)"
+size_estimate = "~50GB raw"
+output = "geo_ar/"
+script = "fetch_geo_ar.py"
+tracks = [4]
+sha256 = ""
+status = "planned"

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 #
 # healthSpring workspace — human health applications of sovereign
 # scientific computing.  Each sub-crate retains its own [workspace]
@@ -8,7 +8,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "barracuda",
+    "ecoPrimal",
     "metalForge/forge",
     "toadstool",
     "experiments/exp001_hill_dose_response",
@@ -77,4 +77,4 @@ members = [
 [workspace.package]
 edition = "2024"
 rust-version = "1.87"
-license = "AGPL-3.0-or-later"
+license = "AGPL-3.0-only"

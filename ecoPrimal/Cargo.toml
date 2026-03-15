@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[package]
+name = "healthspring-barracuda"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors = ["ecoPrimals"]
+license.workspace = true
+description = "Human health pipelines — PK/PD modeling, microbiome analytics, biosignal processing — Rust + GPU via barraCuda"
+repository = "https://github.com/ecoPrimals/healthSpring"
+keywords = ["pharmacokinetics", "microbiome", "biosignal", "gpu", "wgsl"]
+categories = ["science", "command-line-utilities"]
+
+[features]
+default = []
+gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck"]
+nestgate = ["dep:thiserror"]
+# NPU dispatch is a future evolution — Akida driver will be discovered at
+# runtime via capability-based probing, not compiled in as a path dep.
+# See metalForge::probe_npu() and specs/EVOLUTION_MAP.md.
+npu = []
+
+[dependencies]
+# Validated against barraCuda rev a60819c3 (2026-03-14).
+# Path dep for local development; CI should pin to this rev.
+barracuda-core = { path = "../../barraCuda/crates/barracuda-core", default-features = false }
+barracuda = { path = "../../barraCuda/crates/barracuda", default-features = false }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+thiserror = { version = "2", optional = true }
+wgpu = { version = "28", optional = true }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"], optional = true }
+bytemuck = { version = "1", features = ["derive"], optional = true }
+
+[[bin]]
+name = "healthspring_primal"
+path = "src/bin/healthspring_primal.rs"
+
+[dev-dependencies]
+approx = "0.5"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "cpu_parity"
+harness = false
+
+[[bench]]
+name = "kokkos_parity"
+harness = false
+
+[[bench]]
+name = "upstream_parity"
+harness = false

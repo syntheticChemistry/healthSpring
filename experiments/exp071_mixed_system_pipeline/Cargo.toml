@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
 name = "healthspring-exp071"
@@ -9,7 +9,7 @@ license.workspace = true
 description = "Exp071: Mixed system pipeline — NPU+GPU+CPU dispatch with NUCLEUS topology"
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda" }
+healthspring-barracuda = { path = "../../ecoPrimal" }
 healthspring-toadstool = { path = "../../toadstool" }
 healthspring-forge = { path = "../../metalForge/forge" }
 

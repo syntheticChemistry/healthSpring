@@ -1,11 +1,11 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
 # healthSpring V9 → barraCuda / toadStool / petalTongue Clinical Translation + SAME DAVE Handoff
 
 **Date**: March 9, 2026
 **From**: healthSpring V9
 **To**: barraCuda, toadStool, petalTongue teams
 **Covers**: V8 → V9 (patient-parameterized clinical scenarios, SAME DAVE motor channel, IPC bridge)
-**License**: AGPL-3.0-or-later
+**License**: AGPL-3.0-only
 **Status**: Complete — 37 experiments, 221 unit tests, 526+ binary checks
 
 ---

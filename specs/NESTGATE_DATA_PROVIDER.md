@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring NestGate Data Provider Design
 
 **Last Updated**: March 10, 2026
@@ -22,7 +22,7 @@ Tier 1: biomeOS capability.call → Tier 2: NestGate cache → Tier 3: Direct HT
 ## Module Structure
 
 ```
-barracuda/src/data/
+ecoPrimal/src/data/
 ├── mod.rs          — Public API re-exports, NcbiProvider type
 ├── discovery.rs    — Socket discovery (biomeOS, NestGate)
 ├── fetch.rs        — Three-tier fetch logic

@@ -1,10 +1,10 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
 # healthSpring V19 — Full-Stack Portability: barraCuda/toadStool Evolution Handoff
 
 **Date**: March 10, 2026
 **From**: healthSpring V19 (Eastgate)
 **To**: barraCuda / toadStool / coralReef
-**License**: AGPL-3.0-or-later
+**License**: AGPL-3.0-only
 **Covers**: V16–V19 (Exp077–Exp087)
 
 ---
@@ -40,9 +40,9 @@ These are proven, tested, and ready for canonical promotion:
 
 | Shader | File | GpuOp | CPU Reference | Tests |
 |--------|------|-------|--------------|-------|
-| `michaelis_menten_batch_f64.wgsl` | `barracuda/shaders/health/` | `MichaelisMentenBatch` | `pkpd::mm_pk_simulate` | Exp083 (5), Exp085 (12) |
-| `scfa_batch_f64.wgsl` | `barracuda/shaders/health/` | `ScfaBatch` | `microbiome::scfa_production` | Exp083 (5), Exp085 (12) |
-| `beat_classify_batch_f64.wgsl` | `barracuda/shaders/health/` | `BeatClassifyBatch` | `biosignal::classify_beat` | Exp083 (5), Exp085 (12) |
+| `michaelis_menten_batch_f64.wgsl` | `ecoPrimal/shaders/health/` | `MichaelisMentenBatch` | `pkpd::mm_pk_simulate` | Exp083 (5), Exp085 (12) |
+| `scfa_batch_f64.wgsl` | `ecoPrimal/shaders/health/` | `ScfaBatch` | `microbiome::scfa_production` | Exp083 (5), Exp085 (12) |
+| `beat_classify_batch_f64.wgsl` | `ecoPrimal/shaders/health/` | `BeatClassifyBatch` | `biosignal::classify_beat` | Exp083 (5), Exp085 (12) |
 
 **barraCuda action**: Absorb these 3 shaders into canonical `barracuda/shaders/`. They follow the existing `@workgroup_size(256)` pattern. CPU fallback (`execute_cpu`) is already in `gpu/mod.rs`.
 

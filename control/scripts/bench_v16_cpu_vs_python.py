@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 #!/usr/bin/env python3
 """
 healthSpring Exp084 — V16 CPU Parity Benchmarks (Python Baseline)

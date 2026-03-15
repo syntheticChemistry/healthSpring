@@ -3,7 +3,7 @@
 **Date**: March 10, 2026
 **From**: healthSpring V15
 **To**: barraCuda, toadStool, coralReef, metalForge
-**License**: AGPL-3.0-or-later
+**License**: AGPL-3.0-only
 **Covers**: V14.1→V15 — Upstream rewire: pull and integrate ecosystem evolutions from toadStool (S128–S142), barraCuda (absorption sprint), and coralReef (Phase 10). Precision routing, provenance documentation, dependency wiring, and handoff catch-up.
 
 ---
@@ -104,7 +104,7 @@ Local WGSL shaders are marked as Spring validation targets, bit-identical to abs
 
 ### 2.3 Upstream Dependency Wiring
 
-`barracuda/Cargo.toml` now has:
+`ecoPrimal/Cargo.toml` now has:
 ```toml
 barracuda = { path = "../../barraCuda/crates/barracuda", default-features = false, optional = true }
 

@@ -1,5 +1,5 @@
 #![forbid(unsafe_code)]
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
 #![expect(
@@ -12,6 +12,7 @@
 //! synthetic ECG → Pan-Tompkins → SDNN, RMSSD, pNN50, HR, mean RR.
 
 use healthspring_barracuda::biosignal;
+use healthspring_barracuda::tolerances;
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -94,7 +95,7 @@ fn main() {
     // for non-negative autocorrelation only; short segments can exceed)
     println!("\n--- Check 5: RMSSD vs SDNN ---");
     let rmssd_bound = 2.0 * sdnn;
-    if rmssd <= rmssd_bound + 1e-6 {
+    if rmssd <= rmssd_bound + tolerances::HALF_LIFE_POINT {
         println!("  [PASS] RMSSD={rmssd:.2} ≤ 2×SDNN={rmssd_bound:.2}");
         passed += 1;
     } else {

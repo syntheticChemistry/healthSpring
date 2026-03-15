@@ -1,8 +1,8 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: March 10, 2026
-**Status**: V15 — Tier 2+3 GPU live. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser. Kokkos-equivalent benchmarks validate GPU-portable patterns. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels. Sovereign NONMEM/Monolix/WinNonlin replacements validated.
+**Last Updated**: March 14, 2026
+**Status**: V21 — Tier 2+3 GPU live. NLME population PK (FOCE + SAEM), NCA, diagnostics. V21: New absorption targets for Track 6 (Comparative Medicine) and Track 7 (Drug Discovery) — species-agnostic PK, MATRIX scoring, HTS analysis, cross-species Anderson, QS-informed drug targets.
 
 ---
 
@@ -63,7 +63,7 @@ These primitives have been validated in healthSpring and are ready for the barra
 | `saem_estimate` | E-step sampling is parallelizable → batched Monte Carlo | Medium — SAEM E-step maps to existing PopPK pattern |
 | `nca_analysis` | Per-subject NCA is independent → batch element-wise | Low — NCA is already fast on CPU |
 
-Kokkos-equivalent benchmarks (`barracuda/benches/kokkos_parity.rs`) validate these patterns ahead of GPU shader promotion: reduction, scatter, Monte Carlo, ODE batch, NLME iteration.
+Kokkos-equivalent benchmarks (`ecoPrimal/benches/kokkos_parity.rs`) validate these patterns ahead of GPU shader promotion: reduction, scatter, Monte Carlo, ODE batch, NLME iteration.
 
 ## Still Needed: Write Phase (local WGSL)
 
@@ -106,6 +106,41 @@ Kokkos-equivalent benchmarks (`barracuda/benches/kokkos_parity.rs`) validate the
 8. `pan_tompkins_qrs` — streaming detection pipeline (NPU path)
 9. `fuse_channels` — multi-modal biosignal fusion
 10. `bray_curtis` — pairwise dissimilarity matrix
+
+---
+
+## Track 6+7 Absorption Targets (V21 — NEW)
+
+### Comparative Medicine (Track 6)
+
+| Category | Primitive | Purpose | GPU Pattern | Priority |
+|----------|----------|---------|-------------|----------|
+| Cross-species | `species_params_registry` | Species parameter lookup (canine, human, feline, equine) | CPU lookup | P1 |
+| Cross-species | `allometric_bridge` | Cross-species PK scaling (CL, Vd, t½ by body weight) | Element-wise | P1 |
+| Cross-species | `species_pk_batch` | Species-parameterized compartment PK (batch) | Embarrassingly parallel | P1 — extends existing PopPK shader |
+| Microbiome | `cross_species_gut_anderson` | Comparative gut Anderson (dog/human/mouse Pielou → W) | Workgroup reduction | P2 — extends diversity shader |
+| Tissue | `species_tissue_lattice` | Species-parameterized tissue Anderson lattice | GPU eigensolve | P2 — hotSpring BatchedEighGpu |
+| Immune | `species_immune_lattice` | Cross-species cytokine receptor density lattice | GPU eigensolve | P3 |
+
+### Drug Discovery (Track 7)
+
+| Category | Primitive | Purpose | GPU Pattern | Priority |
+|----------|----------|---------|-------------|----------|
+| Scoring | `matrix_score` | Fajgenbaum MATRIX drug repurposing framework | Batch element-wise | **P0 — FRONT** |
+| Scoring | `anderson_matrix_score` | Anderson geometry augmented MATRIX | Workgroup reduction | **P0 — FRONT** |
+| HTS | `hts_plate_analysis` | HTS plate reader data: Z'-factor, SSMD, hit scoring | Element-wise | **P0 — FRONT** |
+| HTS | `compound_ic50_sweep` | Batch IC50/EC50 for compound library (8K × N concentrations) | Embarrassingly parallel (Hill sweep) | **P0 — FRONT** |
+| QS | `qs_drug_target` | QS gene profiling → microbial drug target identification | Matrix ops | P1 |
+| iPSC | `ipsc_readout_analysis` | iPSC viability/cytokine readout → computational validation | CPU structured | P2 |
+| ChEMBL | `chembl_bioactivity_fetch` | ChEMBL REST API compound data extraction + normalization | CPU I/O | P2 |
+
+### GPU Promotion for Track 7
+
+| Primitive | GPU Pattern | Why GPU |
+|-----------|------------|---------|
+| `compound_ic50_sweep` | 8K compounds × 10 concentrations × 6 targets = 480K Hill evaluations | Existing `hill_dose_response_f64.wgsl` handles directly |
+| `anderson_matrix_score` | Per-compound Anderson eigensolve + MATRIX score | Extends `diversity_f64.wgsl` + eigensolve |
+| `matrix_score` | Per-compound scoring across drug-disease pairs | Element-wise, trivially parallel |
 
 ---
 

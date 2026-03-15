@@ -1,0 +1,93 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# TRT Clinical Scenario — Testosterone Replacement Therapy pipeline
+#
+# Sequential workflow: patient profile → endocrine PK → multi-month outcomes
+# → HRV cardiac response → gut-axis coupling → composite risk → visualize.
+#
+# Each node is a capability.call. biomeOS routes to healthSpring (science),
+# petalTongue (viz), NestGate (storage). The graph defines the pipeline;
+# the primals provide the math.
+
+[graph]
+id = "healthspring_trt_scenario"
+name = "TRT Clinical Scenario"
+version = "0.1.0"
+coordination = "Sequential"
+
+[graph.outputs]
+scenario = "visualize.output"
+
+# ── Patient parameterization ─────────────────────────────────────────────
+
+[[nodes]]
+id = "patient"
+name = "Parameterize patient"
+capability = "science.clinical.patient_parameterize"
+budget_ms = 20
+
+# ── Endocrine PK ─────────────────────────────────────────────────────────
+
+[[nodes]]
+id = "testosterone_pk"
+name = "Testosterone IM depot PK"
+capability = "science.endocrine.testosterone_pk"
+depends_on = ["patient"]
+budget_ms = 30
+
+# ── TRT outcomes over time ───────────────────────────────────────────────
+
+[[nodes]]
+id = "trt_outcomes"
+name = "Weight, CV hazard, HbA1c trajectories"
+capability = "science.endocrine.trt_outcomes"
+depends_on = ["testosterone_pk"]
+budget_ms = 50
+
+# ── HRV response ─────────────────────────────────────────────────────────
+
+[[nodes]]
+id = "hrv_response"
+name = "HRV improvement from TRT"
+capability = "science.endocrine.hrv_trt_response"
+depends_on = ["trt_outcomes"]
+budget_ms = 20
+
+# ── Cardiac risk composite ───────────────────────────────────────────────
+
+[[nodes]]
+id = "cardiac_risk"
+name = "Cardiac risk: SDNN + testosterone"
+capability = "science.endocrine.cardiac_risk"
+depends_on = ["hrv_response"]
+budget_ms = 20
+
+# ── Gut-TRT axis (microbiome coupling) ───────────────────────────────────
+
+[[nodes]]
+id = "gut_axis"
+name = "Gut-brain serotonin via Anderson"
+capability = "science.microbiome.gut_brain_serotonin"
+depends_on = ["patient"]
+budget_ms = 50
+
+# ── Clinical scenario assembly ───────────────────────────────────────────
+
+[[nodes]]
+id = "scenario"
+name = "Assemble TRT clinical scenario"
+capability = "science.clinical.trt_scenario"
+depends_on = ["cardiac_risk", "gut_axis", "trt_outcomes"]
+budget_ms = 50
+
+# ── Visualization ────────────────────────────────────────────────────────
+
+[[nodes]]
+id = "visualize"
+name = "Render TRT scenario to petalTongue"
+capability = "ui.scenario.render"
+depends_on = ["scenario"]
+budget_ms = 200
+
+[nodes.config]
+scenario = "trt_clinical"

@@ -1,0 +1,105 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Microbiome Analysis Pipeline
+#
+# Diversity profiling → Anderson localization → colonization resistance →
+# QS gene profiling → SCFA production → antibiotic perturbation modeling.
+#
+# The Anderson lattice and QS gene profiling are the core innovations from
+# the healthSpring papers. This graph expresses them as composable capability
+# calls that biomeOS can execute, optimize, and extend.
+
+[graph]
+id = "healthspring_microbiome_analysis"
+name = "Microbiome Analysis Pipeline"
+version = "0.1.0"
+coordination = "Sequential"
+
+[graph.outputs]
+profile = "resistance.output"
+
+# ── Diversity metrics (PARALLEL — all independent given abundances) ───────
+
+[[nodes]]
+id = "shannon"
+name = "Shannon diversity H'"
+capability = "science.microbiome.shannon_index"
+budget_ms = 10
+
+[[nodes]]
+id = "simpson"
+name = "Simpson diversity D"
+capability = "science.microbiome.simpson_index"
+budget_ms = 10
+
+[[nodes]]
+id = "pielou"
+name = "Pielou evenness J"
+capability = "science.microbiome.pielou_evenness"
+budget_ms = 10
+
+[[nodes]]
+id = "chao1"
+name = "Chao1 richness"
+capability = "science.microbiome.chao1"
+budget_ms = 10
+
+# ── Anderson model (depends on Pielou for disorder mapping) ──────────────
+
+[[nodes]]
+id = "anderson"
+name = "Anderson gut lattice diagonalization"
+capability = "science.microbiome.anderson_gut"
+depends_on = ["pielou"]
+budget_ms = 200
+
+# ── Colonization resistance (depends on Anderson for ξ) ──────────────────
+
+[[nodes]]
+id = "resistance"
+name = "Colonization resistance from ξ"
+capability = "science.microbiome.colonization_resistance"
+depends_on = ["anderson"]
+budget_ms = 10
+
+# ── QS gene profiling (independent — uses NestGate data) ─────────────────
+
+[[nodes]]
+id = "qs_profile"
+name = "QS gene density across genera"
+capability = "science.microbiome.qs_gene_profile"
+budget_ms = 100
+
+# ── SCFA production (independent given fiber input) ───────────────────────
+
+[[nodes]]
+id = "scfa"
+name = "SCFA production (acetate, propionate, butyrate)"
+capability = "science.microbiome.scfa_production"
+budget_ms = 10
+
+# ── Gut-brain axis (depends on diversity for serotonin proxy) ─────────────
+
+[[nodes]]
+id = "gut_brain"
+name = "Gut-brain serotonin proxy"
+capability = "science.microbiome.gut_brain_serotonin"
+depends_on = ["shannon", "pielou", "anderson"]
+budget_ms = 20
+
+# ── Community comparison (Bray-Curtis for pre/post) ───────────────────────
+
+[[nodes]]
+id = "bray_curtis"
+name = "Bray-Curtis dissimilarity"
+capability = "science.microbiome.bray_curtis"
+budget_ms = 10
+
+# ── Antibiotic perturbation modeling ──────────────────────────────────────
+
+[[nodes]]
+id = "antibiotic"
+name = "Antibiotic perturbation trajectory"
+capability = "science.microbiome.antibiotic_perturbation"
+depends_on = ["shannon"]
+budget_ms = 50

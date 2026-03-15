@@ -3,7 +3,7 @@
 **Date**: March 10, 2026
 **From**: healthSpring
 **To**: barraCuda, toadStool, petalTongue, metalForge
-**License**: AGPL-3.0-or-later
+**License**: AGPL-3.0-only
 **Covers**: V13→V14 — NLME population PK (FOCE/SAEM), NCA, NLME diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos-equivalent benchmarks, full petalTongue pipeline (28 nodes, 121 channels), industry benchmark mapping (sovereign NONMEM/Monolix/WinNonlin replacements)
 
 ---

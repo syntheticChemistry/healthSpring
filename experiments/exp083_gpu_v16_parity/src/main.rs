@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -23,6 +23,7 @@
 use healthspring_barracuda::biosignal::classification;
 use healthspring_barracuda::gpu::{GpuOp, GpuResult, execute_cpu, shaders};
 use healthspring_barracuda::microbiome;
+use healthspring_barracuda::tolerances;
 
 fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
     *total += 1;
@@ -77,7 +78,7 @@ fn main() {
             aucs.iter().map(|a| (a - mean).powi(2)).sum::<f64>() / aucs.len() as f64;
         check(
             "MM batch: inter-patient variation (CV > 0)",
-            variance.sqrt() / mean > 0.01,
+            variance.sqrt() / mean > tolerances::GPU_SCALING_LINEARITY,
             &mut passed,
             &mut total,
         );
@@ -108,7 +109,7 @@ fn main() {
     let fiber_inputs: Vec<f64> = (1..=100).map(|i| f64::from(i) * 0.5).collect();
     let scfa_op = GpuOp::ScfaBatch {
         params: microbiome::SCFA_HEALTHY_PARAMS,
-        fiber_inputs: fiber_inputs.clone(),
+        fiber_inputs,
     };
     if let GpuResult::ScfaBatch(results) = execute_cpu(&scfa_op) {
         check(
@@ -143,9 +144,9 @@ fn main() {
             "SCFA batch: matches scalar API",
             {
                 let (a, p, b) = microbiome::scfa_production(5.0, &microbiome::SCFA_HEALTHY_PARAMS);
-                (results[9].0 - a).abs() < 1e-10
-                    && (results[9].1 - p).abs() < 1e-10
-                    && (results[9].2 - b).abs() < 1e-10
+                (results[9].0 - a).abs() < tolerances::CPU_PARITY
+                    && (results[9].1 - p).abs() < tolerances::CPU_PARITY
+                    && (results[9].2 - b).abs() < tolerances::CPU_PARITY
             },
             &mut passed,
             &mut total,
@@ -173,10 +174,7 @@ fn main() {
         classification::generate_normal_template(41),
         classification::generate_pvc_template(41),
     ];
-    let classify_op = GpuOp::BeatClassifyBatch {
-        beats: beats.clone(),
-        templates: templates.clone(),
-    };
+    let classify_op = GpuOp::BeatClassifyBatch { beats, templates };
     if let GpuResult::BeatClassifyBatch(results) = execute_cpu(&classify_op) {
         check(
             "Beat classify: 5 results",

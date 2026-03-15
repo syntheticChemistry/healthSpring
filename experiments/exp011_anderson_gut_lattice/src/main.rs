@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -12,6 +12,7 @@
 //! functions against the Python control (`exp011_anderson_gut_lattice.py`).
 
 use healthspring_barracuda::microbiome;
+use healthspring_barracuda::tolerances;
 
 const L: usize = 50;
 const T_HOP: f64 = 1.0;
@@ -19,6 +20,45 @@ const T_HOP: f64 = 1.0;
 fn main() {
     let mut passed = 0u32;
     let mut failed = 0u32;
+
+    let baseline_str = include_str!("../../../control/microbiome/exp011_baseline.json");
+    let baseline: serde_json::Value = match serde_json::from_str(baseline_str) {
+        Ok(b) => b,
+        Err(e) => {
+            eprintln!("Failed to parse exp011_baseline.json: {e}");
+            std::process::exit(1);
+        }
+    };
+
+    let w_healthy_py = baseline
+        .get("pielou_w_healthy")
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or_else(|| {
+            eprintln!("Missing or invalid pielou_w_healthy in baseline JSON");
+            std::process::exit(1);
+        });
+    let w_dysbiotic_py = baseline
+        .get("pielou_w_dysbiotic")
+        .and_then(serde_json::Value::as_f64)
+        .unwrap_or_else(|| {
+            eprintln!("Missing or invalid pielou_w_dysbiotic in baseline JSON");
+            std::process::exit(1);
+        });
+
+    if let Some(prov) = baseline
+        .get("_provenance")
+        .and_then(serde_json::Value::as_object)
+    {
+        let date = prov
+            .get("date")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("?");
+        let git = prov
+            .get("git_commit")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("?");
+        println!("Baseline provenance: date={date}, git={git}");
+    }
 
     println!("{}", "=".repeat(72));
     println!("healthSpring Exp011 — Rust CPU Validation: Anderson Gut Lattice");
@@ -45,7 +85,7 @@ fn main() {
     let mut symmetric = true;
     for i in 0..L {
         for j in 0..L {
-            if (h[i * L + j] - h[j * L + i]).abs() > 1e-14 {
+            if (h[i * L + j] - h[j * L + i]).abs() > tolerances::ANDERSON_IDENTITY {
                 symmetric = false;
             }
         }
@@ -60,7 +100,8 @@ fn main() {
 
     // Check 3: Diagonal = disorder
     println!("\n--- Check 3: Diagonal = disorder ---");
-    let diag_ok = (0..L).all(|i| (h[i * L + i] - disorder[i]).abs() < 1e-14);
+    let diag_ok =
+        (0..L).all(|i| (h[i * L + i] - disorder[i]).abs() < tolerances::ANDERSON_IDENTITY);
     if diag_ok {
         println!("  [PASS]");
         passed += 1;
@@ -71,7 +112,8 @@ fn main() {
 
     // Check 4: Off-diagonal hopping
     println!("\n--- Check 4: Nearest-neighbor hopping ---");
-    let hop_ok = (0..L - 1).all(|i| (h[i * L + (i + 1)] - T_HOP).abs() < 1e-14);
+    let hop_ok =
+        (0..L - 1).all(|i| (h[i * L + (i + 1)] - T_HOP).abs() < tolerances::ANDERSON_IDENTITY);
     if hop_ok {
         println!("  [PASS] t = {T_HOP}");
         passed += 1;
@@ -85,7 +127,7 @@ fn main() {
     let mut no_lr = true;
     for i in 0..L {
         for j in 0..L {
-            if i != j && i.abs_diff(j) > 1 && h[i * L + j].abs() > 1e-14 {
+            if i != j && i.abs_diff(j) > 1 && h[i * L + j].abs() > tolerances::ANDERSON_IDENTITY {
                 no_lr = false;
             }
         }
@@ -106,7 +148,7 @@ fn main() {
     let uniform: Vec<f64> = vec![val; L];
     let ipr = microbiome::inverse_participation_ratio(&uniform);
     let expected = 1.0 / l_f64;
-    if (ipr - expected).abs() < 1e-10 {
+    if (ipr - expected).abs() < tolerances::MACHINE_EPSILON {
         println!("  [PASS] IPR = {ipr:.8}, expected = {expected:.8}");
         passed += 1;
     } else {
@@ -119,7 +161,7 @@ fn main() {
     let mut delta = vec![0.0; L];
     delta[L / 2] = 1.0;
     let ipr_d = microbiome::inverse_participation_ratio(&delta);
-    if (ipr_d - 1.0).abs() < 1e-14 {
+    if (ipr_d - 1.0).abs() < tolerances::ANDERSON_IDENTITY {
         println!("  [PASS]");
         passed += 1;
     } else {
@@ -130,7 +172,7 @@ fn main() {
     // Check 8: ξ = 1/IPR
     println!("\n--- Check 8: ξ = 1/IPR ---");
     let xi = microbiome::localization_length_from_ipr(0.25);
-    if (xi - 4.0).abs() < 1e-14 {
+    if (xi - 4.0).abs() < tolerances::ANDERSON_IDENTITY {
         println!("  [PASS] ξ(0.25) = {xi}");
         passed += 1;
     } else {
@@ -164,7 +206,7 @@ fn main() {
     println!("\n--- Check 11: Uniform spacing → r ≈ 1 ---");
     let uniform_eigs: Vec<f64> = (0..50).map(f64::from).collect();
     let r_u = microbiome::level_spacing_ratio(&uniform_eigs);
-    if (r_u - 1.0).abs() < 0.02 {
+    if (r_u - 1.0).abs() < tolerances::LEVEL_SPACING_RATIO {
         println!("  [PASS] <r> = {r_u:.4}");
         passed += 1;
     } else {
@@ -184,12 +226,17 @@ fn main() {
         failed += 1;
     }
 
-    // Check 13: Pielou → disorder mapping
+    // Check 13: Pielou → disorder mapping (values from baseline JSON)
     println!("\n--- Check 13: Pielou → W ---");
     let w_h = microbiome::evenness_to_disorder(0.863, 10.0);
     let w_d = microbiome::evenness_to_disorder(0.303, 10.0);
-    if w_h > w_d && (w_h - 8.63).abs() < 0.01 {
-        println!("  [PASS] W(healthy)={w_h:.2} > W(dysbiotic)={w_d:.2}");
+    if w_h > w_d
+        && (w_h - w_healthy_py).abs() < tolerances::W_CROSS_VALIDATE
+        && (w_d - w_dysbiotic_py).abs() < tolerances::W_CROSS_VALIDATE
+    {
+        println!(
+            "  [PASS] W(healthy)={w_h:.2}≈{w_healthy_py}, W(dysbiotic)={w_d:.2}≈{w_dysbiotic_py}"
+        );
         passed += 1;
     } else {
         println!("  [FAIL]");
@@ -200,7 +247,7 @@ fn main() {
     println!("\n--- Check 14: W=0 clean lattice ---");
     let disorder_zero = vec![0.0; L];
     let h_clean = microbiome::anderson_hamiltonian_1d(&disorder_zero, T_HOP);
-    let diag_zero = (0..L).all(|i| h_clean[i * L + i].abs() < 1e-14);
+    let diag_zero = (0..L).all(|i| h_clean[i * L + i].abs() < tolerances::ANDERSON_IDENTITY);
     if diag_zero {
         println!("  [PASS] all diagonal = 0");
         passed += 1;

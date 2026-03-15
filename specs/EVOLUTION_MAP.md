@@ -1,8 +1,8 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: March 10, 2026
-**Status**: V15. Tier 0+1+2+3 complete. NLME population PK (FOCE + SAEM), NCA, diagnostics (CWRES, VPC, GOF), WFDB parser, Kokkos-equivalent benchmarks. Full petalTongue pipeline: 28 nodes, 29 edges, 121 channels, 14 scenarios. 368 tests, 853 binary checks across 48 experiments. Industry benchmark mapping (sovereign NONMEM/Monolix/WinNonlin replacements). Upstream rewire: precision routing, barracuda::rng/special delegation, cross-spring shader evolution.
+**Last Updated**: March 14, 2026
+**Status**: V22. V22: healthSpring evolved from experiment binaries to a **biomeOS BYOB niche deployment** via `healthspring_primal` — 50+ science capabilities served over JSON-RPC 2.0 Unix socket. Niche deploy graph created. Prior: V21 domain evolution to **health of living systems** — Tracks 1–7 (Comparative Medicine, Drug Discovery).
 
 ---
 
@@ -11,6 +11,9 @@
 ```
 Python baseline → Rust CPU (Tier 1) → barraCuda CPU parity (Exp040)
   → GPU via WGSL (Tier 2) → metalForge dispatch (Tier 3)
+
+Species-specific model → Species-agnostic math → Cross-species parameter bridge
+  → Comparative validation → Drug discovery pipeline → Preclinical
 ```
 
 ---
@@ -50,7 +53,78 @@ Python baseline → Rust CPU (Tier 1) → barraCuda CPU parity (Exp040)
 
 ---
 
-## GPU Dispatch Layer (`barracuda/src/gpu/`) — LIVE (V6+)
+## Track 6: Comparative Medicine — Module Evolution (V21)
+
+Species-agnostic mathematics validated on animal models for their own sake,
+then translated to humans via parameter substitution.
+
+### New Modules
+
+| Rust Module (planned) | Function | Source | GPU Pattern |
+|-----------------------|----------|--------|-------------|
+| `comparative::species_params` | Species parameter registry (canine, human, feline, equine) | Gonzales G1–G6, FDA CVM | CPU lookup |
+| `comparative::allometric_bridge` | Cross-species PK scaling (CL, Vd, t½) | Mahmood 2006, nS-601 | Element-wise |
+| `comparative::tissue_lattice` | Species-parameterized tissue Anderson | nS-604, groundSpring | GPU eigensolve |
+| `microbiome::cross_species_gut` | Comparative gut Anderson (dog/human/mouse) | NCBI SRA, HMP | Workgroup reduction |
+| `pkpd::species_pk` | Species-generic compartment PK (parameterized) | Rowland & Tozer, Gonzales | Embarrassingly parallel |
+
+### Cross-Spring Absorption
+
+| Source Spring | Module | healthSpring Target |
+|--------------|--------|-------------------|
+| neuralSpring nS-601 | Canine Hill dose-response | `comparative::canine_ic50_panel` |
+| neuralSpring nS-603 | Canine mAb PK (lokivetmab) | `comparative::canine_mab_pk` |
+| neuralSpring nS-604 | Canine tissue lattice | `comparative::tissue_lattice` |
+| wetSpring Track 6 | Soil QS/Anderson | `microbiome::cross_species_gut` (gut = anaerobic digester analogy) |
+| groundSpring | Tissue Anderson localization | `comparative::tissue_lattice` |
+| airSpring | Immunological Anderson | `comparative::immune_lattice` |
+
+---
+
+## Track 7: Drug Discovery — Module Evolution (V21)
+
+MATRIX scoring + ADDRC HTS pipeline. Front-loaded for Gonzales meeting.
+
+### New Modules
+
+| Rust Module (planned) | Function | Source | GPU Pattern |
+|-----------------------|----------|--------|-------------|
+| `discovery::matrix_score` | Fajgenbaum MATRIX with Anderson geometry | nS-605, Fajgenbaum 2018 | Batch element-wise |
+| `discovery::anderson_matrix` | Anderson-augmented drug scoring | Exp011 Anderson + MATRIX | Workgroup reduction |
+| `discovery::hts_analysis` | HTS plate reader data analysis, Z'-factor, hit scoring | Lisabeth ADDRC | Element-wise |
+| `discovery::compound_library` | ChEMBL/ADDRC compound IC50/EC50 batch computation | ChEMBL REST API | Embarrassingly parallel (Hill sweep) |
+| `discovery::ipsc_protocol` | iPSC skin model readout → computational validation | Gonzales iPSC | CPU structured |
+| `discovery::qs_drug_target` | QS gene profiling → MATRIX target identification | NCBI Gene, UniProt | Medium (matrix ops) |
+
+### Pipeline Integration
+
+```
+discovery::compound_library   (8,000 compounds × IC50 sweep)
+  → discovery::anderson_matrix (Anderson geometry scoring per compound)
+  → discovery::matrix_score    (MATRIX rank + Anderson augmentation)
+  → Lisabeth ADDRC HTS         (top N candidates → wet lab screening)
+  → discovery::hts_analysis    (plate reader data → hit scoring)
+  → Gonzales iPSC validation   (iPSC skin model functional readout)
+  → discovery::ipsc_protocol   (readout → computational validation)
+  → Ellsworth med chem          (lead optimization)
+```
+
+### DNA/Protein Integration Path (future)
+
+```
+neuralSpring protein analysis → drug target structure
+wetSpring QS gene profiling   → microbial drug targets
+                              ↓
+         discovery::qs_drug_target (QS-informed MATRIX scoring)
+                              ↓
+         Cross-species genome comparison (ortholog mapping)
+                              ↓
+         Species-agnostic drug target → ADDRC screening
+```
+
+---
+
+## GPU Dispatch Layer (`ecoPrimal/src/gpu/`) — LIVE (V6+)
 
 `GpuContext` holds persistent `wgpu::Device`/`Queue`. `execute_fused()` dispatches multiple ops in a single encoder submission.
 
@@ -214,6 +288,23 @@ All previous blocking items resolved:
 - **Exp076**: Full pipeline validation — 197 binary checks across all 5 tracks + full study structure.
 - **`dump_scenarios`**: Extended to 14 scenarios (was 13), includes NLME JSON artifact.
 - **Industry benchmarks**: SnapGene, Chromeleon, NONMEM, Monolix, WinNonlin profiled. Sovereign replacements documented in `specs/PAPER_REVIEW_QUEUE.md`.
+
+### V22 — biomeOS BYOB Niche Deployment
+
+healthSpring is a **niche**, not a node. The primal provides capabilities; the **graphs** define what the primals do together. With the primals running and the graphs loaded, biomeOS recreates the entire diagnostic pipeline through Neural API `capability.call` routing.
+
+- **`healthspring_primal` binary**: `ecoPrimal/src/bin/healthspring_primal.rs` — JSON-RPC 2.0 server over Unix domain socket. Capability provider for the health niche. Modeled on airSpring's production primal pattern.
+- **IPC module** (`ecoPrimal/src/ipc/`): `dispatch.rs` (capability→science routing, 50+ methods), `rpc.rs` (envelope helpers + outbound send), `socket.rs` (XDG socket resolution, primal discovery, compute/data primal probing).
+- **Dispatch coverage**: All 6 science domains wired: PK/PD (9 handlers), Microbiome (11), Biosignal (7), Endocrine (4), Diagnostic (2), plus infrastructure (provenance trio, cross-primal forward, compute offload, data fetch).
+- **Niche manifest**: `graphs/healthspring_niche.toml` — declares healthSpring as a transactional+continuous niche with 5 workflow graphs.
+- **Workflow graphs** (`graphs/`):
+  - `healthspring_patient_assessment.toml` — `ConditionalDag`: 4 parallel science tracks → cross-track → composite risk → visualize + store. The Neural API discovers the parallelism.
+  - `healthspring_trt_scenario.toml` — `Sequential`: testosterone PK → outcomes → HRV → cardiac risk → gut axis → visualize.
+  - `healthspring_microbiome_analysis.toml` — `Sequential`: diversity (parallel) → Anderson → colonization → QS → SCFA → gut-brain.
+  - `healthspring_biosignal_monitor.toml` — `Continuous` @ 250 Hz: ECG → QRS → HRV → fusion → render. First continuous health niche.
+  - `healthspring_niche_deploy.toml` — `Sequential`: 8-node DAG for primal startup.
+- **biomeOS registration**: On startup, registers `lifecycle.register` + `capability.register` with orchestrator. 30 s heartbeat thread. Capability semantic mappings for `health` domain.
+- **Socket**: `$XDG_RUNTIME_DIR/biomeos/healthspring-{family_id}.sock`, overridable via `HEALTHSPRING_SOCKET`.
 
 ### V14.1 additions (deep debt)
 

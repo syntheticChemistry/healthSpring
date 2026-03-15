@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 # Python dependencies for healthSpring baseline generation.
 # Pin versions to ensure reproducible baselines.
 numpy==2.1.3

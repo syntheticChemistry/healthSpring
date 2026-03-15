@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -20,6 +20,7 @@ use healthspring_barracuda::pkpd::{
     auc_trapezoidal, find_cmax_tmax, oral_tmax, pk_iv_bolus, pk_multiple_dose,
     pk_oral_one_compartment,
 };
+use healthspring_barracuda::tolerances;
 
 const DOSE_IV: f64 = 500.0;
 const VD_IV: f64 = 50.0;
@@ -56,7 +57,7 @@ fn main() {
     // Check 1: IV C(0)
     print!("\n--- Check 1: IV C(0) = Dose/Vd --- ");
     let c_at_0 = pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, 0.0);
-    if (c_at_0 - c0_iv).abs() < 1e-10 {
+    if (c_at_0 - c0_iv).abs() < tolerances::MACHINE_EPSILON {
         println!("[PASS] C(0) = {c_at_0:.4}");
         passed += 1;
     } else {
@@ -67,7 +68,7 @@ fn main() {
     // Check 2: IV at half-life
     print!("\n--- Check 2: IV at half-life → C0/2 --- ");
     let c_at_hl = pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, HL_IV);
-    if (c_at_hl - c0_iv / 2.0).abs() < 1e-6 {
+    if (c_at_hl - c0_iv / 2.0).abs() < tolerances::HALF_LIFE_POINT {
         println!("[PASS] C(t½) = {c_at_hl:.6}");
         passed += 1;
     } else {
@@ -81,7 +82,9 @@ fn main() {
         .iter()
         .map(|&t| pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, t))
         .collect();
-    let mono_dec = c_iv.windows(2).all(|w| w[0] >= w[1] - 1e-15);
+    let mono_dec = c_iv
+        .windows(2)
+        .all(|w| w[0] >= w[1] - tolerances::MACHINE_EPSILON_STRICT);
     if mono_dec {
         println!("[PASS]");
         passed += 1;
@@ -95,7 +98,7 @@ fn main() {
     let auc_iv_num = auc_trapezoidal(&times, &c_iv);
     let auc_iv_ana = DOSE_IV / (VD_IV * k_e_iv);
     let rel_err_iv = (auc_iv_num - auc_iv_ana).abs() / auc_iv_ana;
-    if rel_err_iv < 0.01 {
+    if rel_err_iv < tolerances::AUC_TRAPEZOIDAL {
         println!("[PASS] num={auc_iv_num:.2}, ana={auc_iv_ana:.2} (err={rel_err_iv:.4})");
         passed += 1;
     } else {
@@ -106,7 +109,7 @@ fn main() {
     // Check 5: Oral C(0) = 0
     print!("\n--- Check 5: Oral C(0) = 0 --- ");
     let c_oral_0 = pk_oral_one_compartment(DOSE_ORAL, F_ORAL, VD_ORAL, KA_ORAL, k_e_oral, 0.0);
-    if c_oral_0.abs() < 1e-10 {
+    if c_oral_0.abs() < tolerances::MACHINE_EPSILON {
         println!("[PASS]");
         passed += 1;
     } else {
@@ -132,7 +135,7 @@ fn main() {
     // Check 7: Tmax analytical
     print!("\n--- Check 7: Tmax analytical --- ");
     let tmax_ana = oral_tmax(KA_ORAL, k_e_oral);
-    if (tmax - tmax_ana).abs() < 0.1 {
+    if (tmax - tmax_ana).abs() < tolerances::TMAX_NUMERICAL {
         println!("[PASS] num={tmax:.3}, ana={tmax_ana:.3}");
         passed += 1;
     } else {
@@ -142,8 +145,8 @@ fn main() {
 
     // Check 8: Oral → 0 by 48hr
     print!("\n--- Check 8: Oral → 0 by 48hr --- ");
-    let c_48 = *c_oral.last().unwrap();
-    if c_48 < 0.01 {
+    let c_48 = *c_oral.last().expect("oral curve has at least one point");
+    if c_48 < tolerances::EXPONENTIAL_RESIDUAL {
         println!("[PASS] C(48hr) = {c_48:.6}");
         passed += 1;
     } else {
@@ -166,7 +169,7 @@ fn main() {
     print!("\n--- Check 10: Oral AUC analytical --- ");
     let auc_oral_ana = (F_ORAL * DOSE_ORAL) / (VD_ORAL * k_e_oral);
     let rel_err_oral = (auc_oral - auc_oral_ana).abs() / auc_oral_ana;
-    if rel_err_oral < 0.01 {
+    if rel_err_oral < tolerances::AUC_TRAPEZOIDAL {
         println!("[PASS] num={auc_oral:.2}, ana={auc_oral_ana:.2} (err={rel_err_oral:.4})");
         passed += 1;
     } else {
@@ -194,7 +197,9 @@ fn main() {
     print!("\n--- Check 12: All concentrations ≥ 0 --- ");
     let all_ok = c_iv.iter().all(|&c| c >= 0.0)
         && c_oral.iter().all(|&c| c >= 0.0)
-        && c_multi.iter().all(|&c| c >= -1e-12);
+        && c_multi
+            .iter()
+            .all(|&c| c >= -tolerances::MACHINE_EPSILON_TIGHT);
     if all_ok {
         println!("[PASS]");
         passed += 1;

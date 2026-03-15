@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 [package]
 name = "healthspring-exp050"
 version = "0.1.0"
@@ -14,4 +14,4 @@ name = "exp050_scenario_dump"
 path = "src/dump_scenario.rs"
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda" }
+healthspring-barracuda = { path = "../../ecoPrimal" }

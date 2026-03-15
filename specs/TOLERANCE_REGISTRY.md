@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Tolerance Registry
 
 ## Philosophy
@@ -57,17 +57,17 @@
 | exp037 | W = scale·J | 1e-10 | Machine epsilon | evenness_to_disorder is W = scale·J for linear mapping. |
 | exp037 | ξ(W=0) = 1 | 1e-10 | Machine epsilon | Zero disorder → minimal localization length. |
 | exp037 | Pielou in [0,1] | 0.001 | Numerical | Boundary slack for J ≤ 1.001. |
-| barracuda/pkpd/compartment | IV C(0), oral C(0), identities | 1e-10 | Machine epsilon | Same as experiments; unit tests. |
-| barracuda/pkpd/compartment | IV at half-life | 1e-6 | Numerical | C(t½) = C0/2; exp() has small error. |
-| barracuda/pkpd/compartment | Non-negative, monotonic | 1e-12 | Machine epsilon | Same as experiments. |
-| barracuda/pkpd/compartment | k12=0 reduction | 1e-10 | Machine epsilon | Analytical equivalence. |
-| barracuda/pkpd/dose_response | Hill at IC50 | 1e-10 | Machine epsilon | Same as exp001. |
-| barracuda/pkpd/allometry | b=0 identity | 1e-10 | Machine epsilon | Same as exp004. |
-| barracuda/pkpd/allometry | CL ratio | 1e-6 | Numerical | Same as exp004. |
-| barracuda/endocrine | testosterone_decline, biomarker, HR | 1e-10, 1e-8 | Machine epsilon | Same as experiments. |
-| barracuda/endocrine | biomarker at 10τ | 0.5 | Numerical | Trajectory approaches endpoint; 0.5 unit absolute at t=10τ. |
-| barracuda/endocrine | lognormal mean | 0.01 | Numerical | Mean of lognormal from μ,σ; 1% relative. |
-| barracuda/biosignal | Perfect detection sensitivity | 1e-10 | Machine epsilon | No noise → Se=1 exactly. |
+| ecoPrimal/pkpd/compartment | IV C(0), oral C(0), identities | 1e-10 | Machine epsilon | Same as experiments; unit tests. |
+| ecoPrimal/pkpd/compartment | IV at half-life | 1e-6 | Numerical | C(t½) = C0/2; exp() has small error. |
+| ecoPrimal/pkpd/compartment | Non-negative, monotonic | 1e-12 | Machine epsilon | Same as experiments. |
+| ecoPrimal/pkpd/compartment | k12=0 reduction | 1e-10 | Machine epsilon | Analytical equivalence. |
+| ecoPrimal/pkpd/dose_response | Hill at IC50 | 1e-10 | Machine epsilon | Same as exp001. |
+| ecoPrimal/pkpd/allometry | b=0 identity | 1e-10 | Machine epsilon | Same as exp004. |
+| ecoPrimal/pkpd/allometry | CL ratio | 1e-6 | Numerical | Same as exp004. |
+| ecoPrimal/endocrine | testosterone_decline, biomarker, HR | 1e-10, 1e-8 | Machine epsilon | Same as experiments. |
+| ecoPrimal/endocrine | biomarker at 10τ | 0.5 | Numerical | Trajectory approaches endpoint; 0.5 unit absolute at t=10τ. |
+| ecoPrimal/endocrine | lognormal mean | 0.01 | Numerical | Mean of lognormal from μ,σ; 1% relative. |
+| ecoPrimal/biosignal | Perfect detection sensitivity | 1e-10 | Machine epsilon | No noise → Se=1 exactly. |
 
 ### Numerical Method Class (1e-6 to 0.01)
 
@@ -88,9 +88,9 @@
 | exp031 | AUC ≈ D/(Vd·ke) | 0.10 | Numerical | Trapezoidal over 180 days, N=3000; pellet has ramp-up/washout. |
 | exp032 | 1%/yr residual at 90 | 0.01 | Numerical | exp(-0.01·60) ≈ 0.549; 1% relative on exponential. |
 | exp032 | 3%/yr residual at 90 | 0.01 | Numerical | exp(-0.03·60) ≈ 0.165; same. |
-| barracuda/pkpd/compartment | AUC rel err | 0.01 | Numerical | Same as exp002/exp003. |
-| barracuda/pkpd/compartment | Tmax | 0.1 | Numerical | Same as exp002. |
-| barracuda/pkpd/compartment | C(48hr) < 0.01 | 0.01 | Numerical | Same as exp002. |
+| ecoPrimal/pkpd/compartment | AUC rel err | 0.01 | Numerical | Same as exp002/exp003. |
+| ecoPrimal/pkpd/compartment | Tmax | 0.1 | Numerical | Same as exp002. |
+| ecoPrimal/pkpd/compartment | C(48hr) < 0.01 | 0.01 | Numerical | Same as exp002. |
 
 ### Population/Statistical Class (0.05 to 0.15)
 

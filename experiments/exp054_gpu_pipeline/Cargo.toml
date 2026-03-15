@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
 name = "healthspring-exp054"
@@ -9,7 +9,7 @@ license.workspace = true
 description = "Exp054: GPU-native fused pipeline — all ops in one submission vs CPU"
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda", features = ["gpu"] }
+healthspring-barracuda = { path = "../../ecoPrimal", features = ["gpu"] }
 healthspring-toadstool = { path = "../../toadstool", features = ["gpu"] }
 healthspring-forge = { path = "../../metalForge/forge" }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

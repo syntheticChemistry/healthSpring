@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -35,6 +35,7 @@ use healthspring_barracuda::microbiome::{
     scfa_production, tryptophan_availability,
 };
 use healthspring_barracuda::pkpd;
+use healthspring_barracuda::tolerances;
 use serde::Serialize;
 
 const N_ITER: usize = 100;
@@ -64,7 +65,10 @@ fn bench<F: Fn()>(name: &str, func: F, n_iter: usize) -> BenchResult {
         func();
         times_us.push(start.elapsed().as_nanos() as f64 / 1000.0);
     }
-    times_us.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    times_us.sort_by(|a, b| {
+        a.partial_cmp(b)
+            .expect("benchmark times are finite and comparable")
+    });
     let sum: f64 = times_us.iter().sum();
     let mean = sum / n_iter as f64;
     let p50 = n_iter / 2;
@@ -127,7 +131,7 @@ fn main() {
             for dose_idx in 0..100 {
                 std::hint::black_box(pkpd::mm_auc_analytical(
                     mm_params,
-                    f64::from(dose_idx) * 5.0 + 10.0,
+                    f64::from(dose_idx).mul_add(5.0, 10.0),
                 ));
             }
         },
@@ -146,7 +150,7 @@ fn main() {
             for idx in 0..100 {
                 std::hint::black_box(pkpd::mm_apparent_half_life(
                     mm_params,
-                    f64::from(idx) * 0.3 + 0.1,
+                    f64::from(idx).mul_add(0.3, 0.1),
                 ));
             }
         },
@@ -161,7 +165,10 @@ fn main() {
 
     let c0 = 300.0 / mm_params.vd;
     let anal_auc = pkpd::mm_auc_analytical(mm_params, 300.0);
-    check!("mm_c0_correct", (c0 - 6.0).abs() < 0.01);
+    check!(
+        "mm_c0_correct",
+        (c0 - 6.0).abs() < tolerances::MACHINE_EPSILON
+    );
     check!("mm_auc_positive", anal_auc > 0.0);
     let t_half_low = pkpd::mm_apparent_half_life(mm_params, 1.0);
     let t_half_high = pkpd::mm_apparent_half_life(mm_params, 20.0);
@@ -200,12 +207,16 @@ fn main() {
     benchmarks.push(result);
 
     let trajectory = antibiotic_perturbation(2.2, 0.7, 5.0, 0.1, 5.0, 30.0, 0.01);
-    let (_, h_initial) = trajectory.first().unwrap();
+    let (_, h_initial) = trajectory
+        .first()
+        .expect("antibiotic perturbation returns non-empty trajectory");
     let (_, h_nadir) = trajectory
         .iter()
-        .min_by(|aa, bb| aa.1.partial_cmp(&bb.1).unwrap())
-        .unwrap();
-    let (_, h_final) = trajectory.last().unwrap();
+        .min_by(|aa, bb| aa.1.partial_cmp(&bb.1).expect("Shannon values comparable"))
+        .expect("trajectory has at least one point");
+    let (_, h_final) = trajectory
+        .last()
+        .expect("antibiotic perturbation returns non-empty trajectory");
     check!("antibiotic_drops", h_nadir < h_initial);
     check!("antibiotic_recovers", h_final > h_nadir);
     check!("antibiotic_not_full_recovery", h_final < h_initial);
@@ -218,7 +229,7 @@ fn main() {
         "scfa_healthy_x1000",
         || {
             for idx in 0..1000 {
-                let fiber = f64::from(idx) * 0.05 + 0.1;
+                let fiber = f64::from(idx).mul_add(0.05, 0.1);
                 std::hint::black_box(scfa_production(fiber, &SCFA_HEALTHY_PARAMS));
             }
         },
@@ -235,7 +246,7 @@ fn main() {
         "scfa_dysbiotic_x1000",
         || {
             for idx in 0..1000 {
-                let fiber = f64::from(idx) * 0.05 + 0.1;
+                let fiber = f64::from(idx).mul_add(0.05, 0.1);
                 std::hint::black_box(scfa_production(fiber, &SCFA_DYSBIOTIC_PARAMS));
             }
         },
@@ -269,8 +280,8 @@ fn main() {
         "serotonin_sweep_1000",
         || {
             for idx in 0..1000 {
-                let trp = f64::from(idx) * 0.1 + 10.0;
-                let shannon = 0.5 + f64::from(idx) * 0.002;
+                let trp = f64::from(idx).mul_add(0.1, 10.0);
+                let shannon = f64::from(idx).mul_add(0.002, 0.5);
                 std::hint::black_box(gut_serotonin_production(trp, shannon, 0.01, 0.5));
             }
         },
@@ -287,8 +298,8 @@ fn main() {
         "tryptophan_availability_sweep_1000",
         || {
             for idx in 0..1000 {
-                let trp = f64::from(idx) * 0.1 + 10.0;
-                let shannon = 0.5 + f64::from(idx) * 0.002;
+                let trp = f64::from(idx).mul_add(0.1, 10.0);
+                let shannon = f64::from(idx).mul_add(0.002, 0.5);
                 std::hint::black_box(tryptophan_availability(trp, shannon));
             }
         },
@@ -320,7 +331,7 @@ fn main() {
     let eda_signal: Vec<f64> = (0..eda_len)
         .map(|idx| {
             let time = f64::from(idx) / 100.0;
-            2.0 + 0.5 * (time * 0.3).sin() + if idx % 300 < 30 { 1.5 } else { 0.0 }
+            0.5f64.mul_add((time * 0.3).sin(), 2.0) + if idx % 300 < 30 { 1.5 } else { 0.0 }
         })
         .collect();
 
@@ -394,7 +405,7 @@ fn main() {
         },
         BeatTemplate {
             class: BeatClass::Pac,
-            waveform: pac.clone(),
+            waveform: pac,
         },
     ];
 
@@ -436,7 +447,10 @@ fn main() {
     let (cls_pvc, _) = classify_beat(&pvc, &templates, 0.5);
     check!("classify_pvc_as_pvc", cls_pvc == BeatClass::Pvc);
     let self_corr = normalized_correlation(&normal, &normal);
-    check!("self_correlation_is_1", (self_corr - 1.0).abs() < 1e-10);
+    check!(
+        "self_correlation_is_1",
+        (self_corr - 1.0).abs() < tolerances::MACHINE_EPSILON
+    );
     let cross_corr = normalized_correlation(&normal, &pvc);
     check!("cross_corr_less_than_1", cross_corr < 0.8);
 

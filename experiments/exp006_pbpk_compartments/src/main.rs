@@ -5,7 +5,7 @@
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"
 )]
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 //! Exp006 validation: PBPK (Physiologically-Based Pharmacokinetic) compartments
 //!
 //! Cross-validates `healthspring_barracuda::pkpd::pbpk_*` against Python control.
@@ -13,6 +13,7 @@
 use healthspring_barracuda::pkpd::{
     TissueCompartment, cardiac_output, pbpk_auc, pbpk_iv_simulate, standard_human_tissues,
 };
+use healthspring_barracuda::tolerances;
 
 fn main() {
     let mut passed = 0u32;
@@ -36,7 +37,7 @@ fn main() {
     let c0_expected = dose_mg / blood_volume_l;
     let c0_actual = venous_profile[0];
     let err = (c0_actual - c0_expected).abs();
-    if err < 1e-6 {
+    if err < tolerances::HALF_LIFE_POINT {
         println!("  [PASS] C(0) = {c0_actual:.6} = dose/Vblood = {c0_expected:.6}");
         passed += 1;
     } else {
@@ -103,8 +104,14 @@ fn main() {
 
     // Check 6: Higher Kp → more tissue accumulation
     println!("\n--- Check 6: Higher Kp → more tissue accumulation ---");
-    let fat_idx = tissues.iter().position(|t| t.name == "fat").unwrap();
-    let muscle_idx = tissues.iter().position(|t| t.name == "muscle").unwrap();
+    let fat_idx = tissues
+        .iter()
+        .position(|t| t.name == "fat")
+        .expect("standard human tissues include fat");
+    let muscle_idx = tissues
+        .iter()
+        .position(|t| t.name == "muscle")
+        .expect("standard human tissues include muscle");
     let fat_kp = tissues[fat_idx].kp;
     let muscle_kp = tissues[muscle_idx].kp;
     let fat_conc = state.concentrations[fat_idx];
@@ -161,7 +168,10 @@ fn main() {
     // Check 10: Fat compartment accumulates more (high Kp)
     println!("\n--- Check 10: Fat accumulates more ---");
     let fat_conc_24 = state.concentrations[fat_idx];
-    let rest_idx = tissues.iter().position(|t| t.name == "rest").unwrap();
+    let rest_idx = tissues
+        .iter()
+        .position(|t| t.name == "rest")
+        .expect("standard human tissues include rest");
     let rest_conc_24 = state.concentrations[rest_idx];
     if fat_conc_24 > rest_conc_24 {
         println!("  [PASS] fat C = {fat_conc_24:.4} > rest C = {rest_conc_24:.4}");
@@ -173,8 +183,14 @@ fn main() {
 
     // Check 11: Liver plasma-equivalent decays fastest (clearance)
     println!("\n--- Check 11: Liver free concentration lower (clearance) ---");
-    let liver_idx = tissues.iter().position(|t| t.name == "liver").unwrap();
-    let kidney_idx = tissues.iter().position(|t| t.name == "kidney").unwrap();
+    let liver_idx = tissues
+        .iter()
+        .position(|t| t.name == "liver")
+        .expect("standard human tissues include liver");
+    let kidney_idx = tissues
+        .iter()
+        .position(|t| t.name == "kidney")
+        .expect("standard human tissues include kidney");
     let liver_free = state.concentrations[liver_idx] / tissues[liver_idx].kp;
     let kidney_free = state.concentrations[kidney_idx] / tissues[kidney_idx].kp;
     if liver_free < kidney_free {
@@ -222,8 +238,8 @@ fn main() {
             .map(|(t, c)| t.volume_l * c)
             .sum::<f64>();
     // With Kp=1 and no CL, mass should be conserved; allow ~25% for Euler numerical drift
-    let mass_ok = (mass_total - dose_mg).abs() < dose_mg * 0.25;
-    let conc_ok = (c_final - c_eq).abs() / c_eq < 0.25;
+    let mass_ok = (mass_total - dose_mg).abs() < dose_mg * tolerances::PBPK_MASS_CONSERVATION;
+    let conc_ok = (c_final - c_eq).abs() / c_eq < tolerances::PBPK_MASS_CONSERVATION;
     if mass_ok && conc_ok {
         println!("  [PASS] mass conserved ({mass_total:.2}≈{dose_mg}), C_final≈dose/V_total");
         passed += 1;

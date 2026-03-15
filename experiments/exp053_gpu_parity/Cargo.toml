@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
 name = "healthspring-exp053"
@@ -9,7 +9,7 @@ license.workspace = true
 description = "Exp053: Live GPU vs CPU parity validation"
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda", features = ["gpu"] }
+healthspring-barracuda = { path = "../../ecoPrimal", features = ["gpu"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 
 [[bin]]

@@ -1,8 +1,8 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Paper Review Queue
 
-**Last Updated**: March 10, 2026
-**Status**: 61 experiments complete — 395 tests (329 barracuda + 33 forge + 30 toadStool + 3 doc-tests), 61 validation binaries. GPU Tier 2+3 live (6 WGSL shaders). V19: Exp085 GPU scaling bench (47/47), Exp086 toadStool V16 streaming dispatch (24/24), Exp087 mixed NUCLEUS V16 dispatch (35/35). V18: Exp084 CPU parity benchmarks — Rust 84× faster than Python (33 checks). V17: GPU portability — 3 new compute shaders, metalForge cross-system routing, toadStool streaming dispatch. All 30 queued papers complete.
+**Last Updated**: March 14, 2026
+**Status**: V21 — 61 experiments complete (Tracks 1–5), 395 tests, 61 validation binaries. GPU Tier 2+3 live (6 WGSL shaders). All 30 queued papers complete. V21: Domain evolution to **health of living systems** — Track 6 (Comparative Medicine / One Health) and Track 7 (Drug Discovery / ADDRC) queued, drug discovery front-loaded for Gonzales/ADDRC meeting.
 
 ---
 
@@ -15,7 +15,10 @@
 | Track 3: Biosignal | 6 | 6 | 6 |
 | Track 4: Endocrinology | 9 | 9 | 9 |
 | Validation | 1 | 1 | 1 |
-| **Total** | **30** | **30** | **30** |
+| **Tracks 1–5 Total** | **30** | **30** | **30** |
+| Track 6: Comparative Medicine | 8 | 0 | 0 |
+| Track 7: Drug Discovery | 7 | 0 | 0 |
+| **Grand Total** | **45** | **30** | **30** |
 
 ---
 
@@ -116,6 +119,87 @@ Faculty anchor: Wei Liao (ADREC, MSU BAE). See `whitePaper/attsi/non-anon/contac
 
 ---
 
+## Track 6: Comparative Medicine / One Health (NEW — V21)
+
+The **causal inversion principle**: study disease directly in animal models for their
+own sake to gain causal understanding, then apply species-agnostic mathematics to
+humans. Dogs with naturally occurring atopic dermatitis give better causal data than
+testing human drugs on animals without causality.
+
+### Queued Papers — Comparative Medicine
+
+| ID | Paper / System | What to Validate | Priority |
+|----|---------------|-----------------|----------|
+| CM-001 | Gonzales 2013 — IL-31 elevated in AD dog serum | Canine IL-31 serum kinetics, pruritus dose-response (species-native model) | **P0** |
+| CM-002 | Gonzales 2014 — Oclacitinib JAK1 selectivity | Canine IC50 panel as independent validation (not just human bridge) | **P0** |
+| CM-003 | Gonzales 2016 — IL-31 pruritus model in beagles | Time-course pruritus recovery, treatment comparison (canine-native) | **P1** |
+| CM-004 | Fleck/Gonzales 2021 — Lokivetmab dose-duration | mAb PK in dogs: onset 3hr, duration 14/28/42 days dose-dependent | **P1** |
+| CM-005 | Cross-species allometric PK bridge | Species-agnostic PK refactor: canine ↔ human ↔ feline parameter scaling | **P1** |
+| CM-006 | Canine gut microbiome + AD severity | Cross-species Anderson: dog gut Pielou → W → colonization resistance | **P2** |
+| CM-007 | Feline hyperthyroidism PK (methimazole) | Species extension: capacity-limited PK in cats (MM kinetics) | **P2** |
+| CM-008 | Equine laminitis inflammatory cascade | Multi-species tissue Anderson: hoof lamellae as lattice substrate | **P3** |
+
+### Principle: Species-Agnostic Mathematics
+
+The Hill equation, Anderson localization, Bateman PK, and Shannon diversity are
+species-invariant mathematical structures. What changes between species is parameters:
+- `IC50_canine` vs `IC50_human` (same Hill equation)
+- `CL_canine` vs `CL_human` (same compartment ODE, allometric scaling)
+- `W_gut_canine` vs `W_gut_human` (same Anderson Hamiltonian, different Pielou input)
+
+healthSpring Track 6 validates the math on animal models directly, gaining causal
+insight from species with naturally occurring disease, then translates via parameter
+substitution — not by testing human therapies on animals.
+
+---
+
+## Track 7: Drug Discovery / ADDRC / MATRIX (NEW — V21)
+
+Front-loaded for Gonzales/Lisabeth/ADDRC meeting (March 2026). The pipeline:
+```
+healthSpring MATRIX scoring → Lisabeth ADDRC HTS → Gonzales iPSC validation → Ellsworth med chem → Preclinical
+```
+
+### Queued Papers — Drug Discovery (FRONT-LOADED)
+
+| ID | Paper / System | What to Validate | Priority |
+|----|---------------|-----------------|----------|
+| DD-001 | Fajgenbaum 2018 — MATRIX drug repurposing framework | Anderson-augmented MATRIX scoring for AD targets | **P0 — FRONT** |
+| DD-002 | Lisabeth et al. 2024 — Brucella host-cellular small molecule screen | ADDRC HTS data analysis pipeline, hit scoring | **P0 — FRONT** |
+| DD-003 | ADDRC compound library (8,000 compounds) | IC50/EC50 batch computation, Anderson geometry scoring | **P0 — FRONT** |
+| DD-004 | ChEMBL JAK inhibitor bioactivity panel | 50+ compound IC50/Ki sweep, selectivity profiling across kinases | **P1** |
+| DD-005 | Neubig — Rho/MRTF/SRF inhibitors for skin fibrosis | Fibrosis ↔ AD barrier model cross-talk, Anderson scoring | **P1** |
+| DD-006 | iPSC skin model validation protocol | Gonzales iPSC viability/cytokine readout → computational validation | **P2** |
+| DD-007 | Ellsworth — Niclosamide delivery optimization | Medicinal chemistry optimization downstream of HTS hits | **P2** |
+
+### ADDRC Meeting Preparation — Deliverables
+
+For the Gonzales/Lisabeth meeting this week:
+
+1. **Anderson-augmented MATRIX**: Show how Anderson geometry scoring identifies promising
+   candidates from the ADDRC 8,000-compound library by predicting which compounds create
+   "extended states" (good drug penetration) vs "localized states" (poor tissue distribution)
+2. **Species-agnostic validation**: 688/688 checks across wetSpring + neuralSpring prove
+   the canine models are mathematically faithful — the ADDRC screening benefits from
+   disease biology studied in dogs for dogs
+3. **GPU-accelerated screening**: Population PK on GPU (100K virtual patients per compound)
+   enables rapid triage of the 8,000-compound library
+4. **Pipeline integration**: healthSpring computational models → ADDRC HTS → Gonzales iPSC → Ellsworth med chem
+
+### Scaling Context — vs. Every Cure MATRIX ($48.3M ARPA-H)
+
+Every Cure scores ~3K drugs × ~12K diseases = 36M pairs (human only, pathway + ML).
+healthSpring extends with Anderson physics, species-agnostic scoring, and GPU population PK:
+
+- Full Every Cure scale + 5 species + 20 tissue geometries = **3.6B scored combinations**
+- Population PK for top 1% (100K virtual patients each) = **36B PK evaluations**
+- Total compute time on single RTX 5090: **under 1 minute**
+- Data pipeline (ChEMBL + NCATS Translator + FDA CVM) needed, not compute
+
+See `whitePaper/baseCamp/drug_matrix_comparison.md` for the full comparative analysis.
+
+---
+
 ## Next Evolution Targets
 
 All 30 queued papers complete at Tier 0+1. Six have Tier 2 GPU validation. Full-stack portability proven (V19). Next:
@@ -125,13 +209,18 @@ All 30 queued papers complete at Tier 0+1. Six have Tier 2 GPU validation. Full-
 3. ~~**toadStool V16 dispatch**~~: **DONE** (V19) — Exp086, streaming + callbacks + GPU-mappability
 4. ~~**metalForge NUCLEUS V16 dispatch**~~: **DONE** (V19) — Exp087, PCIe P2P bypass, mixed pipeline
 4b. ~~**petalTongue V16 visualization**~~: **DONE** (V20) — Exp088 (326/326), Exp089 (14/14), 34-node full study, 16 scenarios
-5. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
-6. **GPU Tier 2**: Biosignal FFT (Exp020-023) → GPU radix-2 FFT for real-time ECG/PPG
-7. **GPU Tier 2**: Michaelis-Menten population (Exp077) → batch parallel ODE
-8. **NPU Tier 3**: Pan-Tompkins streaming via Akida NPU (toadStool NPU dispatch path)
-9. **EDA optimization**: Replace naive rolling average with SIMD/vectorized implementation (numpy C convolution currently faster)
-10. **NLME GPU**: FOCE per-subject gradient shader, VPC Monte Carlo shader
-11. **biomeOS integration**: NUCLEUS local deployment graph orchestration
+5. **Track 7 DD-001–003**: MATRIX + ADDRC pipeline (front-loaded for Gonzales meeting)
+6. **Track 6 CM-001–004**: Gonzales canine models as independent validation systems
+7. **QS gene profiling**: Extend Anderson disorder with functional dimension (NCBI Gene)
+8. **Species-agnostic PK refactor**: Parameterize compartment models by species
+9. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
+10. **GPU Tier 2**: Biosignal FFT (Exp020-023) → GPU radix-2 FFT for real-time ECG/PPG
+11. **GPU Tier 2**: Michaelis-Menten population (Exp077) → batch parallel ODE
+12. **NPU Tier 3**: Pan-Tompkins streaming via Akida NPU (toadStool NPU dispatch path)
+13. **NLME GPU**: FOCE per-subject gradient shader, VPC Monte Carlo shader
+14. **DNA/protein integration**: neuralSpring sequence analysis → drug target genomics
+15. **Cross-species microbiome**: wetSpring QS gene profiling → comparative gut Anderson
+16. **biomeOS integration**: NUCLEUS local deployment graph orchestration
 
 ---
 

@@ -1,9 +1,9 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # QS Gene Profiling Design — Functional Anderson Disorder
 
 **Last Updated**: March 10, 2026
 **Status**: Design — extends baseCamp Paper 16 (Anaerobic-Aerobic QS Phase Transition)
-**Depends on**: `barracuda/src/microbiome.rs`, NestGate NCBI provider, wetSpring Anderson framework
+**Depends on**: `ecoPrimal/src/microbiome.rs`, NestGate NCBI provider, wetSpring Anderson framework
 
 ---
 
@@ -187,12 +187,12 @@ recovery kinetics after antibiotic perturbation.
 
 | Component | Location | Status |
 |-----------|----------|--------|
-| `evenness_to_disorder()` | `barracuda/src/microbiome.rs` | Existing |
-| `anderson_hamiltonian_1d()` | `barracuda/src/microbiome.rs` | Existing |
-| `colonization_resistance()` | `barracuda/src/microbiome.rs` | Existing |
-| Anderson eigensolver (QL) | `barracuda/src/microbiome.rs` | Existing |
+| `evenness_to_disorder()` | `ecoPrimal/src/microbiome.rs` | Existing |
+| `anderson_hamiltonian_1d()` | `ecoPrimal/src/microbiome.rs` | Existing |
+| `colonization_resistance()` | `ecoPrimal/src/microbiome.rs` | Existing |
+| Anderson eigensolver (QL) | `ecoPrimal/src/microbiome.rs` | Existing |
 | NCBI Gene API | NestGate provider | Existing in wetSpring, planned for healthSpring |
 | QS gene matrix | `data/qs_gene_matrix.json` | **New** |
-| `qs_gene_density()` | `barracuda/src/microbiome.rs` | **New** |
-| `qs_profile()` | `barracuda/src/microbiome.rs` | **New** |
-| `effective_disorder()` | `barracuda/src/microbiome.rs` | **New** |
+| `qs_gene_density()` | `ecoPrimal/src/microbiome.rs` | **New** |
+| `qs_profile()` | `ecoPrimal/src/microbiome.rs` | **New** |
+| `effective_disorder()` | `ecoPrimal/src/microbiome.rs` | **New** |

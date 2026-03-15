@@ -1,0 +1,108 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Biosignal Monitor — Continuous Niche (250 Hz)
+#
+# Real-time ECG + PPG + EDA streaming through the diagnostic pipeline.
+# This is healthSpring's continuous niche, analogous to the game engine
+# niche at 60 Hz but for clinical biosignal monitoring.
+#
+# Each tick: raw signal chunk → QRS detection → HRV update → SpO2 →
+# stress index → fusion → render. The Pathway Learner discovers that
+# HRV and SpO2 are independent given the signal chunk, and parallelizes.
+#
+# 250 Hz = 4 ms budget. Pan-Tompkins (bandpass + derivative + squaring +
+# MWI + peaks) dominates — NPU offload path via toadStool for acceleration.
+#
+# The Neural API whitepaper (08_NICHE_API_PATTERNS.md) lists
+# "Biosignal monitoring | 250 Hz | healthSpring, petalTongue | Clinical"
+# as a target continuous niche.
+
+[graph]
+id = "healthspring_biosignal_monitor"
+name = "Biosignal Real-Time Monitor"
+version = "0.1.0"
+coordination = "Continuous"
+
+[graph.tick]
+target_hz = 250
+max_accumulator_ms = 20
+budget_warning_ms = 3
+
+[graph.outputs]
+assessment = "fusion.output"
+display = "render.output"
+
+# ── Signal ingestion ─────────────────────────────────────────────────────
+
+[[nodes]]
+id = "ecg_input"
+name = "ECG signal chunk (4 ms window)"
+capability = "science.biosignal.wfdb_decode"
+budget_ms = 0.5
+
+[[nodes]]
+id = "ppg_input"
+name = "PPG signal chunk"
+capability = "science.biosignal.ppg_spo2"
+budget_ms = 0.5
+
+[[nodes]]
+id = "eda_input"
+name = "EDA signal chunk"
+capability = "science.biosignal.eda_analysis"
+budget_ms = 0.5
+
+# ── QRS detection (depends on ECG) ───────────────────────────────────────
+
+[[nodes]]
+id = "qrs"
+name = "Pan-Tompkins QRS detection"
+capability = "science.biosignal.pan_tompkins"
+depends_on = ["ecg_input"]
+budget_ms = 1.5
+
+# ── HRV (depends on QRS peaks) ──────────────────────────────────────────
+
+[[nodes]]
+id = "hrv"
+name = "HRV time-domain metrics"
+capability = "science.biosignal.hrv_metrics"
+depends_on = ["qrs"]
+budget_ms = 0.5
+feedback_to = ["fusion"]
+
+# ── Stress (depends on EDA) ──────────────────────────────────────────────
+
+[[nodes]]
+id = "stress"
+name = "EDA stress detection"
+capability = "science.biosignal.eda_stress_detection"
+depends_on = ["eda_input"]
+budget_ms = 0.5
+
+# ── Arrhythmia (depends on QRS + signal) ─────────────────────────────────
+
+[[nodes]]
+id = "arrhythmia"
+name = "Beat classification"
+capability = "science.biosignal.arrhythmia_classification"
+depends_on = ["qrs"]
+budget_ms = 1.0
+
+# ── Fusion (all channels) ────────────────────────────────────────────────
+
+[[nodes]]
+id = "fusion"
+name = "Multi-channel health fusion"
+capability = "science.biosignal.fuse_channels"
+depends_on = ["hrv", "ppg_input", "stress"]
+budget_ms = 0.5
+
+# ── Render (to petalTongue) ──────────────────────────────────────────────
+
+[[nodes]]
+id = "render"
+name = "Live biosignal display"
+capability = "ui.ipc.push_render"
+depends_on = ["fusion", "arrhythmia"]
+budget_ms = 0.5

@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V15 — 48 experiments (Tier 0+1+2+3 + diagnostic + petalTongue + GPU + visualization + dispatch + clinical TRT + streaming + interaction + NLME), 368 Rust tests (302 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 853 binary checks, 104 cross-validation checks. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels).
-**Last Updated**: March 10, 2026
+**Status**: V15 — 61 experiments (Tier 0+1+2+3 + diagnostic + petalTongue + GPU + visualization + dispatch + clinical TRT + streaming + interaction + NLME + V16 primitives + V19 full-stack + V20 visualization), 368 Rust tests (302 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 853 binary checks, 104 cross-validation checks. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels).
+**Last Updated**: March 14, 2026
 
 ---
 
@@ -181,7 +181,20 @@ experiments/
 ├── exp073_clinical_trt_dashboard/ # V12: Live TRT clinical dashboard
 ├── exp074_interaction_roundtrip/  # V12: Interaction roundtrip validation
 ├── exp075_nlme_cross_validation/  # V14: NLME (FOCE/SAEM, NCA, diagnostics)
-└── exp076_full_pipeline_scenarios/ # V14: Full pipeline petalTongue validation
+├── exp076_full_pipeline_scenarios/ # V14: Full pipeline petalTongue validation
+├── exp077_michaelis_menten_pk/    # V16: MM nonlinear PK
+├── exp078_antibiotic_perturbation/ # V16: Antibiotic perturbation
+├── exp079_scfa_production/       # V16: SCFA production
+├── exp080_gut_brain_serotonin/   # V16: Gut-brain serotonin axis
+├── exp081_eda_stress_detection/  # V16: EDA stress detection
+├── exp082_arrhythmia_classification/ # V16: Arrhythmia beat classification
+├── exp083_gpu_v16_parity/        # V16: GPU parity
+├── exp084_v16_cpu_parity_bench/   # V18: CPU vs Python bench
+├── exp085_gpu_vs_cpu_v16_bench/  # V19: GPU scaling bench
+├── exp086_toadstool_v16_dispatch/ # V19: toadStool dispatch
+├── exp087_mixed_nucleus_v16/     # V19: NUCLEUS routing
+├── exp088_unified_dashboard/     # V20: petalTongue V16 dashboard
+└── exp089_patient_explorer/      # V20: Patient explorer
 ```
 
 Controls live in `control/`:
@@ -244,7 +257,7 @@ control/
 ## How to Add a New Experiment
 
 1. Write Python control in `control/{track}/exp{NNN}_{name}.py` — runs checks inline
-2. Add Rust implementations to `barracuda/src/{module}.rs` with `#[cfg(test)]` unit tests
+2. Add Rust implementations to `ecoPrimal/src/{module}.rs` with `#[cfg(test)]` unit tests
 3. Create validation binary in `experiments/exp{NNN}_{name}/` (workspace member)
 4. Run Python control → Rust unit tests → validation binary
 5. Update this README, `experiments/README.md`, `specs/PAPER_REVIEW_QUEUE.md`, and `whitePaper/baseCamp/`

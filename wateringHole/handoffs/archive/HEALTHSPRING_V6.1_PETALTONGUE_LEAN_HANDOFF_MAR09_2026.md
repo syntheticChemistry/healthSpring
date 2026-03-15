@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
 # healthSpring V6.1 → petalTongue Absorption Complete / Lean Handoff
 
 **Date**: March 9, 2026

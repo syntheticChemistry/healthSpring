@@ -1,5 +1,5 @@
 #![forbid(unsafe_code)]
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
 #![expect(
@@ -12,6 +12,7 @@
 //! R-value, `SpO2` calibration, synthetic PPG generation, AC/DC extraction.
 
 use healthspring_barracuda::biosignal;
+use healthspring_barracuda::tolerances;
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -31,7 +32,7 @@ fn main() {
     // Check 1: R=0.4 → SpO2=100% (clamped)
     println!("\n--- Check 1: R=0.4 → SpO2=100% ---");
     let spo2_04 = biosignal::spo2_from_r(0.4);
-    if (spo2_04 - 100.0).abs() < 1e-10 {
+    if (spo2_04 - 100.0).abs() < tolerances::MACHINE_EPSILON {
         println!("  [PASS] SpO2(R=0.4) = {spo2_04:.2}%");
         passed += 1;
     } else {
@@ -42,7 +43,7 @@ fn main() {
     // Check 2: R=0.6 → SpO2=95%
     println!("\n--- Check 2: R=0.6 → SpO2=95% ---");
     let spo2_06 = biosignal::spo2_from_r(0.6);
-    if (spo2_06 - 95.0).abs() < 1e-10 {
+    if (spo2_06 - 95.0).abs() < tolerances::MACHINE_EPSILON {
         println!("  [PASS] SpO2(R=0.6) = {spo2_06:.2}%");
         passed += 1;
     } else {
@@ -53,7 +54,7 @@ fn main() {
     // Check 3: R=0.8 → SpO2=90%
     println!("\n--- Check 3: R=0.8 → SpO2=90% ---");
     let spo2_08 = biosignal::spo2_from_r(0.8);
-    if (spo2_08 - 90.0).abs() < 1e-10 {
+    if (spo2_08 - 90.0).abs() < tolerances::MACHINE_EPSILON {
         println!("  [PASS] SpO2(R=0.8) = {spo2_08:.2}%");
         passed += 1;
     } else {
@@ -64,7 +65,7 @@ fn main() {
     // Check 4: R=1.0 → SpO2=85%
     println!("\n--- Check 4: R=1.0 → SpO2=85% ---");
     let spo2_10 = biosignal::spo2_from_r(1.0);
-    if (spo2_10 - 85.0).abs() < 1e-10 {
+    if (spo2_10 - 85.0).abs() < tolerances::MACHINE_EPSILON {
         println!("  [PASS] SpO2(R=1.0) = {spo2_10:.2}%");
         passed += 1;
     } else {
@@ -128,7 +129,9 @@ fn main() {
     println!("\n--- Check 9: Clamping extreme R ---");
     let spo2_high = biosignal::spo2_from_r(-1.0);
     let spo2_low = biosignal::spo2_from_r(10.0);
-    if (spo2_high - 100.0).abs() < 1e-10 && spo2_low.abs() < 1e-10 {
+    if (spo2_high - 100.0).abs() < tolerances::MACHINE_EPSILON
+        && spo2_low.abs() < tolerances::MACHINE_EPSILON
+    {
         println!("  [PASS] R=-1 → 100%, R=10 → 0%");
         passed += 1;
     } else {

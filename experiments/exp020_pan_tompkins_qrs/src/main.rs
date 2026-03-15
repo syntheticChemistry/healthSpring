@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -12,6 +12,7 @@
 //! pipeline against the Python control (`exp020_pan_tompkins_qrs.py`).
 
 use healthspring_barracuda::biosignal;
+use healthspring_barracuda::tolerances;
 
 fn main() {
     let mut passed = 0u32;
@@ -94,7 +95,11 @@ fn main() {
 
     // Check 6: MWI non-negative
     println!("\n--- Check 6: MWI ≥ 0 ---");
-    if result.mwi.iter().all(|&x| x >= -1e-12) {
+    if result
+        .mwi
+        .iter()
+        .all(|&x| x >= -tolerances::MACHINE_EPSILON_TIGHT)
+    {
         println!("  [PASS]");
         passed += 1;
     } else {

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
 name = "healthspring-exp067"
@@ -9,7 +9,7 @@ license.workspace = true
 description = "Exp067: Extended GPU parity — Simpson, AUC, Bray-Curtis GPU vs CPU"
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda" }
+healthspring-barracuda = { path = "../../ecoPrimal" }
 
 [[bin]]
 name = "exp067_gpu_parity_extended"

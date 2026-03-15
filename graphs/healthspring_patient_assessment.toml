@@ -1,0 +1,131 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Patient Assessment — Full Diagnostic Pipeline via Neural API
+#
+# This graph IS the diagnostic. biomeOS executes it by routing capability.call
+# requests to whichever primals provide them. healthSpring provides the science;
+# NestGate provides data; ToadStool provides compute; petalTongue visualizes.
+#
+# The graph makes explicit what assess_patient() does internally:
+#   1. Fetch patient data (NestGate)
+#   2. Run 4 tracks IN PARALLEL (no data deps between them)
+#   3. Cross-track integration (depends on all 4)
+#   4. Composite risk (depends on cross-track)
+#   5. Visualize + store (parallel, both depend on composite)
+#
+# The Neural API Pathway Learner will discover the parallelism in phase 2
+# automatically. We declare the true dependencies; biomeOS optimizes.
+#
+# Usage:
+#   biomeos graph execute healthspring_patient_assessment --params patient.json
+
+[graph]
+id = "healthspring_patient_assessment"
+name = "Patient Diagnostic Assessment"
+version = "0.1.0"
+coordination = "ConditionalDag"
+
+[graph.outputs]
+assessment = "composite.output"
+visualization = "visualize.output"
+
+# ── Phase 1: Data ────────────────────────────────────────────────────────
+
+[[nodes]]
+id = "provenance_begin"
+name = "Begin provenance session"
+capability = "provenance.begin"
+budget_ms = 50
+
+[nodes.config]
+experiment = "patient_assessment"
+
+[[nodes]]
+id = "fetch_patient"
+name = "Load patient profile"
+capability = "data.fetch"
+depends_on = ["provenance_begin"]
+budget_ms = 200
+
+[nodes.config]
+source = "local"
+
+# ── Phase 2: Science tracks (PARALLEL — no deps between them) ────────────
+
+[[nodes]]
+id = "pkpd"
+name = "PK/PD assessment"
+capability = "science.pkpd.hill_dose_response"
+depends_on = ["fetch_patient"]
+budget_ms = 50
+
+[nodes.config]
+mode = "baricitinib_reference"
+
+[[nodes]]
+id = "microbiome"
+name = "Microbiome diversity + Anderson"
+capability = "science.microbiome.shannon_index"
+depends_on = ["fetch_patient"]
+budget_ms = 100
+
+[[nodes]]
+id = "biosignal"
+name = "ECG + HRV + PPG + EDA fusion"
+capability = "science.biosignal.fuse_channels"
+depends_on = ["fetch_patient"]
+budget_ms = 100
+
+[[nodes]]
+id = "endocrine"
+name = "Testosterone PK + TRT outcomes"
+capability = "science.endocrine.testosterone_pk"
+depends_on = ["fetch_patient"]
+budget_ms = 50
+
+# ── Phase 3: Cross-track integration ─────────────────────────────────────
+
+[[nodes]]
+id = "cross_track"
+name = "Gut-TRT axis + HRV cardiac composite"
+capability = "science.diagnostic.assess_patient"
+depends_on = ["pkpd", "microbiome", "biosignal", "endocrine"]
+budget_ms = 100
+
+# ── Phase 4: Composite risk ──────────────────────────────────────────────
+
+[[nodes]]
+id = "composite"
+name = "Composite risk score"
+capability = "science.diagnostic.composite_risk"
+depends_on = ["cross_track"]
+budget_ms = 50
+
+# ── Phase 5: Output (PARALLEL — viz and store are independent) ───────────
+
+[[nodes]]
+id = "visualize"
+name = "Render to petalTongue"
+capability = "ui.scenario.render"
+depends_on = ["composite"]
+budget_ms = 200
+
+[nodes.config]
+scenario = "patient_assessment"
+
+[[nodes]]
+id = "store_results"
+name = "Persist assessment to NestGate"
+capability = "storage.store"
+depends_on = ["composite"]
+budget_ms = 200
+
+[[nodes]]
+id = "provenance_complete"
+name = "Complete provenance session"
+capability = "provenance.complete"
+depends_on = ["store_results", "visualize"]
+budget_ms = 100
+
+[nodes.config]
+license = "AGPL-3.0-only"

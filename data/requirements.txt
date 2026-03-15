@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# healthSpring data-fetch script dependencies
+# Pin exact versions for reproducibility
+biopython==1.84
+requests==2.32.3
+numpy==2.1.3

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
 name = "healthspring-exp086"
@@ -9,7 +9,7 @@ license.workspace = true
 description = "Exp086: toadStool V16 streaming dispatch — end-to-end pipeline for all V16 StageOps"
 
 [dependencies]
-healthspring-barracuda = { path = "../../barracuda" }
+healthspring-barracuda = { path = "../../ecoPrimal" }
 healthspring-toadstool = { path = "../../toadstool" }
 healthspring-forge = { path = "../../metalForge/forge" }
 

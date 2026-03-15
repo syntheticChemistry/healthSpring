@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 #
 # Live streaming dashboard: launch petalTongue and push healthSpring data
 # incrementally via IPC (push_append / push_gauge_update) to simulate a

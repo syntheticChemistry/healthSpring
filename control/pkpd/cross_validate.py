@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-only
 
 #!/usr/bin/env python3
 """
@@ -15,7 +15,19 @@ import sys
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONTROL_DIR = os.path.dirname(SCRIPT_DIR)
-TOL = 1e-6
+
+# Per-check tolerances from specs/TOLERANCE_REGISTRY.md
+# Machine epsilon (1e-10 to 1e-15): analytical identities, f64 arithmetic
+# Numerical (1e-6 to 0.01): trapezoidal AUC, discrete grid methods
+# Population (0.05 to 0.15): Monte Carlo, parameter recovery
+TOL_MACHINE = 1e-10
+TOL_MACHINE_LOOSE = 1e-8
+TOL_NUMERICAL = 1e-6
+TOL_AUC = 0.02  # 1% relative for typical AUC; oral diff ~0.01
+TOL_AUC_IV = 1.0  # 1% of ~100 for IV AUC numerical vs analytical (registry 0.01)
+TOL_TMAX = 0.1
+TOL_POPULATION = 0.05
+TOL_SHANNON = 1e-6  # exp010: 1e-8; exp040 cross-impl allows 1e-6
 
 
 def load_baseline(name, subdir=None):
@@ -28,7 +40,7 @@ def load_baseline(name, subdir=None):
         return json.load(f)
 
 
-def check(label, python_val, rust_val, tol=TOL):
+def check(label, python_val, rust_val, tol=TOL_MACHINE):
     diff = abs(float(python_val) - float(rust_val))
     ok = diff < tol
     status = "MATCH" if ok else "MISMATCH"
@@ -69,14 +81,14 @@ def main():
     b1 = load_baseline("exp001_baseline.json")
 
     for drug in ["baricitinib", "upadacitinib", "abrocitinib", "oclacitinib"]:
-        ok = check(f"{drug} at IC50", b1[f"{drug}_at_ic50"], 0.5)
+        ok = check(f"{drug} at IC50", b1[f"{drug}_at_ic50"], 0.5, tol=TOL_MACHINE)
         passed += ok
         failed += not ok
 
-    ok = check("cooperativity n=1 below IC50", b1["cooperativity"]["n1"], 1.0 / 3.0)
+    ok = check("cooperativity n=1 below IC50", b1["cooperativity"]["n1"], 1.0 / 3.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
-    ok = check("cooperativity n=2 below IC50", b1["cooperativity"]["n2"], 0.2)
+    ok = check("cooperativity n=2 below IC50", b1["cooperativity"]["n2"], 0.2, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
@@ -92,31 +104,31 @@ def main():
     print("\n--- Exp002: One-Compartment PK ---")
     b2 = load_baseline("exp002_baseline.json")
 
-    ok = check("IV C(0)", b2["iv_c0"], 10.0)
+    ok = check("IV C(0)", b2["iv_c0"], 10.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
-    ok = check("IV at half-life", b2["iv_at_half_life"], 5.0)
+    ok = check("IV at half-life", b2["iv_at_half_life"], 5.0, tol=TOL_NUMERICAL)
     passed += ok
     failed += not ok
 
-    ok = check("Oral C(0)", b2["oral_c0"], 0.0)
+    ok = check("Oral C(0)", b2["oral_c0"], 0.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
-    ok = check("Oral Cmax", b2["oral_cmax"], 4.3105, tol=0.01)
+    ok = check("Oral Cmax", b2["oral_cmax"], 4.3105, tol=TOL_AUC)
     passed += ok
     failed += not ok
 
-    ok = check("Oral Tmax", b2["oral_tmax"], 1.634, tol=0.01)
+    ok = check("Oral Tmax", b2["oral_tmax"], 1.634, tol=TOL_TMAX)
     passed += ok
     failed += not ok
 
-    ok = check("IV AUC (py vs analytical)", b2["iv_auc_numerical"], b2["iv_auc_analytical"], tol=1.0)
+    ok = check("IV AUC (py vs analytical)", b2["iv_auc_numerical"], b2["iv_auc_analytical"], tol=TOL_AUC_IV)
     passed += ok
     failed += not ok
 
-    ok = check("Oral AUC (py vs analytical)", b2["oral_auc"], b2["oral_auc_analytical"], tol=0.5)
+    ok = check("Oral AUC (py vs analytical)", b2["oral_auc"], b2["oral_auc_analytical"], tol=TOL_AUC)
     passed += ok
     failed += not ok
 
@@ -124,19 +136,19 @@ def main():
     print("\n--- Exp003: Two-Compartment PK ---")
     b3 = load_baseline("exp003_baseline.json")
 
-    ok = check("C(0)", b3["c0"], 16.0)
+    ok = check("C(0)", b3["c0"], 16.0, tol=TOL_MACHINE_LOOSE)
     passed += ok
     failed += not ok
 
-    ok = check("AUC numerical vs analytical", b3["auc_numerical"], b3["auc_analytical"], tol=0.1)
+    ok = check("AUC numerical vs analytical", b3["auc_numerical"], b3["auc_analytical"], tol=TOL_AUC)
     passed += ok
     failed += not ok
 
-    ok = check("A coeff", b3["A_coeff"], 14.4)
+    ok = check("A coeff", b3["A_coeff"], 14.4, tol=TOL_MACHINE_LOOSE)
     passed += ok
     failed += not ok
 
-    ok = check("B coeff", b3["B_coeff"], 1.6, tol=0.01)
+    ok = check("B coeff", b3["B_coeff"], 1.6, tol=TOL_AUC)
     passed += ok
     failed += not ok
 
@@ -188,7 +200,7 @@ def main():
     passed += ok
     failed += not ok
 
-    ok = check("auc_median vs theoretical", b5["auc_median"], b5["auc_theoretical"], tol=0.05)
+    ok = check("auc_median vs theoretical", b5["auc_median"], b5["auc_theoretical"], tol=TOL_POPULATION)
     passed += ok
     failed += not ok
 
@@ -291,7 +303,7 @@ def main():
     print("\n--- Exp030: Testosterone IM Injection PK ---")
     b30 = load_baseline("exp030_baseline.json", "endocrine")
 
-    ok = check("single C(0)", b30["single_c0"], 0.0)
+    ok = check("single C(0)", b30["single_c0"], 0.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
@@ -315,11 +327,11 @@ def main():
     print("\n--- Exp031: Testosterone Pellet Depot PK ---")
     b31 = load_baseline("exp031_baseline.json", "endocrine")
 
-    ok = check("C(0)", b31["c0"], 0.0)
+    ok = check("C(0)", b31["c0"], 0.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
-    ok = check("AUC numerical vs analytical", b31["auc_numerical"], b31["auc_analytical"], tol=5.0)
+    ok = check("AUC numerical vs analytical", b31["auc_numerical"], b31["auc_analytical"], tol=5.0)  # 10% of ~50
     passed += ok
     failed += not ok
 
@@ -337,7 +349,7 @@ def main():
     print("\n--- Exp032: Age-Related Testosterone Decline ---")
     b32 = load_baseline("exp032_baseline.json", "endocrine")
 
-    ok = check("t_at_30", b32["t_at_30"], 600.0)
+    ok = check("t_at_30", b32["t_at_30"], 600.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
@@ -357,11 +369,11 @@ def main():
     print("\n--- Exp033: TRT Weight/Waist Trajectory ---")
     b33 = load_baseline("exp033_baseline.json", "endocrine")
 
-    ok = check("dw_at_0", b33["dw_at_0"], 0.0)
+    ok = check("dw_at_0", b33["dw_at_0"], 0.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
-    ok = check("dw_at_60mo", b33["dw_at_60mo"], -16.0)
+    ok = check("dw_at_60mo", b33["dw_at_60mo"], -16.0, tol=TOL_MACHINE_LOOSE)
     passed += ok
     failed += not ok
 
@@ -561,23 +573,23 @@ def main():
     b40 = load_baseline("exp040_baseline.json", "validation")
 
     checks_40 = b40["checks"]
-    ok = check("hill_e_at_ec50", checks_40["hill_e_at_ec50"], 0.5)
+    ok = check("hill_e_at_ec50", checks_40["hill_e_at_ec50"], 0.5, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
-    ok = check("hill_e_at_zero", checks_40["hill_e_at_zero"], 0.0)
+    ok = check("hill_e_at_zero", checks_40["hill_e_at_zero"], 0.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
-    ok = check("shannon_uniform", checks_40["shannon_uniform"], 2.302585, tol=1e-4)
+    ok = check("shannon_uniform", checks_40["shannon_uniform"], 2.302585, tol=TOL_SHANNON)
     passed += ok
     failed += not ok
 
-    ok = check("pielou_uniform", checks_40["pielou_uniform"], 1.0)
+    ok = check("pielou_uniform", checks_40["pielou_uniform"], 1.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
-    ok = check("bray_curtis_identical", checks_40["bray_curtis_identical"], 0.0)
+    ok = check("bray_curtis_identical", checks_40["bray_curtis_identical"], 0.0, tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 
@@ -585,7 +597,7 @@ def main():
     print("\n--- Exp006: PBPK Compartments ---")
     b6 = load_baseline("exp006_baseline.json")
 
-    ok = check("PBPK C(0)", b6["c0_mg_per_L"], 20.0)
+    ok = check("PBPK C(0)", b6["c0_mg_per_L"], 20.0, tol=TOL_MACHINE_LOOSE)
     passed += ok
     failed += not ok
 
@@ -632,7 +644,7 @@ def main():
     print("\n--- Exp038: HRV × TRT Cardiovascular ---")
     b38 = load_baseline("exp038_baseline.json", "endocrine")
 
-    ok = check("SDNN at t=0", b38["sdnn_at_0"], b38["params"]["sdnn_base_ms"])
+    ok = check("SDNN at t=0", b38["sdnn_at_0"], b38["params"]["sdnn_base_ms"], tol=TOL_MACHINE)
     passed += ok
     failed += not ok
 

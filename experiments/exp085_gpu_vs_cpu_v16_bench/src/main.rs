@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -65,7 +65,10 @@ fn time_op(op: &GpuOp, n_iter: usize) -> (f64, f64) {
             start.elapsed().as_nanos() as f64 / 1000.0
         })
         .collect();
-    times.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    times.sort_by(|a, b| {
+        a.partial_cmp(b)
+            .expect("benchmark times are finite and comparable")
+    });
     let mean = times.iter().sum::<f64>() / times.len() as f64;
     let p95 = times[(times.len() as f64 * 0.95) as usize];
     (mean, p95)
@@ -160,7 +163,9 @@ fn main() {
     println!("\n── 2. SCFA Batch Production (scaling) ─────────────────────────");
 
     for &n_elements in &[100u32, 500, 2000, 10_000] {
-        let fiber_inputs: Vec<f64> = (0..n_elements).map(|i| f64::from(i) * 0.05 + 0.1).collect();
+        let fiber_inputs: Vec<f64> = (0..n_elements)
+            .map(|i| f64::from(i).mul_add(0.05, 0.1))
+            .collect();
         let op = GpuOp::ScfaBatch {
             params: microbiome::SCFA_HEALTHY_PARAMS,
             fiber_inputs,
@@ -274,7 +279,7 @@ fn main() {
         },
         GpuOp::BeatClassifyBatch {
             beats: vec![classification::generate_normal_template(41); 256],
-            templates: templates.clone(),
+            templates,
         },
     ];
 
@@ -302,11 +307,11 @@ fn main() {
     );
 
     let fused_start = std::time::Instant::now();
-    let fused_results: Vec<GpuResult> = ops.iter().map(gpu::execute_cpu).collect();
+    let fused_count = ops.iter().map(gpu::execute_cpu).count();
     let fused_us = fused_start.elapsed().as_micros() as f64;
     check(
         &format!("fused 3-op CPU pipeline: {fused_us:.0}us"),
-        fused_results.len() == 3,
+        fused_count == 3,
         &mut passed,
         &mut total,
     );

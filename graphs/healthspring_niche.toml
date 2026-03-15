@@ -1,0 +1,90 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# healthSpring Niche Manifest
+#
+# healthSpring is a NICHE, not a node. The diagnostic pipeline emerges from
+# capability composition — biomeOS orchestrates primals via graphs, and the
+# Neural API routes capability.call requests to whoever provides them.
+#
+# With the primals running and the graphs loaded, biomeOS recreates the entire
+# health diagnostic pipeline through semantic routing. No monolith needed.
+#
+# Niche spectrum position:
+#   Transactional (patient assessment, drug analysis)
+#   Continuous (biosignal monitoring @ 250 Hz)
+
+[niche]
+name = "healthspring"
+version = "0.1.0"
+type = "transactional"
+domain = "health"
+description = "Human health diagnostic niche: PK/PD, microbiome, biosignal, endocrine → composite risk"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Primals — what the niche composes
+# ═══════════════════════════════════════════════════════════════════════════
+
+[[primals]]
+binary = "healthspring_primal"
+provides = [
+    "science.pkpd",
+    "science.microbiome",
+    "science.biosignal",
+    "science.endocrine",
+    "science.diagnostic",
+    "science.clinical",
+]
+requires = ["discovery"]
+
+[[primals]]
+binary = "toadstool_primal"
+provides = ["compute"]
+requires = ["security"]
+optional = true
+
+[[primals]]
+binary = "nestgate_primal"
+provides = ["storage", "data"]
+requires = ["security", "discovery"]
+optional = true
+
+[[primals]]
+binary = "petaltongue_primal"
+provides = ["visualization", "interaction"]
+requires = ["discovery"]
+optional = true
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Graphs — the workflows biomeOS executes
+# ═══════════════════════════════════════════════════════════════════════════
+
+[[graphs]]
+name = "deploy"
+path = "healthspring_niche_deploy.toml"
+coordination = "Sequential"
+description = "Bring up the full niche: Tower → Trio → NestGate → ToadStool → healthSpring"
+default = true
+
+[[graphs]]
+name = "patient_assessment"
+path = "healthspring_patient_assessment.toml"
+coordination = "ConditionalDag"
+description = "Full 4-track diagnostic: PK/PD ∥ Microbiome ∥ Biosignal ∥ Endocrine → Composite"
+
+[[graphs]]
+name = "trt_scenario"
+path = "healthspring_trt_scenario.toml"
+coordination = "Sequential"
+description = "TRT clinical scenario: endocrine PK → outcomes → HRV response → cardiac risk → visualize"
+
+[[graphs]]
+name = "microbiome_analysis"
+path = "healthspring_microbiome_analysis.toml"
+coordination = "Sequential"
+description = "Microbiome pipeline: diversity → Anderson → colonization → QS profiling → SCFA"
+
+[[graphs]]
+name = "biosignal_monitor"
+path = "healthspring_biosignal_monitor.toml"
+coordination = "Continuous"
+description = "Real-time biosignal monitoring: ECG → QRS → HRV → fusion → render @ 250 Hz"

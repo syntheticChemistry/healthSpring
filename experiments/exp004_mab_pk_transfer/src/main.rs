@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
@@ -15,6 +15,7 @@
 use healthspring_barracuda::pkpd::{
     allometric_exp, allometric_scale, find_cmax_tmax, lokivetmab_canine, mab_pk_sc,
 };
+use healthspring_barracuda::tolerances;
 
 const BW_HUMAN_KG: f64 = 70.0;
 const NEMOLIZUMAB_HL_RANGE: (f64, f64) = (14.0, 28.0);
@@ -26,7 +27,6 @@ const DOSE_NEMOLIZUMAB_MG: f64 = 30.0;
 const DOSE_DUPILUMAB_MG: f64 = 300.0;
 const A_REG: f64 = 10.09;
 const B_REG: f64 = 33.28;
-const TOL: f64 = 1e-10;
 
 fn linspace(start: f64, end: f64, n: usize) -> Vec<f64> {
     (0..n)
@@ -85,7 +85,7 @@ fn main() {
     let cl_scaled = allometric_scale(cl_animal, bw_dog, BW_HUMAN_KG, allometric_exp::CLEARANCE);
     let cl_ratio = cl_scaled / cl_animal;
     let bw_ratio = (BW_HUMAN_KG / bw_dog).powf(0.75);
-    if (cl_ratio - bw_ratio).abs() < 1e-6 {
+    if (cl_ratio - bw_ratio).abs() < tolerances::ALLOMETRIC_CL_RATIO {
         println!("[PASS] CL ratio = {cl_ratio:.4}, expected BW^0.75 = {bw_ratio:.4}");
         passed += 1;
     } else {
@@ -159,7 +159,8 @@ fn main() {
 
     // Check 9: All curves non-negative
     print!("\n--- Check 9: All mAb curves non-negative --- ");
-    let all_nonneg = c_loki.iter().all(|&c| c >= -TOL) && c_nemo.iter().all(|&c| c >= -TOL);
+    let all_nonneg = c_loki.iter().all(|&c| c >= -tolerances::MACHINE_EPSILON)
+        && c_nemo.iter().all(|&c| c >= -tolerances::MACHINE_EPSILON);
     if all_nonneg {
         println!("[PASS]");
         passed += 1;
@@ -200,7 +201,7 @@ fn main() {
     // Check 12: b=0 → identity
     print!("\n--- Check 12: b=0 → identity --- ");
     let identity = allometric_scale(100.0, 15.0, 70.0, 0.0);
-    if (identity - 100.0).abs() < TOL {
+    if (identity - 100.0).abs() < tolerances::MACHINE_EPSILON {
         println!("[PASS] b=0 → {identity:.1} (unchanged)");
         passed += 1;
     } else {
@@ -211,7 +212,7 @@ fn main() {
     // Check 13: mAb SC C(0) = 0
     print!("\n--- Check 13: mAb SC C(0) = 0 --- ");
     let c0_sc = mab_pk_sc(30.0, 5.0, 20.0, 0.0);
-    if c0_sc.abs() < TOL {
+    if c0_sc.abs() < tolerances::MACHINE_EPSILON {
         println!("[PASS]");
         passed += 1;
     } else {
