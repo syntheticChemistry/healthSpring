@@ -1,10 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
 #!/usr/bin/env python3
 """
 healthSpring Exp081 — EDA Autonomic Stress Detection (Python Baseline)
 
 Composite stress index from SCR frequency, SCL level, recovery time.
 Reference: Boucsein 2012, Braithwaite et al. 2013.
+
+Provenance:
+  Baseline date:   2026-03-15
+  Command:         python3 control/biosignal/exp081_eda_stress.py
+  Environment:     Python 3.10+, NumPy
 """
 import json, os, sys
 import numpy as np

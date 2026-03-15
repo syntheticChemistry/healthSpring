@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 15, 2026
-**Status**: V23 — 61 experiments complete (Tracks 1–5), 435 tests, 55+ wired JSON-RPC capabilities. All 30 queued papers complete. Tracks 6–7 queued. V23 deep debt: production-hardened codebase with zero `#[allow()]`, zero TODO/FIXME, AGPL-3.0-or-later license, `UniBin` compliance.
+**Status**: V24 — 61 experiments complete (Tracks 1–5), 435 tests, 55+ wired JSON-RPC capabilities. All 30 queued papers complete. Tracks 6–7 queued. V24 audit execution: zero duplicate math, zero hardcoded primal names, capability-based discovery, ValidationHarness adopted.
 
 ---
 

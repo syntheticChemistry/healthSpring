@@ -179,7 +179,7 @@ fn main() {
 
     // ── Summary ──────────────────────────────────────────────────────
     println!("\n=== Exp089 Result: {pass}/{checks} checks passed ===");
-    assert_eq!(pass, checks, "some checks failed");
+    std::process::exit(i32::from(pass != checks));
 }
 
 fn run_v16_analysis(params: &PatientParams, checks: &mut u32, pass: &mut u32) {

@@ -523,6 +523,25 @@ fn build_semantic_mappings() -> serde_json::Value {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// Songbird capability announcement
+// ═══════════════════════════════════════════════════════════════════════════
+
+fn announce_to_songbird(our_socket: &Path) {
+    let socket_str = our_socket.to_string_lossy();
+    match healthspring_barracuda::visualization::capabilities::announce_all(&socket_str) {
+        Ok(()) => {
+            eprintln!(
+                "[songbird] Announced {} health.* capabilities",
+                healthspring_barracuda::visualization::capabilities::CAPABILITIES.len()
+            );
+        }
+        Err(e) => {
+            eprintln!("[songbird] Not available ({e}) — discovery via socket dir only");
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // Connection handler
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -623,6 +642,7 @@ fn cmd_serve() -> Result<(), String> {
     }
 
     register_with_biomeos(&socket_path);
+    announce_to_songbird(&socket_path);
 
     let running = Arc::new(AtomicBool::new(true));
     install_signal_handler(&running);

@@ -2,11 +2,18 @@
 
 #!/usr/bin/env python3
 """
-Cross-validation: compare Python baselines against Rust output.
+Cross-validation: verify Python baseline JSON self-consistency.
 
 Reads the Python baseline JSON files and checks that key numerical values
-from Rust binaries match within tolerance. Covers all 24 experiments across
-pkpd, microbiome, biosignal, endocrine, and validation domains.
+satisfy analytical identities, range constraints, and ordering invariants
+(e.g. IC50 = E_max/2, AUC positive, monotonicity). Tolerances are drawn
+from specs/TOLERANCE_REGISTRY.md. Covers all 24 experiments across pkpd,
+microbiome, biosignal, endocrine, and validation domains.
+
+NOTE: This script does NOT compare Python vs Rust outputs. The Rust
+experiment binaries (exp010, exp011, exp012, etc.) load baseline JSON and
+compare their own outputs against it. This script validates the baselines
+themselves against known analytical expectations.
 """
 
 import json

@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 15, 2026
-**Status**: V23 — deep debt remediation + production hardening. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. `clippy::pedantic` + `clippy::nursery` enforced (0 warnings). Zero `#[allow()]`, zero TODO/FIXME in production. AGPL-3.0-or-later across all files. `UniBin`-compliant primal binary. Three-tier data fetch implemented. All tolerances centralized. 10 experiments on `ValidationHarness`. V22: biomeOS BYOB niche deployment. V21: domain evolution to health of living systems. V20: petalTongue V16 visualization. V19: GPU scaling + toadStool dispatch + NUCLEUS. Paper queue 30/30 complete (Tracks 1–5), 15 queued (Tracks 6–7).
+**Status**: V24 — deep audit execution + modern Rust evolution. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. `clippy::pedantic` + `clippy::nursery` enforced in CI (0 warnings). Zero `#[allow()]`, zero TODO/FIXME, zero duplicate math, zero hardcoded primal names. toadStool Hill/AUC delegation, gpu/context.rs smart refactor (968→350 LOC), capability-based discovery, Songbird wired. Paper queue 30/30 complete (Tracks 1–5), 15 queued (Tracks 6–7).
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---

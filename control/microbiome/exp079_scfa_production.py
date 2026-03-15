@@ -1,10 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
 #!/usr/bin/env python3
 """
 healthSpring Exp079 — SCFA Production Model (Python Baseline)
 
 Michaelis-Menten fermentation: fiber → acetate, propionate, butyrate.
 Reference: den Besten et al. 2013, Cummings 1987.
+
+Provenance:
+  Baseline date:   2026-03-15
+  Command:         python3 control/microbiome/exp079_scfa_production.py
+  Environment:     Python 3.10+, NumPy
 """
 import json, os, sys
 import numpy as np

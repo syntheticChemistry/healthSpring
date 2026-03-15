@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
-**Last Updated**: March 14, 2026
-**Status**: V21 — 61 experiments (Tracks 1–5), 395 tests, 6 WGSL shaders, 30/30 papers complete. Full-stack portability proven. V21: Domain evolution from human health to **health of living systems** — Track 6 (Comparative Medicine / One Health) and Track 7 (Drug Discovery / ADDRC) add cross-species biology and drug pipeline computation. Drug discovery front-loaded for Gonzales/ADDRC meeting.
+**Last Updated**: March 15, 2026
+**Status**: V24 — 61 experiments, 435 tests, 6 WGSL shaders, 30/30 papers complete. Full-stack portability proven. Deep audit executed: toadStool Hill/AUC delegation, gpu/context.rs smart refactor (968→350 LOC), capability-based discovery, ValidationHarness migrations. Tracks 6–7 (Comparative Medicine, Drug Discovery) queued.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and

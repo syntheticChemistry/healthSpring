@@ -302,16 +302,9 @@ fn generate_data(n: usize, seed: u64) -> Vec<f64> {
 
 fn apply_transform(data: &[f64], kind: TransformKind) -> Vec<f64> {
     match kind {
-        TransformKind::Hill { emax, ec50, n } => data
-            .iter()
-            .map(|&c| {
-                if c <= 0.0 {
-                    return 0.0;
-                }
-                let cn = c.powf(n);
-                emax * cn / (ec50.powf(n) + cn)
-            })
-            .collect(),
+        TransformKind::Hill { emax, ec50, n } => {
+            healthspring_barracuda::pkpd::hill_sweep(ec50, n, emax, data)
+        }
         TransformKind::Square => data.iter().map(|&x| x * x).collect(),
         TransformKind::ExpDecay { k, t } => data.iter().map(|&x| x * (-k * t).exp()).collect(),
     }
@@ -373,17 +366,14 @@ fn fuse_biosignal_channels(data: &[f64], n_channels: usize) -> Vec<f64> {
 
 /// AUC trapezoidal: treats input as concentration values equally spaced
 /// over `[0, t_max]` and returns the area under the curve.
-#[expect(clippy::cast_precision_loss)]
+#[expect(clippy::cast_precision_loss, reason = "time point count fits f64")]
 fn compute_auc_trapezoidal(concs: &[f64], t_max: f64) -> f64 {
     if concs.len() < 2 {
         return 0.0;
     }
     let dt = t_max / (concs.len() - 1) as f64;
-    let mut auc = 0.0;
-    for i in 1..concs.len() {
-        auc += 0.5 * (concs[i] + concs[i - 1]) * dt;
-    }
-    auc
+    let times: Vec<f64> = (0..concs.len()).map(|i| dt * i as f64).collect();
+    healthspring_barracuda::pkpd::auc_trapezoidal(&times, concs)
 }
 
 /// Bray-Curtis pairwise dissimilarity: returns the upper triangle of the
@@ -556,9 +546,8 @@ mod tests {
             },
         };
         let op = stage.to_gpu_op(None);
-        let op = match op {
-            Some(o) => o,
-            None => panic!("to_gpu_op returns Some for PopulationPk"),
+        let Some(op) = op else {
+            panic!("to_gpu_op returns Some for PopulationPk");
         };
         assert!(matches!(op, GpuOp::PopulationPkBatch { .. }));
     }
@@ -590,9 +579,8 @@ mod tests {
             },
         };
         let op = stage.to_gpu_op(None);
-        let op = match op {
-            Some(o) => o,
-            None => panic!("to_gpu_op returns Some for DiversityReduce"),
+        let Some(op) = op else {
+            panic!("to_gpu_op returns Some for DiversityReduce");
         };
         assert!(matches!(op, GpuOp::DiversityBatch { .. }));
     }

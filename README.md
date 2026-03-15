@@ -5,7 +5,7 @@
 **Date:** March 15, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V23 — deep debt remediation + production hardening. 435 tests, 61 experiments, 55+ JSON-RPC capabilities (all wired), `UniBin` compliant primal binary with `clap` subcommands. `clippy::pedantic` + `clippy::nursery` enforced with zero warnings. All `#[allow()]` eliminated (migrated to `#[expect()]` with reasons). All inline tolerance magic numbers centralized to `tolerances::*`. 10 experiments migrated to `ValidationHarness` (hotSpring pattern). Three-tier data fetch (biomeOS → NestGate → local) fully implemented. Capability-based primal discovery with zero hardcoded names. `ipc/dispatch.rs` refactored from 1193-line monolith into 5 domain modules. AGPL-3.0-or-later across all files (.rs, .py, .sh, .toml, .md). Zero unsafe code, zero TODO/FIXME in production code, all files under 1000 LOC.
+**Status:** V24 — deep audit execution + modern Rust evolution. 435 tests, 61 experiments, 55+ JSON-RPC capabilities (all wired), `UniBin` compliant primal binary with `clap` subcommands. `clippy::pedantic` + `clippy::nursery` enforced with zero warnings (CI aligned). toadStool Hill/AUC duplication eliminated — delegates to `pkpd::hill_sweep`/`auc_trapezoidal`. `gpu/context.rs` smart refactor: 968 → 350 LOC + `gpu/fused.rs` (per-op preparation extracted by responsibility). Hardcoded primal names evolved to capability-based runtime discovery via `capability.list` probes. Songbird announcement wired into primal startup. 12+ tolerance constants added; exp050/070/080 migrated to `ValidationHarness`. Python provenance headers added to exp078-082 control scripts. Zero unsafe, zero TODO/FIXME, zero `#[allow()]`, all files under 1000 LOC.
 
 ---
 
@@ -33,7 +33,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V23** (deep debt remediation + production hardening) |
+| Version | **V24** (deep audit execution + modern Rust evolution) |
 | **Total tests** | **435** |
 | Experiments complete | 61 (Tracks 1–5, Tier 0+1+2+3) |
 | JSON-RPC capabilities | 55+ (all wired — 0 stubs in dispatch) |
@@ -50,8 +50,28 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Clippy | **0 warnings** (`#![deny(clippy::pedantic, clippy::nursery)]`) |
 | `cargo fmt` | **0 diffs** |
 | `cargo doc` | **0 warnings** |
-| Max file size | 968 lines (`gpu/context.rs` — all files under 1000-line limit) |
+| Max file size | 350 lines (`gpu/context.rs` — smart refactor, all files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V24 Deep Audit Execution + Modern Rust Evolution (from V23)
+
+V24 executes on the comprehensive audit — eliminating duplication, evolving hardcoded patterns to capability-based runtime discovery, and modernizing Rust idioms.
+
+| Change | Impact |
+|--------|--------|
+| **toadStool Hill/AUC delegation** | `stage.rs` no longer reimplements Hill or AUC — delegates to `pkpd::hill_sweep()` and `pkpd::auc_trapezoidal()`. Zero duplicate math. |
+| **gpu/context.rs smart refactor** | 968 → 350 LOC. Per-op buffer preparation extracted to `gpu/fused.rs` (340 LOC) by responsibility. `execute_fused` now clean 3-phase: prepare → submit → readback. |
+| **Capability-based primal discovery** | Removed hardcoded `COMPUTE_PRIMAL_DEFAULT`/`DATA_PRIMAL_DEFAULT`. `discover_compute_primal()`/`discover_data_primal()` now probe socket dir via `capability.list` with well-known name fallback. |
+| **Songbird wired** | `announce_to_songbird()` called during primal startup — advertises `health.*` capabilities to petalTongue and other primals. |
+| **Tolerance constants expanded** | 12 new named constants: `HILL_AT_EC50`, `DETERMINISM`, `PCIE_BANDWIDTH`, `PCIE_GEN{3,4,5}_16X_GBPS`, `TRP_RANGE_*`, `SEROTONIN_MIDPOINT_*`, `HILL_SATURATION_100X`. |
+| **ValidationHarness migration** | exp050, exp070, exp080 migrated from ad-hoc counters. All use named tolerances. |
+| **exp089 exit code fix** | Replaced `assert_eq!` panic with proper `exit(1)`. |
+| **cross_validate.py docstring** | Corrected misleading "Python vs Rust" claim to accurate "baseline self-consistency". |
+| **CI clippy nursery** | `.github/workflows/ci.yml` now enforces `-W clippy::nursery` matching `lib.rs`. |
+| **Python provenance** | Added provenance headers to exp078-082 control scripts. |
+| **baseCamp cleanup** | Removed duplicate files (gonzales.md, mok_testosterone.md, drug_matrix_comparison.md → canonical subdirectory versions). |
 
 ---
 
@@ -318,7 +338,8 @@ healthSpring/
 │       ├── gpu/         # Tier 2: GPU dispatch + GpuContext + fused pipeline
 │       │   ├── mod.rs
 │       │   ├── dispatch.rs
-│       │   └── context.rs
+│       │   ├── context.rs  # GpuContext (350 LOC — single-op + fused orchestrator)
+│       │   └── fused.rs    # Per-op buffer prep + readback decode (extracted from context)
 │       └── visualization/ # petalTongue integration
 │           ├── ipc_push.rs      # JSON-RPC client (render, append, replace, gauge, caps, interact)
 │           ├── stream.rs        # StreamSession with backpressure

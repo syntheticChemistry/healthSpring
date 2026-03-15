@@ -247,8 +247,7 @@ mod tests {
             .iter()
             .enumerate()
             .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal))
-            .map(|(i, _)| i)
-            .unwrap_or(0);
+            .map_or(0, |(i, _)| i);
         let center = n / 2;
         assert!(
             max_idx.abs_diff(center) <= 1,

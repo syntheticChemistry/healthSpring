@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V23 — deep debt remediation + production hardening. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. AGPL-3.0-or-later across all files. `clippy::nursery` enforced, zero `#[allow()]`, zero TODO/FIXME, `UniBin`-compliant primal binary. barraCuda v0.3.5 pinned.
+**Status**: V24 — deep audit execution + modern Rust evolution. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. toadStool Hill/AUC delegation, `gpu/context.rs` smart refactor (968→350 LOC), capability-based primal discovery, Songbird wired, CI clippy::nursery aligned. barraCuda v0.3.5 pinned.
 **Last Updated**: March 15, 2026
 
 ---
@@ -22,10 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V23** | [V23 Deep Remediation Handoff](handoffs/HEALTHSPRING_V23_DEEP_REMEDIATION_BARRACUDA_TOADSTOOL_HANDOFF_MAR15_2026.md) | Mar 15 | Deep debt remediation, Tier A/B GPU rewire plan, NLME absorption candidates, quality standards. Supersedes V22 + V15 absorption. |
-| **V20** | [V20 petalTongue V16 Visualization Handoff](handoffs/HEALTHSPRING_V20_PETALTONGUE_V16_VIZ_BARRACUDA_TOADSTOOL_HANDOFF_MAR10_2026.md) | Mar 10 | petalTongue V16 scenarios, compute pipeline viz, unified dashboard, patient explorer. |
-| **V19** | [V19 Full-Stack Portability Handoff](handoffs/HEALTHSPRING_V19_FULLSTACK_BARRACUDA_TOADSTOOL_HANDOFF_MAR10_2026.md) | Mar 10 | GPU scaling, toadStool V16 dispatch, mixed NUCLEUS, PCIe P2P bypass. |
-| | *V1–V22 → `handoffs/archive/`* | | Fossil record |
+| **V24** | [V24 Audit Execution Handoff](handoffs/HEALTHSPRING_V24_AUDIT_EXECUTION_BARRACUDA_TOADSTOOL_HANDOFF_MAR15_2026.md) | Mar 15 | Audit execution: Hill/AUC delegation, smart refactor, capability-based discovery, fused pipeline documentation for TensorSession design. Supersedes all prior. |
+| | *V1–V23 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

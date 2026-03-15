@@ -1,6 +1,6 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.4 (V23 — deep debt remediation + production hardening)
+**Version**: 0.5 (V24 — deep audit execution + modern Rust evolution)
 **Date**: March 15, 2026
 
 ---

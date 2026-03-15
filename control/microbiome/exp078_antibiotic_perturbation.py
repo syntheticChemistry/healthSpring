@@ -1,10 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
 #!/usr/bin/env python3
 """
 healthSpring Exp078 — Antibiotic Perturbation Recovery (Python Baseline)
 
 Models Shannon diversity decline under ciprofloxacin and recovery.
 Reference: Dethlefsen & Relman 2011, PNAS 108: 4554-4561.
+
+Provenance:
+  Baseline date:   2026-03-15
+  Command:         python3 control/microbiome/exp078_antibiotic_perturbation.py
+  Environment:     Python 3.10+, NumPy
 """
 import json, os, sys
 import numpy as np

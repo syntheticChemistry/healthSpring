@@ -128,6 +128,47 @@ pub const CPU_PARITY: f64 = 1e-10;
 /// Pipeline stage transform (exp decay, dispatch).
 pub const PIPELINE_STAGE: f64 = 1e-10;
 
+// ── Diagnostic Pipeline Class ────────────────────────────────────────
+
+/// Hill response at `EC50`: exactly `E_max/2` (analytical identity).
+pub const HILL_AT_EC50: f64 = 1.0;
+
+/// Deterministic rerun parity — bit-identical assessment.
+pub const DETERMINISM: f64 = 1e-12;
+
+// ── PCIe / Hardware Class ────────────────────────────────────────────
+
+/// `PCIe` bandwidth estimation tolerance (lane math rounding).
+pub const PCIE_BANDWIDTH: f64 = 0.1;
+
+/// `PCIe` Gen3 ×16 expected bandwidth (GB/s).
+pub const PCIE_GEN3_16X_GBPS: f64 = 15.76;
+
+/// `PCIe` Gen4 ×16 expected bandwidth (GB/s).
+pub const PCIE_GEN4_16X_GBPS: f64 = 31.504;
+
+/// `PCIe` Gen5 ×16 expected bandwidth (GB/s).
+pub const PCIE_GEN5_16X_GBPS: f64 = 63.008;
+
+// ── Gut-Brain Serotonin Class ────────────────────────────────────────
+
+/// Tryptophan physiological range lower bound (µmol/L).
+pub const TRP_RANGE_LOW: f64 = 80.0;
+
+/// Tryptophan physiological range upper bound (µmol/L).
+pub const TRP_RANGE_HIGH: f64 = 180.0;
+
+/// Serotonin sigmoid midpoint range lower bound.
+pub const SEROTONIN_MIDPOINT_LOW: f64 = 40.0;
+
+/// Serotonin sigmoid midpoint range upper bound.
+pub const SEROTONIN_MIDPOINT_HIGH: f64 = 60.0;
+
+// ── Hill Saturation Class ────────────────────────────────────────────
+
+/// Hill saturation threshold at `100×IC50`.
+pub const HILL_SATURATION_100X: f64 = 0.99;
+
 // ── NLME / Pipeline Class ─────────────────────────────────────────────
 
 /// FOCE theta recovery (`CL`, `Vd`, `Ka`) — 30% relative.

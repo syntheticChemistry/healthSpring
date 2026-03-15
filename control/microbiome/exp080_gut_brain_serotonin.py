@@ -1,10 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
 #!/usr/bin/env python3
 """
 healthSpring Exp080 — Gut-Brain Serotonin Pathway (Python Baseline)
 
 Microbiome diversity → tryptophan → serotonin production.
 Reference: Yano et al. 2015 (Cell), Clarke et al. 2013.
+
+Provenance:
+  Baseline date:   2026-03-15
+  Command:         python3 control/microbiome/exp080_gut_brain_serotonin.py
+  Environment:     Python 3.10+, NumPy
 """
 import json, os, sys
 import numpy as np

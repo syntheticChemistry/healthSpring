@@ -12,12 +12,6 @@ use std::path::PathBuf;
 /// This primal's socket name (healthSpring).
 const PRIMAL_NAME: &str = "healthspring";
 
-/// Default compute primal name when `HEALTHSPRING_COMPUTE_PRIMAL` is unset.
-const COMPUTE_PRIMAL_DEFAULT: &str = "toadstool";
-
-/// Default data primal name when `HEALTHSPRING_DATA_PRIMAL` is unset.
-const DATA_PRIMAL_DEFAULT: &str = "nestgate";
-
 /// Return the biomeOS socket directory, with XDG fallback.
 #[must_use]
 pub fn resolve_socket_dir() -> PathBuf {
@@ -91,22 +85,102 @@ pub fn discover_all_primals() -> Vec<String> {
         .collect()
 }
 
-/// Probe for a compute primal (toadStool / Node Atomic).
+/// Probe for a compute primal by capability, not name.
+///
+/// Resolution order:
+/// 1. Explicit env `HEALTHSPRING_COMPUTE_PRIMAL` (override for testing)
+/// 2. Scan socket dir for any primal advertising `compute.*` capability
+/// 3. Fall back to well-known name scan (toadstool, node-atomic)
 #[must_use]
 pub fn discover_compute_primal() -> Option<PathBuf> {
-    std::env::var("HEALTHSPRING_COMPUTE_PRIMAL")
+    if let Some(path) = std::env::var("HEALTHSPRING_COMPUTE_PRIMAL")
         .ok()
         .and_then(|name| discover_primal(&name))
-        .or_else(|| discover_primal(COMPUTE_PRIMAL_DEFAULT))
+    {
+        return Some(path);
+    }
+    discover_by_capability("compute")
+        .or_else(|| discover_primal("toadstool"))
+        .or_else(|| discover_primal("node-atomic"))
 }
 
-/// Probe for a data primal (`NestGate`).
+/// Probe for a data primal by capability, not name.
+///
+/// Resolution order:
+/// 1. Explicit env `HEALTHSPRING_DATA_PRIMAL` (override for testing)
+/// 2. Scan socket dir for any primal advertising `data.*` capability
+/// 3. Fall back to well-known name scan (nestgate, squirrel)
 #[must_use]
 pub fn discover_data_primal() -> Option<PathBuf> {
-    std::env::var("HEALTHSPRING_DATA_PRIMAL")
+    if let Some(path) = std::env::var("HEALTHSPRING_DATA_PRIMAL")
         .ok()
         .and_then(|name| discover_primal(&name))
-        .or_else(|| discover_primal(DATA_PRIMAL_DEFAULT))
+    {
+        return Some(path);
+    }
+    discover_by_capability("data")
+        .or_else(|| discover_primal("nestgate"))
+        .or_else(|| discover_primal("squirrel"))
+}
+
+/// Discover a primal by capability domain: query each visible socket with
+/// `capability.list` and check for matching domain prefix.
+fn discover_by_capability(domain: &str) -> Option<PathBuf> {
+    let dir = resolve_socket_dir();
+    let Ok(entries) = std::fs::read_dir(&dir) else {
+        return None;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        let name = entry.file_name();
+        let name_str = name.to_string_lossy();
+        if !name_str.ends_with(".sock") || name_str.starts_with(PRIMAL_NAME) {
+            continue;
+        }
+        if probe_capability(&path, domain) {
+            return Some(path);
+        }
+    }
+    None
+}
+
+/// Send a `capability.list` probe and check if any capability starts with the domain.
+fn probe_capability(socket_path: &std::path::Path, domain: &str) -> bool {
+    use std::io::{Read, Write};
+    use std::os::unix::net::UnixStream;
+    use std::time::Duration;
+
+    let Ok(mut stream) = UnixStream::connect(socket_path) else {
+        return false;
+    };
+    stream
+        .set_read_timeout(Some(Duration::from_millis(500)))
+        .ok();
+    stream
+        .set_write_timeout(Some(Duration::from_millis(500)))
+        .ok();
+
+    let req = "{\"jsonrpc\":\"2.0\",\"method\":\"capability.list\",\"params\":{},\"id\":1}\n";
+    if stream.write_all(req.as_bytes()).is_err() || stream.flush().is_err() {
+        return false;
+    }
+
+    let mut buf = vec![0u8; 8192];
+    let Ok(n) = stream.read(&mut buf) else {
+        return false;
+    };
+    let Ok(resp) = serde_json::from_slice::<serde_json::Value>(&buf[..n]) else {
+        return false;
+    };
+
+    let prefix = format!("{domain}.");
+    resp.get("result")
+        .and_then(|r| r.get("science"))
+        .and_then(|s| s.as_array())
+        .is_some_and(|caps| {
+            caps.iter()
+                .any(|c| c.as_str().is_some_and(|s| s.starts_with(&prefix)))
+        })
 }
 
 /// Probe for a fallback registration primal.

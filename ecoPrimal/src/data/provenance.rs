@@ -342,10 +342,7 @@ mod tests {
 
     #[test]
     fn trio_available_check() {
-        // In test env without biomeOS, should be false
-        let available = trio_available();
-        // Don't assert — CI may have sockets
-        drop(available);
+        let _available = trio_available();
     }
 
     #[test]

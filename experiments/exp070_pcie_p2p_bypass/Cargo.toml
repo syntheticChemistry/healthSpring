@@ -9,6 +9,7 @@ license.workspace = true
 description = "Exp070: PCIe P2P bypass validation — NPU-to-GPU transfer path"
 
 [dependencies]
+healthspring-barracuda = { path = "../../ecoPrimal" }
 healthspring-forge = { path = "../../metalForge/forge" }
 
 [[bin]]

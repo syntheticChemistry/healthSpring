@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V15 — 61 experiments (Tier 0+1+2+3 + diagnostic + petalTongue + GPU + visualization + dispatch + clinical TRT + streaming + interaction + NLME + V16 primitives + V19 full-stack + V20 visualization), 368 Rust tests (302 barraCuda + 33 forge + 30 toadStool + 3 doc-tests), 853 binary checks, 104 cross-validation checks. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, Kokkos benchmarks, full petalTongue pipeline (28 nodes, 121 channels).
-**Last Updated**: March 14, 2026
+**Status**: V24 — 61 experiments, 435 Rust tests, 55+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 10 experiments on `ValidationHarness` (hotSpring pattern), tolerances centralized, CI clippy::nursery enforced. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
+**Last Updated**: March 15, 2026
 
 ---
 

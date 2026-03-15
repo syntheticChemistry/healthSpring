@@ -455,11 +455,7 @@ pub(super) fn build_edges() -> Vec<ScenarioEdge> {
 }
 
 #[cfg(test)]
-#[expect(
-    clippy::expect_used,
-    clippy::unwrap_used,
-    reason = "test assertions use expect/unwrap for clarity"
-)]
+#[expect(clippy::expect_used, reason = "test assertions use expect for clarity")]
 mod tests {
     use super::{build_edges, build_nodes, health_to_status, risk_to_health};
     use crate::diagnostic::{PatientProfile, Sex, assess_patient};

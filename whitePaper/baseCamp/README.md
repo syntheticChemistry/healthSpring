@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 15, 2026
-**Status:** V23 — deep debt remediation + production hardening. All V22 audit findings resolved: AGPL-3.0-or-later license compliance, `clippy::nursery` enforcement, `UniBin`-compliant primal binary, 13 new dispatch handlers wired, three-tier data fetch, centralized tolerances, `ValidationHarness` adoption. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. Zero `#[allow()]`, zero TODO/FIXME, zero unsafe code, all files under 1000 LOC.
+**Status:** V24 — deep audit execution + modern Rust evolution. toadStool Hill/AUC duplication eliminated, `gpu/context.rs` smart refactor (968→350 LOC), hardcoded primal names evolved to capability-based runtime discovery, Songbird announcement wired, 12 new tolerance constants, ValidationHarness migrations (exp050/070/080), CI clippy nursery aligned. 435 tests, 61 experiments, 55+ wired JSON-RPC capabilities. Zero `#[allow()]`, zero TODO/FIXME, zero unsafe code, all files under 1000 LOC.
 
 ---
 

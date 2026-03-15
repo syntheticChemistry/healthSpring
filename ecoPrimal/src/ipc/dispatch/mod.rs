@@ -112,12 +112,12 @@ mod tests {
             "concentration": 10.0, "ic50": 10.0, "hill_n": 1.0, "e_max": 1.0,
         });
         let result = dispatch_science("science.pkpd.hill_dose_response", &params);
-        assert!(result.is_some());
-        let v = result.expect("dispatch returned Some");
-        let response = v
-            .get("response")
-            .and_then(Value::as_f64)
-            .expect("has response");
+        let Some(v) = result else {
+            panic!("dispatch returned None for hill_dose_response");
+        };
+        let Some(response) = v.get("response").and_then(Value::as_f64) else {
+            panic!("response field missing");
+        };
         assert!((response - 0.5).abs() < 1e-10);
     }
 
@@ -125,12 +125,12 @@ mod tests {
     fn shannon_dispatch_works() {
         let params = serde_json::json!({"abundances": [0.25, 0.25, 0.25, 0.25]});
         let result = dispatch_science("science.microbiome.shannon_index", &params);
-        assert!(result.is_some());
-        let v = result.expect("dispatch returned Some");
-        let h = v
-            .get("shannon")
-            .and_then(Value::as_f64)
-            .expect("has shannon");
+        let Some(v) = result else {
+            panic!("dispatch returned None for shannon_index");
+        };
+        let Some(h) = v.get("shannon").and_then(Value::as_f64) else {
+            panic!("shannon field missing");
+        };
         assert!((h - 4.0_f64.ln()).abs() < 1e-10);
     }
 
@@ -143,8 +143,9 @@ mod tests {
     #[test]
     fn missing_params_returns_error() {
         let result = dispatch_science("science.pkpd.hill_dose_response", &serde_json::json!({}));
-        assert!(result.is_some());
-        let v = result.expect("dispatch returned Some");
+        let Some(v) = result else {
+            panic!("dispatch returned None for missing params");
+        };
         assert!(v.get("error").is_some());
     }
 }

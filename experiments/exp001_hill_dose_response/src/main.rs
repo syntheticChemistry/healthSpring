@@ -112,7 +112,7 @@ fn main() {
         print!("\n--- Check: {} saturation at 100x --- ", drug.name);
         let conc = drug.ic50_jak1_nm * 100.0;
         let r = hill_dose_response(conc, drug.ic50_jak1_nm, drug.hill_n, 1.0);
-        if r > 0.99 {
+        if r > tolerances::HILL_SATURATION_100X {
             println!("[PASS] {r:.6} at {conc:.0} nM");
             passed += 1;
         } else {

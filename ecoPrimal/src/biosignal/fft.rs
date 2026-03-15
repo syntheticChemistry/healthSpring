@@ -200,8 +200,7 @@ mod tests {
             .iter()
             .enumerate()
             .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal))
-            .map(|(i, _)| i)
-            .unwrap_or(0);
+            .map_or(0, |(i, _)| i);
         assert_eq!(peak_bin, 4, "peak at bin 4 for 4-cycle sine");
     }
 

@@ -21,7 +21,7 @@ jobs:
     - name: Format check
       run: cargo fmt --check --all
     - name: Clippy (pedantic)
-      run: cargo clippy --workspace -- -D warnings -W clippy::pedantic
+      run: cargo clippy --workspace -- -D warnings -W clippy::pedantic -W clippy::nursery
     - name: Doc check
       run: cargo doc --workspace --no-deps
 

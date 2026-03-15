@@ -1,10 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
 #!/usr/bin/env python3
 """
 healthSpring Exp082 — Arrhythmia Beat Classification (Python Baseline)
 
 Template matching: Normal, PVC, PAC beat morphology.
 Reference: MIT-BIH (Moody & Mark 2001), AAMI EC57.
+
+Provenance:
+  Baseline date:   2026-03-15
+  Command:         python3 control/biosignal/exp082_arrhythmia_classification.py
+  Environment:     Python 3.10+, NumPy
 """
 import json, os, sys
 import numpy as np

@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 15, 2026
-**Status**: V23 — production-hardened biomeOS niche. 55+ wired JSON-RPC capabilities (all 13 V22 stubs implemented). `ipc/dispatch.rs` refactored from 1193-line monolith into domain modules (pkpd, microbiome, biosignal, clinical). GPU Tier A rewire documented. Three-tier data fetch implemented.
+**Status**: V24 — audit-hardened biomeOS niche. 55+ wired JSON-RPC capabilities. `gpu/context.rs` smart refactor (968→350 LOC, per-op prep in `fused.rs`). toadStool Hill/AUC delegation. Tier A GPU rewire documented. Capability-based primal discovery.
 
 ---
 

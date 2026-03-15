@@ -2,10 +2,6 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
-#![expect(
-    clippy::too_many_lines,
-    reason = "validation binary — linear check sequence"
-)]
 //! healthSpring Exp032 — Age-Related Testosterone Decline (Rust validation)
 
 use healthspring_barracuda::endocrine::{self, decline_params as dp};

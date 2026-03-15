@@ -58,6 +58,8 @@ use crate::pkpd;
 pub mod context;
 #[cfg(feature = "gpu")]
 pub mod dispatch;
+#[cfg(feature = "gpu")]
+mod fused;
 
 /// WGSL shader sources — compiled into the binary.
 ///

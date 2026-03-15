@@ -148,9 +148,8 @@ mod tests {
 
     #[test]
     fn mm_css_below_vmax() {
-        let css = match mm_css_infusion(&PHENYTOIN_PARAMS, 250.0) {
-            Some(c) => c,
-            None => panic!("250 mg/day < vmax 500 should yield Some"),
+        let Some(css) = mm_css_infusion(&PHENYTOIN_PARAMS, 250.0) else {
+            panic!("250 mg/day < vmax 500 should yield Some");
         };
         assert!(css > 0.0 && css.is_finite());
     }
