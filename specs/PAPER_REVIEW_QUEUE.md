@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 15, 2026
-**Status**: V25 — 73 experiments complete (Tracks 1–7), 501 library tests + 173 validation checks, 55+ wired JSON-RPC capabilities. All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. New modules: `discovery/fibrosis`, `comparative/feline`.
+**Status**: V27 — 73 experiments complete (Tracks 1–7), 601 library tests + 173 validation checks, 55+ wired JSON-RPC capabilities (capability registry). All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. V27: ODE→WGSL codegen, uncertainty module, IPC cast safety, cross-spring absorptions.
 
 ---
 
@@ -16,9 +16,9 @@
 | Track 4: Endocrinology | 9 | 9 | 9 |
 | Validation | 1 | 1 | 1 |
 | **Tracks 1–5 Total** | **30** | **30** | **30** |
-| Track 6: Comparative Medicine | 8 | 3 | 3 |
-| Track 7: Drug Discovery | 7 | 4 | 4 |
-| **Grand Total** | **45** | **37** | **37** |
+| Track 6: Comparative Medicine | 8 | 7 | 7 |
+| Track 7: Drug Discovery | 7 | 5 | 5 |
+| **Grand Total** | **45** | **42** | **42** |
 
 ---
 

@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 15, 2026
-**Status**: V25 — 73 experiments, 501 tests. Track 6+7 complete: 12 new experiments (Exp090–094, Exp100–106) with 173 validation checks.
+**Status**: V27 — 73 experiments, 601 tests. Deep Evolution Sprint: ODE→WGSL codegen, uncertainty module, IPC cast safety, capability registry.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 

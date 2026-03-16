@@ -5,7 +5,7 @@ use serde_json::Value;
 
 use crate::pkpd;
 
-use super::{f, fa, missing};
+use super::{f, fa, missing, sz_or};
 
 fn parse_nlme_subjects(params: &Value) -> Option<Vec<pkpd::Subject>> {
     let arr = params.get("subjects")?.as_array()?;
@@ -108,7 +108,7 @@ pub fn dispatch_pbpk(params: &Value) -> Value {
 }
 
 pub fn dispatch_population_pk(params: &Value) -> Value {
-    let n = params.get("n").and_then(Value::as_u64).unwrap_or(100) as usize;
+    let n = sz_or(params, "n", 100);
     let seed = params.get("seed").and_then(Value::as_u64).unwrap_or(42);
     let times: Vec<f64> = (0..=480).map(|i| f64::from(i) * 0.1).collect();
     let results = pkpd::population_pk_monte_carlo(
@@ -121,6 +121,7 @@ pub fn dispatch_population_pk(params: &Value) -> Value {
         pkpd::pop_baricitinib::F_BIOAVAIL,
         &times,
     );
+    #[expect(clippy::cast_precision_loss, reason = "population size fits f64")]
     let n_res = results.len().max(1) as f64;
     serde_json::json!({
         "n": results.len(),
@@ -155,10 +156,7 @@ pub fn dispatch_nca(params: &Value) -> Value {
         return missing("times, concentrations");
     };
     let dose = f(params, "dose").unwrap_or(100.0);
-    let min_pts = params
-        .get("min_terminal_points")
-        .and_then(Value::as_u64)
-        .unwrap_or(3) as usize;
+    let min_pts = sz_or(params, "min_terminal_points", 3);
     let r = pkpd::nca_iv(&times, &concs, dose, min_pts);
     serde_json::json!({
         "cmax": r.cmax,
@@ -202,10 +200,7 @@ pub fn dispatch_nlme_foce(params: &Value) -> Value {
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
-        max_iter: params
-            .get("max_iter")
-            .and_then(Value::as_u64)
-            .unwrap_or(200) as usize,
+        max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(1e-6),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
@@ -237,10 +232,7 @@ pub fn dispatch_nlme_saem(params: &Value) -> Value {
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
-        max_iter: params
-            .get("max_iter")
-            .and_then(Value::as_u64)
-            .unwrap_or(300) as usize,
+        max_iter: sz_or(params, "max_iter", 300),
         tol: f(params, "tol").unwrap_or(1e-6),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
@@ -272,10 +264,7 @@ pub fn dispatch_cwres(params: &Value) -> Value {
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
-        max_iter: params
-            .get("max_iter")
-            .and_then(Value::as_u64)
-            .unwrap_or(200) as usize,
+        max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(1e-6),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
@@ -306,10 +295,7 @@ pub fn dispatch_vpc(params: &Value) -> Value {
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
-        max_iter: params
-            .get("max_iter")
-            .and_then(Value::as_u64)
-            .unwrap_or(200) as usize,
+        max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(1e-6),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
@@ -322,11 +308,8 @@ pub fn dispatch_vpc(params: &Value) -> Value {
         &config,
     );
     let vpc_config = pkpd::VpcConfig {
-        n_simulations: params
-            .get("n_simulations")
-            .and_then(Value::as_u64)
-            .unwrap_or(200) as usize,
-        n_bins: params.get("n_bins").and_then(Value::as_u64).unwrap_or(10) as usize,
+        n_simulations: sz_or(params, "n_simulations", 200),
+        n_bins: sz_or(params, "n_bins", 10),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
     let vpc = pkpd::compute_vpc(
@@ -356,10 +339,7 @@ pub fn dispatch_gof(params: &Value) -> Value {
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
-        max_iter: params
-            .get("max_iter")
-            .and_then(Value::as_u64)
-            .unwrap_or(200) as usize,
+        max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(1e-6),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };

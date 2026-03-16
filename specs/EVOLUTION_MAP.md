@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 15, 2026
-**Status**: V25 — Track 6+7 complete. 73 experiments, 501 lib tests + 173 validation checks. Modules: `discovery/` (MATRIX, HTS, compound, fibrosis) and `comparative/` (species_params, canine, feline). 12 new experiments (Exp090–094, Exp100–106). GPU Tier A candidates: batch Hill sweep, batch MATRIX scoring. Species-agnostic PK bridge validated across 5 species.
+**Status**: V27 — Deep Evolution Sprint. 73 experiments, 601 lib tests + 173 validation checks. V27: ODE→WGSL codegen (`MichaelisMentenOde`, `OralOneCompartmentOde`, `TwoCompartmentOde` via `BatchedOdeRK4`), uncertainty module (bootstrap/jackknife/bias-variance from groundSpring), IPC cast safety (sz/sz_or/sza helpers), `core::` imports, capability registry. V26: 6 large-file refactors, primal self-knowledge, 46-entry capability registry. V25: Track 6+7 complete. Modules: `discovery/` and `comparative/`.
 
 ---
 

@@ -12,8 +12,11 @@ const BIOMEOS_XDG_SUBDIR: &str = "biomeos";
 /// Default biomeOS orchestrator socket filename.
 const BIOMEOS_DEFAULT_SOCK: &str = "biomeos-default.sock";
 
-/// Default `NestGate` data provider socket filename.
-const NESTGATE_DEFAULT_SOCK: &str = "nestgate-default.sock";
+/// Default `NestGate` data provider socket filename (overridable via `HEALTHSPRING_DATA_SOCKET`).
+fn default_socket_name() -> String {
+    std::env::var("HEALTHSPRING_DATA_SOCKET")
+        .unwrap_or_else(|_| "nestgate-default.sock".into())
+}
 
 /// Provider name for `NestGate` (used in `HEALTHSPRING_DATA_PROVIDER`).
 const NESTGATE_PROVIDER: &str = "nestgate";
@@ -63,7 +66,7 @@ pub fn discover_nestgate_socket() -> Option<PathBuf> {
     if let Ok(xdg) = std::env::var("XDG_RUNTIME_DIR") {
         let p = PathBuf::from(xdg)
             .join(BIOMEOS_XDG_SUBDIR)
-            .join(NESTGATE_DEFAULT_SOCK);
+            .join(default_socket_name());
         if p.exists() {
             return Some(p);
         }

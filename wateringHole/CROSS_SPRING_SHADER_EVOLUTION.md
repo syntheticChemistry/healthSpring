@@ -1,6 +1,6 @@
 # Cross-Spring Shader Evolution — healthSpring Perspective
 
-**Updated**: March 15, 2026 (V25)
+**Updated**: March 15, 2026 (V27)
 **License**: AGPL-3.0-or-later
 
 This document tracks how WGSL shaders and math primitives flow between
@@ -194,3 +194,22 @@ use barracuda::shaders::provenance::{shaders_from, shaders_consumed_by, SpringDo
 let contributed = shaders_from(SpringDomain::HEALTH_SPRING);
 let consumed = shaders_consumed_by(SpringDomain::HEALTH_SPRING);
 ```
+
+---
+
+## V27 ODE→WGSL Codegen Absorption
+
+V27 absorbs the `OdeSystem` trait pattern from barraCuda (validated by wetSpring).
+Instead of hand-writing WGSL shaders, healthSpring now defines ODE systems as
+Rust structs implementing `barracuda::numerical::OdeSystem`, and the WGSL is
+generated automatically via `BatchedOdeRK4::generate_shader()`.
+
+| ODE System | States | Params | WGSL Generated | CPU Validated |
+|-----------|--------|--------|:--------------:|:------------:|
+| `MichaelisMentenOde` | 1 | 3 | Yes | Yes (7 tests) |
+| `OralOneCompartmentOde` | 2 | 5 | Yes | Yes |
+| `TwoCompartmentOde` | 2 | 4 | Yes | Yes |
+
+This replaces the Tier B `michaelis_menten_batch_f64.wgsl` hand-rolled shader
+with a generated equivalent, and extends GPU capability to oral and two-compartment
+PK models for the first time.

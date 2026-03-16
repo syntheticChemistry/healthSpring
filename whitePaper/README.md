@@ -2,7 +2,7 @@
 # healthSpring White Paper
 
 **Date:** March 15, 2026
-**Status:** V24 — 61 experiments, 435 tests, 55+ wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–5). Audit execution: toadStool Hill/AUC delegation, `gpu/context.rs` smart refactor (968→350 LOC), capability-based primal discovery, Songbird wired, CI clippy::nursery aligned, ValidationHarness migrations, Python provenance. Zero duplicate math, zero hardcoded primal names.
+**Status:** V27 — 73 experiments, 601 tests, 55+ wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–7). Audit execution: toadStool Hill/AUC delegation, `gpu/context.rs` smart refactor (968→350 LOC), capability-based primal discovery, Songbird wired, CI clippy::nursery aligned, ValidationHarness migrations, Python provenance. Zero duplicate math, zero hardcoded primal names.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---

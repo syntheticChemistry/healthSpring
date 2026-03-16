@@ -8,7 +8,7 @@
 //! This replaces ad-hoc `passed`/`failed` counters across 61 experiments
 //! with a single, auditable pattern linked to `TOLERANCE_REGISTRY.md`.
 
-use std::fmt;
+use core::fmt;
 
 /// How a tolerance bound is interpreted.
 #[derive(Debug, Clone, Copy)]
@@ -219,6 +219,90 @@ impl ValidationHarness {
     }
 }
 
+/// Convert a `usize` length to `f64` with an explicit precision-loss acknowledgement.
+///
+/// Useful at IPC boundaries where collection lengths appear in arithmetic.
+#[expect(clippy::cast_precision_loss, reason = "collection size ≪ 2^52")]
+#[must_use]
+#[inline]
+pub const fn len_f64(n: usize) -> f64 {
+    n as f64
+}
+
+/// Root Mean Square Error between observed and predicted.
+///
+/// # Panics
+///
+/// Panics if `observed` and `predicted` have different lengths.
+#[expect(clippy::cast_precision_loss, reason = "n ≪ 2^52")]
+#[must_use]
+pub fn rmse(observed: &[f64], predicted: &[f64]) -> f64 {
+    assert_eq!(observed.len(), predicted.len());
+    let n = observed.len();
+    if n == 0 { return 0.0; }
+    let sum_sq: f64 = observed.iter().zip(predicted).map(|(o, p)| (o - p).powi(2)).sum();
+    (sum_sq / n as f64).sqrt()
+}
+
+/// Mean Absolute Error.
+///
+/// # Panics
+///
+/// Panics if `observed` and `predicted` have different lengths.
+#[expect(clippy::cast_precision_loss, reason = "n ≪ 2^52")]
+#[must_use]
+pub fn mae(observed: &[f64], predicted: &[f64]) -> f64 {
+    assert_eq!(observed.len(), predicted.len());
+    let n = observed.len();
+    if n == 0 { return 0.0; }
+    let sum_abs: f64 = observed.iter().zip(predicted).map(|(o, p)| (o - p).abs()).sum();
+    sum_abs / n as f64
+}
+
+/// Nash-Sutcliffe Efficiency (1.0 = perfect, 0.0 = mean model, negative = worse).
+///
+/// # Panics
+///
+/// Panics if `observed` and `predicted` have different lengths.
+#[expect(clippy::cast_precision_loss, reason = "n ≪ 2^52")]
+#[must_use]
+pub fn nse(observed: &[f64], predicted: &[f64]) -> f64 {
+    assert_eq!(observed.len(), predicted.len());
+    let n = observed.len();
+    if n == 0 { return 0.0; }
+    let mean_obs: f64 = observed.iter().sum::<f64>() / n as f64;
+    let ss_res: f64 = observed.iter().zip(predicted).map(|(o, p)| (o - p).powi(2)).sum();
+    let ss_tot: f64 = observed.iter().map(|o| (o - mean_obs).powi(2)).sum();
+    if ss_tot < 1e-15 { return 1.0; }
+    1.0 - ss_res / ss_tot
+}
+
+/// Coefficient of determination (R-squared).
+#[must_use]
+pub fn r_squared(observed: &[f64], predicted: &[f64]) -> f64 {
+    nse(observed, predicted)
+}
+
+/// Willmott Index of Agreement (0.0 to 1.0).
+///
+/// # Panics
+///
+/// Panics if `observed` and `predicted` have different lengths.
+#[expect(clippy::cast_precision_loss, reason = "n ≪ 2^52")]
+#[must_use]
+pub fn index_of_agreement(observed: &[f64], predicted: &[f64]) -> f64 {
+    assert_eq!(observed.len(), predicted.len());
+    let n = observed.len();
+    if n == 0 { return 0.0; }
+    let mean_obs: f64 = observed.iter().sum::<f64>() / n as f64;
+    let ss_res: f64 = observed.iter().zip(predicted).map(|(o, p)| (o - p).powi(2)).sum();
+    let ss_pot: f64 = observed.iter().zip(predicted)
+        .map(|(o, p)| ((p - mean_obs).abs() + (o - mean_obs).abs()).powi(2))
+        .sum();
+    if ss_pot < 1e-15 { return 1.0; }
+    1.0 - ss_res / ss_pot
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -276,5 +360,29 @@ mod tests {
         h.check_exact("mismatch", 27, 28);
         assert_eq!(h.passed(), 1);
         assert_eq!(h.failed(), 1);
+    }
+
+    #[test]
+    fn rmse_perfect() {
+        let data = [1.0, 2.0, 3.0];
+        assert!(rmse(&data, &data) < 1e-15);
+    }
+
+    #[test]
+    fn mae_perfect() {
+        let data = [1.0, 2.0, 3.0];
+        assert!(mae(&data, &data) < 1e-15);
+    }
+
+    #[test]
+    fn nse_perfect() {
+        let data = [1.0, 2.0, 3.0];
+        assert!((nse(&data, &data) - 1.0).abs() < 1e-15);
+    }
+
+    #[test]
+    fn index_of_agreement_perfect() {
+        let data = [1.0, 2.0, 3.0];
+        assert!((index_of_agreement(&data, &data) - 1.0).abs() < 1e-15);
     }
 }

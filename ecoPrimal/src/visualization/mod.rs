@@ -87,8 +87,8 @@ pub fn assessment_to_scenario(
 /// Cannot panic — all scenario types implement `Serialize` deterministically.
 #[must_use]
 pub fn scenario_to_json(scenario: &HealthScenario) -> String {
-    #[expect(clippy::expect_used, reason = "Serialize impls don't fail")]
-    serde_json::to_string_pretty(scenario).expect("scenario serialization cannot fail")
+    serde_json::to_string_pretty(scenario)
+        .unwrap_or_else(|e| format!("{{\"error\":\"{e}\"}}"))
 }
 
 /// Append population Monte Carlo annotation to a scenario.
@@ -146,8 +146,8 @@ pub fn full_scenario_json(
     let scenario = assessment_to_scenario(assessment, patient_name);
     let mut annotated = annotate_population(scenario, pop);
     annotated.edges = nodes::build_edges();
-    #[expect(clippy::expect_used, reason = "Serialize impls don't fail")]
-    serde_json::to_string_pretty(&annotated).expect("serialization cannot fail")
+    serde_json::to_string_pretty(&annotated)
+        .unwrap_or_else(|e| format!("{{\"error\":\"{e}\"}}"))
 }
 
 #[cfg(test)]

@@ -60,6 +60,10 @@ pub mod context;
 pub mod dispatch;
 #[cfg(feature = "gpu")]
 mod fused;
+#[cfg(feature = "barracuda-ops")]
+pub mod barracuda_rewire;
+
+pub mod ode_systems;
 
 /// WGSL shader sources — compiled into the binary.
 ///

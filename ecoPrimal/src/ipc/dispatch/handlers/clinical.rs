@@ -5,7 +5,7 @@ use serde_json::Value;
 
 use crate::{diagnostic, endocrine, pkpd};
 
-use super::{f, fa};
+use super::{f, fa, sza, sz_or};
 
 fn percentile_sorted(v: &mut [f64], p: f64) -> f64 {
     if v.is_empty() {
@@ -15,6 +15,7 @@ fn percentile_sorted(v: &mut [f64], p: f64) -> f64 {
     #[expect(
         clippy::cast_possible_truncation,
         clippy::cast_sign_loss,
+        clippy::cast_precision_loss,
         reason = "percentile index is always non-negative and fits usize"
     )]
     let idx = (p / 100.0 * (v.len() - 1) as f64).round() as usize;
@@ -38,19 +39,8 @@ fn build_profile_from_params(params: &Value) -> diagnostic::PatientProfile {
     profile.gut_abundances = fa(params, "gut_abundances");
     profile.ppg_spo2 = f(params, "ppg_spo2");
     profile.ecg_fs = f(params, "ecg_fs").unwrap_or(360.0);
-    profile.ecg_peaks = params
-        .get("ecg_peaks")
-        .and_then(Value::as_array)
-        .map(|arr| {
-            arr.iter()
-                .filter_map(Value::as_u64)
-                .map(|v| v as usize)
-                .collect()
-        });
-    profile.scr_count = params
-        .get("scr_count")
-        .and_then(Value::as_u64)
-        .map(|v| v as usize);
+    profile.ecg_peaks = sza(params, "ecg_peaks");
+    profile.scr_count = super::sz(params, "scr_count");
     profile.eda_duration_s = f(params, "eda_duration_s").unwrap_or(0.0);
     profile
 }
@@ -105,10 +95,7 @@ pub fn dispatch_population_trt(params: &Value) -> Value {
     use endocrine::pop_trt;
     use endocrine::testosterone_cypionate as tc;
 
-    let n_patients = params
-        .get("n_patients")
-        .and_then(Value::as_u64)
-        .unwrap_or(100) as usize;
+    let n_patients = sz_or(params, "n_patients", 100);
     let seed = params.get("seed").and_then(Value::as_u64).unwrap_or(42);
     let age_min = f(params, "age_min").unwrap_or(40.0);
     let age_max = f(params, "age_max").unwrap_or(75.0);
@@ -129,7 +116,7 @@ pub fn dispatch_population_trt(params: &Value) -> Value {
         rng = r2;
         let (z3, r3) = crate::rng::normal_sample(rng);
         rng = r3;
-        let _age = age_min + (age_max - age_min) * (i as f64) / n_patients.max(1) as f64;
+        let _age = age_min + (age_max - age_min) * crate::validation::len_f64(i) / crate::validation::len_f64(n_patients.max(1));
         let vd = sig_vd.mul_add(z1, mu_vd).exp();
         let ka = sig_ka.mul_add(z2, mu_ka).exp();
         let ke = sig_elim.mul_add(z3, mu_elim).exp();
@@ -145,7 +132,7 @@ pub fn dispatch_population_trt(params: &Value) -> Value {
         auc_arr.push(pkpd::auc_trapezoidal(&times, &concs));
     }
 
-    let n_f = n_patients as f64;
+    let n_f = crate::validation::len_f64(n_patients);
     let cmax_mean = cmax_arr.iter().sum::<f64>() / n_f;
     let auc_mean = auc_arr.iter().sum::<f64>() / n_f;
     serde_json::json!({
@@ -177,19 +164,8 @@ pub fn dispatch_assess_patient(params: &Value) -> Value {
     profile.gut_abundances = fa(params, "gut_abundances");
     profile.ppg_spo2 = f(params, "ppg_spo2");
     profile.ecg_fs = f(params, "ecg_fs").unwrap_or(360.0);
-    profile.ecg_peaks = params
-        .get("ecg_peaks")
-        .and_then(Value::as_array)
-        .map(|arr| {
-            arr.iter()
-                .filter_map(Value::as_u64)
-                .map(|v| v as usize)
-                .collect()
-        });
-    profile.scr_count = params
-        .get("scr_count")
-        .and_then(Value::as_u64)
-        .map(|v| v as usize);
+    profile.ecg_peaks = sza(params, "ecg_peaks");
+    profile.scr_count = super::sz(params, "scr_count");
     profile.eda_duration_s = f(params, "eda_duration_s").unwrap_or(0.0);
 
     let assessment = diagnostic::assess_patient(&profile);
@@ -238,10 +214,7 @@ pub fn dispatch_composite_risk(params: &Value) -> Value {
 
 pub fn dispatch_population_montecarlo(params: &Value) -> Value {
     let profile = build_profile_from_params(params);
-    let n = params
-        .get("n_patients")
-        .and_then(Value::as_u64)
-        .unwrap_or(100) as usize;
+    let n = sz_or(params, "n_patients", 100);
     let seed = params.get("seed").and_then(Value::as_u64).unwrap_or(42);
     let result = diagnostic::population_montecarlo(&profile, n, seed);
     serde_json::json!({

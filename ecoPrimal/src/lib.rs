@@ -17,6 +17,7 @@
 //! |--------|--------|-----------|
 //! | [`pkpd`] | Hill dose-response, compartmental PK, population MC | `hill_dose_response_f64.wgsl`, `population_pk_f64.wgsl` |
 //! | [`microbiome`] | Shannon, Simpson, Pielou, Chao1, Anderson lattice | `diversity_f64.wgsl` |
+//! | [`microbiome_transfer`] | Cross-spring gut Anderson params for neuralSpring | — |
 //! | [`biosignal`] | Pan-Tompkins QRS, HRV, PPG SpO2, fusion | — (NPU target) |
 //! | [`endocrine`] | Testosterone PK, TRT outcomes, decline models | — |
 //! | [`diagnostic`] | Integrated 4-track patient pipeline | — |
@@ -29,6 +30,7 @@
 //! | [`qs`] | QS gene profiling: functional Anderson disorder | — |
 //! | [`data`] | Three-tier fetch: biomeOS → NestGate → NCBI HTTP | — |
 //! | [`visualization`] | petalTongue schema: `DataChannel`, `ClinicalRange` | — |
+//! | [`uncertainty`] | Bootstrap, jackknife, bias–variance decomposition | — |
 //! | [`wfdb`] | PhysioNet WFDB format parser (`.hea`, `.dat`, `.atr`) | — |
 
 pub mod biosignal;
@@ -40,11 +42,13 @@ pub mod endocrine;
 pub mod gpu;
 pub mod ipc;
 pub mod microbiome;
+pub mod microbiome_transfer;
 pub mod pkpd;
 pub mod provenance;
 pub mod qs;
 pub mod rng;
 pub mod tolerances;
+pub mod uncertainty;
 pub mod validation;
 pub mod visualization;
 pub mod wfdb;

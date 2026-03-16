@@ -11,6 +11,12 @@ use std::path::PathBuf;
 
 const RPC_RESPONSE_BUF: usize = 4096;
 
+/// Well-known Songbird socket paths (relative to `XDG_RUNTIME_DIR`).
+const SONGBIRD_PATHS: &[&str] = &[
+    "biomeos/songbird.sock",
+    "songbird/songbird.sock",
+];
+
 /// All capabilities that healthSpring can announce.
 pub const CAPABILITIES: &[&str] = &[
     "health.metrics",
@@ -191,6 +197,12 @@ pub fn build_query_payload(capability: &str) -> serde_json::Value {
 }
 
 fn discover_songbird() -> CapResult<PathBuf> {
+    if let Ok(path) = std::env::var("HEALTHSPRING_SONGBIRD_SOCKET") {
+        let p = PathBuf::from(path);
+        if p.exists() {
+            return Ok(p);
+        }
+    }
     if let Ok(path) = std::env::var("SONGBIRD_SOCKET") {
         let path = PathBuf::from(path);
         if path.exists() {
@@ -200,15 +212,14 @@ fn discover_songbird() -> CapResult<PathBuf> {
 
     if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
         let runtime = PathBuf::from(runtime);
-        // biomeOS standard path (wateringHole Universal IPC v3.0)
-        let biomeos = runtime.join("biomeos/songbird.sock");
-        if biomeos.exists() {
-            return Ok(biomeos);
-        }
-        // Legacy path
-        let legacy = runtime.join("songbird/songbird.sock");
-        if legacy.exists() {
-            return Ok(legacy);
+        if let Some(p) = SONGBIRD_PATHS
+            .iter()
+            .find_map(|rel| {
+                let path = runtime.join(rel);
+                path.exists().then_some(path)
+            })
+        {
+            return Ok(p);
         }
     }
 

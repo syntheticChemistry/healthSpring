@@ -1,6 +1,6 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.5 (V25 — Track 6+7 complete)
+**Version**: 0.7 (V27 — Deep Evolution Sprint)
 **Date**: March 15, 2026
 
 ---

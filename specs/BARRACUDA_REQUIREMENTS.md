@@ -2,7 +2,7 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: March 15, 2026
-**Status**: V25 — Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Tier A rewire ready (Hill → `HillFunctionF64`, PopPK → `PopulationPkF64`, Diversity → `DiversityFusionGpu`). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). NLME inner loop GPU primitive candidate. `fused.rs` extraction documents exact buffer layouts for `TensorSession` design. See V25 handoff.
+**Status**: V27 — Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Tier A rewire ready (Hill → `HillFunctionF64`, PopPK → `PopulationPkF64`, Diversity → `DiversityFusionGpu`). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). NLME inner loop GPU primitive candidate. `fused.rs` extraction documents exact buffer layouts for `TensorSession` design. V27 adds 3 `OdeSystem` trait impls for GPU ODE codegen via `BatchedOdeRK4::generate_shader()`. See V27 handoff.
 
 ---
 
@@ -65,11 +65,23 @@ These primitives have been validated in healthSpring and are ready for the barra
 
 Kokkos-equivalent benchmarks (`ecoPrimal/benches/kokkos_parity.rs`) validate these patterns ahead of GPU shader promotion: reduction, scatter, Monte Carlo, ODE batch, NLME iteration.
 
+## V27 ODE→WGSL Codegen (barraCuda `OdeSystem` trait implementations)
+
+healthSpring now implements `barracuda::numerical::OdeSystem` for 3 PK models in `gpu/ode_systems.rs`. Each provides `wgsl_derivative()` + `cpu_derivative()` for use with `BatchedOdeRK4::generate_shader()`.
+
+| ODE System | States | Params | WGSL Status |
+|-----------|--------|--------|-------------|
+| `MichaelisMentenOde` | 1 (C) | 3 (Vmax, Km, Vd) | **Codegen ready** — `generate_shader()` produces valid WGSL |
+| `OralOneCompartmentOde` | 2 (A_gut, C_plasma) | 5 (dose, F, Vd, Ka, Ke) | **Codegen ready** |
+| `TwoCompartmentOde` | 2 (C1, C2) | 4 (k10, k12, k21, V1) | **Codegen ready** |
+
+This resolves the `compartment_ode_rk4` "Write Phase" item below — ODE integration for GPU is now handled by the `OdeSystem` trait + `BatchedOdeRK4` generic solver.
+
 ## Still Needed: Write Phase (local WGSL)
 
 | Category | Primitive | Purpose | Priority |
 |----------|----------|---------|----------|
-| PK/PD | `compartment_ode_rk4` | Higher-order ODE integration for GPU | High |
+| PK/PD | ~~`compartment_ode_rk4`~~ | ~~Higher-order ODE integration for GPU~~ | ~~High~~ — **Resolved** by `OdeSystem` trait (V27) |
 | Microbiome | `anderson_xi_1d_gut` | 1D localization length GPU kernel | Medium |
 | Biosignal | `bandpass_iir_gpu` | IIR bandpass filter (ECG conditioning) | Medium |
 | Biosignal | `qrs_detect_gpu` | Parallel QRS detection across channels | Medium — NPU path preferred |
@@ -146,7 +158,7 @@ Kokkos-equivalent benchmarks (`ecoPrimal/benches/kokkos_parity.rs`) validate the
 
 ## ODE Solver Note
 
-wetSpring has ODE solvers (Euler, RK4) in its Rust CPU tier. These may already be in the absorption pipeline to barraCuda. Check `wetSpring/metalForge/ABSORPTION_STRATEGY.md` and `barraCuda/CHANGELOG.md` before writing local copies. The healthSpring PBPK model uses simple Euler integration (dt=0.01 hr) — an RK4 GPU kernel would improve both accuracy and throughput.
+**V27 Update**: barraCuda now provides `BatchedOdeRK4` with the `OdeSystem` trait and `generate_shader()` for automatic WGSL kernel generation. healthSpring implements 3 `OdeSystem` variants (see above). The PBPK model still uses simple Euler integration (dt=0.01 hr) — migrating to `OdeSystem` trait is a future target. The `generate_shader()` path replaces the need for handwritten compartment ODE shaders.
 
 ---
 

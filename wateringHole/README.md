@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V25 — Track 6+7 complete. 501 tests, 73 experiments, 173 validation checks. Comparative medicine (canine, feline) + drug discovery (matrix_score, hts, compound, fibrosis). barraCuda v0.3.5 pinned.
+**Status**: V27 — Deep Evolution Sprint. 601 tests, 73 experiments. ODE→WGSL codegen (3 OdeSystem impls), uncertainty module (bootstrap/jackknife/bias-variance), IPC cast safety, capability registry, cross-spring absorptions. barraCuda v0.3.5 pinned.
 **Last Updated**: March 15, 2026
 
 ---
@@ -22,8 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V25** | [V25 Track 6+7 Handoff](handoffs/HEALTHSPRING_V25_TRACK6_7_BARRACUDA_TOADSTOOL_HANDOFF_MAR15_2026.md) | Mar 15 | Track 6+7 complete: absorption + evolution. 12 new experiments (Exp090–094, Exp100–106), 8 library modules, batch IC50 GPU candidate, TissueContext pattern. Supersedes V24. |
-| | *V1–V24 → `handoffs/archive/`* | | Fossil record |
+| **V27** | [V27 Deep Evolution Handoff](handoffs/HEALTHSPRING_V27_DEEP_EVOLUTION_BARRACUDA_TOADSTOOL_HANDOFF_MAR15_2026.md) | Mar 15 | ODE→WGSL codegen, uncertainty module, IPC safety, capability registry. Supersedes V25. |
+| | *V1–V25 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

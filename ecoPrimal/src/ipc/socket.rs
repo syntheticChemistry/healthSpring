@@ -12,6 +12,11 @@ use std::path::PathBuf;
 /// This primal's socket name (healthSpring).
 const PRIMAL_NAME: &str = "healthspring";
 
+/// Well-known compute primal names for fallback discovery.
+const COMPUTE_FALLBACK_NAMES: &[&str] = &["toadstool", "node-atomic"];
+/// Well-known data primal names for fallback discovery.
+const DATA_FALLBACK_NAMES: &[&str] = &["nestgate", "squirrel"];
+
 /// Return the biomeOS socket directory, with XDG fallback.
 #[must_use]
 pub fn resolve_socket_dir() -> PathBuf {
@@ -85,6 +90,11 @@ pub fn discover_all_primals() -> Vec<String> {
         .collect()
 }
 
+/// Discover a primal by well-known name: scan socket dir for matching sockets.
+fn discover_by_wellknown(names: &[&str]) -> Option<PathBuf> {
+    names.iter().find_map(|name| discover_primal(name))
+}
+
 /// Probe for a compute primal by capability, not name.
 ///
 /// Resolution order:
@@ -99,9 +109,7 @@ pub fn discover_compute_primal() -> Option<PathBuf> {
     {
         return Some(path);
     }
-    discover_by_capability("compute")
-        .or_else(|| discover_primal("toadstool"))
-        .or_else(|| discover_primal("node-atomic"))
+    discover_by_capability("compute").or_else(|| discover_by_wellknown(COMPUTE_FALLBACK_NAMES))
 }
 
 /// Probe for a data primal by capability, not name.
@@ -118,9 +126,7 @@ pub fn discover_data_primal() -> Option<PathBuf> {
     {
         return Some(path);
     }
-    discover_by_capability("data")
-        .or_else(|| discover_primal("nestgate"))
-        .or_else(|| discover_primal("squirrel"))
+    discover_by_capability("data").or_else(|| discover_by_wellknown(DATA_FALLBACK_NAMES))
 }
 
 /// Discover a primal by capability domain: query each visible socket with

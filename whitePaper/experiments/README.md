@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V24 — 61 experiments, 435 Rust tests, 55+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 10 experiments on `ValidationHarness` (hotSpring pattern), tolerances centralized, CI clippy::nursery enforced. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
+**Status**: V27 — 73 experiments, 601 Rust tests, 55+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 10 experiments on `ValidationHarness` (hotSpring pattern), tolerances centralized, CI clippy::nursery enforced. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
 **Last Updated**: March 15, 2026
 
 ---

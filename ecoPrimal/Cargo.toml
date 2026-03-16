@@ -15,6 +15,7 @@ categories = ["science", "command-line-utilities"]
 [features]
 default = []
 gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck"]
+barracuda-ops = ["gpu"]
 nestgate = ["dep:thiserror"]
 # NPU dispatch is a future evolution — Akida driver will be discovered at
 # runtime via capability-based probing, not compiled in as a path dep.
@@ -37,7 +38,7 @@ bytemuck = { version = "1", features = ["derive"], optional = true }
 
 [[bin]]
 name = "healthspring_primal"
-path = "src/bin/healthspring_primal.rs"
+path = "src/bin/healthspring_primal/main.rs"
 
 [dev-dependencies]
 approx = "0.5"

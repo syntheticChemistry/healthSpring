@@ -5,7 +5,7 @@
 **Date:** March 15, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V25 — Track 6 CM-001–CM-007 complete (canine IL-31/JAK1/pruritus/lokivetmab/gut, feline MM PK, cross-species allometric). Track 7 DD-001–DD-005 complete (MATRIX/HTS/compound/ChEMBL/fibrosis). 501 tests, 73 experiments, 55+ JSON-RPC capabilities (all wired), `UniBin` compliant primal binary with `clap` subcommands. New modules: `discovery/` (MATRIX, HTS, compound, fibrosis) and `comparative/` (species_params, canine, feline). 173 validation checks across 12 new experiments. `clippy::pedantic` + `clippy::nursery` enforced with zero warnings (CI aligned). Zero unsafe, zero TODO/FIXME, zero `#[allow()]`, all files under 1000 LOC.
+**Status:** V27 — Deep Evolution Sprint complete. 601 tests, 73 experiments, 55+ JSON-RPC capabilities (capability registry). V27 absorptions: ODE→WGSL codegen (3 `OdeSystem` impls via barraCuda `BatchedOdeRK4`), uncertainty quantification (bootstrap/jackknife/bias-variance from groundSpring). IPC cast safety evolved (sz/sz_or/sza helpers — zero raw `as usize` in handlers). `core::` imports for `no_std` readiness. Binary refactored into capabilities/server/main. 6 large modules decomposed into domain-coherent directories. Capability registry replaces 46-arm match. `clippy::pedantic` + `clippy::nursery` enforced with zero warnings. Zero unsafe, zero TODO/FIXME, zero `#[allow()]`.
 
 ---
 
@@ -33,8 +33,8 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V25** (Track 6+7 complete) |
-| **Total tests** | **501** |
+| Version | **V27** (Deep Evolution Sprint) |
+| **Total tests** | **601** |
 | Experiments complete | 73 (Tracks 1–7, Tier 0+1+2+3) |
 | JSON-RPC capabilities | 55+ (all wired — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
@@ -54,6 +54,20 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | `cargo doc` | **0 warnings** |
 | Max file size | 350 lines (`gpu/context.rs` — smart refactor, all files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V27 Deep Evolution Sprint (from V25)
+
+V27 continues deep debt evolution, cross-spring absorption, and modern idiomatic Rust patterns.
+
+| Change | Impact |
+|--------|--------|
+| **D1: IPC cast safety** | Added `sz`/`sz_or`/`sza` helpers to eliminate ~40 raw `as usize` casts in IPC handlers. `len_f64()` utility for safe precision-loss-annotated casts. |
+| **D6: ODE→WGSL codegen** | Absorbed barraCuda `OdeSystem` pattern from wetSpring. 3 implementations: `MichaelisMentenOde`, `OralOneCompartmentOde`, `TwoCompartmentOde`. CPU+GPU integration via `BatchedOdeRK4::generate_shader()`. 7 new tests. |
+| **D7: Uncertainty quantification** | Absorbed bootstrap CI, jackknife variance, bias-variance decomposition, MBE, and Monte Carlo propagation from groundSpring. `uncertainty.rs` module. 11 new tests. |
+| **D8: `core::` imports** | `std::fmt` → `core::fmt`, `std::f64` → `core::f64` for `no_std` readiness. |
+| **601 tests** | Up from 583 (V26) / 501 (V25). 18 new tests from D6+D7 absorptions. Zero failures, zero clippy warnings. |
 
 ---
 
@@ -452,7 +466,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 501 tests
+cargo test --workspace                  # 601 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

@@ -7,7 +7,7 @@
 //! Non-power-of-two inputs are zero-padded; output is trimmed back to the
 //! original length in `irfft`.
 
-use std::f64::consts::PI;
+use core::f64::consts::PI;
 
 /// Convert index to f64 (avoids repeated `clippy::cast_precision_loss`).
 #[expect(clippy::cast_precision_loss, reason = "indices ≪ 2^52")]

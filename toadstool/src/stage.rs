@@ -194,7 +194,7 @@ impl Stage {
                 };
                 match gpu_cpu(&op) {
                     GpuResult::PopulationPkBatch(v) => v,
-                    _ => unreachable!(),
+                    _ => return failed_stage_result(self, &start),
                 }
             }
             StageOp::ElementwiseTransform { kind } => {
@@ -213,7 +213,7 @@ impl Stage {
                     GpuResult::DiversityBatch(pairs) => {
                         pairs.iter().flat_map(|&(s, d)| [s, d]).collect()
                     }
-                    _ => unreachable!(),
+                    _ => return failed_stage_result(self, &start),
                 }
             }
             StageOp::Filter { threshold } => {
@@ -235,7 +235,7 @@ impl Stage {
                 };
                 match gpu_cpu(&op) {
                     GpuResult::MichaelisMentenBatch(v) => v,
-                    _ => unreachable!(),
+                    _ => return failed_stage_result(self, &start),
                 }
             }
             StageOp::ScfaBatch { .. } => {
@@ -246,7 +246,7 @@ impl Stage {
                     GpuResult::ScfaBatch(triples) => {
                         triples.iter().flat_map(|&(a, p, b)| [a, p, b]).collect()
                     }
-                    _ => unreachable!(),
+                    _ => return failed_stage_result(self, &start),
                 }
             }
             StageOp::BeatClassifyBatch { .. } => {
@@ -258,7 +258,7 @@ impl Stage {
                         .iter()
                         .flat_map(|&(idx, corr)| [f64::from(idx), corr])
                         .collect(),
-                    _ => unreachable!(),
+                    _ => return failed_stage_result(self, &start),
                 }
             }
         };

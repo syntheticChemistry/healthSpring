@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 15, 2026
-**Status**: V25 — deep audit execution + modern Rust evolution. 501 tests, 73 experiments, 55+ wired JSON-RPC capabilities. `clippy::pedantic` + `clippy::nursery` enforced in CI (0 warnings). Zero `#[allow()]`, zero TODO/FIXME, zero duplicate math, zero hardcoded primal names. toadStool Hill/AUC delegation, gpu/context.rs smart refactor (968→350 LOC), capability-based discovery, Songbird wired. Paper queue 30/30 complete (Tracks 1–5), 15 queued (Tracks 6–7).
+**Status**: V27 — 601 tests, 73 experiments, 55+ JSON-RPC capabilities backed by a capability registry. V27 additions: ODE→WGSL codegen (3 OdeSystem impls), uncertainty module (bootstrap/jackknife/bias-variance), IPC cast safety (sz/sz_or/sza helpers), core:: imports.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---
@@ -11,9 +11,9 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 435 |
+| Rust tests (workspace) | 601 |
 | Python control checks | 194 (cross-validation) |
-| Experiments | 61 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
+| Experiments | 73 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
 | toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |

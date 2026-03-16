@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 15, 2026
-**Status:** V25 — Track 6+7 complete. 501 tests, 73 experiments. Zero `#[allow()]`, zero TODO/FIXME, zero unsafe code, all files under 1000 LOC.
+**Status:** V27 — Deep Evolution Sprint. 601 tests, 73 experiments. ODE→WGSL codegen, uncertainty module, capability registry. Zero `#[allow()]`, zero TODO/FIXME, zero unsafe code.
 
 ---
 

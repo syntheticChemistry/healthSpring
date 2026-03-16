@@ -5,7 +5,7 @@ use serde_json::Value;
 
 use crate::{biosignal, wfdb};
 
-use super::{f, fa, missing};
+use super::{f, fa, missing, sz_or, sza};
 
 pub fn dispatch_pan_tompkins(params: &Value) -> Value {
     let Some(signal) = fa(params, "signal") else {
@@ -22,16 +22,7 @@ pub fn dispatch_pan_tompkins(params: &Value) -> Value {
 }
 
 pub fn dispatch_hrv(params: &Value) -> Value {
-    let peaks: Vec<usize> = params
-        .get("peaks")
-        .and_then(Value::as_array)
-        .map(|arr| {
-            arr.iter()
-                .filter_map(Value::as_u64)
-                .map(|v| v as usize)
-                .collect()
-        })
-        .unwrap_or_default();
+    let peaks: Vec<usize> = sza(params, "peaks").unwrap_or_default();
     if peaks.len() < 3 {
         return missing("peaks (array of at least 3 R-peak indices)");
     }
@@ -62,16 +53,13 @@ pub fn dispatch_eda(params: &Value) -> Value {
     let Some(signal) = fa(params, "signal") else {
         return missing("signal");
     };
-    let window = params
-        .get("window_samples")
-        .and_then(Value::as_u64)
-        .unwrap_or(50) as usize;
+    let window = sz_or(params, "window_samples", 50);
     let scl = biosignal::eda_scl(&signal, window);
     let phasic = biosignal::eda_phasic(&signal, window);
     serde_json::json!({
         "scl_samples": scl.len(),
         "phasic_samples": phasic.len(),
-        "scl_mean": scl.iter().sum::<f64>() / scl.len().max(1) as f64,
+        "scl_mean": scl.iter().sum::<f64>() / crate::validation::len_f64(scl.len().max(1)),
     })
 }
 
@@ -79,19 +67,16 @@ pub fn dispatch_eda_stress(params: &Value) -> Value {
     let Some(signal) = fa(params, "signal") else {
         return missing("signal");
     };
-    let min_interval = params
-        .get("min_interval_samples")
-        .and_then(Value::as_u64)
-        .unwrap_or(50) as usize;
+    let min_interval = sz_or(params, "min_interval_samples", 50);
     let threshold = f(params, "threshold_us").unwrap_or(0.05);
     let fs = f(params, "fs").unwrap_or(4.0);
-    let duration_s = signal.len() as f64 / fs;
+    let duration_s = crate::validation::len_f64(signal.len()) / fs;
     let scrs = biosignal::eda_detect_scr(&signal, threshold, min_interval);
     let rate = biosignal::scr_rate(scrs.len(), duration_s);
     let mean_scl = if signal.is_empty() {
         0.0
     } else {
-        signal.iter().sum::<f64>() / signal.len() as f64
+        signal.iter().sum::<f64>() / crate::validation::len_f64(signal.len())
     };
     let recovery_s = f(params, "recovery_s").unwrap_or(3.0);
     let stress_idx = biosignal::compute_stress_index(rate, mean_scl, recovery_s);
@@ -107,10 +92,7 @@ pub fn dispatch_arrhythmia(params: &Value) -> Value {
         return missing("signal");
     };
     let fs = f(params, "fs").unwrap_or(360.0);
-    let half_width = params
-        .get("half_width")
-        .and_then(Value::as_u64)
-        .unwrap_or(25) as usize;
+    let half_width = sz_or(params, "half_width", 25);
     let min_corr = f(params, "min_correlation").unwrap_or(0.7);
     let pt = biosignal::pan_tompkins(&signal, fs);
 
@@ -133,19 +115,10 @@ pub fn dispatch_arrhythmia(params: &Value) -> Value {
 }
 
 pub fn dispatch_fuse(params: &Value) -> Value {
-    let peaks: Vec<usize> = params
-        .get("peaks")
-        .and_then(Value::as_array)
-        .map(|arr| {
-            arr.iter()
-                .filter_map(Value::as_u64)
-                .map(|v| v as usize)
-                .collect()
-        })
-        .unwrap_or_default();
+    let peaks: Vec<usize> = sza(params, "peaks").unwrap_or_default();
     let fs = f(params, "fs").unwrap_or(360.0);
     let spo2 = f(params, "spo2").unwrap_or(98.0);
-    let scr_count = params.get("scr_count").and_then(Value::as_u64).unwrap_or(0) as usize;
+    let scr_count = sz_or(params, "scr_count", 0);
     let eda_duration_s = f(params, "eda_duration_s").unwrap_or(0.0);
 
     let assessment = biosignal::fuse_channels(&peaks, fs, spo2, scr_count, eda_duration_s);

@@ -1,21 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#![forbid(unsafe_code)]
-#![deny(clippy::all)]
-#![deny(clippy::pedantic)]
 
-//! healthSpring biomeOS Primal — BYOB Niche Deployment
-//!
-//! JSON-RPC 2.0 server exposing healthSpring's science capabilities to the
-//! `biomeOS` ecosystem via Unix domain socket. `UniBin` compliant: single
-//! binary with `serve`, `version`, and `capabilities` subcommands.
-//!
-//! ## Signal handling
-//!
-//! Listens for SIGTERM and SIGINT via a self-pipe. On signal receipt, the
-//! `running` flag is set to `false`, the accept loop breaks, the heartbeat
-//! thread stops, and the socket file is cleaned up.
-//!
-//! Socket: `$XDG_RUNTIME_DIR/biomeos/healthspring-{family_id}.sock`
+//! JSON-RPC server, connection handling, and biomeOS registration.
 
 use std::io::{BufRead, BufReader, Write};
 use std::os::unix::net::{UnixListener, UnixStream};
@@ -24,109 +9,11 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::time::{Duration, Instant};
 
-use clap::{Parser, Subcommand};
 use healthspring_barracuda::ipc::{dispatch, rpc, socket};
 
-const PRIMAL_NAME: &str = "healthspring";
-const PRIMAL_DOMAIN: &str = "health";
 const READ_TIMEOUT_SECS: u64 = 60;
 const WRITE_TIMEOUT_SECS: u64 = 10;
 const HEARTBEAT_INTERVAL_SECS: u64 = 30;
-
-/// Every capability this primal advertises to `biomeOS`.
-const ALL_CAPABILITIES: &[&str] = &[
-    // ── PK/PD ────────────────────────────────────────────────────────
-    "science.pkpd.hill_dose_response",
-    "science.pkpd.one_compartment_pk",
-    "science.pkpd.two_compartment_pk",
-    "science.pkpd.pbpk_simulate",
-    "science.pkpd.population_pk",
-    "science.pkpd.allometric_scale",
-    "science.pkpd.auc_trapezoidal",
-    "science.pkpd.nlme_foce",
-    "science.pkpd.nlme_saem",
-    "science.pkpd.nca_analysis",
-    "science.pkpd.cwres_diagnostics",
-    "science.pkpd.vpc_simulate",
-    "science.pkpd.gof_compute",
-    "science.pkpd.michaelis_menten_nonlinear",
-    // ── Microbiome ───────────────────────────────────────────────────
-    "science.microbiome.shannon_index",
-    "science.microbiome.simpson_index",
-    "science.microbiome.pielou_evenness",
-    "science.microbiome.chao1",
-    "science.microbiome.anderson_gut",
-    "science.microbiome.colonization_resistance",
-    "science.microbiome.fmt_blend",
-    "science.microbiome.bray_curtis",
-    "science.microbiome.antibiotic_perturbation",
-    "science.microbiome.scfa_production",
-    "science.microbiome.gut_brain_serotonin",
-    "science.microbiome.qs_gene_profile",
-    "science.microbiome.qs_effective_disorder",
-    // ── Biosignal ────────────────────────────────────────────────────
-    "science.biosignal.pan_tompkins",
-    "science.biosignal.hrv_metrics",
-    "science.biosignal.ppg_spo2",
-    "science.biosignal.eda_analysis",
-    "science.biosignal.eda_stress_detection",
-    "science.biosignal.arrhythmia_classification",
-    "science.biosignal.fuse_channels",
-    "science.biosignal.wfdb_decode",
-    // ── Endocrine ────────────────────────────────────────────────────
-    "science.endocrine.testosterone_pk",
-    "science.endocrine.trt_outcomes",
-    "science.endocrine.population_trt",
-    "science.endocrine.hrv_trt_response",
-    "science.endocrine.cardiac_risk",
-    // ── Diagnostic ───────────────────────────────────────────────────
-    "science.diagnostic.assess_patient",
-    "science.diagnostic.population_montecarlo",
-    "science.diagnostic.composite_risk",
-    // ── Clinical ─────────────────────────────────────────────────────
-    "science.clinical.trt_scenario",
-    "science.clinical.patient_parameterize",
-    "science.clinical.risk_annotate",
-    // ── Provenance trio (`biomeOS` composition) ──────────────────────
-    "provenance.begin",
-    "provenance.record",
-    "provenance.complete",
-    "provenance.status",
-    // ── Cross-primal ─────────────────────────────────────────────────
-    "primal.forward",
-    "primal.discover",
-    // ── Niche deployment (`biomeOS` graph composition) ───────────────
-    "capability.list",
-    // ── Compute offload (Node Atomic) ────────────────────────────────
-    "compute.offload",
-    // ── Data (`NestGate` routing) ────────────────────────────────────
-    "data.fetch",
-];
-
-// ═══════════════════════════════════════════════════════════════════════════
-// CLI (UniBin)
-// ═══════════════════════════════════════════════════════════════════════════
-
-#[derive(Parser)]
-#[command(
-    name = "healthspring_primal",
-    about = "healthSpring biomeOS primal — health science compute via JSON-RPC 2.0",
-    version
-)]
-struct Cli {
-    #[command(subcommand)]
-    command: Option<Command>,
-}
-
-#[derive(Subcommand)]
-enum Command {
-    /// Start the JSON-RPC 2.0 server (default)
-    Serve,
-    /// Print version information
-    Version,
-    /// List all registered capabilities
-    Capabilities,
-}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Signal handling (pure Rust, no C deps)
@@ -143,8 +30,13 @@ fn install_signal_handler(running: &Arc<AtomicBool>) {
         // For immediate response, we also set the flag from a signal handler
         // thread that blocks on sigwait.
         use std::io::Read;
-        let (mut reader, _writer) =
-            std::os::unix::net::UnixStream::pair().expect("signal pipe creation");
+        let (mut reader, _writer) = match std::os::unix::net::UnixStream::pair() {
+            Ok(pair) => pair,
+            Err(e) => {
+                eprintln!("fatal: signal pipe creation failed: {e}");
+                std::process::exit(1);
+            }
+        };
         reader.set_read_timeout(Some(Duration::from_secs(1))).ok();
         let mut buf = [0u8; 1];
         loop {
@@ -200,7 +92,7 @@ fn dispatch_request(
     }
 
     match method {
-        "capability.list" => handle_capability_list(),
+        "capability.list" => super::capabilities::handle_capability_list(),
         "provenance.begin" => handle_provenance_begin(params),
         "provenance.record" => handle_provenance_record(params),
         "provenance.complete" => handle_provenance_complete(params),
@@ -222,50 +114,18 @@ fn handle_health(state: &PrimalState) -> serde_json::Value {
     let requests = state.requests_served.load(Ordering::Relaxed);
     serde_json::json!({
         "status": "healthy",
-        "primal": PRIMAL_NAME,
-        "domain": PRIMAL_DOMAIN,
+        "primal": super::capabilities::PRIMAL_NAME,
+        "domain": super::capabilities::PRIMAL_DOMAIN,
         "version": env!("CARGO_PKG_VERSION"),
         "uptime_secs": uptime_secs,
         "requests_served": requests,
-        "capabilities": ALL_CAPABILITIES,
+        "capabilities": super::capabilities::ALL_CAPABILITIES,
         "backend": "cpu",
         "composition": {
             "provenance_trio": healthspring_barracuda::data::trio_available(),
             "nestgate": socket::discover_data_primal().is_some(),
             "toadstool": socket::discover_compute_primal().is_some(),
         },
-    })
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Capability listing (`biomeOS` niche composition)
-// ═══════════════════════════════════════════════════════════════════════════
-
-fn handle_capability_list() -> serde_json::Value {
-    let science: Vec<&str> = ALL_CAPABILITIES
-        .iter()
-        .filter(|c| c.starts_with("science."))
-        .copied()
-        .collect();
-    let infra: Vec<&str> = ALL_CAPABILITIES
-        .iter()
-        .filter(|c| {
-            c.starts_with("primal.")
-                || c.starts_with("compute.")
-                || c.starts_with("data.")
-                || c.starts_with("capability.")
-                || c.starts_with("provenance.")
-        })
-        .copied()
-        .collect();
-
-    serde_json::json!({
-        "primal": PRIMAL_NAME,
-        "version": env!("CARGO_PKG_VERSION"),
-        "domain": PRIMAL_DOMAIN,
-        "total": ALL_CAPABILITIES.len(),
-        "science": science,
-        "infrastructure": infra,
     })
 }
 
@@ -450,32 +310,32 @@ fn register_with_biomeos(our_socket: &Path) {
         target_socket,
         "lifecycle.register",
         &serde_json::json!({
-            "name": PRIMAL_NAME,
+            "name": super::capabilities::PRIMAL_NAME,
             "socket_path": our_socket.to_string_lossy(),
             "pid": std::process::id(),
         }),
     );
     eprintln!("[biomeos] Registered with lifecycle manager");
 
-    let health_mappings = build_semantic_mappings();
+    let health_mappings = super::capabilities::build_semantic_mappings();
     let _ = rpc::send(
         target_socket,
         "capability.register",
         &serde_json::json!({
-            "primal": PRIMAL_NAME,
-            "capability": PRIMAL_DOMAIN,
+            "primal": super::capabilities::PRIMAL_NAME,
+            "capability": super::capabilities::PRIMAL_DOMAIN,
             "socket": our_socket.to_string_lossy(),
             "semantic_mappings": health_mappings,
         }),
     );
 
     let mut registered = 0;
-    for cap in ALL_CAPABILITIES {
+    for cap in super::capabilities::ALL_CAPABILITIES {
         if rpc::send(
             target_socket,
             "capability.register",
             &serde_json::json!({
-                "primal": PRIMAL_NAME,
+                "primal": super::capabilities::PRIMAL_NAME,
                 "capability": cap,
                 "socket": our_socket.to_string_lossy(),
             }),
@@ -487,39 +347,10 @@ fn register_with_biomeos(our_socket: &Path) {
     }
 
     eprintln!(
-        "[biomeos] {registered}/{} capabilities + {PRIMAL_DOMAIN} domain registered",
-        ALL_CAPABILITIES.len()
+        "[biomeos] {registered}/{} capabilities + {} domain registered",
+        super::capabilities::ALL_CAPABILITIES.len(),
+        super::capabilities::PRIMAL_DOMAIN
     );
-}
-
-fn build_semantic_mappings() -> serde_json::Value {
-    serde_json::json!({
-        "hill_dose_response":       "science.pkpd.hill_dose_response",
-        "one_compartment_pk":       "science.pkpd.one_compartment_pk",
-        "two_compartment_pk":       "science.pkpd.two_compartment_pk",
-        "pbpk_simulate":            "science.pkpd.pbpk_simulate",
-        "population_pk":            "science.pkpd.population_pk",
-        "nca_analysis":             "science.pkpd.nca_analysis",
-        "nlme_foce":                "science.pkpd.nlme_foce",
-        "nlme_saem":                "science.pkpd.nlme_saem",
-        "vpc_simulate":             "science.pkpd.vpc_simulate",
-        "gof_compute":              "science.pkpd.gof_compute",
-        "shannon_index":            "science.microbiome.shannon_index",
-        "simpson_index":            "science.microbiome.simpson_index",
-        "anderson_gut":             "science.microbiome.anderson_gut",
-        "colonization_resistance":  "science.microbiome.colonization_resistance",
-        "qs_gene_profile":          "science.microbiome.qs_gene_profile",
-        "pan_tompkins":             "science.biosignal.pan_tompkins",
-        "hrv_metrics":              "science.biosignal.hrv_metrics",
-        "ppg_spo2":                 "science.biosignal.ppg_spo2",
-        "wfdb_decode":              "science.biosignal.wfdb_decode",
-        "testosterone_pk":          "science.endocrine.testosterone_pk",
-        "trt_outcomes":             "science.endocrine.trt_outcomes",
-        "population_trt":           "science.endocrine.population_trt",
-        "assess_patient":           "science.diagnostic.assess_patient",
-        "composite_risk":           "science.diagnostic.composite_risk",
-        "trt_scenario":             "science.clinical.trt_scenario",
-    })
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -601,7 +432,7 @@ fn handle_connection(stream: UnixStream, state: &PrimalState) {
 // Subcommand: serve
 // ═══════════════════════════════════════════════════════════════════════════
 
-fn cmd_serve() -> Result<(), String> {
+pub(crate) fn cmd_serve() -> Result<(), String> {
     let socket_path = socket::resolve_bind_path();
 
     if let Some(parent) = socket_path.parent() {
@@ -629,15 +460,16 @@ fn cmd_serve() -> Result<(), String> {
 
     let family_id = socket::get_family_id();
     eprintln!(
-        "{PRIMAL_NAME} primal listening on {}",
+        "{} primal listening on {}",
+        super::capabilities::PRIMAL_NAME,
         socket_path.display()
     );
     eprintln!("  Family ID: {family_id}");
-    eprintln!("  Domain:    {PRIMAL_DOMAIN}");
+    eprintln!("  Domain:    {}", super::capabilities::PRIMAL_DOMAIN);
     eprintln!("  Mode:      BYOB Niche (biomeOS)");
     eprintln!("  Version:   {}", env!("CARGO_PKG_VERSION"));
-    eprintln!("  Capabilities ({}):", ALL_CAPABILITIES.len());
-    for cap in ALL_CAPABILITIES {
+    eprintln!("  Capabilities ({}):", super::capabilities::ALL_CAPABILITIES.len());
+    for cap in super::capabilities::ALL_CAPABILITIES {
         eprintln!("    - {cap}");
     }
 
@@ -669,7 +501,7 @@ fn cmd_serve() -> Result<(), String> {
                     t,
                     "lifecycle.status",
                     &serde_json::json!({
-                        "name": PRIMAL_NAME,
+                        "name": super::capabilities::PRIMAL_NAME,
                         "socket_path": heartbeat_socket.to_string_lossy(),
                         "status": "healthy",
                         "requests_served": heartbeat_state.requests_served.load(Ordering::Relaxed),
@@ -702,53 +534,4 @@ fn cmd_serve() -> Result<(), String> {
     eprintln!("[shutdown] Cleaning up socket...");
     let _ = std::fs::remove_file(&socket_path);
     Ok(())
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Subcommand: version
-// ═══════════════════════════════════════════════════════════════════════════
-
-fn cmd_version() {
-    println!("{PRIMAL_NAME} {}", env!("CARGO_PKG_VERSION"));
-    println!("  Domain:    {PRIMAL_DOMAIN}");
-    println!("  License:   AGPL-3.0-or-later");
-    println!("  Arch:      UniBin / ecoBin v3.0");
-    println!("  Runtime:   {}", std::env::consts::ARCH);
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Subcommand: capabilities
-// ═══════════════════════════════════════════════════════════════════════════
-
-fn cmd_capabilities() {
-    let science_count = ALL_CAPABILITIES
-        .iter()
-        .filter(|c| c.starts_with("science."))
-        .count();
-    let infra_count = ALL_CAPABILITIES.len() - science_count;
-
-    println!("{PRIMAL_NAME} — {science_count} science + {infra_count} infrastructure capabilities");
-    println!();
-    for cap in ALL_CAPABILITIES {
-        println!("  {cap}");
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Main
-// ═══════════════════════════════════════════════════════════════════════════
-
-fn main() {
-    let cli = Cli::parse();
-
-    match cli.command.unwrap_or(Command::Serve) {
-        Command::Serve => {
-            if let Err(e) = cmd_serve() {
-                eprintln!("[fatal] {e}");
-                std::process::exit(1);
-            }
-        }
-        Command::Version => cmd_version(),
-        Command::Capabilities => cmd_capabilities(),
-    }
 }
