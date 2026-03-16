@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V27 — 73 experiments, 601 Rust tests, 55+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 10 experiments on `ValidationHarness` (hotSpring pattern), tolerances centralized, CI clippy::nursery enforced. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
-**Last Updated**: March 15, 2026
+**Status**: V28 — 73 experiments, 603 Rust tests, 55+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). IPC evolved to Result-based. Socket discovery fully capability-based. 10 experiments on `ValidationHarness` (hotSpring pattern), tolerances centralized, CI clippy::nursery enforced. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
+**Last Updated**: March 16, 2026
 
 ---
 
@@ -122,11 +122,33 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 075 | NLME cross-validation (FOCE/SAEM, NCA, CWRES, GOF) | Beal & Sheiner, Kuhn & Lavielle | 0,1 | — | 19 |
 | 076 | Full pipeline petalTongue validation (5 tracks, 28 nodes) | Structural + schema | 1 | — | 197 |
 
+### Track 6: Comparative Medicine (V25)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 100 | Canine IL-31 serum kinetics (Gonzales 2013) | CM-001 | 0,1 | control | binary |
+| 101 | Canine oclacitinib JAK1 selectivity (Gonzales 2014) | CM-002 | 0,1 | control | binary |
+| 102 | IL-31 pruritus time-course recovery (Gonzales 2016) | CM-003 | 0,1 | control | binary |
+| 103 | Lokivetmab dose-duration (Fleck/Gonzales 2021) | CM-004 | 0,1 | control | binary |
+| 104 | Cross-species PK allometric scaling | CM-005 | 0,1 | control | binary |
+| 105 | Canine gut microbiome Anderson lattice | CM-006 | 0,1 | control | binary |
+| 106 | Feline hyperthyroidism methimazole PK (Trepanier 2006) | CM-007 | 0,1 | control | binary |
+
+### Track 7: Drug Discovery (V25)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 090 | Anderson-augmented MATRIX scoring | DD-001 | 0,1 | control | binary |
+| 091 | ADDRC HTS analysis (Z'-factor, SSMD) | DD-002 | 0,1 | control | binary |
+| 092 | Compound IC50 profiling (library sweep) | DD-003 | 0,1 | control | binary |
+| 093 | ChEMBL JAK panel bioactivity | DD-004 | 0,1 | control | binary |
+| 094 | Rho/MRTF/SRF fibrosis pathway scoring (Neubig) | DD-005 | 0,1 | control | binary |
+
 ### Cross-Validation
 
 | Test | Scope | Matches | Status |
 |------|-------|:-------:|--------|
-| cross_validate.py | All 24 core experiments Python ↔ Rust | 104/104 | **Complete** |
+| cross_validate.py | All 7 tracks (Tracks 1–7) | 113/113 | **Complete** (V28) |
 
 ---
 
@@ -194,7 +216,19 @@ experiments/
 ├── exp086_toadstool_v16_dispatch/ # V19: toadStool dispatch
 ├── exp087_mixed_nucleus_v16/     # V19: NUCLEUS routing
 ├── exp088_unified_dashboard/     # V20: petalTongue V16 dashboard
-└── exp089_patient_explorer/      # V20: Patient explorer
+├── exp089_patient_explorer/      # V20: Patient explorer
+├── exp090_matrix_scoring/        # V25: Track 7 — MATRIX scoring
+├── exp091_addrc_hts/             # V25: Track 7 — ADDRC HTS
+├── exp092_compound_library/      # V25: Track 7 — compound IC50
+├── exp093_chembl_jak_panel/      # V25: Track 7 — ChEMBL JAK panel
+├── exp094_rho_mrtf_fibrosis/     # V25: Track 7 — fibrosis scoring
+├── exp100_canine_il31/           # V25: Track 6 — canine IL-31
+├── exp101_canine_jak1/           # V25: Track 6 — JAK1 selectivity
+├── exp102_il31_pruritus_timecourse/ # V25: Track 6 — pruritus
+├── exp103_lokivetmab_duration/   # V25: Track 6 — lokivetmab
+├── exp104_cross_species_pk/      # V25: Track 6 — cross-species PK
+├── exp105_canine_gut_anderson/   # V25: Track 6 — canine gut Anderson
+└── exp106_feline_hyperthyroid/   # V25: Track 6 — feline MM PK
 ```
 
 Controls live in `control/`:
@@ -207,7 +241,7 @@ control/
 │   ├── exp004_mab_pk_transfer.py
 │   ├── exp005_population_pk.py
 │   ├── exp006_pbpk_compartments.py
-│   └── cross_validate.py              # 104 checks, all 24 experiments
+│   └── cross_validate.py              # 113 checks, all 7 tracks
 ├── microbiome/
 │   ├── exp010_diversity_indices.py
 │   ├── exp011_anderson_gut_lattice.py
@@ -250,7 +284,11 @@ control/
 - **069–072**: toadStool dispatch, PCIe bypass, mixed systems, compute dashboard
 - **073–074**: petalTongue evolution (interaction, streaming, capabilities)
 - **075–076**: NLME population PK + full pipeline validation
-- **077+**: Future extensions
+- **077–082**: V16 primitives (MM PK, antibiotic, SCFA, serotonin, EDA, arrhythmia)
+- **083–089**: GPU V16 parity, benchmarks, toadStool dispatch, petalTongue V16
+- **090–094**: Track 7 (Drug Discovery / ADDRC)
+- **100–106**: Track 6 (Comparative Medicine / One Health)
+- **107+**: Future extensions
 
 ---
 

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # biomeOS NUCLEUS Local Integration Plan
 
-**Last Updated**: March 15, 2026
-**Status**: V27 — `UniBin`-compliant `healthspring_primal` binary (clap subcommands, SIGTERM handling). Capability-based primal discovery (zero hardcoded names). Songbird announcement wired into startup. Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
+**Last Updated**: March 16, 2026
+**Status**: V28 — `UniBin`-compliant `healthspring_primal` binary (clap subcommands, SIGTERM handling). Capability-based primal discovery (zero hardcoded names). IPC evolved to Result-based `try_send` with structured error handling. Songbird announcement wired into startup. Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

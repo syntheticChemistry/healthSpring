@@ -12,10 +12,7 @@ use std::path::PathBuf;
 const RPC_RESPONSE_BUF: usize = 4096;
 
 /// Well-known Songbird socket paths (relative to `XDG_RUNTIME_DIR`).
-const SONGBIRD_PATHS: &[&str] = &[
-    "biomeos/songbird.sock",
-    "songbird/songbird.sock",
-];
+const SONGBIRD_PATHS: &[&str] = &["biomeos/songbird.sock", "songbird/songbird.sock"];
 
 /// All capabilities that healthSpring can announce.
 pub const CAPABILITIES: &[&str] = &[
@@ -212,13 +209,10 @@ fn discover_songbird() -> CapResult<PathBuf> {
 
     if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
         let runtime = PathBuf::from(runtime);
-        if let Some(p) = SONGBIRD_PATHS
-            .iter()
-            .find_map(|rel| {
-                let path = runtime.join(rel);
-                path.exists().then_some(path)
-            })
-        {
+        if let Some(p) = SONGBIRD_PATHS.iter().find_map(|rel| {
+            let path = runtime.join(rel);
+            path.exists().then_some(path)
+        }) {
             return Ok(p);
         }
     }

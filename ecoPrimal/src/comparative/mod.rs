@@ -18,14 +18,15 @@ pub mod feline;
 pub mod species_params;
 
 pub use canine::{
-    canine_jak_ic50_panel, il31_serum_kinetics, lokivetmab_effective_duration, lokivetmab_onset_hr,
-    lokivetmab_pk, pruritus_time_course, pruritus_vas_response, CanineIl31Treatment, JakIc50Panel,
+    CanineIl31Treatment, JakIc50Panel, canine_jak_ic50_panel, il31_serum_kinetics,
+    lokivetmab_effective_duration, lokivetmab_onset_hr, lokivetmab_pk, pruritus_time_course,
+    pruritus_vas_response,
 };
 pub use feline::{
-    methimazole_apparent_half_life, methimazole_css, methimazole_simulate, t4_response,
-    FelineMethimazoleParams, FELINE_METHIMAZOLE, HUMAN_METHIMAZOLE,
+    FELINE_METHIMAZOLE, FelineMethimazoleParams, HUMAN_METHIMAZOLE, methimazole_apparent_half_life,
+    methimazole_css, methimazole_simulate, t4_response,
 };
 pub use species_params::{
-    allometric_clearance, allometric_half_life, allometric_volume, scale_across_species, Species,
-    SpeciesPkParams,
+    Species, SpeciesPkParams, allometric_clearance, allometric_half_life, allometric_volume,
+    scale_across_species,
 };

@@ -1,0 +1,57 @@
+{
+  "experiment": "exp092_compound_library",
+  "targets": [
+    "JAK1",
+    "JAK2"
+  ],
+  "compounds": [
+    {
+      "compound": "Compound C",
+      "ic50_jak1_nm": 2.0,
+      "ic50_jak2_nm": 2000.0,
+      "ic50_estimate_from_curve": 2.2662364770738765,
+      "selectivity_index": 1000.0,
+      "rank": 1
+    },
+    {
+      "compound": "Compound A",
+      "ic50_jak1_nm": 5.0,
+      "ic50_jak2_nm": 500.0,
+      "ic50_estimate_from_curve": 5.728288968731764,
+      "selectivity_index": 100.0,
+      "rank": 2
+    },
+    {
+      "compound": "Compound E",
+      "ic50_jak1_nm": 10.0,
+      "ic50_jak2_nm": 1000.0,
+      "ic50_estimate_from_curve": 9.596531042686017,
+      "selectivity_index": 100.0,
+      "rank": 3
+    },
+    {
+      "compound": "Compound D",
+      "ic50_jak1_nm": 100.0,
+      "ic50_jak2_nm": 200.0,
+      "ic50_estimate_from_curve": 68.3772233983162,
+      "selectivity_index": 2.0,
+      "rank": 4
+    },
+    {
+      "compound": "Compound B",
+      "ic50_jak1_nm": 50.0,
+      "ic50_jak2_nm": 60.0,
+      "ic50_estimate_from_curve": 42.47303518319063,
+      "selectivity_index": 1.2,
+      "rank": 5
+    }
+  ],
+  "_provenance": {
+    "date": "2026-03-16",
+    "script": "control/discovery/exp092_compound_library.py",
+    "command": "python3 control/discovery/exp092_compound_library.py",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python_version": "3.13.2",
+    "numpy_version": "2.1.3"
+  }
+}

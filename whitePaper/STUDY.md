@@ -1,7 +1,7 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.7 (V27 — Deep Evolution Sprint)
-**Date**: March 15, 2026
+**Version**: 0.8 (V28 — Deep Debt + Ecosystem Maturity)
+**Date**: March 16, 2026
 
 ---
 
@@ -181,7 +181,7 @@ analysis pipeline, and integration of QS gene profiling for microbial drug targe
 
 ## 3. What We Have Learned
 
-Six months of validation across 73 experiments, 501 tests, and 45 reproduced papers
+Six months of validation across 73 experiments, 603 tests, and 45 reproduced papers
 have produced several key insights:
 
 ### 3.1 Species-agnostic mathematics works

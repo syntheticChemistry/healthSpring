@@ -7,8 +7,8 @@ Cross-validation: verify Python baseline JSON self-consistency.
 Reads the Python baseline JSON files and checks that key numerical values
 satisfy analytical identities, range constraints, and ordering invariants
 (e.g. IC50 = E_max/2, AUC positive, monotonicity). Tolerances are drawn
-from specs/TOLERANCE_REGISTRY.md. Covers all 24 experiments across pkpd,
-microbiome, biosignal, endocrine, and validation domains.
+from specs/TOLERANCE_REGISTRY.md. Covers experiments across all 7 tracks:
+pkpd, microbiome, biosignal, endocrine, validation, comparative, discovery.
 
 NOTE: This script does NOT compare Python vs Rust outputs. The Rust
 experiment binaries (exp010, exp011, exp012, etc.) load baseline JSON and
@@ -80,7 +80,7 @@ def main():
     failed = 0
 
     print("=" * 72)
-    print("Python ↔ Rust Cross-Validation (24 experiments)")
+    print("Python ↔ Rust Cross-Validation (7 tracks)")
     print("=" * 72)
 
     # --- Exp001: Hill Dose-Response (pkpd) ---
@@ -672,6 +672,86 @@ def main():
     print(f"  [{status}] risk reduction > 50%: {b38['risk_reduction_ratio']:.1%}")
     passed += ok
     failed += not ok
+
+    # --- Exp090: MATRIX Drug Repurposing (discovery) ---
+    print("\n--- Exp090: MATRIX Scoring ---")
+    b90 = load_baseline("exp090_baseline.json", "discovery")
+
+    compounds = b90["compounds"]
+    ok = all(c["combined_score"] >= 0 for c in compounds)
+    status = "MATCH" if ok else "MISMATCH"
+    print(f"  [{status}] all combined_scores >= 0")
+    passed += ok
+    failed += not ok
+
+    ok = all(0.0 <= c["pathway_score"] <= 1.0 for c in compounds)
+    status = "MATCH" if ok else "MISMATCH"
+    print(f"  [{status}] pathway_scores in [0,1]")
+    passed += ok
+    failed += not ok
+
+    ok = all(0.0 <= c["tissue_geometry"] <= 1.0 for c in compounds)
+    status = "MATCH" if ok else "MISMATCH"
+    print(f"  [{status}] tissue_geometry in [0,1]")
+    passed += ok
+    failed += not ok
+
+    # --- Exp091: HTS Analysis (discovery) ---
+    print("\n--- Exp091: ADDRC High-Throughput Screening ---")
+    b91 = load_baseline("exp091_baseline.json", "discovery")
+
+    ok = check_range("z_prime", b91["z_prime"], 0.5, 1.0)
+    passed += ok
+    failed += not ok
+
+    signals = b91["signals"]
+    ok = signals[0]["hit_classification"] == "Strong" and signals[-1]["hit_classification"] == "Inactive"
+    status = "MATCH" if ok else "MISMATCH"
+    print(f"  [{status}] hit classification: strong hit at low signal, inactive at high")
+    passed += ok
+    failed += not ok
+
+    ok = all(0.0 <= s["percent_inhibition"] <= 100.0 for s in signals)
+    status = "MATCH" if ok else "MISMATCH"
+    print(f"  [{status}] percent_inhibition in [0,100]")
+    passed += ok
+    failed += not ok
+
+    # --- Exp100: Canine IL-31 (comparative) ---
+    print("\n--- Exp100: Canine IL-31 Serum Kinetics ---")
+    b100 = load_baseline("exp100_baseline.json", "comparative")
+
+    ok = check("baseline_pg_ml", b100["baseline_pg_ml"], 44.5, tol=TOL_MACHINE)
+    passed += ok
+    failed += not ok
+
+    tc = b100["time_courses"]
+    untreated_0 = tc["Untreated"]["il31_pg_ml"][0]
+    ok = check("untreated t=0", untreated_0, 44.5, tol=TOL_MACHINE)
+    passed += ok
+    failed += not ok
+
+    ocla_end = tc["Oclacitinib"]["il31_pg_ml"][-1]
+    loki_end = tc["Lokivetmab"]["il31_pg_ml"][-1]
+    ok = loki_end < ocla_end < untreated_0
+    status = "MATCH" if ok else "MISMATCH"
+    print(f"  [{status}] IL-31 at t_end: loki < ocla < untreated")
+    passed += ok
+    failed += not ok
+
+    # --- Exp104: Cross-Species PK (comparative) ---
+    print("\n--- Exp104: Cross-Species PK Scaling ---")
+    b104 = load_baseline("exp104_baseline.json", "comparative")
+
+    scalings = b104.get("scalings", [])
+    if scalings:
+        ok = all(s.get("cl_scaled", 0) > 0 for s in scalings)
+        status = "MATCH" if ok else "MISMATCH"
+        print(f"  [{status}] all scaled CL > 0")
+        passed += ok
+        failed += not ok
+    else:
+        print("  [SKIP] no scalings data")
 
     # --- Summary ---
     total = passed + failed

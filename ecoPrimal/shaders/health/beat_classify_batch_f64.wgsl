@@ -71,6 +71,10 @@ fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
         }
 
         let denom_sq = beat_var * tmpl_var;
+        // Guard against near-zero denominator in normalized correlation.
+        // 1e-28 is ~(1e-14)² — below this, both signals are effectively
+        // constant and correlation is undefined. The f32 sqrt cast is
+        // safe because denom_sq > 1e-28 ensures f32 range.
         if denom_sq > 1e-28 {
             let denom = f64(sqrt(f32(denom_sq)));
             let corr = cov / denom;

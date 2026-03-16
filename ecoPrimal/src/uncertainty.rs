@@ -62,7 +62,9 @@ pub struct Decomposition {
 }
 
 const fn lcg_step(state: u64) -> u64 {
-    state.wrapping_mul(6_364_136_223_846_793_005).wrapping_add(1)
+    state
+        .wrapping_mul(6_364_136_223_846_793_005)
+        .wrapping_add(1)
 }
 
 #[expect(
@@ -89,7 +91,12 @@ fn mean(data: &[f64]) -> f64 {
 ///
 /// Panics if `data` is empty.
 #[must_use]
-pub fn bootstrap_mean(data: &[f64], n_replicates: usize, confidence: f64, seed: u64) -> BootstrapResult {
+pub fn bootstrap_mean(
+    data: &[f64],
+    n_replicates: usize,
+    confidence: f64,
+    seed: u64,
+) -> BootstrapResult {
     assert!(!data.is_empty(), "bootstrap requires non-empty data");
     let estimate = mean(data);
     let n = data.len();
@@ -123,7 +130,12 @@ pub fn bootstrap_mean(data: &[f64], n_replicates: usize, confidence: f64, seed: 
 ///
 /// Panics if `data` is empty.
 #[must_use]
-pub fn bootstrap_median(data: &[f64], n_replicates: usize, confidence: f64, seed: u64) -> BootstrapResult {
+pub fn bootstrap_median(
+    data: &[f64],
+    n_replicates: usize,
+    confidence: f64,
+    seed: u64,
+) -> BootstrapResult {
     assert!(!data.is_empty(), "bootstrap requires non-empty data");
     let mut sorted = data.to_vec();
     sorted.sort_by(|a, b| a.partial_cmp(b).unwrap_or(core::cmp::Ordering::Equal));
@@ -159,7 +171,10 @@ pub fn bootstrap_median(data: &[f64], n_replicates: usize, confidence: f64, seed
 #[must_use]
 #[expect(clippy::cast_precision_loss, reason = "jackknife n fits f64")]
 pub fn jackknife_mean_variance(data: &[f64]) -> JackknifeResult {
-    assert!(data.len() >= 2, "jackknife requires at least 2 observations");
+    assert!(
+        data.len() >= 2,
+        "jackknife requires at least 2 observations"
+    );
     let n = data.len();
     let n_f = n as f64;
     let full_mean = mean(data);
@@ -175,7 +190,8 @@ pub fn jackknife_mean_variance(data: &[f64]) -> JackknifeResult {
         .iter()
         .map(|&m| (m - jk_mean).powi(2))
         .sum::<f64>()
-        * (n_f - 1.0) / n_f;
+        * (n_f - 1.0)
+        / n_f;
     let bias = (n_f - 1.0) * (jk_mean - full_mean);
 
     JackknifeResult {
@@ -196,7 +212,11 @@ pub fn decompose_error(mbe: f64, rmse: f64) -> Decomposition {
     let rmse_sq = rmse * rmse;
     let bias_sq = mbe * mbe;
     let variance = (rmse_sq - bias_sq).max(0.0);
-    let bias_frac = if rmse_sq > 1e-30 { bias_sq / rmse_sq } else { 0.0 };
+    let bias_frac = if rmse_sq > 1e-30 {
+        bias_sq / rmse_sq
+    } else {
+        0.0
+    };
 
     Decomposition {
         bias: mbe,
@@ -270,7 +290,10 @@ pub fn monte_carlo_propagate(
 fn percentile_pair(sorted: &[f64], alpha: f64) -> (f64, f64) {
     let n = sorted.len();
     let lo_idx = (alpha * n as f64).floor().max(0.0) as usize;
-    let hi_idx = ((1.0 - alpha) * n as f64).ceil().min(n as f64 - 1.0).max(0.0) as usize;
+    let hi_idx = ((1.0 - alpha) * n as f64)
+        .ceil()
+        .min(n as f64 - 1.0)
+        .max(0.0) as usize;
     (sorted[lo_idx], sorted[hi_idx])
 }
 
@@ -378,10 +401,7 @@ mod tests {
         let base = [100.0];
         let sigmas = [10.0];
         let (m, sd) = monte_carlo_propagate(&base, &sigmas, 10_000, 42, |p| p[0]);
-        assert!(
-            (m - 100.0).abs() < 5.0,
-            "mean should be near base: {m}"
-        );
+        assert!((m - 100.0).abs() < 5.0, "mean should be near base: {m}");
         assert!(
             sd > 5.0 && sd < 20.0,
             "std should be in reasonable range of sigma: {sd}"

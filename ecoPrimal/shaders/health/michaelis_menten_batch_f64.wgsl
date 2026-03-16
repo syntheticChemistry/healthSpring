@@ -27,12 +27,13 @@ struct Params {
 @group(0) @binding(0) var<storage, read_write> output: array<f64>;
 @group(0) @binding(1) var<uniform> params: Params;
 
+// Thomas Wang (2007) hash for seed mixing — identical to population_pk_f64.wgsl.
 fn wang_hash(seed: u32) -> u32 {
     var s = seed;
     s = (s ^ 61u) ^ (s >> 16u);
     s = s * 9u;
     s = s ^ (s >> 4u);
-    s = s * 0x27d4eb2du;
+    s = s * 0x27d4eb2du;  // Wang's multiplicative constant
     s = s ^ (s >> 15u);
     return s;
 }
@@ -60,11 +61,15 @@ fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
     var rng_state = wang_hash(params.base_seed + idx);
     rng_state = xorshift32(rng_state);
     let u = u32_to_uniform(rng_state);
-    let vmax_factor = 0.7 + u * 0.6;  // [0.7, 1.3] range
+    // Lognormal-like Vmax variation: CV ~20%, range [0.7, 1.3] × Vmax.
+    // Reflects inter-patient variability in hepatic CYP2C9 expression
+    // for phenytoin (Gerber et al., Clin Pharmacol Ther 1985).
+    let vmax_factor = 0.7 + u * 0.6;
     let patient_vmax = params.vmax * vmax_factor;
 
-    // Euler integration
-    let dose_mg = params.vd * 6.0; // C0 = 6 mg/L (300mg / 50L)
+    // Euler integration — phenytoin reference: C0 = 300 mg / 50 L = 6 mg/L
+    // (standard 300 mg loading dose, Vd ~50 L; Winter, Basic Clin PK, 5th ed)
+    let dose_mg = params.vd * 6.0;
     var c = dose_mg / params.vd;
     var auc = 0.0;
 

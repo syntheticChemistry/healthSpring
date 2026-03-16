@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
-**Last Updated**: March 15, 2026
-**Status**: V27 — 73 experiments, 601 tests, 6 WGSL shaders, 30/30 papers complete. Full-stack portability proven. Deep audit executed: toadStool Hill/AUC delegation, gpu/context.rs smart refactor (968→350 LOC), capability-based discovery, ValidationHarness migrations. Tracks 6–7 (Comparative Medicine, Drug Discovery) complete.
+**Last Updated**: March 16, 2026
+**Status**: V28 — 73 experiments, 603 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. IPC evolved to Result-based. Socket discovery fully capability-based (zero hardcoded primal names). Smart microbiome refactor. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and
@@ -295,7 +295,7 @@ and functional signaling capacity.
 ```
 Phase 1 (Now, Eastgate only):
   - Synthetic data, published parameters
-  - All existing 61 experiments (Tracks 1–5)
+  - All existing 73 experiments (Tracks 1–7)
   - FRONT-LOAD: MATRIX + Anderson scoring (DD-001) for ADDRC meeting
   - FRONT-LOAD: ADDRC 8K compound IC50 sweep (DD-003) — GPU Hill shader ready
   - FRONT-LOAD: Lisabeth Brucella screen analysis (DD-002)

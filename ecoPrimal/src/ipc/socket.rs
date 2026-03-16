@@ -12,11 +12,6 @@ use std::path::PathBuf;
 /// This primal's socket name (healthSpring).
 const PRIMAL_NAME: &str = "healthspring";
 
-/// Well-known compute primal names for fallback discovery.
-const COMPUTE_FALLBACK_NAMES: &[&str] = &["toadstool", "node-atomic"];
-/// Well-known data primal names for fallback discovery.
-const DATA_FALLBACK_NAMES: &[&str] = &["nestgate", "squirrel"];
-
 /// Return the biomeOS socket directory, with XDG fallback.
 #[must_use]
 pub fn resolve_socket_dir() -> PathBuf {
@@ -90,17 +85,14 @@ pub fn discover_all_primals() -> Vec<String> {
         .collect()
 }
 
-/// Discover a primal by well-known name: scan socket dir for matching sockets.
-fn discover_by_wellknown(names: &[&str]) -> Option<PathBuf> {
-    names.iter().find_map(|name| discover_primal(name))
-}
-
-/// Probe for a compute primal by capability, not name.
+/// Probe for a compute primal by capability.
 ///
 /// Resolution order:
-/// 1. Explicit env `HEALTHSPRING_COMPUTE_PRIMAL` (override for testing)
+/// 1. Explicit env `HEALTHSPRING_COMPUTE_PRIMAL` (name override for testing)
 /// 2. Scan socket dir for any primal advertising `compute.*` capability
-/// 3. Fall back to well-known name scan (toadstool, node-atomic)
+///
+/// No hardcoded primal names — self-knowledge only. If the compute primal
+/// changes its name, capability discovery still works.
 #[must_use]
 pub fn discover_compute_primal() -> Option<PathBuf> {
     if let Some(path) = std::env::var("HEALTHSPRING_COMPUTE_PRIMAL")
@@ -109,15 +101,16 @@ pub fn discover_compute_primal() -> Option<PathBuf> {
     {
         return Some(path);
     }
-    discover_by_capability("compute").or_else(|| discover_by_wellknown(COMPUTE_FALLBACK_NAMES))
+    discover_by_capability("compute")
 }
 
-/// Probe for a data primal by capability, not name.
+/// Probe for a data primal by capability.
 ///
 /// Resolution order:
-/// 1. Explicit env `HEALTHSPRING_DATA_PRIMAL` (override for testing)
+/// 1. Explicit env `HEALTHSPRING_DATA_PRIMAL` (name override for testing)
 /// 2. Scan socket dir for any primal advertising `data.*` capability
-/// 3. Fall back to well-known name scan (nestgate, squirrel)
+///
+/// No hardcoded primal names — self-knowledge only.
 #[must_use]
 pub fn discover_data_primal() -> Option<PathBuf> {
     if let Some(path) = std::env::var("HEALTHSPRING_DATA_PRIMAL")
@@ -126,7 +119,7 @@ pub fn discover_data_primal() -> Option<PathBuf> {
     {
         return Some(path);
     }
-    discover_by_capability("data").or_else(|| discover_by_wellknown(DATA_FALLBACK_NAMES))
+    discover_by_capability("data")
 }
 
 /// Discover a primal by capability domain: query each visible socket with

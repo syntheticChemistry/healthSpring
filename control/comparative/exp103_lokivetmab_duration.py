@@ -9,7 +9,7 @@ Lokivetmab (Cytopoint) dose-response and duration in canine atopic dermatitis.
 
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 import numpy as np
 
@@ -41,7 +41,7 @@ def main() -> None:
         "results": results,
         "parameters": {"bw_kg": bw, "threshold_ug_mL": threshold},
         "_provenance": {
-            "date": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "script": "control/comparative/exp103_lokivetmab_duration.py",
             "command": " ".join(sys.argv),
             "git_commit": "baseline",

@@ -10,7 +10,7 @@
 use healthspring_barracuda::comparative::canine::{
     lokivetmab_effective_duration, lokivetmab_onset_hr, lokivetmab_pk,
 };
-use healthspring_barracuda::provenance::{log_analytical, AnalyticalProvenance};
+use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
 use healthspring_barracuda::tolerances::{DETERMINISM, LOKIVETMAB_DECAY};
 use healthspring_barracuda::validation::ValidationHarness;
 
@@ -35,10 +35,7 @@ fn main() {
     let c0 = lokivetmab_pk(1.0, BODY_WEIGHT_KG, 0.0);
     let c7 = lokivetmab_pk(1.0, BODY_WEIGHT_KG, 7.0);
     let c28 = lokivetmab_pk(1.0, BODY_WEIGHT_KG, 28.0);
-    h.check_bool(
-        "lokivetmab_pk monotonically decays",
-        c0 > c7 && c7 > c28,
-    );
+    h.check_bool("lokivetmab_pk monotonically decays", c0 > c7 && c7 > c28);
 
     // 3. Higher dose → higher C at any time
     let c_low = lokivetmab_pk(0.5, BODY_WEIGHT_KG, 7.0);

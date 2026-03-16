@@ -9,7 +9,7 @@ Distance-based diversity metrics for microbial communities.
 
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 import numpy as np
 
@@ -75,7 +75,7 @@ def main() -> None:
         "communities": results,
         "comparisons": comparisons,
         "_provenance": {
-            "date": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "script": "control/comparative/exp105_canine_gut_anderson.py",
             "command": " ".join(sys.argv),
             "git_commit": "baseline",

@@ -84,7 +84,10 @@ pub fn fractional_inhibition(concentration_um: f64, ic50_um: f64) -> f64 {
 ///
 /// `score = 0.2 × rho + 0.5 × mrtf + 0.3 × srf`
 #[must_use]
-pub fn score_anti_fibrotic(compound: &AntiFibroticCompound, concentration_um: f64) -> FibrosisPathwayScore {
+pub fn score_anti_fibrotic(
+    compound: &AntiFibroticCompound,
+    concentration_um: f64,
+) -> FibrosisPathwayScore {
     let rho = fractional_inhibition(concentration_um, compound.rho_ic50_um);
     let mrtf = fractional_inhibition(concentration_um, compound.mrtf_ic50_um);
     let srf = fractional_inhibition(concentration_um, compound.srf_ic50_um);

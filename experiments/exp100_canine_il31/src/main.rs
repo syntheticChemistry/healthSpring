@@ -8,9 +8,9 @@
 //! Validates IL-31 kinetics in AD dogs and pruritus VAS response.
 
 use healthspring_barracuda::comparative::canine::{
-    il31_serum_kinetics, pruritus_vas_response, CanineIl31Treatment,
+    CanineIl31Treatment, il31_serum_kinetics, pruritus_vas_response,
 };
-use healthspring_barracuda::provenance::{log_analytical, AnalyticalProvenance};
+use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
 use healthspring_barracuda::tolerances::{
     DETERMINISM, IL31_INITIAL, IL31_STEADY_STATE, MACHINE_EPSILON, MACHINE_EPSILON_STRICT,
     PRURITUS_AT_EC50,
@@ -105,13 +105,17 @@ fn main() {
     let c_1000 = il31_serum_kinetics(BASELINE_PG_ML, 1000.0, CanineIl31Treatment::Untreated);
     h.check_bool(
         "Untreated monotonic (stays at steady state)",
-        (c_0 - c_500).abs() < IL31_STEADY_STATE
-            && (c_500 - c_1000).abs() < IL31_STEADY_STATE,
+        (c_0 - c_500).abs() < IL31_STEADY_STATE && (c_500 - c_1000).abs() < IL31_STEADY_STATE,
     );
 
     // Check 9: Pruritus VAS at IL-31=0: VAS=0
     let vas_at_zero = pruritus_vas_response(0.0);
-    h.check_abs("Pruritus VAS at IL-31=0: VAS=0", vas_at_zero, 0.0, MACHINE_EPSILON);
+    h.check_abs(
+        "Pruritus VAS at IL-31=0: VAS=0",
+        vas_at_zero,
+        0.0,
+        MACHINE_EPSILON,
+    );
 
     // Check 10: Pruritus VAS at IL-31=EC50 (25): VAS=5.0 (half-max, analytical Hill identity)
     let vas_ec50 = pruritus_vas_response(25.0);
@@ -148,7 +152,12 @@ fn main() {
     // Check 14: Determinism: same inputs → identical results
     let r1 = il31_serum_kinetics(BASELINE_PG_ML, 200.0, CanineIl31Treatment::Oclacitinib);
     let r2 = il31_serum_kinetics(BASELINE_PG_ML, 200.0, CanineIl31Treatment::Oclacitinib);
-    h.check_abs("Determinism: same inputs → identical results", r1, r2, DETERMINISM);
+    h.check_abs(
+        "Determinism: same inputs → identical results",
+        r1,
+        r2,
+        DETERMINISM,
+    );
 
     h.exit();
 }

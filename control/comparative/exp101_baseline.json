@@ -1,0 +1,54 @@
+{
+  "experiment": "exp101_canine_jak1",
+  "compounds": [
+    {
+      "compound": "oclacitinib",
+      "ic50_jak1_nm": 10.0,
+      "ic50_jak2_nm": 1000.0,
+      "ic50_jak3_nm": 10000.0,
+      "ic50_tyk2_nm": 10000.0,
+      "jak1_selectivity": 464.1588833612776,
+      "hill_at_c_equals_ic50": 0.5,
+      "pathway_selectivity_score": 0.9978501969202997
+    },
+    {
+      "compound": "tofacitinib",
+      "ic50_jak1_nm": 3.2,
+      "ic50_jak2_nm": 4.1,
+      "ic50_jak3_nm": 1.6,
+      "ic50_tyk2_nm": 34.0,
+      "jak1_selectivity": 1.8951529848202724,
+      "hill_at_c_equals_ic50": 0.5,
+      "pathway_selectivity_score": 0.6545951093972747
+    },
+    {
+      "compound": "ruxolitinib",
+      "ic50_jak1_nm": 3.3,
+      "ic50_jak2_nm": 2.8,
+      "ic50_jak3_nm": 428.0,
+      "ic50_tyk2_nm": 19.0,
+      "jak1_selectivity": 8.588906214815623,
+      "hill_at_c_equals_ic50": 0.5,
+      "pathway_selectivity_score": 0.8957128187931466
+    },
+    {
+      "compound": "baricitinib",
+      "ic50_jak1_nm": 5.9,
+      "ic50_jak2_nm": 5.7,
+      "ic50_jak3_nm": 560.0,
+      "ic50_tyk2_nm": 53.0,
+      "jak1_selectivity": 9.374056621897136,
+      "hill_at_c_equals_ic50": 0.5,
+      "pathway_selectivity_score": 0.9036056928888127
+    }
+  ],
+  "selectivity_index_10_1000": 100.0,
+  "_provenance": {
+    "date": "2026-03-16",
+    "script": "control/comparative/exp101_canine_jak1.py",
+    "command": "python3 control/comparative/exp101_canine_jak1.py",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python_version": "3.13.2",
+    "numpy_version": "2.1.3"
+  }
+}

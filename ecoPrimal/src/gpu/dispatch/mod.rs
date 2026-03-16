@@ -11,7 +11,7 @@ pub(crate) use batch_ops::{
     BeatClassifyParams, MmParams, ScfaGpuParams, execute_beat_classify_gpu, execute_mm_gpu,
     execute_scfa_gpu,
 };
-pub(crate) use common::{strip_f64_enable, WG_SIZE};
+pub(crate) use common::{WG_SIZE, strip_f64_enable};
 pub(crate) use diversity::{DivParams, execute_diversity_gpu};
 pub(crate) use hill::{HillParams, execute_hill_gpu};
 pub(crate) use pop_pk::{PkParams, execute_pop_pk_gpu};
@@ -28,6 +28,7 @@ use super::{GpuError, GpuOp, GpuResult};
 /// Returns [`GpuError::NoDevice`] if no adapter/device is available,
 /// [`GpuError::Dispatch`] on shader compilation failure, or
 /// [`GpuError::Readback`] on buffer map failure.
+#[expect(clippy::too_many_lines, reason = "dispatch match over GpuOp variants")]
 pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
     // ── Tier A: barraCuda upstream ops (when feature-gated) ─────────
     #[cfg(feature = "barracuda-ops")]
@@ -35,14 +36,39 @@ pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
         use super::barracuda_rewire;
         let bc_device = barracuda_rewire::create_barracuda_device().await?;
         match op {
-            GpuOp::HillSweep { emax, ec50, n, concentrations } => {
-                return barracuda_rewire::execute_hill_barracuda(&bc_device, *emax, *ec50, *n, concentrations).await;
+            GpuOp::HillSweep {
+                emax,
+                ec50,
+                n,
+                concentrations,
+            } => {
+                return barracuda_rewire::execute_hill_barracuda(
+                    &bc_device,
+                    *emax,
+                    *ec50,
+                    *n,
+                    concentrations,
+                )
+                .await;
             }
-            GpuOp::PopulationPkBatch { n_patients, dose_mg, f_bioavail, seed } => {
-                return barracuda_rewire::execute_pop_pk_barracuda(&bc_device, *n_patients, *dose_mg, *f_bioavail, *seed).await;
+            GpuOp::PopulationPkBatch {
+                n_patients,
+                dose_mg,
+                f_bioavail,
+                seed,
+            } => {
+                return barracuda_rewire::execute_pop_pk_barracuda(
+                    &bc_device,
+                    *n_patients,
+                    *dose_mg,
+                    *f_bioavail,
+                    *seed,
+                )
+                .await;
             }
             GpuOp::DiversityBatch { communities } => {
-                return barracuda_rewire::execute_diversity_barracuda(&bc_device, communities).await;
+                return barracuda_rewire::execute_diversity_barracuda(&bc_device, communities)
+                    .await;
             }
             _ => {} // Tier B ops fall through to local WGSL path below
         }
@@ -129,7 +155,7 @@ pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
 
 #[cfg(test)]
 mod tests {
-    use super::{strip_f64_enable, WG_SIZE};
+    use super::{WG_SIZE, strip_f64_enable};
 
     #[test]
     fn strip_f64_enable_removes_directive() {

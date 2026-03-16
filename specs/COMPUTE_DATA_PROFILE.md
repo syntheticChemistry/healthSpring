@@ -166,7 +166,7 @@ healthSpring spans five domains with dramatically different compute/data profile
 |------------------------|---------------|
 | All Tier 0 Python controls | Population Monte Carlo > 10K patients |
 | All Tier 1 Rust CPU | Anderson L > 500 eigensolve |
-| All 61 experiments (Exp001-089) | NCBI bulk data (50+ GB) |
+| All 73 experiments (Exp001-106) | NCBI bulk data (50+ GB) |
 | Basic population PK (1K) | Cross-track Monte Carlo (D4) |
 | QS gene matrix construction (NCBI Gene API) | Real 16S HMP pipeline (50GB) |
 | MIT-BIH full dataset (100MB) | PhysioNet MIMIC-III (50GB subset) |

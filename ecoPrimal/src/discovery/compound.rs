@@ -179,7 +179,10 @@ fn compute_r_squared(
 /// Each compound's dose-response data yields an IC50 estimate. The panel is
 /// then ranked by selectivity against the primary target.
 #[must_use]
-pub fn batch_ic50_sweep(compounds: &[CompoundProfile], primary_target_idx: usize) -> Vec<CompoundScorecard> {
+pub fn batch_ic50_sweep(
+    compounds: &[CompoundProfile],
+    primary_target_idx: usize,
+) -> Vec<CompoundScorecard> {
     compounds
         .iter()
         .map(|cp| {
@@ -251,7 +254,9 @@ mod tests {
     fn estimate_ic50_from_hill_curve() {
         let ic50_true: f64 = 10.0;
         let n: f64 = 1.0;
-        let concs: Vec<f64> = (0..8).map(|i| 0.1 * 10.0_f64.powf(0.5 * f64::from(i))).collect();
+        let concs: Vec<f64> = (0..8)
+            .map(|i| 0.1 * 10.0_f64.powf(0.5 * f64::from(i)))
+            .collect();
         let responses: Vec<f64> = concs
             .iter()
             .map(|&c| c.powf(n) / (ic50_true.powf(n) + c.powf(n)))

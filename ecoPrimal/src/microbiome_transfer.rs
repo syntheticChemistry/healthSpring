@@ -85,8 +85,14 @@ mod tests {
     #[test]
     fn healthy_higher_resistance_than_dysbiotic() {
         let params = validated_gut_params();
-        let healthy = params.iter().find(|p| p.community_type == "healthy" && p.species == "human").unwrap();
-        let dysbiotic = params.iter().find(|p| p.community_type == "dysbiotic_cdi").unwrap();
+        let healthy = params
+            .iter()
+            .find(|p| p.community_type == "healthy" && p.species == "human")
+            .unwrap();
+        let dysbiotic = params
+            .iter()
+            .find(|p| p.community_type == "dysbiotic_cdi")
+            .unwrap();
         assert!(healthy.colonization_resistance > dysbiotic.colonization_resistance);
     }
 

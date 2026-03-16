@@ -261,7 +261,9 @@ mod tests {
         let good_tissue = score_compound("drug_a", "AD", 5.0, &[500.0], &good_ctx);
         let poor_tissue = score_compound("drug_b", "AD", 5.0, &[500.0], &poor_ctx);
         assert!(good_tissue.combined_score > poor_tissue.combined_score);
-        assert!((good_tissue.pathway_score - poor_tissue.pathway_score).abs()
-            < tolerances::MACHINE_EPSILON);
+        assert!(
+            (good_tissue.pathway_score - poor_tissue.pathway_score).abs()
+                < tolerances::MACHINE_EPSILON
+        );
     }
 }

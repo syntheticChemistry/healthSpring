@@ -2,11 +2,11 @@
 
 //! Capability definitions and semantic mappings for the healthSpring primal.
 
-pub(crate) const PRIMAL_NAME: &str = "healthspring";
-pub(crate) const PRIMAL_DOMAIN: &str = "health";
+pub const PRIMAL_NAME: &str = "healthspring";
+pub const PRIMAL_DOMAIN: &str = "health";
 
 /// Every capability this primal advertises to `biomeOS`.
-pub(crate) const ALL_CAPABILITIES: &[&str] = &[
+pub const ALL_CAPABILITIES: &[&str] = &[
     // ── PK/PD ────────────────────────────────────────────────────────
     "science.pkpd.hill_dose_response",
     "science.pkpd.one_compartment_pk",
@@ -76,7 +76,7 @@ pub(crate) const ALL_CAPABILITIES: &[&str] = &[
 ];
 
 /// Build semantic mappings for capability registration with biomeOS.
-pub(crate) fn build_semantic_mappings() -> serde_json::Value {
+pub fn build_semantic_mappings() -> serde_json::Value {
     serde_json::json!({
         "hill_dose_response":       "science.pkpd.hill_dose_response",
         "one_compartment_pk":       "science.pkpd.one_compartment_pk",
@@ -107,7 +107,7 @@ pub(crate) fn build_semantic_mappings() -> serde_json::Value {
 }
 
 /// Capability listing (`biomeOS` niche composition).
-pub(crate) fn handle_capability_list() -> serde_json::Value {
+pub fn handle_capability_list() -> serde_json::Value {
     let science: Vec<&str> = ALL_CAPABILITIES
         .iter()
         .filter(|c| c.starts_with("science."))
@@ -136,7 +136,7 @@ pub(crate) fn handle_capability_list() -> serde_json::Value {
 }
 
 /// Subcommand: version
-pub(crate) fn cmd_version() {
+pub fn cmd_version() {
     println!("{PRIMAL_NAME} {}", env!("CARGO_PKG_VERSION"));
     println!("  Domain:    {PRIMAL_DOMAIN}");
     println!("  License:   AGPL-3.0-or-later");
@@ -145,7 +145,7 @@ pub(crate) fn cmd_version() {
 }
 
 /// Subcommand: capabilities
-pub(crate) fn cmd_capabilities() {
+pub fn cmd_capabilities() {
     let science_count = ALL_CAPABILITIES
         .iter()
         .filter(|c| c.starts_with("science."))

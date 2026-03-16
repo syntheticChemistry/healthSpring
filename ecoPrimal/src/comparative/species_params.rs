@@ -126,7 +126,11 @@ pub fn allometric_half_life(vd: f64, cl: f64) -> f64 {
 /// weight exponents. Bioavailability is copied (no allometric basis for
 /// bioavailability scaling).
 #[must_use]
-pub fn scale_across_species(reference: &SpeciesPkParams, target_species: Species, target_bw_kg: f64) -> SpeciesPkParams {
+pub fn scale_across_species(
+    reference: &SpeciesPkParams,
+    target_species: Species,
+    target_bw_kg: f64,
+) -> SpeciesPkParams {
     let cl = allometric_clearance(
         reference.clearance_l_hr_kg * reference.body_weight_kg,
         reference.body_weight_kg,

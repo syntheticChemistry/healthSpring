@@ -98,19 +98,28 @@ mod tests {
     #[test]
     fn healthy_stays_below_threshold() {
         let t = AttentionThresholds::default();
-        assert_eq!(t.next_state(AttentionState::Healthy, 0.3), AttentionState::Healthy);
+        assert_eq!(
+            t.next_state(AttentionState::Healthy, 0.3),
+            AttentionState::Healthy
+        );
     }
 
     #[test]
     fn escalate_healthy_to_alert() {
         let t = AttentionThresholds::default();
-        assert_eq!(t.next_state(AttentionState::Healthy, 0.7), AttentionState::Alert);
+        assert_eq!(
+            t.next_state(AttentionState::Healthy, 0.7),
+            AttentionState::Alert
+        );
     }
 
     #[test]
     fn escalate_healthy_to_critical() {
         let t = AttentionThresholds::default();
-        assert_eq!(t.next_state(AttentionState::Healthy, 0.9), AttentionState::Critical);
+        assert_eq!(
+            t.next_state(AttentionState::Healthy, 0.9),
+            AttentionState::Critical
+        );
     }
 
     #[test]
@@ -123,13 +132,19 @@ mod tests {
     #[test]
     fn deescalate_critical_to_alert() {
         let t = AttentionThresholds::default();
-        assert_eq!(t.next_state(AttentionState::Critical, 0.4), AttentionState::Alert);
+        assert_eq!(
+            t.next_state(AttentionState::Critical, 0.4),
+            AttentionState::Alert
+        );
     }
 
     #[test]
     fn deescalate_alert_to_healthy() {
         let t = AttentionThresholds::default();
-        assert_eq!(t.next_state(AttentionState::Alert, 0.2), AttentionState::Healthy);
+        assert_eq!(
+            t.next_state(AttentionState::Alert, 0.2),
+            AttentionState::Healthy
+        );
     }
 
     #[test]

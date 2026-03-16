@@ -27,7 +27,7 @@ impl NcbiProvider {
     pub fn discover() -> Self {
         Self {
             biomeos_socket: discovery::discover_biomeos_socket(),
-            nestgate_socket: discovery::discover_nestgate_socket(),
+            nestgate_socket: discovery::discover_data_provider_socket(),
             api_key: discovery::discover_ncbi_api_key(),
         }
     }

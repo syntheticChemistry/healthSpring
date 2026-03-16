@@ -239,8 +239,14 @@ pub const fn len_f64(n: usize) -> f64 {
 pub fn rmse(observed: &[f64], predicted: &[f64]) -> f64 {
     assert_eq!(observed.len(), predicted.len());
     let n = observed.len();
-    if n == 0 { return 0.0; }
-    let sum_sq: f64 = observed.iter().zip(predicted).map(|(o, p)| (o - p).powi(2)).sum();
+    if n == 0 {
+        return 0.0;
+    }
+    let sum_sq: f64 = observed
+        .iter()
+        .zip(predicted)
+        .map(|(o, p)| (o - p).powi(2))
+        .sum();
     (sum_sq / n as f64).sqrt()
 }
 
@@ -254,8 +260,14 @@ pub fn rmse(observed: &[f64], predicted: &[f64]) -> f64 {
 pub fn mae(observed: &[f64], predicted: &[f64]) -> f64 {
     assert_eq!(observed.len(), predicted.len());
     let n = observed.len();
-    if n == 0 { return 0.0; }
-    let sum_abs: f64 = observed.iter().zip(predicted).map(|(o, p)| (o - p).abs()).sum();
+    if n == 0 {
+        return 0.0;
+    }
+    let sum_abs: f64 = observed
+        .iter()
+        .zip(predicted)
+        .map(|(o, p)| (o - p).abs())
+        .sum();
     sum_abs / n as f64
 }
 
@@ -269,11 +281,19 @@ pub fn mae(observed: &[f64], predicted: &[f64]) -> f64 {
 pub fn nse(observed: &[f64], predicted: &[f64]) -> f64 {
     assert_eq!(observed.len(), predicted.len());
     let n = observed.len();
-    if n == 0 { return 0.0; }
+    if n == 0 {
+        return 0.0;
+    }
     let mean_obs: f64 = observed.iter().sum::<f64>() / n as f64;
-    let ss_res: f64 = observed.iter().zip(predicted).map(|(o, p)| (o - p).powi(2)).sum();
+    let ss_res: f64 = observed
+        .iter()
+        .zip(predicted)
+        .map(|(o, p)| (o - p).powi(2))
+        .sum();
     let ss_tot: f64 = observed.iter().map(|o| (o - mean_obs).powi(2)).sum();
-    if ss_tot < 1e-15 { return 1.0; }
+    if ss_tot < 1e-15 {
+        return 1.0;
+    }
     1.0 - ss_res / ss_tot
 }
 
@@ -293,13 +313,23 @@ pub fn r_squared(observed: &[f64], predicted: &[f64]) -> f64 {
 pub fn index_of_agreement(observed: &[f64], predicted: &[f64]) -> f64 {
     assert_eq!(observed.len(), predicted.len());
     let n = observed.len();
-    if n == 0 { return 0.0; }
+    if n == 0 {
+        return 0.0;
+    }
     let mean_obs: f64 = observed.iter().sum::<f64>() / n as f64;
-    let ss_res: f64 = observed.iter().zip(predicted).map(|(o, p)| (o - p).powi(2)).sum();
-    let ss_pot: f64 = observed.iter().zip(predicted)
+    let ss_res: f64 = observed
+        .iter()
+        .zip(predicted)
+        .map(|(o, p)| (o - p).powi(2))
+        .sum();
+    let ss_pot: f64 = observed
+        .iter()
+        .zip(predicted)
         .map(|(o, p)| ((p - mean_obs).abs() + (o - mean_obs).abs()).powi(2))
         .sum();
-    if ss_pot < 1e-15 { return 1.0; }
+    if ss_pot < 1e-15 {
+        return 1.0;
+    }
     1.0 - ss_res / ss_pot
 }
 

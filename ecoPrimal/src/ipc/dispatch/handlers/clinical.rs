@@ -5,7 +5,7 @@ use serde_json::Value;
 
 use crate::{diagnostic, endocrine, pkpd};
 
-use super::{f, fa, sza, sz_or};
+use super::{f, fa, sz_or, sza};
 
 fn percentile_sorted(v: &mut [f64], p: f64) -> f64 {
     if v.is_empty() {
@@ -116,7 +116,9 @@ pub fn dispatch_population_trt(params: &Value) -> Value {
         rng = r2;
         let (z3, r3) = crate::rng::normal_sample(rng);
         rng = r3;
-        let _age = age_min + (age_max - age_min) * crate::validation::len_f64(i) / crate::validation::len_f64(n_patients.max(1));
+        let _age = age_min
+            + (age_max - age_min) * crate::validation::len_f64(i)
+                / crate::validation::len_f64(n_patients.max(1));
         let vd = sig_vd.mul_add(z1, mu_vd).exp();
         let ka = sig_ka.mul_add(z2, mu_ka).exp();
         let ke = sig_elim.mul_add(z3, mu_elim).exp();

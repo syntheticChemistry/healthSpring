@@ -274,14 +274,21 @@ pub fn full_study() -> (HealthScenario, Vec<ScenarioEdge>) {
 /// Serialize a scenario + edges to pretty JSON.
 ///
 /// Edges are merged into the scenario's `edges` field for a single clean JSON output.
+/// All types implement `Serialize` with no dynamic content, so serialization
+/// is infallible — the `expect` cannot fire.
 ///
 /// # Panics
-/// Cannot panic — all types are `Serialize`.
+///
+/// Cannot panic. `serde_json::to_string_pretty` only fails for recursive
+/// structures or custom serializers that fail; `HealthScenario` has neither.
 #[must_use]
 pub fn scenario_with_edges_json(scenario: &HealthScenario, edges: &[ScenarioEdge]) -> String {
     let mut merged = scenario.clone();
     merged.edges.extend_from_slice(edges);
-    #[expect(clippy::expect_used, reason = "Serialize impls don't fail")]
+    #[expect(
+        clippy::expect_used,
+        reason = "Serialize impls on fixed structs cannot fail"
+    )]
     serde_json::to_string_pretty(&merged).expect("serialization cannot fail")
 }
 

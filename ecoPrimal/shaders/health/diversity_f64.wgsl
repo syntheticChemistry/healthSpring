@@ -21,6 +21,9 @@ struct Params {
 var<workgroup> shared_shannon: array<f64, 256>;
 var<workgroup> shared_simpson: array<f64, 256>;
 
+// f32 log cast to f64 — driver-portable (~7 decimal digits).
+// Full f64 log requires coralReef DFMA polynomial lowering or
+// barraCuda compile_shader_f64 pipeline.
 fn log_f64(x: f64) -> f64 {
     return f64(log(f32(x)));
 }

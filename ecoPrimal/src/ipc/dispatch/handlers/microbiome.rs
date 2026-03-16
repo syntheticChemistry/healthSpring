@@ -119,7 +119,8 @@ pub fn dispatch_gut_brain(params: &Value) -> Value {
     let h = microbiome::shannon_index(&abundances);
     let j = microbiome::pielou_evenness(&abundances);
     let w = microbiome::evenness_to_disorder(j, 5.0);
-    let xi = endocrine::anderson_localization_length(w, crate::validation::len_f64(abundances.len()));
+    let xi =
+        endocrine::anderson_localization_length(w, crate::validation::len_f64(abundances.len()));
     let serotonin_proxy = 1.0 - (-xi / 20.0).exp();
     serde_json::json!({
         "shannon": h,

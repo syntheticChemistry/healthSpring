@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Paper Review Queue
 
-**Last Updated**: March 15, 2026
-**Status**: V27 — 73 experiments complete (Tracks 1–7), 601 library tests + 173 validation checks, 55+ wired JSON-RPC capabilities (capability registry). All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. V27: ODE→WGSL codegen, uncertainty module, IPC cast safety, cross-spring absorptions.
+**Last Updated**: March 16, 2026
+**Status**: V28 — 73 experiments complete (Tracks 1–7), 603 tests + 173 validation checks + 113/113 cross-validation (all 7 tracks), 55+ wired JSON-RPC capabilities (capability registry). All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. V28: IPC evolved to Result-based, socket discovery fully capability-based, WGSL shader magic numbers documented, 42 baselines with provenance.
 
 ---
 

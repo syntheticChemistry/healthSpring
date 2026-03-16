@@ -54,14 +54,14 @@
 use crate::microbiome;
 use crate::pkpd;
 
+#[cfg(feature = "barracuda-ops")]
+pub mod barracuda_rewire;
 #[cfg(feature = "gpu")]
 pub mod context;
 #[cfg(feature = "gpu")]
 pub mod dispatch;
 #[cfg(feature = "gpu")]
 mod fused;
-#[cfg(feature = "barracuda-ops")]
-pub mod barracuda_rewire;
 
 pub mod ode_systems;
 

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Population Monte Carlo: virtual cohort for percentile context.
 
-use super::{DiagnosticConfig, PatientProfile, PopulationResult};
 use super::assessment::assess_patient_with_config;
+use super::{DiagnosticConfig, PatientProfile, PopulationResult};
 use crate::endocrine;
 
 fn profile_cv_lognormal(typical: f64, cv: f64, z: f64) -> f64 {
@@ -39,8 +39,7 @@ pub fn population_montecarlo_with_config(
         let (z, next_rng) = crate::rng::normal_sample(rng);
         rng = next_rng;
 
-        let age_var =
-            (profile_cv_lognormal(base_profile.age_years, cfg.mc_age_cv, z)).max(18.0);
+        let age_var = (profile_cv_lognormal(base_profile.age_years, cfg.mc_age_cv, z)).max(18.0);
         let weight_var =
             profile_cv_lognormal(base_profile.weight_kg, cfg.mc_weight_cv, z).max(30.0);
 

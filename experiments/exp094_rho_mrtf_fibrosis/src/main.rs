@@ -12,11 +12,11 @@
 //! Validates fibrosis pathway scoring and Anderson geometry for anti-fibrotic compounds.
 
 use healthspring_barracuda::discovery::fibrosis::{
-    ccg_1423, ccg_203971, fibrotic_geometry_factor, fibrosis_matrix_score, fractional_inhibition,
+    ccg_1423, ccg_203971, fibrosis_matrix_score, fibrotic_geometry_factor, fractional_inhibition,
     score_anti_fibrotic,
 };
 use healthspring_barracuda::discovery::tissue_geometry_factor;
-use healthspring_barracuda::provenance::{log_analytical, AnalyticalProvenance};
+use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
 use healthspring_barracuda::tolerances::{
     ANTI_FIBROTIC_SCORE, DETERMINISM, FIBROTIC_GEOMETRY, FRACTIONAL_AT_IC50,
 };
@@ -33,7 +33,12 @@ fn main() {
 
     // 1. fractional_inhibition at 0 → 0
     let frac_at_0 = fractional_inhibition(0.0, 5.0);
-    h.check_abs("fractional_inhibition at 0 → 0", frac_at_0, 0.0, FRACTIONAL_AT_IC50);
+    h.check_abs(
+        "fractional_inhibition at 0 → 0",
+        frac_at_0,
+        0.0,
+        FRACTIONAL_AT_IC50,
+    );
 
     // 2. fractional_inhibition at IC50 → 0.5
     let frac_at_ic50 = fractional_inhibition(5.0, 5.0);
@@ -94,7 +99,9 @@ fn main() {
     let score_hi = score_anti_fibrotic(&ccg1423, 20.0).anti_fibrotic_score;
     h.check_bool(
         "Anti-fibrotic score monotonic with concentration",
-        score_lo.partial_cmp(&score_mid).unwrap_or(core::cmp::Ordering::Equal)
+        score_lo
+            .partial_cmp(&score_mid)
+            .unwrap_or(core::cmp::Ordering::Equal)
             == core::cmp::Ordering::Less
             && score_mid
                 .partial_cmp(&score_hi)

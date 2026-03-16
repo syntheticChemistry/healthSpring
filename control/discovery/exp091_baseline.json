@@ -1,0 +1,52 @@
+{
+  "experiment": "exp091_addrc_hts",
+  "plate_params": {
+    "pos_mean": 10.0,
+    "pos_std": 2.0,
+    "neg_mean": 90.0,
+    "neg_std": 3.0
+  },
+  "z_prime": 0.8125,
+  "signals": [
+    {
+      "index": 0,
+      "signal": 15.0,
+      "sample_std": 1.0,
+      "percent_inhibition": 93.75,
+      "ssmd": -23.717082451262844,
+      "hit_classification": "Strong"
+    },
+    {
+      "index": 1,
+      "signal": 45.0,
+      "sample_std": 5.0,
+      "percent_inhibition": 56.25,
+      "ssmd": -7.717436331412897,
+      "hit_classification": "Strong"
+    },
+    {
+      "index": 2,
+      "signal": 70.0,
+      "sample_std": 3.0,
+      "percent_inhibition": 25.0,
+      "ssmd": -4.714045207910317,
+      "hit_classification": "Strong"
+    },
+    {
+      "index": 3,
+      "signal": 88.0,
+      "sample_std": 2.0,
+      "percent_inhibition": 2.5,
+      "ssmd": -0.5547001962252291,
+      "hit_classification": "Inactive"
+    }
+  ],
+  "_provenance": {
+    "date": "2026-03-16",
+    "script": "control/discovery/exp091_addrc_hts.py",
+    "command": "python3 control/discovery/exp091_addrc_hts.py",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python_version": "3.13.2",
+    "numpy_version": "2.1.3"
+  }
+}

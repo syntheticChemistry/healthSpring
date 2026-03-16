@@ -3,7 +3,7 @@
 
 use super::{
     BiosignalAssessment, CrossTrackAssessment, DiagnosticAssessment, DiagnosticConfig,
-    EndocrineAssessment, MicrobiomeAssessment, PkAssessment, PatientProfile, RiskLevel, Sex,
+    EndocrineAssessment, MicrobiomeAssessment, PatientProfile, PkAssessment, RiskLevel, Sex,
 };
 use crate::{biosignal, endocrine, microbiome, pkpd};
 

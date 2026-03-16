@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V27 — Deep Evolution Sprint. 601 tests, 73 experiments. ODE→WGSL codegen (3 OdeSystem impls), uncertainty module (bootstrap/jackknife/bias-variance), IPC cast safety, capability registry, cross-spring absorptions. barraCuda v0.3.5 pinned.
-**Last Updated**: March 15, 2026
+**Status**: V28 — Deep Debt + Ecosystem Maturity. 603 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. IPC evolved to Result-based `try_send`. Socket discovery fully capability-based (zero hardcoded primal names). Microbiome smart-refactored. WGSL shader magic numbers documented. barraCuda v0.3.5 pinned.
+**Last Updated**: March 16, 2026
 
 ---
 

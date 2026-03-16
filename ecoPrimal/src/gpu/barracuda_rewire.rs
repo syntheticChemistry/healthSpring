@@ -17,9 +17,9 @@
 use std::sync::Arc;
 
 use barracuda::device::WgpuDevice;
+use barracuda::ops::bio::diversity_fusion::DiversityFusionGpu;
 use barracuda::ops::hill_f64::HillFunctionF64;
 use barracuda::ops::population_pk_f64::{PopulationPkConfig, PopulationPkF64};
-use barracuda::ops::bio::diversity_fusion::DiversityFusionGpu;
 
 use super::{GpuError, GpuResult};
 
@@ -84,10 +84,7 @@ pub async fn execute_diversity_barracuda(
         .compute(&flat, n_samples, n_species)
         .map_err(|e| GpuError::Dispatch(format!("barraCuda DiversityFusionGpu::compute: {e}")))?;
 
-    let results: Vec<(f64, f64)> = div_results
-        .iter()
-        .map(|r| (r.shannon, r.simpson))
-        .collect();
+    let results: Vec<(f64, f64)> = div_results.iter().map(|r| (r.shannon, r.simpson)).collect();
     Ok(GpuResult::DiversityBatch(results))
 }
 

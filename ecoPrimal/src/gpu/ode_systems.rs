@@ -172,10 +172,9 @@ mod tests {
     fn mm_cpu_integration_decays() {
         let initial = vec![25.0];
         let params = vec![10.0, 4.0, 50.0];
-        let result = BatchedOdeRK4::<MichaelisMentenOde>::integrate_cpu(
-            &initial, &params, 0.1, 1000, 1,
-        )
-        .unwrap();
+        let result =
+            BatchedOdeRK4::<MichaelisMentenOde>::integrate_cpu(&initial, &params, 0.1, 1000, 1)
+                .unwrap();
         assert!(result[0] < 25.0, "concentration should decrease");
         assert!(result[0] >= 0.0, "concentration must stay non-negative");
     }
@@ -183,17 +182,19 @@ mod tests {
     #[test]
     fn mm_shader_generation() {
         let wgsl = BatchedOdeRK4::<MichaelisMentenOde>::generate_shader();
-        assert!(wgsl.contains("fn deriv"), "shader should include derivative");
+        assert!(
+            wgsl.contains("fn deriv"),
+            "shader should include derivative"
+        );
     }
 
     #[test]
     fn oral_1comp_cpu_absorbs_then_eliminates() {
         let initial = vec![100.0, 0.0];
         let params = vec![100.0, 0.8, 50.0, 1.0, 0.1];
-        let result = BatchedOdeRK4::<OralOneCompartmentOde>::integrate_cpu(
-            &initial, &params, 0.01, 5000, 1,
-        )
-        .unwrap();
+        let result =
+            BatchedOdeRK4::<OralOneCompartmentOde>::integrate_cpu(&initial, &params, 0.01, 5000, 1)
+                .unwrap();
         assert!(result[0] < 1.0, "gut should be nearly empty: {}", result[0]);
         assert!(result[1] >= 0.0, "plasma stays non-negative");
     }
@@ -209,10 +210,9 @@ mod tests {
         let c0 = 10.0;
         let initial = vec![c0, 0.0];
         let params = vec![0.1, 0.3, 0.2, 5.0];
-        let result = BatchedOdeRK4::<TwoCompartmentOde>::integrate_cpu(
-            &initial, &params, 0.01, 10_000, 1,
-        )
-        .unwrap();
+        let result =
+            BatchedOdeRK4::<TwoCompartmentOde>::integrate_cpu(&initial, &params, 0.01, 10_000, 1)
+                .unwrap();
         assert!(result[0] < c0, "central should decrease");
         assert!(result[0] >= 0.0 && result[1] >= 0.0);
     }
@@ -226,14 +226,10 @@ mod tests {
     #[test]
     fn mm_batch_integration() {
         let initial = vec![25.0, 10.0];
-        let params = vec![
-            10.0, 4.0, 50.0,
-            10.0, 4.0, 50.0,
-        ];
-        let result = BatchedOdeRK4::<MichaelisMentenOde>::integrate_cpu(
-            &initial, &params, 0.1, 500, 2,
-        )
-        .unwrap();
+        let params = vec![10.0, 4.0, 50.0, 10.0, 4.0, 50.0];
+        let result =
+            BatchedOdeRK4::<MichaelisMentenOde>::integrate_cpu(&initial, &params, 0.1, 500, 2)
+                .unwrap();
         assert!(result[0] < 25.0);
         assert!(result[1] < 10.0);
         assert!(result[0] > result[1], "higher initial → higher final");

@@ -28,7 +28,7 @@ pub mod provenance;
 mod rpc;
 mod storage;
 
-pub use discovery::{discover_biomeos_socket, discover_nestgate_socket, is_enabled};
+pub use discovery::{discover_biomeos_socket, discover_data_provider_socket, is_enabled};
 pub use fetch::{NcbiProvider, fetch_tiered};
 pub use provenance::{
     DataProvenanceChain, ProvenanceResult, begin_data_session, complete_data_session,
@@ -110,11 +110,9 @@ mod tests {
 
     #[test]
     fn discover_returns_option() {
-        // In test environments without biomeOS, these should return None
         let biomeos = discover_biomeos_socket();
-        let nestgate = discover_nestgate_socket();
-        // We don't assert None — CI may have sockets available
-        drop((biomeos, nestgate));
+        let data = discover_data_provider_socket();
+        drop((biomeos, data));
     }
 
     #[test]

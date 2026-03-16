@@ -51,6 +51,20 @@ FILES = [
     ("control/microbiome/exp080_baseline.json", "python3 control/microbiome/exp080_gut_brain_serotonin.py"),
     ("control/biosignal/exp081_baseline.json", "python3 control/biosignal/exp081_eda_stress.py"),
     ("control/biosignal/exp082_baseline.json", "python3 control/biosignal/exp082_arrhythmia_classification.py"),
+    # Track 7: Drug Discovery
+    ("control/discovery/exp090_baseline.json", "python3 control/discovery/exp090_matrix_scoring.py"),
+    ("control/discovery/exp091_baseline.json", "python3 control/discovery/exp091_addrc_hts.py"),
+    ("control/discovery/exp092_baseline.json", "python3 control/discovery/exp092_compound_library.py"),
+    ("control/discovery/exp093_baseline.json", "python3 control/discovery/exp093_chembl_jak_panel.py"),
+    ("control/discovery/exp094_baseline.json", "python3 control/discovery/exp094_rho_mrtf_fibrosis.py"),
+    # Track 6: Comparative Medicine
+    ("control/comparative/exp100_baseline.json", "python3 control/comparative/exp100_canine_il31.py"),
+    ("control/comparative/exp101_baseline.json", "python3 control/comparative/exp101_canine_jak1.py"),
+    ("control/comparative/exp102_baseline.json", "python3 control/comparative/exp102_il31_pruritus_timecourse.py"),
+    ("control/comparative/exp103_baseline.json", "python3 control/comparative/exp103_lokivetmab_duration.py"),
+    ("control/comparative/exp104_baseline.json", "python3 control/comparative/exp104_cross_species_pk.py"),
+    ("control/comparative/exp105_baseline.json", "python3 control/comparative/exp105_canine_gut_anderson.py"),
+    ("control/comparative/exp106_baseline.json", "python3 control/comparative/exp106_feline_hyperthyroid.py"),
 ]
 
 

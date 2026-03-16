@@ -8,10 +8,10 @@
 //! Validates methimazole PK simulation, half-life, Css, and T4 response.
 
 use healthspring_barracuda::comparative::feline::{
-    methimazole_apparent_half_life, methimazole_css, methimazole_simulate, t4_response,
-    FELINE_METHIMAZOLE, HUMAN_METHIMAZOLE,
+    FELINE_METHIMAZOLE, HUMAN_METHIMAZOLE, methimazole_apparent_half_life, methimazole_css,
+    methimazole_simulate, t4_response,
 };
-use healthspring_barracuda::provenance::{log_analytical, AnalyticalProvenance};
+use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
 use healthspring_barracuda::tolerances::{
     DETERMINISM, FELINE_MM_PK, FELINE_T4_RESPONSE, MACHINE_EPSILON,
 };
@@ -35,10 +35,7 @@ fn main() {
     let (_times, concs) = methimazole_simulate(&FELINE_METHIMAZOLE, DOSE_MG, T_END_HR, DT_HR);
     let c0 = concs.first().copied().unwrap_or(0.0);
     let c_end = concs.last().copied().unwrap_or(0.0);
-    h.check_bool(
-        "methimazole_simulate: C decays from C0",
-        c_end < c0,
-    );
+    h.check_bool("methimazole_simulate: C decays from C0", c_end < c0);
 
     // 2. methimazole_simulate: all concentrations ≥ 0
     h.check_bool(
@@ -47,7 +44,11 @@ fn main() {
     );
 
     // 3. methimazole_simulate: returns correct number of time points
-    #[expect(clippy::cast_possible_truncation, clippy::cast_sign_loss, reason = "T_END_HR/DT_HR is small positive, no truncation in practice")]
+    #[expect(
+        clippy::cast_possible_truncation,
+        clippy::cast_sign_loss,
+        reason = "T_END_HR/DT_HR is small positive, no truncation in practice"
+    )]
     let expected_steps = (T_END_HR / DT_HR).ceil() as usize;
     let expected_count = expected_steps + 1;
     h.check_exact(
@@ -66,10 +67,8 @@ fn main() {
 
     // 5. methimazole_apparent_half_life: at C=0, t½ ≈ 0.693 × Km × Vd / Vmax (first-order limit)
     let t_half_at_0 = methimazole_apparent_half_life(&FELINE_METHIMAZOLE, 0.0);
-    let expected_first_order = 0.693
-        * FELINE_METHIMAZOLE.km
-        * FELINE_METHIMAZOLE.vd
-        / FELINE_METHIMAZOLE.vmax;
+    let expected_first_order =
+        0.693 * FELINE_METHIMAZOLE.km * FELINE_METHIMAZOLE.vd / FELINE_METHIMAZOLE.vmax;
     h.check_abs(
         "methimazole_apparent_half_life: at C=0, first-order limit",
         t_half_at_0,

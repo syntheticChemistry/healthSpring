@@ -43,7 +43,7 @@ pub fn discover_biomeos_socket() -> Option<PathBuf>
 
 /// Discover the NestGate data provider socket.
 /// Checks: $NESTGATE_SOCKET → $XDG_RUNTIME_DIR/biomeos/nestgate-default.sock → /tmp/
-pub fn discover_socket() -> Option<PathBuf>
+pub fn discover_data_provider_socket() -> Option<PathBuf>
 
 /// Returns true if NestGate is enabled via HEALTHSPRING_DATA_PROVIDER=nestgate
 pub fn is_enabled() -> bool
@@ -193,7 +193,7 @@ fetch_tiered("pubmed", "33456789", api_key)
     │       └── Success → return
     │       └── Fail → fall through
     │
-    ├── Tier 2: is_enabled() && discover_socket() → Some(path)
+    ├── Tier 2: is_enabled() && discover_data_provider_socket() → Some(path)
     │   ├── exists(socket, "ncbi:pubmed:33456789") → true
     │   │   └── retrieve(socket, "ncbi:pubmed:33456789") → return
     │   └── exists → false

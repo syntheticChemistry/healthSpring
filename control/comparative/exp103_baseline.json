@@ -1,0 +1,61 @@
+{
+  "results": [
+    {
+      "dose_mg_kg": 0.25,
+      "bw_kg": 15.0,
+      "t_half_days": 10.5,
+      "k_el_per_day": 0.06601401719618527,
+      "C0_ug_mL": 2.941176470588235,
+      "effective_duration_days": 16.34213015950604,
+      "onset_hr": 6.0
+    },
+    {
+      "dose_mg_kg": 0.5,
+      "bw_kg": 15.0,
+      "t_half_days": 14.0,
+      "k_el_per_day": 0.049510512897138946,
+      "C0_ug_mL": 5.88235294117647,
+      "effective_duration_days": 35.789506879341396,
+      "onset_hr": 4.242640687119285
+    },
+    {
+      "dose_mg_kg": 1.0,
+      "bw_kg": 15.0,
+      "t_half_days": 21.0,
+      "k_el_per_day": 0.033007008598092635,
+      "C0_ug_mL": 11.76470588235294,
+      "effective_duration_days": 74.68426031901208,
+      "onset_hr": 3.0
+    },
+    {
+      "dose_mg_kg": 2.0,
+      "bw_kg": 15.0,
+      "t_half_days": 35.0,
+      "k_el_per_day": 0.01980420515885558,
+      "C0_ug_mL": 23.52941176470588,
+      "effective_duration_days": 159.4737671983535,
+      "onset_hr": 2.1213203435596424
+    },
+    {
+      "dose_mg_kg": 4.0,
+      "bw_kg": 15.0,
+      "t_half_days": 63.0,
+      "k_el_per_day": 0.01100233619936421,
+      "C0_ug_mL": 47.05882352941176,
+      "effective_duration_days": 350.05278095703625,
+      "onset_hr": 1.5
+    }
+  ],
+  "parameters": {
+    "bw_kg": 15.0,
+    "threshold_ug_mL": 1.0
+  },
+  "_provenance": {
+    "date": "2026-03-16T14:30:18Z",
+    "script": "control/comparative/exp103_lokivetmab_duration.py",
+    "command": "python3 control/comparative/exp103_lokivetmab_duration.py",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python": "3.13.2",
+    "numpy": "2.1.3"
+  }
+}

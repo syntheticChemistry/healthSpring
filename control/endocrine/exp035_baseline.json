@@ -24,7 +24,7 @@
     "date": "2026-03-08",
     "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
     "numpy": "2.1.3",
-    "git_commit": "e93a81b6bdd85d537eb5a3904847c1cfc603ab28",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
     "command": "python3 control/endocrine/exp035_trt_diabetes.py",
     "script": "control/endocrine/exp035_trt_diabetes.py"
   }

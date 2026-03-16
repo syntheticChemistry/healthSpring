@@ -1,0 +1,35 @@
+{
+  "experiment": "exp104_cross_species_pk",
+  "canine": {
+    "body_weight_kg": 15.0,
+    "clearance_l_hr_kg": 0.82,
+    "volume_distribution_l_kg": 2.9,
+    "bioavailability": 0.89,
+    "half_life_hr": 2.451374175151026
+  },
+  "human_reference": {
+    "body_weight_kg": 70.0,
+    "clearance_l_hr_kg": 0.38,
+    "volume_distribution_l_kg": 1.24,
+    "bioavailability": 0.74,
+    "half_life_hr": 2.261848694458769
+  },
+  "canine_scaled_to_human": {
+    "clearance_l_hr_kg": 0.5579074453200386,
+    "volume_distribution_l_kg": 2.9,
+    "half_life_hr": 3.60297544061408
+  },
+  "roundtrip_canine_to_canine": {
+    "clearance_l_hr_kg": 0.82,
+    "volume_distribution_l_kg": 2.9,
+    "identity_check": true
+  },
+  "_provenance": {
+    "date": "2026-03-16",
+    "script": "control/comparative/exp104_cross_species_pk.py",
+    "command": "python3 control/comparative/exp104_cross_species_pk.py",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python_version": "3.13.2",
+    "numpy_version": "2.1.3"
+  }
+}

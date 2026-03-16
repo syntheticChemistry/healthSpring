@@ -11,10 +11,8 @@ use healthspring_barracuda::microbiome::{
     anderson_diagonalize, evenness_to_disorder, inverse_participation_ratio,
     localization_length_from_ipr, pielou_evenness, shannon_index,
 };
-use healthspring_barracuda::provenance::{log_analytical, AnalyticalProvenance};
-use healthspring_barracuda::tolerances::{
-    DETERMINISM, DIVERSITY_CROSS_VALIDATE, MACHINE_EPSILON,
-};
+use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
+use healthspring_barracuda::tolerances::{DETERMINISM, DIVERSITY_CROSS_VALIDATE, MACHINE_EPSILON};
 use healthspring_barracuda::validation::ValidationHarness;
 
 const W_SCALE: f64 = 10.0;
@@ -51,9 +49,7 @@ fn xi_from_evenness(evenness: f64) -> f64 {
     let disorder = disorder_from_w(w);
     let (_eigs, evecs) = anderson_diagonalize(&disorder, T_HOP);
     let mid = LATTICE_L / 2;
-    let psi: Vec<f64> = (0..LATTICE_L)
-        .map(|j| evecs[mid * LATTICE_L + j])
-        .collect();
+    let psi: Vec<f64> = (0..LATTICE_L).map(|j| evecs[mid * LATTICE_L + j]).collect();
     let ipr = inverse_participation_ratio(&psi);
     localization_length_from_ipr(ipr)
 }
@@ -96,22 +92,13 @@ fn main() {
     );
 
     // 3. Pielou evenness: healthy > AD
-    h.check_bool(
-        "Pielou evenness: healthy > AD",
-        pielou_healthy > pielou_ad,
-    );
+    h.check_bool("Pielou evenness: healthy > AD", pielou_healthy > pielou_ad);
 
     // 4. Pielou evenness: treated > AD
-    h.check_bool(
-        "Pielou evenness: treated > AD",
-        pielou_treated > pielou_ad,
-    );
+    h.check_bool("Pielou evenness: treated > AD", pielou_treated > pielou_ad);
 
     // 5. evenness_to_disorder: healthy W > AD W
-    h.check_bool(
-        "evenness_to_disorder: healthy W > AD W",
-        w_healthy > w_ad,
-    );
+    h.check_bool("evenness_to_disorder: healthy W > AD W", w_healthy > w_ad);
 
     // 6. evenness_to_disorder: higher W → shorter ξ (better colonization resistance)
     let xi_healthy = xi_from_evenness(pielou_healthy);

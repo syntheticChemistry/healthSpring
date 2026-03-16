@@ -9,7 +9,7 @@ IL-31 in canine atopic dermatitis; oclacitinib and lokivetmab effects.
 
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 import numpy as np
 
@@ -56,7 +56,7 @@ def main() -> None:
         "results": results,
         "parameters": {"baseline": baseline, "k_el_base": k_el_base},
         "_provenance": {
-            "date": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "script": "control/comparative/exp102_il31_pruritus_timecourse.py",
             "command": " ".join(sys.argv),
             "git_commit": "baseline",

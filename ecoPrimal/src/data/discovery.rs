@@ -1,32 +1,19 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Socket discovery for `biomeOS` and `NestGate`.
+//! Socket discovery for `biomeOS` and data providers.
 //!
-//! Capability-based discovery using only environment variables and XDG
-//! runtime directory scanning. No hardcoded primal names as literals.
+//! Pure capability-based discovery — no hardcoded primal names in
+//! discovery logic. Environment overrides provided for testing.
+//! Runtime discovery via XDG socket directory scanning.
 
 use std::path::PathBuf;
-
-/// XDG subdirectory for biomeOS sockets.
-const BIOMEOS_XDG_SUBDIR: &str = "biomeos";
-
-/// Default biomeOS orchestrator socket filename.
-const BIOMEOS_DEFAULT_SOCK: &str = "biomeos-default.sock";
-
-/// Default `NestGate` data provider socket filename (overridable via `HEALTHSPRING_DATA_SOCKET`).
-fn default_socket_name() -> String {
-    std::env::var("HEALTHSPRING_DATA_SOCKET")
-        .unwrap_or_else(|_| "nestgate-default.sock".into())
-}
-
-/// Provider name for `NestGate` (used in `HEALTHSPRING_DATA_PROVIDER`).
-const NESTGATE_PROVIDER: &str = "nestgate";
 
 /// Discover the `biomeOS` orchestrator socket.
 ///
 /// Search order:
 /// 1. `$BIOMEOS_SOCKET` — explicit override
-/// 2. `$XDG_RUNTIME_DIR/{BIOMEOS_XDG_SUBDIR}/{BIOMEOS_DEFAULT_SOCK}`
-/// 3. `None` — `biomeOS` not available
+/// 2. `$XDG_RUNTIME_DIR/{BIOMEOS_XDG_SUBDIR}/` — scan for orchestrator socket
+/// 3. Delegate to `ipc::socket::orchestrator_socket()` for standard path
+/// 4. `None` — `biomeOS` not available
 #[must_use]
 pub fn discover_biomeos_socket() -> Option<PathBuf> {
     if let Ok(path) = std::env::var("BIOMEOS_SOCKET") {
@@ -36,52 +23,37 @@ pub fn discover_biomeos_socket() -> Option<PathBuf> {
         }
     }
 
-    if let Ok(xdg) = std::env::var("XDG_RUNTIME_DIR") {
-        let p = PathBuf::from(xdg)
-            .join(BIOMEOS_XDG_SUBDIR)
-            .join(BIOMEOS_DEFAULT_SOCK);
-        if p.exists() {
-            return Some(p);
-        }
+    let orch = crate::ipc::socket::orchestrator_socket();
+    if orch.exists() {
+        return Some(orch);
     }
 
     None
 }
 
-/// Discover the `NestGate` data provider socket.
+/// Discover a data provider socket.
 ///
 /// Search order:
-/// 1. `$NESTGATE_SOCKET` — explicit override
-/// 2. `$XDG_RUNTIME_DIR/{BIOMEOS_XDG_SUBDIR}/{NESTGATE_DEFAULT_SOCK}`
-/// 3. `None` — `NestGate` not available
+/// 1. `$HEALTHSPRING_DATA_SOCKET` — explicit socket path override
+/// 2. Capability-based discovery via `ipc::socket::discover_data_primal()`
+/// 3. `None` — no data provider available
 #[must_use]
-pub fn discover_nestgate_socket() -> Option<PathBuf> {
-    if let Ok(path) = std::env::var("NESTGATE_SOCKET") {
+pub fn discover_data_provider_socket() -> Option<PathBuf> {
+    if let Ok(path) = std::env::var("HEALTHSPRING_DATA_SOCKET") {
         let p = PathBuf::from(path);
         if p.exists() {
             return Some(p);
         }
     }
 
-    if let Ok(xdg) = std::env::var("XDG_RUNTIME_DIR") {
-        let p = PathBuf::from(xdg)
-            .join(BIOMEOS_XDG_SUBDIR)
-            .join(default_socket_name());
-        if p.exists() {
-            return Some(p);
-        }
-    }
-
-    None
+    crate::ipc::socket::discover_data_primal()
 }
 
-/// Returns `true` if the data provider is explicitly enabled.
-///
-/// Checks `HEALTHSPRING_DATA_PROVIDER={NESTGATE_PROVIDER}`.
+/// Returns `true` if the data provider is explicitly enabled via environment.
 #[must_use]
 pub fn is_enabled() -> bool {
     std::env::var("HEALTHSPRING_DATA_PROVIDER")
-        .map(|v| v.eq_ignore_ascii_case(NESTGATE_PROVIDER))
+        .map(|v| !v.is_empty())
         .unwrap_or(false)
 }
 
@@ -120,7 +92,6 @@ mod tests {
 
     #[test]
     fn is_enabled_default_false() {
-        // Unless CI sets HEALTHSPRING_DATA_PROVIDER, should be false
         if std::env::var("HEALTHSPRING_DATA_PROVIDER").is_err() {
             assert!(!is_enabled());
         }
@@ -132,8 +103,8 @@ mod tests {
     }
 
     #[test]
-    fn discover_nestgate_no_panic() {
-        let _ = discover_nestgate_socket();
+    fn discover_data_provider_no_panic() {
+        let _ = discover_data_provider_socket();
     }
 
     #[test]

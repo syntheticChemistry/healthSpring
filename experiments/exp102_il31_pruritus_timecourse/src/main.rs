@@ -12,12 +12,10 @@
 //! Validates pruritus VAS time-course under oclacitinib and lokivetmab treatment.
 
 use healthspring_barracuda::comparative::canine::{
-    pruritus_time_course, pruritus_vas_response, CanineIl31Treatment,
+    CanineIl31Treatment, pruritus_time_course, pruritus_vas_response,
 };
-use healthspring_barracuda::provenance::{log_analytical, AnalyticalProvenance};
-use healthspring_barracuda::tolerances::{
-    DETERMINISM, PRURITUS_AT_EC50, PRURITUS_TIME_COURSE,
-};
+use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
+use healthspring_barracuda::tolerances::{DETERMINISM, PRURITUS_AT_EC50, PRURITUS_TIME_COURSE};
 use healthspring_barracuda::validation::ValidationHarness;
 
 const BASELINE_PG_ML: f64 = 44.5;
@@ -143,18 +141,11 @@ fn main() {
     let untreated_stable = vas_untreated
         .windows(2)
         .all(|w| (w[1] - w[0]).abs() < PRURITUS_TIME_COURSE * 10.0);
-    h.check_bool(
-        "Untreated VAS is monotonically stable",
-        untreated_stable,
-    );
+    h.check_bool("Untreated VAS is monotonically stable", untreated_stable);
 
     // 11. Treated VAS is monotonically decreasing (early phase)
-    let (_, vas_ocla_early) = pruritus_time_course(
-        BASELINE_PG_ML,
-        CanineIl31Treatment::Oclacitinib,
-        50.0,
-        26,
-    );
+    let (_, vas_ocla_early) =
+        pruritus_time_course(BASELINE_PG_ML, CanineIl31Treatment::Oclacitinib, 50.0, 26);
     let early_decreasing = vas_ocla_early
         .windows(2)
         .all(|w| w[1] <= w[0] + PRURITUS_TIME_COURSE);

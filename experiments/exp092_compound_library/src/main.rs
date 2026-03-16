@@ -8,9 +8,9 @@
 //! and ranking for a synthetic 5-compound panel across 2 targets.
 
 use healthspring_barracuda::discovery::{
-    batch_ic50_sweep, estimate_ic50, rank_by_selectivity, selectivity_index, CompoundProfile,
+    CompoundProfile, batch_ic50_sweep, estimate_ic50, rank_by_selectivity, selectivity_index,
 };
-use healthspring_barracuda::provenance::{log_analytical, AnalyticalProvenance};
+use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
 use healthspring_barracuda::tolerances::{DETERMINISM, SELECTIVITY_INDEX};
 use healthspring_barracuda::validation::ValidationHarness;
 
@@ -32,21 +32,38 @@ fn main() {
 
     // 1. selectivity_index: SI(5, 500) = 100
     let si_a = selectivity_index(5.0, 500.0);
-    h.check_abs("selectivity_index: SI(5,500)=100", si_a, 100.0, SELECTIVITY_INDEX);
+    h.check_abs(
+        "selectivity_index: SI(5,500)=100",
+        si_a,
+        100.0,
+        SELECTIVITY_INDEX,
+    );
 
     // 2. selectivity_index: SI(50, 60) = 1.2
     let si_b = selectivity_index(50.0, 60.0);
-    h.check_abs("selectivity_index: SI(50,60)=1.2", si_b, 1.2, SELECTIVITY_INDEX);
+    h.check_abs(
+        "selectivity_index: SI(50,60)=1.2",
+        si_b,
+        1.2,
+        SELECTIVITY_INDEX,
+    );
 
     // 3. selectivity_index: zero on-target → 0.0
     let si_zero = selectivity_index(0.0, 100.0);
-    h.check_abs("selectivity_index: zero on-target → 0", si_zero, 0.0, SELECTIVITY_INDEX);
+    h.check_abs(
+        "selectivity_index: zero on-target → 0",
+        si_zero,
+        0.0,
+        SELECTIVITY_INDEX,
+    );
 
     // 4. estimate_ic50: known Hill curve recovers IC50 within 10%
     let ic50_true = 10.0;
     let n = 1.0;
     let emax = 1.0;
-    let concs: Vec<f64> = (0..8).map(|i| 0.1 * 10.0_f64.powf(0.5 * f64::from(i))).collect();
+    let concs: Vec<f64> = (0..8)
+        .map(|i| 0.1 * 10.0_f64.powf(0.5 * f64::from(i)))
+        .collect();
     let responses: Vec<f64> = concs
         .iter()
         .map(|&c| hill_response(c, ic50_true, n, emax))
@@ -59,7 +76,10 @@ fn main() {
 
     // 5. estimate_ic50: insufficient data returns NaN
     let est_bad = estimate_ic50(&[1.0], &[0.5]);
-    h.check_bool("estimate_ic50: insufficient data → NaN", est_bad.ic50.is_nan());
+    h.check_bool(
+        "estimate_ic50: insufficient data → NaN",
+        est_bad.ic50.is_nan(),
+    );
 
     // Panel: A(5,500), B(50,60), C(2,2000), D(100,200), E(10,1000)
     let compounds = vec![
@@ -92,7 +112,11 @@ fn main() {
 
     // 6. batch_ic50_sweep: returns correct count
     let mut scorecards = batch_ic50_sweep(&compounds, 0);
-    h.check_exact("batch_ic50_sweep: correct count", scorecards.len() as u64, 5);
+    h.check_exact(
+        "batch_ic50_sweep: correct count",
+        scorecards.len() as u64,
+        5,
+    );
 
     // 7. rank_by_selectivity: most selective first
     rank_by_selectivity(&mut scorecards);
@@ -123,10 +147,10 @@ fn main() {
     // 12. Determinism: same panel → same ranking
     let mut scorecards2 = batch_ic50_sweep(&compounds, 0);
     rank_by_selectivity(&mut scorecards2);
-    let same_ranking = scorecards
-        .iter()
-        .zip(scorecards2.iter())
-        .all(|(a, b)| a.compound == b.compound && (a.primary_selectivity - b.primary_selectivity).abs() < DETERMINISM);
+    let same_ranking = scorecards.iter().zip(scorecards2.iter()).all(|(a, b)| {
+        a.compound == b.compound
+            && (a.primary_selectivity - b.primary_selectivity).abs() < DETERMINISM
+    });
     h.check_bool("determinism: same panel → same ranking", same_ranking);
 
     h.exit();

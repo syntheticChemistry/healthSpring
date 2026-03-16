@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** March 15, 2026
-**Status:** V27 — 73 experiments, 601 tests, 55+ wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–7). Audit execution: toadStool Hill/AUC delegation, `gpu/context.rs` smart refactor (968→350 LOC), capability-based primal discovery, Songbird wired, CI clippy::nursery aligned, ValidationHarness migrations, Python provenance. Zero duplicate math, zero hardcoded primal names.
+**Date:** March 16, 2026
+**Status:** V28 — 73 experiments, 603 tests, 55+ wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–7). V28: IPC evolved to Result-based `try_send` with `SendError`. Socket discovery fully capability-based (zero hardcoded primal names). Microbiome smart-refactored. WGSL shader magic numbers documented. 42 baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Zero duplicate math, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -43,7 +43,7 @@ without establishing causality.
 
 | Order | Document | What you'll learn |
 |:-----:|----------|------------------|
-| 4 | [baseCamp/README.md](baseCamp/README.md) | All 61 experiments, validation counts, per-track status |
+| 4 | [baseCamp/README.md](baseCamp/README.md) | All 73 experiments, validation counts, per-track status |
 | 5 | [baseCamp/gonzales.md](baseCamp/gonzales.md) | PK/PD sub-thesis: Gonzales canine → human → drug discovery pipeline |
 | 6 | [baseCamp/EXTENSION_PLAN.md](baseCamp/EXTENSION_PLAN.md) | Where we're going: Tracks 6–7, datasets, QS gene profiling, living systems |
 

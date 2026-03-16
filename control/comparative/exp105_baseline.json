@@ -1,0 +1,74 @@
+{
+  "communities": [
+    {
+      "community": "healthy",
+      "abundances": [
+        0.2,
+        0.18,
+        0.17,
+        0.16,
+        0.15,
+        0.14
+      ],
+      "shannon": 1.7848207944965941,
+      "pielou": 0.9961274518981891,
+      "W": 9.961274518981892
+    },
+    {
+      "community": "ad_dog",
+      "abundances": [
+        0.6,
+        0.15,
+        0.1,
+        0.08,
+        0.05,
+        0.02
+      ],
+      "shannon": 1.2514072466228041,
+      "pielou": 0.6984236824834245,
+      "W": 6.984236824834245
+    },
+    {
+      "community": "treated",
+      "abundances": [
+        0.3,
+        0.2,
+        0.18,
+        0.15,
+        0.1,
+        0.07
+      ],
+      "shannon": 1.6927178504587288,
+      "pielou": 0.9447238200940016,
+      "W": 9.447238200940015
+    }
+  ],
+  "comparisons": [
+    {
+      "community_a": "healthy",
+      "community_b": "ad_dog",
+      "shannon_diff": 0.53341354787379,
+      "pielou_diff": 0.2977037694147646
+    },
+    {
+      "community_a": "healthy",
+      "community_b": "treated",
+      "shannon_diff": 0.09210294403786534,
+      "pielou_diff": 0.0514036318041875
+    },
+    {
+      "community_a": "ad_dog",
+      "community_b": "treated",
+      "shannon_diff": -0.4413106038359247,
+      "pielou_diff": -0.24630013761057712
+    }
+  ],
+  "_provenance": {
+    "date": "2026-03-16T14:30:18Z",
+    "script": "control/comparative/exp105_canine_gut_anderson.py",
+    "command": "python3 control/comparative/exp105_canine_gut_anderson.py",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python": "3.13.2",
+    "numpy": "2.1.3"
+  }
+}

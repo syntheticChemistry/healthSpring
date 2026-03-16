@@ -1,0 +1,45 @@
+{
+  "experiment": "exp090_matrix_scoring",
+  "tissue_thickness": 1.0,
+  "localization_length": 10.0,
+  "w_baseline": 5.0,
+  "w_treated": 5.0,
+  "compounds": [
+    {
+      "compound": "Oclacitinib",
+      "pathway_score": 0.9978501969202997,
+      "tissue_geometry": 0.9999546000702375,
+      "disorder_factor": 1.0,
+      "combined_score": 0.9978048945914461
+    },
+    {
+      "compound": "Baricitinib",
+      "pathway_score": 0.9036056928888127,
+      "tissue_geometry": 0.9999546000702375,
+      "disorder_factor": 1.0,
+      "combined_score": 0.9035646692538225
+    },
+    {
+      "compound": "Ruxolitinib",
+      "pathway_score": 0.8957128187931466,
+      "tissue_geometry": 0.9999546000702375,
+      "disorder_factor": 1.0,
+      "combined_score": 0.895672153494086
+    },
+    {
+      "compound": "Tofacitinib",
+      "pathway_score": 0.6545951093972747,
+      "tissue_geometry": 0.9999546000702375,
+      "disorder_factor": 1.0,
+      "combined_score": 0.6545653908252852
+    }
+  ],
+  "_provenance": {
+    "date": "2026-03-16",
+    "script": "control/discovery/exp090_matrix_scoring.py",
+    "command": "python3 control/discovery/exp090_matrix_scoring.py",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python_version": "3.13.2",
+    "numpy_version": "2.1.3"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "results": [
+    {
+      "compound": "CCG-1423",
+      "conc_uM": 0.0,
+      "rho_inhibition": 0.0,
+      "mrtf_inhibition": 0.0,
+      "srf_inhibition": 0.0,
+      "anti_fibrotic_score": 0.0,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.0
+    },
+    {
+      "compound": "CCG-1423",
+      "conc_uM": 1.0,
+      "rho_inhibition": 0.09090909090909091,
+      "mrtf_inhibition": 0.23809523809523808,
+      "srf_inhibition": 0.16666666666666666,
+      "anti_fibrotic_score": 0.18722943722943722,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.11356039408039564
+    },
+    {
+      "compound": "CCG-1423",
+      "conc_uM": 5.0,
+      "rho_inhibition": 0.3333333333333333,
+      "mrtf_inhibition": 0.6097560975609757,
+      "srf_inhibition": 0.5,
+      "anti_fibrotic_score": 0.5215447154471545,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.3163328603298003
+    },
+    {
+      "compound": "CCG-1423",
+      "conc_uM": 10.0,
+      "rho_inhibition": 0.5,
+      "mrtf_inhibition": 0.7575757575757576,
+      "srf_inhibition": 0.6666666666666666,
+      "anti_fibrotic_score": 0.6787878787878787,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.41170565992615116
+    },
+    {
+      "compound": "CCG-1423",
+      "conc_uM": 50.0,
+      "rho_inhibition": 0.8333333333333334,
+      "mrtf_inhibition": 0.9398496240601504,
+      "srf_inhibition": 0.9090909090909091,
+      "anti_fibrotic_score": 0.9093187514240146,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.5515297021902758
+    },
+    {
+      "compound": "CCG-203971",
+      "conc_uM": 0.0,
+      "rho_inhibition": 0.0,
+      "mrtf_inhibition": 0.0,
+      "srf_inhibition": 0.0,
+      "anti_fibrotic_score": 0.0,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.0
+    },
+    {
+      "compound": "CCG-203971",
+      "conc_uM": 1.0,
+      "rho_inhibition": 0.0625,
+      "mrtf_inhibition": 0.4,
+      "srf_inhibition": 0.2631578947368421,
+      "anti_fibrotic_score": 0.2914473684210527,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.176771764639932
+    },
+    {
+      "compound": "CCG-203971",
+      "conc_uM": 5.0,
+      "rho_inhibition": 0.25,
+      "mrtf_inhibition": 0.7692307692307693,
+      "srf_inhibition": 0.6410256410256411,
+      "anti_fibrotic_score": 0.6269230769230769,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.3802480674352279
+    },
+    {
+      "compound": "CCG-203971",
+      "conc_uM": 10.0,
+      "rho_inhibition": 0.4,
+      "mrtf_inhibition": 0.8695652173913043,
+      "srf_inhibition": 0.78125,
+      "anti_fibrotic_score": 0.7491576086956522,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.4543870586309128
+    },
+    {
+      "compound": "CCG-203971",
+      "conc_uM": 50.0,
+      "rho_inhibition": 0.7692307692307693,
+      "mrtf_inhibition": 0.970873786407767,
+      "srf_inhibition": 0.946969696969697,
+      "anti_fibrotic_score": 0.9233739561409464,
+      "geometry_factor": 0.6065306597126334,
+      "fibrosis_matrix_score": 0.5600546147796325
+    }
+  ],
+  "parameters": {
+    "xi": 1.0,
+    "L": 2.0,
+    "disorder": 1.0
+  },
+  "_provenance": {
+    "date": "2026-03-16T14:30:18Z",
+    "script": "control/discovery/exp094_rho_mrtf_fibrosis.py",
+    "command": "python3 control/discovery/exp094_rho_mrtf_fibrosis.py",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python": "3.13.2",
+    "numpy": "2.1.3"
+  }
+}

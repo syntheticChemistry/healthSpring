@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 15, 2026
+**Date:** March 16, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V27 — Deep Evolution Sprint complete. 601 tests, 73 experiments, 55+ JSON-RPC capabilities (capability registry). V27 absorptions: ODE→WGSL codegen (3 `OdeSystem` impls via barraCuda `BatchedOdeRK4`), uncertainty quantification (bootstrap/jackknife/bias-variance from groundSpring). IPC cast safety evolved (sz/sz_or/sza helpers — zero raw `as usize` in handlers). `core::` imports for `no_std` readiness. Binary refactored into capabilities/server/main. 6 large modules decomposed into domain-coherent directories. Capability registry replaces 46-arm match. `clippy::pedantic` + `clippy::nursery` enforced with zero warnings. Zero unsafe, zero TODO/FIXME, zero `#[allow()]`.
+**Status:** V28 — Deep Debt + Ecosystem Maturity. 603 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V28: IPC evolved to Result-based `rpc::try_send` with structured `SendError`; socket discovery fully capability-based (zero hardcoded primal names); `microbiome/mod.rs` smart-refactored (clinical models extracted to `clinical.rs`); WGSL shader magic numbers documented with literature provenance; exp020 clinical thresholds centralized to `tolerances::*`; Track 6-7 baseline JSON generated and registered in provenance updater; `cross_validate.py` extended to all 7 tracks; 5 Python baseline scripts fixed (`datetime.timezone`). Zero unsafe, zero TODO/FIXME, zero `#[allow()]`, clippy pedantic+nursery clean.
 
 ---
 
@@ -33,12 +33,13 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V27** (Deep Evolution Sprint) |
-| **Total tests** | **601** |
+| Version | **V28** (Deep Debt + Ecosystem Maturity) |
+| **Total tests** | **603** (536 lib + 33 forge + 30 toadStool + 4 doc) |
 | Experiments complete | 73 (Tracks 1–7, Tier 0+1+2+3) |
 | JSON-RPC capabilities | 55+ (all wired — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
-| Python control checks | 194 + 7 new Track 6+7 controls |
+| Python baselines | **42** with git-tracked provenance (all 7 tracks) |
+| Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
 | Comparative Medicine (Track 6) | **Complete** — 7 experiments (Exp100–106), canine + feline + cross-species |
 | Drug Discovery (Track 7) | **Complete** — 5 experiments (Exp090–094), MATRIX + HTS + compound + fibrosis |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity checks |
@@ -54,6 +55,24 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | `cargo doc` | **0 warnings** |
 | Max file size | 350 lines (`gpu/context.rs` — smart refactor, all files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V28 Deep Debt + Ecosystem Maturity (from V27)
+
+V28 evolves debt solutions to production quality: capability-based discovery, Result-based IPC, smart module refactoring, and full provenance coverage across all 7 tracks.
+
+| Change | Impact |
+|--------|--------|
+| **IPC evolution** | `rpc::try_send()` returns `Result<Value, SendError>` with structured error variants (Connect, Write, Read, InvalidJson, NoResult). `rpc::send()` preserved as fire-and-forget convenience. Server registration/heartbeat upgraded with `eprintln!` observability. |
+| **Socket discovery** | Removed hardcoded primal name fallbacks (`COMPUTE_FALLBACK_NAMES`, `DATA_FALLBACK_NAMES`). `discover_compute_primal()` and `discover_data_primal()` now pure capability-based. `data/discovery.rs` evolved: `discover_nestgate_socket()` → `discover_data_provider_socket()` (name-agnostic). |
+| **microbiome smart refactor** | `microbiome/mod.rs` 680 → 480 LOC. FMT, SCFA, antibiotic perturbation, gut-brain serotonin extracted to `microbiome/clinical.rs` (203 LOC). Tests stay in mod.rs via `pub use clinical::*` re-export. |
+| **WGSL shader provenance** | All 6 shaders documented: Wang hash (Thomas Wang 2007), phenytoin C0 (Winter 5th ed), CL variation (Rowland & Tozer), f32 transcendental path rationale, correlation guard derivation. |
+| **Tolerance centralization** | exp020: 5 inline thresholds → `tolerances::QRS_PEAK_MATCH_MS`, `QRS_SENSITIVITY`, `HR_DETECTION_BPM`, `SDNN_UPPER_MS`. Added ANSI/AAMI EC57:2012 and ESC/NASPE provenance comments. |
+| **Track 6-7 baselines** | 12 baseline JSON files generated and registered in `update_provenance.py`. 5 Python scripts fixed (`from datetime import datetime, timezone`). All 42 baselines carry git-tracked provenance. |
+| **Cross-validation** | `cross_validate.py` extended from 24 experiments (Tracks 1-5) to all 7 tracks. 113/113 checks pass. |
+| **Binary lint evolution** | `pub(crate)` → `pub` in binary-private modules (nursery `redundant_pub_crate`). `gpu/dispatch/mod.rs` `too_many_lines` → documented `#[expect]`. |
+| **603 tests** | Up from 601 (V27). 2 new IPC tests (`try_send_connect_fails_gracefully`, `send_error_display`). Zero failures, zero clippy warnings. |
 
 ---
 
@@ -355,7 +374,10 @@ healthSpring/
 │   └── src/
 │       ├── lib.rs       # 289 tests, #![forbid(unsafe_code)]
 │       ├── pkpd/        # Track 1: Hill, 1/2-compartment, allometric, pop PK, PBPK, NLME (FOCE/SAEM), NCA, diagnostics
-│       ├── microbiome.rs # Track 2: Shannon, Simpson, Pielou, Chao1, Anderson W, FMT, eigensolver
+│       ├── microbiome/   # Track 2: diversity indices, Anderson, clinical models
+│       │   ├── mod.rs       # Shannon, Simpson, Pielou, Chao1, communities
+│       │   ├── anderson.rs  # Anderson lattice, IPR, localization length
+│       │   └── clinical.rs  # FMT, SCFA, antibiotic perturbation, gut-brain serotonin
 │       ├── biosignal/    # Track 3 (submodules after V14.1 refactor)
 │       │   ├── mod.rs    # Re-exports all public items for API compatibility
 │       │   ├── ecg.rs    # Pan-Tompkins QRS detection, synthetic ECG
@@ -466,7 +488,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 601 tests
+cargo test --workspace                  # 603 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

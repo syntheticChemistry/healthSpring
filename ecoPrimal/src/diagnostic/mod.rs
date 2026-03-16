@@ -272,8 +272,8 @@ pub use population::{population_montecarlo, population_montecarlo_with_config};
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use super::assessment::{assess_endocrine, assess_microbiome, assess_pk};
+    use super::*;
 
     fn test_profile() -> PatientProfile {
         let mut p = PatientProfile::minimal(55.0, 85.0, Sex::Male);

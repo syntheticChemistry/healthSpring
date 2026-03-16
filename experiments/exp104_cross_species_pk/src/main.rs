@@ -11,10 +11,10 @@
 //! Validates allometric scaling across species: canine → human → feline → equine → murine.
 
 use healthspring_barracuda::comparative::species_params::{
-    allometric_clearance, allometric_half_life, allometric_volume, scale_across_species, Species,
-    SpeciesPkParams,
+    Species, SpeciesPkParams, allometric_clearance, allometric_half_life, allometric_volume,
+    scale_across_species,
 };
-use healthspring_barracuda::provenance::{log_analytical, AnalyticalProvenance};
+use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
 use healthspring_barracuda::tolerances::{
     ALLOMETRIC_CL_RATIO, ALLOMETRIC_ROUNDTRIP, DETERMINISM, MACHINE_EPSILON,
 };
@@ -92,8 +92,7 @@ fn main() {
     );
 
     // Check 7: scale_across_species: canine to canine (roundtrip identity)
-    let scaled_canine =
-        scale_across_species(&canine, Species::Canine, canine.body_weight_kg);
+    let scaled_canine = scale_across_species(&canine, Species::Canine, canine.body_weight_kg);
     h.check_abs(
         "scale_across_species: canine to canine (roundtrip identity)",
         scaled_canine.clearance_l_hr_kg,
@@ -109,8 +108,7 @@ fn main() {
     );
 
     // Check 9: scale_across_species: murine → human CL per kg is much lower (mice clear faster per kg)
-    let scaled_from_murine =
-        scale_across_species(&murine, Species::Human, human.body_weight_kg);
+    let scaled_from_murine = scale_across_species(&murine, Species::Human, human.body_weight_kg);
     h.check_bool(
         "scale_across_species: murine → human CL per kg lower than murine",
         scaled_from_murine.clearance_l_hr_kg < murine.clearance_l_hr_kg,

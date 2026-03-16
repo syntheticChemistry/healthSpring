@@ -8,10 +8,12 @@
 //! for a synthetic 96-well plate with known controls.
 
 use healthspring_barracuda::discovery::{
-    classify_hits, percent_inhibition, ssmd, z_prime_factor, HitClass,
+    HitClass, classify_hits, percent_inhibition, ssmd, z_prime_factor,
 };
-use healthspring_barracuda::provenance::{log_analytical, AnalyticalProvenance};
-use healthspring_barracuda::tolerances::{DETERMINISM, HTS_PERCENT_INHIBITION, HTS_SSMD, HTS_Z_PRIME};
+use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
+use healthspring_barracuda::tolerances::{
+    DETERMINISM, HTS_PERCENT_INHIBITION, HTS_SSMD, HTS_Z_PRIME,
+};
 use healthspring_barracuda::validation::ValidationHarness;
 
 const HTS_PROV: AnalyticalProvenance = AnalyticalProvenance {
@@ -32,7 +34,12 @@ fn main() {
     // 1. Z'-factor for excellent plate: Z' = 1 - 3(2+3)/|10-90| = 0.8125
     let zp = z_prime_factor(pos_mean, pos_std, neg_mean, neg_std);
     let expected_zp = 1.0 - 3.0 * (pos_std + neg_std) / (neg_mean - pos_mean).abs();
-    h.check_abs("Z'-factor: excellent plate formula", zp, expected_zp, HTS_Z_PRIME);
+    h.check_abs(
+        "Z'-factor: excellent plate formula",
+        zp,
+        expected_zp,
+        HTS_Z_PRIME,
+    );
 
     // 2. Z'-factor > 0.5 (excellent)
     h.check_lower("Z'-factor > 0.5", zp, 0.5);
@@ -58,15 +65,30 @@ fn main() {
 
     // 7. Percent inhibition: signal=10 (pos_mean) → 100%
     let pct_full = percent_inhibition(pos_mean, pos_mean, neg_mean);
-    h.check_abs("percent_inhibition: pos → 100%", pct_full, 100.0, HTS_PERCENT_INHIBITION);
+    h.check_abs(
+        "percent_inhibition: pos → 100%",
+        pct_full,
+        100.0,
+        HTS_PERCENT_INHIBITION,
+    );
 
     // 8. Percent inhibition: signal=90 (neg_mean) → 0%
     let pct_zero = percent_inhibition(neg_mean, pos_mean, neg_mean);
-    h.check_abs("percent_inhibition: neg → 0%", pct_zero, 0.0, HTS_PERCENT_INHIBITION);
+    h.check_abs(
+        "percent_inhibition: neg → 0%",
+        pct_zero,
+        0.0,
+        HTS_PERCENT_INHIBITION,
+    );
 
     // 9. Percent inhibition: signal=50 → 50%
     let pct_half = percent_inhibition(50.0, pos_mean, neg_mean);
-    h.check_abs("percent_inhibition: 50 → 50%", pct_half, 50.0, HTS_PERCENT_INHIBITION);
+    h.check_abs(
+        "percent_inhibition: 50 → 50%",
+        pct_half,
+        50.0,
+        HTS_PERCENT_INHIBITION,
+    );
 
     // Synthetic plate: strong (15), moderate (45), weak (70), inactive (88)
     let signals = vec![15.0, 45.0, 70.0, 88.0];
@@ -87,14 +109,11 @@ fn main() {
 
     // 12. Determinism: same plate → same results
     let results2 = classify_hits(&signals, &compound_stds, pos_mean, neg_mean, neg_std);
-    let identical = results
-        .iter()
-        .zip(results2.iter())
-        .all(|(a, b)| {
-            (a.percent_inhibition - b.percent_inhibition).abs() < DETERMINISM
-                && (a.ssmd_value - b.ssmd_value).abs() < DETERMINISM
-                && a.classification == b.classification
-        });
+    let identical = results.iter().zip(results2.iter()).all(|(a, b)| {
+        (a.percent_inhibition - b.percent_inhibition).abs() < DETERMINISM
+            && (a.ssmd_value - b.ssmd_value).abs() < DETERMINISM
+            && a.classification == b.classification
+    });
     h.check_bool("determinism: same plate → same results", identical);
 
     h.exit();

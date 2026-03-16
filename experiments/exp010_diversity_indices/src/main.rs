@@ -13,6 +13,7 @@
 //! against the Python control baseline (`control/microbiome/exp010_baseline.json`).
 
 use healthspring_barracuda::microbiome::{self, communities};
+use healthspring_barracuda::provenance;
 use healthspring_barracuda::tolerances;
 const W_SCALE: f64 = 10.0;
 
@@ -228,6 +229,9 @@ fn main() {
     // Check 15–19: Cross-validate against exp010_baseline.json
     println!("\n--- Check 15: Baseline JSON cross-validation ---");
     let baseline_str = include_str!("../../../control/microbiome/exp010_baseline.json");
+    if let Some(prov) = provenance::load_provenance(baseline_str) {
+        provenance::log_provenance(&prov);
+    }
     let baseline: serde_json::Value = match serde_json::from_str(baseline_str) {
         Ok(b) => b,
         Err(e) => {

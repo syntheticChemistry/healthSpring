@@ -9,7 +9,7 @@ CCG-1423 and CCG-203971 inhibit Rho/MRTF/SRF signaling in fibrosis.
 
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 import numpy as np
 
@@ -61,7 +61,7 @@ def main() -> None:
         "results": results,
         "parameters": {"xi": xi, "L": L, "disorder": disorder},
         "_provenance": {
-            "date": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "script": "control/discovery/exp094_rho_mrtf_fibrosis.py",
             "command": " ".join(sys.argv),
             "git_commit": "baseline",

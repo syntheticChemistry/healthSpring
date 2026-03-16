@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::common::{dispatch_and_readback, GpuDispatch};
-use crate::gpu::{shaders, GpuError, GpuResult};
+use super::common::{GpuDispatch, dispatch_and_readback};
+use crate::gpu::{GpuError, GpuResult, shaders};
 
 #[repr(C)]
 #[derive(Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]

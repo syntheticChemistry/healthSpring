@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: March 15, 2026
-**Status**: V27 — 601 tests, 73 experiments, 55+ JSON-RPC capabilities backed by a capability registry. V27 additions: ODE→WGSL codegen (3 OdeSystem impls), uncertainty module (bootstrap/jackknife/bias-variance), IPC cast safety (sz/sz_or/sza helpers), core:: imports.
+**Last Updated**: March 16, 2026
+**Status**: V28 — 603 tests, 73 experiments, 55+ JSON-RPC capabilities backed by a capability registry. V28: IPC evolved to Result-based `try_send` with `SendError`; socket discovery fully capability-based; microbiome smart-refactored; WGSL shader magic numbers documented; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---
@@ -11,15 +11,15 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 601 |
-| Python control checks | 194 (cross-validation) |
+| Rust tests (workspace) | 603 |
+| Python control checks | 42 baselines, 113/113 cross-validation (all 7 tracks) |
 | Experiments | 73 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
 | toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |
 | CPU parity | Rust 84× faster than Python (Exp084, 33+17 checks) |
 | NLME population PK | FOCE + SAEM estimation, NCA, CWRES/VPC/GOF diagnostics |
-| Paper queue | **30/30 complete** (Tracks 1–5). Tracks 6–7 queuing. |
+| Paper queue | **30/30 complete** (Tracks 1–5). Tracks 6–7 complete (10/10). |
 | Faculty | Gonzales (MSU), Lisabeth (ADDRC), Neubig (Drug Discovery), Ellsworth (Med Chem), Mok (Allure Medical) |
 | Domain scope | Health of living systems (species-agnostic mathematics) |
 

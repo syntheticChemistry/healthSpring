@@ -1,0 +1,69 @@
+{
+  "experiment": "exp093_chembl_jak_panel",
+  "disease": "AD",
+  "target": "JAK1",
+  "localization_length": 10.0,
+  "tissue_thickness": 1.0,
+  "compounds": [
+    {
+      "compound": "oclacitinib",
+      "ic50_jak1_nm": 10.0,
+      "ic50_jak2_nm": 1000.0,
+      "ic50_jak3_nm": 10000.0,
+      "ic50_tyk2_nm": 10000.0,
+      "selectivity_index_jak1_jak2": 100.0,
+      "hill_at_c_equals_ic50": 0.5,
+      "pathway_score": 0.9978501969202997,
+      "tissue_geometry": 0.9999546000702375,
+      "disorder_factor": 1.0,
+      "matrix_combined_score": 0.9978048945914461
+    },
+    {
+      "compound": "baricitinib",
+      "ic50_jak1_nm": 5.9,
+      "ic50_jak2_nm": 5.7,
+      "ic50_jak3_nm": 560.0,
+      "ic50_tyk2_nm": 53.0,
+      "selectivity_index_jak1_jak2": 0.9661016949152542,
+      "hill_at_c_equals_ic50": 0.5,
+      "pathway_score": 0.9036056928888127,
+      "tissue_geometry": 0.9999546000702375,
+      "disorder_factor": 1.0,
+      "matrix_combined_score": 0.9035646692538225
+    },
+    {
+      "compound": "ruxolitinib",
+      "ic50_jak1_nm": 3.3,
+      "ic50_jak2_nm": 2.8,
+      "ic50_jak3_nm": 428.0,
+      "ic50_tyk2_nm": 19.0,
+      "selectivity_index_jak1_jak2": 0.8484848484848485,
+      "hill_at_c_equals_ic50": 0.5,
+      "pathway_score": 0.8957128187931466,
+      "tissue_geometry": 0.9999546000702375,
+      "disorder_factor": 1.0,
+      "matrix_combined_score": 0.895672153494086
+    },
+    {
+      "compound": "tofacitinib",
+      "ic50_jak1_nm": 3.2,
+      "ic50_jak2_nm": 4.1,
+      "ic50_jak3_nm": 1.6,
+      "ic50_tyk2_nm": 34.0,
+      "selectivity_index_jak1_jak2": 1.2812499999999998,
+      "hill_at_c_equals_ic50": 0.5,
+      "pathway_score": 0.6545951093972747,
+      "tissue_geometry": 0.9999546000702375,
+      "disorder_factor": 1.0,
+      "matrix_combined_score": 0.6545653908252852
+    }
+  ],
+  "_provenance": {
+    "date": "2026-03-16",
+    "script": "control/discovery/exp093_chembl_jak_panel.py",
+    "command": "python3 control/discovery/exp093_chembl_jak_panel.py",
+    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python_version": "3.13.2",
+    "numpy_version": "2.1.3"
+  }
+}

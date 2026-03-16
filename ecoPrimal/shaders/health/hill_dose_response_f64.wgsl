@@ -23,9 +23,10 @@ struct Params {
 @group(0) @binding(2) var<uniform> params: Params;
 
 fn power_f64(base: f64, exponent: f64) -> f64 {
-    // Use f32 exp/log path — gives ~7 decimal digits, sufficient for
-    // dose-response curves. Full f64 transcendentals require driver
-    // patching (barraCuda compile_shader_f64 pipeline).
+    // f32 exp/log path (~7 decimal digits) — sufficient for dose-response.
+    // pow(f64, f64) unsupported on most GPU drivers without coralReef
+    // DFMA polynomial lowering. Absorption candidate: coralReef Phase 10
+    // will provide full f64 transcendentals via naga pass.
     if base <= 0.0 {
         return 0.0;
     }

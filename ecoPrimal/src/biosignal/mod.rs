@@ -34,7 +34,7 @@ pub mod ppg;
 pub mod stress;
 
 // Re-export all public items at the module level for backwards compatibility.
-pub use attention::{attention_trajectory, AttentionState, AttentionThresholds};
+pub use attention::{AttentionState, AttentionThresholds, attention_trajectory};
 pub use classification::{
     BeatClass, BeatResult, BeatTemplate, ConfusionMatrix, classify_all_beats, classify_beat,
     confusion_for_class, extract_beat_window, generate_normal_template, generate_pac_template,

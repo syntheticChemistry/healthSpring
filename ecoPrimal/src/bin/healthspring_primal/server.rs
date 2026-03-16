@@ -306,7 +306,7 @@ fn register_with_biomeos(our_socket: &Path) {
         return;
     };
 
-    let _ = rpc::send(
+    match rpc::try_send(
         target_socket,
         "lifecycle.register",
         &serde_json::json!({
@@ -314,11 +314,13 @@ fn register_with_biomeos(our_socket: &Path) {
             "socket_path": our_socket.to_string_lossy(),
             "pid": std::process::id(),
         }),
-    );
-    eprintln!("[biomeos] Registered with lifecycle manager");
+    ) {
+        Ok(_) => eprintln!("[biomeos] Registered with lifecycle manager"),
+        Err(e) => eprintln!("[biomeos] Lifecycle registration failed: {e}"),
+    }
 
     let health_mappings = super::capabilities::build_semantic_mappings();
-    let _ = rpc::send(
+    if let Err(e) = rpc::try_send(
         target_socket,
         "capability.register",
         &serde_json::json!({
@@ -327,7 +329,9 @@ fn register_with_biomeos(our_socket: &Path) {
             "socket": our_socket.to_string_lossy(),
             "semantic_mappings": health_mappings,
         }),
-    );
+    ) {
+        eprintln!("[biomeos] Domain capability registration failed: {e}");
+    }
 
     let mut registered = 0;
     for cap in super::capabilities::ALL_CAPABILITIES {
@@ -432,7 +436,7 @@ fn handle_connection(stream: UnixStream, state: &PrimalState) {
 // Subcommand: serve
 // ═══════════════════════════════════════════════════════════════════════════
 
-pub(crate) fn cmd_serve() -> Result<(), String> {
+pub fn cmd_serve() -> Result<(), String> {
     let socket_path = socket::resolve_bind_path();
 
     if let Some(parent) = socket_path.parent() {
@@ -468,7 +472,10 @@ pub(crate) fn cmd_serve() -> Result<(), String> {
     eprintln!("  Domain:    {}", super::capabilities::PRIMAL_DOMAIN);
     eprintln!("  Mode:      BYOB Niche (biomeOS)");
     eprintln!("  Version:   {}", env!("CARGO_PKG_VERSION"));
-    eprintln!("  Capabilities ({}):", super::capabilities::ALL_CAPABILITIES.len());
+    eprintln!(
+        "  Capabilities ({}):",
+        super::capabilities::ALL_CAPABILITIES.len()
+    );
     for cap in super::capabilities::ALL_CAPABILITIES {
         eprintln!("    - {cap}");
     }
@@ -497,7 +504,7 @@ pub(crate) fn cmd_serve() -> Result<(), String> {
         while heartbeat_running.load(Ordering::Relaxed) {
             std::thread::sleep(Duration::from_secs(HEARTBEAT_INTERVAL_SECS));
             if let Some(ref t) = target {
-                let _ = rpc::send(
+                if let Err(e) = rpc::try_send(
                     t,
                     "lifecycle.status",
                     &serde_json::json!({
@@ -506,7 +513,9 @@ pub(crate) fn cmd_serve() -> Result<(), String> {
                         "status": "healthy",
                         "requests_served": heartbeat_state.requests_served.load(Ordering::Relaxed),
                     }),
-                );
+                ) {
+                    eprintln!("[heartbeat] Status update failed: {e}");
+                }
             }
         }
     });

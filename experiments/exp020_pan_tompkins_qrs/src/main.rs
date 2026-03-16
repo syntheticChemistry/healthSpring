@@ -117,18 +117,21 @@ fn main() {
         passed += 1;
     }
 
-    // Evaluate against truth
+    // Evaluate against truth — peak match tolerance from TOLERANCE_REGISTRY.
+    // 75 ms ≈ 27 samples at 360 Hz (ANSI/AAMI EC57:2012 recommends 150 ms;
+    // we use half for synthetic signals with known truth).
     #[expect(
         clippy::cast_possible_truncation,
         clippy::cast_sign_loss,
         reason = "tol_samples < 1000 fits in usize"
     )]
-    let tol_samples = (75.0 * fs / 1000.0) as usize;
+    let tol_samples = (tolerances::QRS_PEAK_MATCH_MS * fs / 1000.0) as usize;
     let metrics = biosignal::evaluate_detection(&result.peaks, &true_peaks, tol_samples);
 
-    // Check 8: Sensitivity > 80%
+    // Check 8: Sensitivity > 80% (ANSI/AAMI EC57:2012 requires Se ≥ 99.5%
+    // on MIT-BIH; we relax to 80% for synthetic signals with noise).
     println!("\n--- Check 8: Sensitivity > 80% ---");
-    if metrics.sensitivity > 0.8 {
+    if metrics.sensitivity > tolerances::QRS_SENSITIVITY {
         println!(
             "  [PASS] Se = {:.3} ({}/{})",
             metrics.sensitivity,
@@ -141,9 +144,9 @@ fn main() {
         failed += 1;
     }
 
-    // Check 9: PPV > 80%
+    // Check 9: PPV > 80% (same relaxation as Se for synthetic signals)
     println!("\n--- Check 9: PPV > 80% ---");
-    if metrics.ppv > 0.8 {
+    if metrics.ppv > tolerances::QRS_SENSITIVITY {
         println!(
             "  [PASS] PPV = {:.3} ({}/{})",
             metrics.ppv,
@@ -156,10 +159,10 @@ fn main() {
         failed += 1;
     }
 
-    // Check 10: Heart rate
+    // Check 10: Heart rate — expected 72 bpm (synthetic signal parameter)
     println!("\n--- Check 10: Heart rate ---");
     let hr = biosignal::heart_rate_from_peaks(&result.peaks, fs);
-    if (hr - 72.0).abs() < 10.0 {
+    if (hr - 72.0).abs() < tolerances::HR_DETECTION_BPM {
         println!("  [PASS] HR = {hr:.1} bpm");
         passed += 1;
     } else {
@@ -167,10 +170,11 @@ fn main() {
         failed += 1;
     }
 
-    // Check 11: SDNN
+    // Check 11: SDNN — healthy resting SDNN is 50–200 ms (Task Force of ESC
+    // and NASPE, Circulation 1996). Synthetic signal should be below upper bound.
     println!("\n--- Check 11: SDNN ---");
     let sdnn = biosignal::sdnn_ms(&result.peaks, fs);
-    if sdnn < 200.0 {
+    if sdnn < tolerances::SDNN_UPPER_MS {
         println!("  [PASS] SDNN = {sdnn:.1} ms");
         passed += 1;
     } else {

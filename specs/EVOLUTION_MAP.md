@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: March 15, 2026
-**Status**: V27 — Deep Evolution Sprint. 73 experiments, 601 lib tests + 173 validation checks. V27: ODE→WGSL codegen (`MichaelisMentenOde`, `OralOneCompartmentOde`, `TwoCompartmentOde` via `BatchedOdeRK4`), uncertainty module (bootstrap/jackknife/bias-variance from groundSpring), IPC cast safety (sz/sz_or/sza helpers), `core::` imports, capability registry. V26: 6 large-file refactors, primal self-knowledge, 46-entry capability registry. V25: Track 6+7 complete. Modules: `discovery/` and `comparative/`.
+**Last Updated**: March 16, 2026
+**Status**: V28 — Deep Debt + Ecosystem Maturity. 73 experiments, 603 tests + 173 validation checks + 113/113 cross-validation. V28: IPC evolved to Result-based `try_send` with `SendError`; socket discovery fully capability-based (zero hardcoded primal names); microbiome smart-refactored (clinical.rs extracted); WGSL shader magic numbers documented; exp020 tolerances centralized; Track 6-7 baselines generated with provenance. V27: ODE→WGSL codegen, uncertainty module, IPC cast safety, capability registry. V25: Track 6+7 complete.
 
 ---
 

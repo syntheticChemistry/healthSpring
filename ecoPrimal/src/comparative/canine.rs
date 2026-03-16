@@ -62,11 +62,7 @@ impl JakIc50Panel {
 ///
 /// Returns IL-31 concentration in pg/mL at time `t_hr` hours after treatment start.
 #[must_use]
-pub fn il31_serum_kinetics(
-    baseline_pg_ml: f64,
-    t_hr: f64,
-    treatment: CanineIl31Treatment,
-) -> f64 {
+pub fn il31_serum_kinetics(baseline_pg_ml: f64, t_hr: f64, treatment: CanineIl31Treatment) -> f64 {
     let k_el_baseline = 0.05;
     let k_prod_baseline = baseline_pg_ml * k_el_baseline;
 
