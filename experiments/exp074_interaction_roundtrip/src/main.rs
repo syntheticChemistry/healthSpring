@@ -22,11 +22,23 @@ use healthspring_barracuda::visualization::{
 fn mock_server(listener: &UnixListener, expected_calls: usize) -> Vec<serde_json::Value> {
     let mut requests = Vec::with_capacity(expected_calls);
     for _ in 0..expected_calls {
-        let (mut stream, _) = listener.accept().expect("accept");
+        let (mut stream, _) = match listener.accept() {
+            Ok(conn) => conn,
+            Err(e) => {
+                eprintln!("FAIL: accept: {e}");
+                continue;
+            }
+        };
         let mut payload = Vec::new();
         let mut chunk = vec![0u8; 65_536];
         loop {
-            let n = stream.read(&mut chunk).expect("read");
+            let n = match stream.read(&mut chunk) {
+                Ok(n) => n,
+                Err(e) => {
+                    eprintln!("FAIL: read: {e}");
+                    break;
+                }
+            };
             if n == 0 {
                 break;
             }
@@ -35,7 +47,13 @@ fn mock_server(listener: &UnixListener, expected_calls: usize) -> Vec<serde_json
                 break;
             }
         }
-        let request: serde_json::Value = serde_json::from_slice(&payload).expect("parse request");
+        let request: serde_json::Value = match serde_json::from_slice(&payload) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("FAIL: parse request: {e}");
+                continue;
+            }
+        };
 
         let method = request["method"].as_str().unwrap_or("");
         let response = match method {
@@ -63,9 +81,12 @@ fn mock_server(listener: &UnixListener, expected_calls: usize) -> Vec<serde_json
                 "id": request["id"],
             }),
         };
-        stream
-            .write_all(serde_json::to_vec(&response).unwrap().as_slice())
-            .expect("write");
+        if stream
+            .write_all(serde_json::to_vec(&response).unwrap_or_default().as_slice())
+            .is_err()
+        {
+            eprintln!("FAIL: write");
+        }
         requests.push(request);
     }
     requests
@@ -83,14 +104,22 @@ fn main() {
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
-            .expect("time")
-            .subsec_nanos()
+            .map_or(0, |d| d.subsec_nanos())
     ));
-    std::fs::create_dir_all(&sock_dir).expect("create socket dir");
+    if std::fs::create_dir_all(&sock_dir).is_err() {
+        eprintln!("FAIL: create socket dir");
+        std::process::exit(1);
+    }
     let sock_path = sock_dir.join("mock_pt.sock");
     let _ = std::fs::remove_file(&sock_path);
 
-    let listener = UnixListener::bind(&sock_path).expect("bind");
+    let listener = match UnixListener::bind(&sock_path) {
+        Ok(l) => l,
+        Err(e) => {
+            eprintln!("FAIL: bind: {e}");
+            std::process::exit(1);
+        }
+    };
     println!("[mock] Listening on {}", sock_path.display());
 
     let n_calls = 9;
@@ -147,7 +176,10 @@ fn main() {
         session.subscribe_interactions(&["select", "focus", "filter"], "healthspring.on_interact");
     println!("[client] subscribe_interactions: {}", status_val(&r7));
 
-    let requests = handle.join().expect("mock thread");
+    let Ok(requests) = handle.join() else {
+        eprintln!("FAIL: mock thread panicked");
+        std::process::exit(1);
+    };
     println!("\n[mock] Received {} requests\n", requests.len());
 
     // Cleanup

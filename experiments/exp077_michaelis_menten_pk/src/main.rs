@@ -49,18 +49,21 @@ fn main() {
 
     // Check 6: Css exists for rate < Vmax
     let css = pkpd::mm_css_infusion(params, 250.0);
-    h.check_bool(
-        "Css for infusion rate < Vmax",
-        css.is_some() && css.unwrap() > 0.0,
-    );
+    h.check_bool("Css for infusion rate < Vmax", css.is_some_and(|c| c > 0.0));
 
     // Check 7: No Css for rate >= Vmax
     let no_css = pkpd::mm_css_infusion(params, 500.0);
     h.check_bool("No Css for rate >= Vmax (returns None)", no_css.is_none());
 
     // Check 8: Css increases steeply near Vmax
-    let css_low = pkpd::mm_css_infusion(params, 100.0).unwrap();
-    let css_high = pkpd::mm_css_infusion(params, 400.0).unwrap();
+    let Some(css_low) = pkpd::mm_css_infusion(params, 100.0) else {
+        eprintln!("FAIL: Css for rate 100");
+        std::process::exit(1);
+    };
+    let Some(css_high) = pkpd::mm_css_infusion(params, 400.0) else {
+        eprintln!("FAIL: Css for rate 400");
+        std::process::exit(1);
+    };
     h.check_bool("Css(400) / Css(100) > 4.0", css_high / css_low > 4.0);
 
     // Check 9: Numerical AUC ≈ analytical AUC
@@ -77,12 +80,19 @@ fn main() {
     h.check_bool("AUC(400)/AUC(200) > 2.0", auc_ratio > 2.0);
 
     // Check 11: Concentration reaches near-zero
-    let c_final = *concs_long.last().unwrap();
+    let Some(c_last) = concs_long.last() else {
+        eprintln!("FAIL: concentration curve has at least one point");
+        std::process::exit(1);
+    };
+    let c_final = *c_last;
     h.check_upper("C(20 days) ≈ 0", c_final, EXPONENTIAL_RESIDUAL);
 
     // Check 12: Css formula matches steady-state Michaelis-Menten
     let rate = 250.0;
-    let css_val = pkpd::mm_css_infusion(params, rate).unwrap();
+    let Some(css_val) = pkpd::mm_css_infusion(params, rate) else {
+        eprintln!("FAIL: Css for rate 250");
+        std::process::exit(1);
+    };
     let elim_at_css = params.vmax * css_val / (params.km + css_val);
     h.check_abs(
         "Elim at Css ≈ rate",

@@ -94,7 +94,7 @@ fn main() {
     println!("\n--- Check 4: Nadir timing ---");
     let nadir_time = trajectory
         .iter()
-        .min_by(|a, b| a.1.partial_cmp(&b.1).unwrap())
+        .min_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(core::cmp::Ordering::Equal))
         .map_or(0.0, |&(t, _)| t);
     check!(
         passed,
@@ -105,7 +105,11 @@ fn main() {
 
     // Check 5: Recovery after treatment
     println!("\n--- Check 5: Recovery occurs ---");
-    let h_final = trajectory.last().unwrap().1;
+    let Some(last_point) = trajectory.last() else {
+        eprintln!("FAIL: trajectory has at least one point");
+        std::process::exit(1);
+    };
+    let h_final = last_point.1;
     check!(
         passed,
         failed,

@@ -2,7 +2,7 @@
 # biomeOS NUCLEUS Local Integration Plan
 
 **Last Updated**: March 16, 2026
-**Status**: V29 — `UniBin`-compliant `healthspring_primal` binary (clap subcommands, SIGTERM handling). Capability-based primal discovery (zero hardcoded names). IPC evolved to Result-based `try_send` with centralized `extract_rpc_error()`. Songbird announcement wired into startup. Health response uses capability-based field names (`data_provider`/`compute_provider`). Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
+**Status**: V30 — Cross-Spring Absorption + Zero-Panic Evolution. `UniBin`-compliant `healthspring_primal` binary. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Capability-based primal discovery. Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

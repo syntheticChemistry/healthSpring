@@ -125,12 +125,16 @@ fn main() {
 
         // Check 6: assessment node baseline T matches patient
         print!("  baseline T correct: ");
-        let assess = scenario
+        let Some(assess) = scenario
             .ecosystem
             .primals
             .iter()
             .find(|n| n.id == "assessment")
-            .unwrap();
+        else {
+            println!("[FAIL] assessment node not found");
+            failed += 1;
+            continue;
+        };
         let baseline_gauge = assess.data_channels.iter().find_map(|ch| {
             if let DataChannel::Gauge { id, value, .. } = ch {
                 if id == "baseline_t" {
@@ -154,12 +158,16 @@ fn main() {
 
         // Check 7: protocol node name matches protocol type
         print!("  protocol matches: ");
-        let prot = scenario
+        let Some(prot) = scenario
             .ecosystem
             .primals
             .iter()
             .find(|n| n.id == "protocol")
-            .unwrap();
+        else {
+            println!("[FAIL] protocol node not found");
+            failed += 1;
+            continue;
+        };
         let matches = match patient.protocol {
             TrtProtocol::ImWeekly => prot.name.contains("Weekly"),
             TrtProtocol::ImBiweekly => prot.name.contains("Biweekly"),
@@ -175,12 +183,16 @@ fn main() {
 
         // Check 8: population distribution has 100 values
         print!("  population n=100: ");
-        let pop = scenario
+        let Some(pop) = scenario
             .ecosystem
             .primals
             .iter()
             .find(|n| n.id == "population")
-            .unwrap();
+        else {
+            println!("[FAIL] population node not found");
+            failed += 1;
+            continue;
+        };
         let has_100 = pop.data_channels.iter().any(|ch| {
             if let DataChannel::Distribution { values, .. } = ch {
                 values.len() == 100
@@ -247,23 +259,19 @@ fn main() {
     let light = PatientTrtProfile::new("Light", 50.0, 150.0, 280.0, TrtProtocol::Pellet);
     let (sh, _) = trt_clinical_scenario(&heavy);
     let (sl, _) = trt_clinical_scenario(&light);
-    let ph = sh
-        .ecosystem
-        .primals
-        .iter()
-        .find(|n| n.id == "protocol")
-        .unwrap();
-    let pl = sl
-        .ecosystem
-        .primals
-        .iter()
-        .find(|n| n.id == "protocol")
-        .unwrap();
-    if ph.name.contains("3000") && pl.name.contains("1500") {
-        println!("[PASS] 300lb→3000mg, 150lb→1500mg");
-        passed += 1;
+    if let (Some(ph), Some(pl)) = (
+        sh.ecosystem.primals.iter().find(|n| n.id == "protocol"),
+        sl.ecosystem.primals.iter().find(|n| n.id == "protocol"),
+    ) {
+        if ph.name.contains("3000") && pl.name.contains("1500") {
+            println!("[PASS] 300lb→3000mg, 150lb→1500mg");
+            passed += 1;
+        } else {
+            println!("[FAIL] heavy={}, light={}", ph.name, pl.name);
+            failed += 1;
+        }
     } else {
-        println!("[FAIL] heavy={}, light={}", ph.name, pl.name);
+        println!("[FAIL] protocol node not found");
         failed += 1;
     }
 
@@ -271,17 +279,21 @@ fn main() {
     print!("  low T flags critical: ");
     let low_t = PatientTrtProfile::new("LowT", 60.0, 200.0, 180.0, TrtProtocol::ImWeekly);
     let (s_low, _) = trt_clinical_scenario(&low_t);
-    let a_low = s_low
+    if let Some(a_low) = s_low
         .ecosystem
         .primals
         .iter()
         .find(|n| n.id == "assessment")
-        .unwrap();
-    if a_low.status == "critical" && a_low.health <= 50 {
-        println!("[PASS]");
-        passed += 1;
+    {
+        if a_low.status == "critical" && a_low.health <= 50 {
+            println!("[PASS]");
+            passed += 1;
+        } else {
+            println!("[FAIL] status={}, health={}", a_low.status, a_low.health);
+            failed += 1;
+        }
     } else {
-        println!("[FAIL] status={}, health={}", a_low.status, a_low.health);
+        println!("[FAIL] assessment node not found (low T)");
         failed += 1;
     }
 
@@ -299,18 +311,6 @@ fn main() {
     };
     let (scenario_high_gut, _) = trt_clinical_scenario(&high_gut);
     let (scenario_low_gut, _) = trt_clinical_scenario(&low_gut);
-    let gut_high = scenario_high_gut
-        .ecosystem
-        .primals
-        .iter()
-        .find(|n| n.id == "gut_health")
-        .unwrap();
-    let gut_low = scenario_low_gut
-        .ecosystem
-        .primals
-        .iter()
-        .find(|n| n.id == "gut_health")
-        .unwrap();
     let get_resp = |n: &healthspring_barracuda::visualization::ScenarioNode| -> f64 {
         n.data_channels
             .iter()
@@ -324,13 +324,29 @@ fn main() {
             })
             .unwrap_or(0.0)
     };
-    let r_h = get_resp(gut_high);
-    let r_l = get_resp(gut_low);
-    if r_h > r_l {
-        println!("[PASS] high={r_h:.1}kg > low={r_l:.1}kg");
-        passed += 1;
+    if let (Some(gh), Some(gl)) = (
+        scenario_high_gut
+            .ecosystem
+            .primals
+            .iter()
+            .find(|n| n.id == "gut_health"),
+        scenario_low_gut
+            .ecosystem
+            .primals
+            .iter()
+            .find(|n| n.id == "gut_health"),
+    ) {
+        let r_h = get_resp(gh);
+        let r_l = get_resp(gl);
+        if r_h > r_l {
+            println!("[PASS] high={r_h:.1}kg > low={r_l:.1}kg");
+            passed += 1;
+        } else {
+            println!("[FAIL] high={r_h:.1}, low={r_l:.1}");
+            failed += 1;
+        }
     } else {
-        println!("[FAIL] high={r_h:.1}, low={r_l:.1}");
+        println!("[FAIL] gut_health node not found");
         failed += 1;
     }
 

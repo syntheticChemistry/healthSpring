@@ -117,18 +117,33 @@ fn main() {
     );
 
     // --- JSON round-trip ---
-    let scenario_val: serde_json::Value = serde_json::from_str(&json).expect("valid JSON");
-    let primals = scenario_val["ecosystem"]["primals"].as_array().unwrap();
+    let scenario_val: serde_json::Value = match serde_json::from_str(&json) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("FAIL: valid JSON: {e}");
+            std::process::exit(1);
+        }
+    };
+    let Some(primals) = scenario_val["ecosystem"]["primals"].as_array() else {
+        eprintln!("FAIL: primals not array");
+        std::process::exit(1);
+    };
     check!("round_trip_7_primals", primals.len() == 7);
 
-    let pk = primals.iter().find(|p| p["id"] == "pk").unwrap();
+    let Some(pk) = primals.iter().find(|p| p["id"] == "pk") else {
+        eprintln!("FAIL: pk primal not found");
+        std::process::exit(1);
+    };
     check!("pk_has_type_compute", pk["type"] == "compute");
     check!("pk_has_family_healthspring", pk["family"] == "healthspring");
     check!(
         "pk_position_optional",
         pk.get("position").is_none() || pk["position"].is_null() || pk["position"]["x"].is_f64()
     );
-    let pk_channels = pk["data_channels"].as_array().unwrap();
+    let Some(pk_channels) = pk["data_channels"].as_array() else {
+        eprintln!("FAIL: pk data_channels not array");
+        std::process::exit(1);
+    };
     check!("pk_has_4_channels", pk_channels.len() == 4);
     check!(
         "pk_first_is_timeseries",
@@ -138,26 +153,34 @@ fn main() {
     // --- Full scenario with population ---
     let pop = population_montecarlo(&patient, 500, 42);
     let full_json = full_scenario_json(&assessment, &pop, "Exp052 Full");
-    let full: serde_json::Value = serde_json::from_str(&full_json).expect("valid JSON");
+    let full: serde_json::Value = match serde_json::from_str(&full_json) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("FAIL: full JSON: {e}");
+            std::process::exit(1);
+        }
+    };
     check!("full_has_edges", full["edges"].is_array());
-    check!(
-        "full_8_primals_with_pop",
-        full["ecosystem"]["primals"].as_array().unwrap().len() == 8
-    );
-    let pop_node = full["ecosystem"]["primals"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|p| p["id"] == "population")
-        .unwrap();
-    let pop_channels = pop_node["data_channels"].as_array().unwrap();
+    let Some(full_primals) = full["ecosystem"]["primals"].as_array() else {
+        eprintln!("FAIL: full primals not array");
+        std::process::exit(1);
+    };
+    check!("full_8_primals_with_pop", full_primals.len() == 8);
+    let Some(pop_node) = full_primals.iter().find(|p| p["id"] == "population") else {
+        eprintln!("FAIL: population primal not found");
+        std::process::exit(1);
+    };
+    let Some(pop_channels) = pop_node["data_channels"].as_array() else {
+        eprintln!("FAIL: pop data_channels not array");
+        std::process::exit(1);
+    };
     check!(
         "pop_has_distribution",
         pop_channels[0]["channel_type"] == "distribution"
     );
     check!(
         "pop_distribution_has_values",
-        pop_channels[0]["values"].as_array().unwrap().len() == 500
+        pop_channels[0]["values"].as_array().map_or(0, Vec::len) == 500
     );
 
     // --- Population with annotated scenario ---
@@ -166,14 +189,26 @@ fn main() {
     check!("annotated_8_nodes", annotated.ecosystem.primals.len() == 8);
 
     // --- Biosignal node has tachogram ---
-    let bio_node = primals.iter().find(|p| p["id"] == "biosignal").unwrap();
-    let bio_channels = bio_node["data_channels"].as_array().unwrap();
+    let Some(bio_node) = primals.iter().find(|p| p["id"] == "biosignal") else {
+        eprintln!("FAIL: biosignal primal not found");
+        std::process::exit(1);
+    };
+    let Some(bio_channels) = bio_node["data_channels"].as_array() else {
+        eprintln!("FAIL: biosignal data_channels not array");
+        std::process::exit(1);
+    };
     let has_tachogram = bio_channels.iter().any(|c| c["id"] == "rr_tachogram");
     check!("biosignal_has_rr_tachogram", has_tachogram);
 
     // --- Microbiome node has bar chart ---
-    let micro_node = primals.iter().find(|p| p["id"] == "microbiome").unwrap();
-    let micro_channels = micro_node["data_channels"].as_array().unwrap();
+    let Some(micro_node) = primals.iter().find(|p| p["id"] == "microbiome") else {
+        eprintln!("FAIL: microbiome primal not found");
+        std::process::exit(1);
+    };
+    let Some(micro_channels) = micro_node["data_channels"].as_array() else {
+        eprintln!("FAIL: microbiome data_channels not array");
+        std::process::exit(1);
+    };
     check!(
         "microbiome_has_bar_chart",
         micro_channels[0]["channel_type"] == "bar"

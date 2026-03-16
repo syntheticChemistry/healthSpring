@@ -143,6 +143,42 @@ fn discover_by_capability(domain: &str) -> Option<PathBuf> {
     None
 }
 
+/// Extract capability strings from a `capability.list` result, handling all
+/// known response formats across the ecosystem:
+///
+/// 1. `result.science` (healthSpring format — array of science capabilities)
+/// 2. `result.capabilities` (neuralSpring/ludoSpring format — flat array)
+/// 3. `result.capabilities.capabilities` (nested object format)
+/// 4. `result` itself is an array (raw format)
+fn extract_capability_strings(result: &serde_json::Value) -> Vec<&str> {
+    let arrays_to_check: &[Option<&serde_json::Value>] = &[
+        result.get("science"),
+        result
+            .get("capabilities")
+            .and_then(|c| {
+                if c.is_array() {
+                    Some(c)
+                } else {
+                    c.get("capabilities")
+                }
+            })
+            .or_else(|| result.get("capabilities")),
+        result.get("infrastructure"),
+        if result.is_array() {
+            Some(result)
+        } else {
+            None
+        },
+    ];
+
+    arrays_to_check
+        .iter()
+        .flatten()
+        .filter_map(|v| v.as_array())
+        .flat_map(|arr| arr.iter().filter_map(serde_json::Value::as_str))
+        .collect()
+}
+
 /// Send a `capability.list` probe and check if any capability starts with the domain.
 fn probe_capability(socket_path: &std::path::Path, domain: &str) -> bool {
     use crate::tolerances::{IPC_PROBE_BUF, IPC_TIMEOUT_MS};
@@ -170,14 +206,14 @@ fn probe_capability(socket_path: &std::path::Path, domain: &str) -> bool {
         return false;
     };
 
+    let Some(result) = resp.get("result") else {
+        return false;
+    };
+
     let prefix = format!("{domain}.");
-    resp.get("result")
-        .and_then(|r| r.get("science"))
-        .and_then(|s| s.as_array())
-        .is_some_and(|caps| {
-            caps.iter()
-                .any(|c| c.as_str().is_some_and(|s| s.starts_with(&prefix)))
-        })
+    extract_capability_strings(result)
+        .iter()
+        .any(|s| s.starts_with(&prefix))
 }
 
 /// Probe for a fallback registration primal.
@@ -201,5 +237,44 @@ mod tests {
         if std::env::var("HEALTHSPRING_FAMILY_ID").is_err() {
             assert_eq!(get_family_id(), "default");
         }
+    }
+
+    #[test]
+    fn extract_caps_healthspring_format() {
+        let result = serde_json::json!({
+            "science": ["science.health.pkpd", "science.health.microbiome"],
+            "infrastructure": ["lifecycle.health"]
+        });
+        let caps = extract_capability_strings(&result);
+        assert!(caps.contains(&"science.health.pkpd"));
+        assert!(caps.contains(&"lifecycle.health"));
+    }
+
+    #[test]
+    fn extract_caps_neuralspring_flat_array() {
+        let result = serde_json::json!({
+            "capabilities": ["compute.dispatch", "ai.nautilus.train"]
+        });
+        let caps = extract_capability_strings(&result);
+        assert!(caps.contains(&"compute.dispatch"));
+        assert!(caps.contains(&"ai.nautilus.train"));
+    }
+
+    #[test]
+    fn extract_caps_nested_object() {
+        let result = serde_json::json!({
+            "capabilities": {
+                "capabilities": ["data.ncbi_fetch", "data.storage.store"]
+            }
+        });
+        let caps = extract_capability_strings(&result);
+        assert!(caps.contains(&"data.ncbi_fetch"));
+    }
+
+    #[test]
+    fn extract_caps_raw_array() {
+        let result = serde_json::json!(["compute.hill", "compute.diversity"]);
+        let caps = extract_capability_strings(&result);
+        assert!(caps.contains(&"compute.hill"));
     }
 }

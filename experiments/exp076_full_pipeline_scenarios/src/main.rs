@@ -85,7 +85,10 @@ fn validate_scenario(
     }
 
     let json = scenarios::scenario_with_edges_json(scenario, edges);
-    let val: serde_json::Value = serde_json::from_str(&json).expect("JSON must be valid");
+    let Ok(val) = serde_json::from_str::<serde_json::Value>(&json) else {
+        eprintln!("ERROR: JSON must be valid");
+        std::process::exit(1);
+    };
     check!(
         *passed,
         *failed,
@@ -207,12 +210,10 @@ fn main() {
         bio_ids.contains("wfdb_ecg")
     );
 
-    let wfdb_node = bio
-        .ecosystem
-        .primals
-        .iter()
-        .find(|n| n.id == "wfdb_ecg")
-        .unwrap();
+    let Some(wfdb_node) = bio.ecosystem.primals.iter().find(|n| n.id == "wfdb_ecg") else {
+        eprintln!("ERROR: wfdb_ecg node not found");
+        std::process::exit(1);
+    };
     check!(
         passed,
         failed,
@@ -294,11 +295,17 @@ fn main() {
 
     // Write JSON to sandbox
     let out = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/scenarios");
-    fs::create_dir_all(&out).expect("create sandbox/scenarios/");
+    if fs::create_dir_all(&out).is_err() {
+        eprintln!("ERROR: create sandbox/scenarios/");
+        std::process::exit(1);
+    }
 
     let write = |name: &str, json: &str| {
         let path = out.join(name);
-        fs::write(&path, json).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
+        if fs::write(&path, json).is_err() {
+            eprintln!("ERROR: write {}", path.display());
+            std::process::exit(1);
+        }
         println!("  wrote {} ({} KB)", name, json.len() / 1024);
     };
 

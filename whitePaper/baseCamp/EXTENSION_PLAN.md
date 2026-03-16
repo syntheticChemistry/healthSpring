@@ -2,7 +2,7 @@
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
 **Last Updated**: March 16, 2026
-**Status**: V29 — 73 experiments, 603 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. All inline constants centralized (70+ named). `mean()` delegated to barraCuda. GPU context wired to Tier A upstream ops. IPC error extraction unified. Python tolerance mirror. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete.
+**Status**: V30 — 73 experiments, 611 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. Cross-Spring Absorption + Zero-Panic Evolution: dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and

@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V29 — Deep Debt Solutions + Modern Idiomatic Rust. 603 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. All inline constants centralized, IPC error extraction unified, `mean()` delegated to barraCuda, GPU context wired to Tier A upstream ops, Python tolerance mirror, 4 experiments smart-refactored. barraCuda v0.3.5 pinned.
+**Status**: V30 — Cross-Spring Absorption + Zero-Panic Evolution. 611 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml.
 **Last Updated**: March 16, 2026
 
 ---
@@ -22,8 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V29** | [V29 Deep Debt Solutions Handoff](handoffs/HEALTHSPRING_V29_DEEP_DEBT_SOLUTIONS_BARRACUDA_TOADSTOOL_HANDOFF_MAR16_2026.md) | Mar 16 | Tolerance centralization, IPC unification, barraCuda delegation, GPU context rewire, Python tolerance mirror. Supersedes V28. |
-| | *V1–V28 → `handoffs/archive/`* | | Fossil record |
+| **V30** | [V30 Cross-Spring Absorption Handoff](handoffs/HEALTHSPRING_V30_CROSS_SPRING_ABSORPTION_ZERO_PANIC_HANDOFF_MAR16_2026.md) | Mar 16 | Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Supersedes V29. |
+| | *V1–V29 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

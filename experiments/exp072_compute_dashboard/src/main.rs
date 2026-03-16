@@ -298,16 +298,28 @@ fn main() {
 
     // Write JSON artifacts
     let out_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/dashboard");
-    std::fs::create_dir_all(&out_dir).expect("create sandbox/dashboard/");
+    if std::fs::create_dir_all(&out_dir).is_err() {
+        eprintln!("FAIL: create sandbox/dashboard/");
+        std::process::exit(1);
+    }
 
-    let report_json = serde_json::to_string_pretty(&report).expect("serialize report");
-    std::fs::write(out_dir.join("dashboard_report.json"), &report_json).expect("write report");
+    let report_json = serde_json::to_string_pretty(&report).unwrap_or_default();
+    if std::fs::write(out_dir.join("dashboard_report.json"), &report_json).is_err() {
+        eprintln!("FAIL: write report");
+        std::process::exit(1);
+    }
 
     let topo_json = scenario_with_edges_json(&topo_scenario, &topo_edges);
-    std::fs::write(out_dir.join("topology.json"), &topo_json).expect("write topology");
+    if std::fs::write(out_dir.join("topology.json"), &topo_json).is_err() {
+        eprintln!("FAIL: write topology");
+        std::process::exit(1);
+    }
 
     let dispatch_json = scenario_with_edges_json(&dispatch_scn, &dispatch_edges);
-    std::fs::write(out_dir.join("dispatch.json"), &dispatch_json).expect("write dispatch");
+    if std::fs::write(out_dir.join("dispatch.json"), &dispatch_json).is_err() {
+        eprintln!("FAIL: write dispatch");
+        std::process::exit(1);
+    }
 
     println!(
         "[dashboard] JSON artifacts written to {}",

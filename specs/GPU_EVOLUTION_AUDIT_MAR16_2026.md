@@ -214,15 +214,15 @@ The mod.rs comments state: *"GpuContext fused pipeline → barracuda::session::T
 
 ---
 
-## 7. Active Handoff (V29)
+## 7. Active Handoff (V30)
 
-**File**: `wateringHole/handoffs/HEALTHSPRING_V29_DEEP_DEBT_SOLUTIONS_BARRACUDA_TOADSTOOL_HANDOFF_MAR16_2026.md`
+**File**: `wateringHole/handoffs/HEALTHSPRING_V30_CROSS_SPRING_ABSORPTION_ZERO_PANIC_HANDOFF_MAR16_2026.md`
 
 **Key points:**
-- IPC evolved: `try_send()` with structured `SendError` enum
-- Socket discovery: fully capability-based (zero hardcoded primal names)
+- Dual-format capability parsing, zero-panic validation, compute_dispatch client
+- barracuda::health delegation, deny.toml
 - All 6 WGSL shaders documented with literature provenance for magic numbers
-- 603 tests, zero clippy, zero unsafe
+- 611 tests, zero clippy, zero unsafe
 - Next targets: GPU dispatch for ODE systems, Tier B shader absorption, HMM/ESN from neuralSpring
 
 ---

@@ -56,7 +56,10 @@ fn main() {
         "\n=== Exp088 Result: {}/{} checks passed ===",
         t.pass, t.checks
     );
-    assert_eq!(t.pass, t.checks, "some checks failed");
+    if t.pass != t.checks {
+        eprintln!("ERROR: some checks failed");
+        std::process::exit(1);
+    }
 }
 
 fn build_and_validate_tracks(
@@ -245,11 +248,17 @@ fn validate_channel_coverage(t: &mut Tally, full: &HealthScenario) {
 fn push_or_dump(all: &[(&str, &HealthScenario, &[ScenarioEdge])]) {
     println!("\n─── Output ───");
     let out = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/scenarios");
-    fs::create_dir_all(&out).expect("create sandbox/scenarios/");
+    if fs::create_dir_all(&out).is_err() {
+        eprintln!("ERROR: create sandbox/scenarios/");
+        std::process::exit(1);
+    }
 
     let write = |name: &str, json: &str| {
         let path = out.join(name);
-        fs::write(&path, json).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
+        if fs::write(&path, json).is_err() {
+            eprintln!("ERROR: write {}", path.display());
+            std::process::exit(1);
+        }
         println!("  wrote {} ({} KB)", name, json.len() / 1024);
     };
 

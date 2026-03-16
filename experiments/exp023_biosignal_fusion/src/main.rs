@@ -260,7 +260,10 @@ fn write_baseline_json(
 
     let path =
         Path::new(env!("CARGO_MANIFEST_DIR")).join("../../control/biosignal/exp023_baseline.json");
-    let s = serde_json::to_string_pretty(&baseline).expect("JSON serialize");
-    fs::write(&path, s).expect("write baseline");
+    let s = serde_json::to_string_pretty(&baseline).unwrap_or_default();
+    if fs::write(&path, s).is_err() {
+        eprintln!("FAIL: write baseline");
+        std::process::exit(1);
+    }
     println!("\nBaseline written to {}", path.display());
 }

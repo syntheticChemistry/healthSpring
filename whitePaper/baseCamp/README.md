@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 16, 2026
-**Status:** V29 — Deep Debt Solutions + Modern Idiomatic Rust. 603 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. All inline constants centralized (70+ named), `mean()` delegated to barraCuda, GPU context wired to Tier A upstream ops, IPC error extraction unified, Python tolerance mirror, 4 experiments smart-refactored. Zero clippy warnings workspace-wide, zero `#[allow()]`, zero TODO/FIXME, zero unsafe code.
+**Status:** V30 — Cross-Spring Absorption + Zero-Panic Evolution. 611 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml.
 
 ---
 
@@ -102,7 +102,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **4** | 4 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **603** (tests) | **2,700+** |
+| **Total** | **688** | **287+** (Tier 0) | **611** (tests) | **2,700+** |
 
 ---
 

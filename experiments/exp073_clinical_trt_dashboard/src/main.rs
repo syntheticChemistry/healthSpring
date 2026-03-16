@@ -142,9 +142,15 @@ fn main() {
 
     // Write JSON artifact
     let out_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/clinical");
-    std::fs::create_dir_all(&out_dir).expect("create sandbox/clinical/");
+    if std::fs::create_dir_all(&out_dir).is_err() {
+        eprintln!("ERROR: create sandbox/clinical/");
+        std::process::exit(1);
+    }
     let json = trt_clinical_json(&patient);
-    std::fs::write(out_dir.join("trt_live_scenario.json"), &json).expect("write JSON");
+    if std::fs::write(out_dir.join("trt_live_scenario.json"), &json).is_err() {
+        eprintln!("ERROR: write JSON");
+        std::process::exit(1);
+    }
     println!("[trt-live] JSON written to {}", out_dir.display());
 
     // Validation

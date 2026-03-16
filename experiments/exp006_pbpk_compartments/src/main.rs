@@ -104,14 +104,14 @@ fn main() {
 
     // Check 6: Higher Kp → more tissue accumulation
     println!("\n--- Check 6: Higher Kp → more tissue accumulation ---");
-    let fat_idx = tissues
-        .iter()
-        .position(|t| t.name == "fat")
-        .expect("standard human tissues include fat");
-    let muscle_idx = tissues
-        .iter()
-        .position(|t| t.name == "muscle")
-        .expect("standard human tissues include muscle");
+    let Some(fat_idx) = tissues.iter().position(|t| t.name == "fat") else {
+        eprintln!("FAIL: standard human tissues include fat");
+        std::process::exit(1);
+    };
+    let Some(muscle_idx) = tissues.iter().position(|t| t.name == "muscle") else {
+        eprintln!("FAIL: standard human tissues include muscle");
+        std::process::exit(1);
+    };
     let fat_kp = tissues[fat_idx].kp;
     let muscle_kp = tissues[muscle_idx].kp;
     let fat_conc = state.concentrations[fat_idx];
@@ -168,10 +168,10 @@ fn main() {
     // Check 10: Fat compartment accumulates more (high Kp)
     println!("\n--- Check 10: Fat accumulates more ---");
     let fat_conc_24 = state.concentrations[fat_idx];
-    let rest_idx = tissues
-        .iter()
-        .position(|t| t.name == "rest")
-        .expect("standard human tissues include rest");
+    let Some(rest_idx) = tissues.iter().position(|t| t.name == "rest") else {
+        eprintln!("FAIL: standard human tissues include rest");
+        std::process::exit(1);
+    };
     let rest_conc_24 = state.concentrations[rest_idx];
     if fat_conc_24 > rest_conc_24 {
         println!("  [PASS] fat C = {fat_conc_24:.4} > rest C = {rest_conc_24:.4}");
@@ -183,14 +183,14 @@ fn main() {
 
     // Check 11: Liver plasma-equivalent decays fastest (clearance)
     println!("\n--- Check 11: Liver free concentration lower (clearance) ---");
-    let liver_idx = tissues
-        .iter()
-        .position(|t| t.name == "liver")
-        .expect("standard human tissues include liver");
-    let kidney_idx = tissues
-        .iter()
-        .position(|t| t.name == "kidney")
-        .expect("standard human tissues include kidney");
+    let Some(liver_idx) = tissues.iter().position(|t| t.name == "liver") else {
+        eprintln!("FAIL: standard human tissues include liver");
+        std::process::exit(1);
+    };
+    let Some(kidney_idx) = tissues.iter().position(|t| t.name == "kidney") else {
+        eprintln!("FAIL: standard human tissues include kidney");
+        std::process::exit(1);
+    };
     let liver_free = state.concentrations[liver_idx] / tissues[liver_idx].kp;
     let kidney_free = state.concentrations[kidney_idx] / tissues[kidney_idx].kp;
     if liver_free < kidney_free {

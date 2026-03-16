@@ -215,11 +215,14 @@ fn main() {
     // Check 10: Peripheral compartment peaks then declines
     print!("\n--- Check 10: Peripheral compartment peaks then declines --- ");
     let c_periph = peripheral_concentration(&times, &c_curve, V1_L, K12_HR, K21_HR);
-    let (idx_peak, _) = c_periph
+    let Some((idx_peak, _)) = c_periph
         .iter()
         .enumerate()
         .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(core::cmp::Ordering::Equal))
-        .expect("peripheral concentration curve has at least one point");
+    else {
+        eprintln!("FAIL: peripheral concentration curve has at least one point");
+        std::process::exit(1);
+    };
     if 0 < idx_peak && idx_peak < times.len() - 1 {
         let peak_time = times[idx_peak];
         let peak_conc = c_periph[idx_peak];

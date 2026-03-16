@@ -21,14 +21,11 @@ pub struct StressAssessment {
 }
 
 /// Compute SCR rate (events per minute).
+///
+/// Delegates to `barracuda::health::biosignal::scr_rate` — identical signature.
 #[must_use]
 pub fn scr_rate(n_scr_events: usize, duration_s: f64) -> f64 {
-    if duration_s <= 0.0 {
-        return 0.0;
-    }
-    #[expect(clippy::cast_precision_loss, reason = "SCR count fits f64")]
-    let n = n_scr_events as f64;
-    n / (duration_s / 60.0)
+    barracuda::health::biosignal::scr_rate(n_scr_events, duration_s)
 }
 
 /// Compute mean SCR recovery half-time from phasic EDA signal.

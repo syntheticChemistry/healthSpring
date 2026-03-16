@@ -62,9 +62,15 @@ fn main() {
             println!("  petalTongue not running — falling back to file write");
 
             let out = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/scenarios");
-            fs::create_dir_all(&out).expect("create sandbox/scenarios/");
+            if fs::create_dir_all(&out).is_err() {
+                eprintln!("ERROR: create sandbox/scenarios/");
+                std::process::exit(1);
+            }
             let path = out.join("healthspring-exp064-pkpd.json");
-            fs::write(&path, &json).expect("write scenario JSON");
+            if fs::write(&path, &json).is_err() {
+                eprintln!("ERROR: write scenario JSON");
+                std::process::exit(1);
+            }
             println!("  wrote {} ({} KB)", path.display(), json.len() / 1024);
 
             check!("fallback file written", path.exists());

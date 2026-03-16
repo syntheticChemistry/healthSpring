@@ -5,7 +5,7 @@
 **Date:** March 16, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V29 — Deep Debt Solutions + Modern Idiomatic Rust. 603 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V29: 4 experiment binaries refactored from monolithic `main()` to domain-coherent helpers; inline magic numbers replaced with named constants (`MACHINE_EPSILON_STRICT`, `DECOMPOSITION_GUARD`, `BOX_MULLER_CLAMP`); IPC constants centralized (`IPC_PROBE_BUF`, `IPC_RESPONSE_BUF`, `IPC_TIMEOUT_MS`); `extract_rpc_error()` unifies 4 scattered RPC error patterns; `mean()` delegated to `barracuda::stats::mean`; `GpuContext::execute()` wired to barraCuda Tier A ops; `control/tolerances.py` mirrors all 70+ Rust constants; health response uses capability-based field names. Zero unsafe, zero TODO/FIXME, zero `#[allow()]`, clippy pedantic+nursery clean workspace-wide.
+**Status:** V30 — Cross-Spring Absorption + Zero-Panic Evolution. 611 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V30: dual-format capability parsing (neuralSpring/ludoSpring interop); zero-panic validation binaries (groundSpring pattern — ~100 expect/unwrap sites evolved to graceful exit); `compute_dispatch` typed IPC client for toadStool direct dispatch; `barracuda::health::*` CPU delegation (mm_auc, scr_rate, antibiotic_perturbation); `deny.toml` with `wildcards=deny`; Python dependency provenance. Zero unsafe, zero TODO/FIXME, zero `#[allow()]`, zero `#[expect()]` without reason, clippy pedantic+nursery clean workspace-wide.
 
 ---
 
@@ -33,8 +33,8 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V29** (Deep Debt Solutions + Modern Idiomatic Rust) |
-| **Total tests** | **603** (536 lib + 33 forge + 30 toadStool + 4 doc) |
+| Version | **V30** (Cross-Spring Absorption + Zero-Panic Evolution) |
+| **Total tests** | **611** (544 lib + 33 forge + 30 toadStool + 4 doc) |
 | Experiments complete | 73 (Tracks 1–7, Tier 0+1+2+3) |
 | JSON-RPC capabilities | 55+ (all wired — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
@@ -55,6 +55,22 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | `cargo doc` | **0 warnings** |
 | Max file size | ~430 lines (`gpu/context.rs` — smart refactor, all files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V30 Cross-Spring Absorption + Zero-Panic Evolution (from V29)
+
+V30 absorbs proven patterns from all 6 sibling springs and evolves validation binaries to zero-panic production quality.
+
+| Change | Impact |
+|--------|--------|
+| **Dual-format capability parsing** | `probe_capability()` now handles healthSpring (`result.science`), neuralSpring/ludoSpring (`result.capabilities`), nested object, and raw array formats. Cross-primal discovery works with any response shape. 4 new tests. (Absorbed from neuralSpring S157 / ludoSpring V22.) |
+| **Zero-panic validation binaries** | ~100 `.expect()`, `.unwrap()`, and `panic!()` sites evolved to graceful `let Ok(...) else { eprintln!(); exit(1); }` pattern across ~25 experiment binaries. Validation failures now produce structured error messages instead of stack traces. (Absorbed from groundSpring V109.) |
+| **`compute_dispatch` IPC client** | Typed wrappers for toadStool `compute.dispatch.submit` / `result` / `capabilities` protocol. Capability-based compute primal discovery. 3 new tests. (Absorbed from ludoSpring V22 / toadStool S156.) |
+| **`barracuda::health::*` delegation** | `mm_auc()` → `barracuda::health::pkpd::mm_auc`, `scr_rate()` → `barracuda::health::biosignal::scr_rate`, `antibiotic_perturbation_abundances()` → `barracuda::health::microbiome::antibiotic_perturbation`. 1 new delegation test. Write → Absorb → **Lean**. |
+| **`deny.toml`** | `wildcards = "deny"`, license allowlist, advisory/source controls. (Absorbed from airSpring v0.8.4.) |
+| **Python dependency provenance** | `control/requirements.txt` documented with PRNG drift warning and exact pinning rationale. (Absorbed from groundSpring V109.) |
+| **611 tests** | Up from 603 (V29). 8 new tests: 4 capability format, 3 compute dispatch, 1 barraCuda delegation. Zero failures, zero clippy warnings. |
 
 ---
 

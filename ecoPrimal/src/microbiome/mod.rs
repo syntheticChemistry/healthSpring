@@ -412,6 +412,23 @@ mod tests {
     }
 
     #[test]
+    fn antibiotic_perturbation_abundances_delegates_to_barracuda() {
+        let abundances = vec![1000.0, 500.0, 200.0];
+        let susceptibilities = vec![0.1, 0.5, 0.01];
+        let perturbed =
+            super::antibiotic_perturbation_abundances(&abundances, &susceptibilities, 24.0);
+        let expected = barracuda::health::microbiome::antibiotic_perturbation(
+            &abundances,
+            &susceptibilities,
+            24.0,
+        );
+        assert_eq!(perturbed.len(), expected.len());
+        for (a, b) in perturbed.iter().zip(expected.iter()) {
+            assert!((a - b).abs() < 1e-10, "delegation must match upstream");
+        }
+    }
+
+    #[test]
     fn antibiotic_perturbation_decline() {
         let result = super::antibiotic_perturbation(2.2, 0.5, 0.3, 0.1, 7.0, 21.0, 0.1);
         assert!(result.len() > 1);

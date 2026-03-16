@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 16, 2026
-**Status**: V29 — Deep Debt Solutions + Modern Idiomatic Rust. 73 experiments, 603 tests + 173 validation checks + 113/113 cross-validation. V29: all inline constants centralized (70+ named), `mean()` delegated to barraCuda, GPU context wired to Tier A upstream ops, IPC error extraction unified (`extract_rpc_error()`), Python tolerance mirror, 4 experiments smart-refactored, health response capability-based. V28: IPC Result-based, socket discovery capability-based, microbiome refactored, WGSL provenance. V27: ODE→WGSL codegen, uncertainty module. V25: Track 6+7 complete.
+**Status**: V30 — Cross-Spring Absorption + Zero-Panic Evolution. 73 experiments, 611 tests + 173 validation checks + 113/113 cross-validation. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. V29: Deep Debt Solutions. V28: IPC Result-based, socket discovery capability-based, microbiome refactored, WGSL provenance. V27: ODE→WGSL codegen, uncertainty module. V25: Track 6+7 complete.
 
 ---
 

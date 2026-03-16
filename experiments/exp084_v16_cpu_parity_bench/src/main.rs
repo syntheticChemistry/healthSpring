@@ -65,10 +65,7 @@ fn bench<F: Fn()>(name: &str, func: F, n_iter: usize) -> BenchResult {
         func();
         times_us.push(start.elapsed().as_nanos() as f64 / 1000.0);
     }
-    times_us.sort_by(|a, b| {
-        a.partial_cmp(b)
-            .expect("benchmark times are finite and comparable")
-    });
+    times_us.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
     let sum: f64 = times_us.iter().sum();
     let mean = sum / n_iter as f64;
     let p50 = n_iter / 2;
@@ -207,16 +204,27 @@ fn main() {
     benchmarks.push(result);
 
     let trajectory = antibiotic_perturbation(2.2, 0.7, 5.0, 0.1, 5.0, 30.0, 0.01);
-    let (_, h_initial) = trajectory
-        .first()
-        .expect("antibiotic perturbation returns non-empty trajectory");
-    let (_, h_nadir) = trajectory
+    let (_, h_initial) = if let Some(p) = trajectory.first() {
+        *p
+    } else {
+        eprintln!("FAIL: antibiotic perturbation returns empty trajectory");
+        std::process::exit(1);
+    };
+    let (_, h_nadir) = if let Some(p) = trajectory
         .iter()
-        .min_by(|aa, bb| aa.1.partial_cmp(&bb.1).expect("Shannon values comparable"))
-        .expect("trajectory has at least one point");
-    let (_, h_final) = trajectory
-        .last()
-        .expect("antibiotic perturbation returns non-empty trajectory");
+        .min_by(|aa, bb| aa.1.partial_cmp(&bb.1).unwrap_or(std::cmp::Ordering::Equal))
+    {
+        *p
+    } else {
+        eprintln!("FAIL: trajectory has no points");
+        std::process::exit(1);
+    };
+    let (_, h_final) = if let Some(p) = trajectory.last() {
+        *p
+    } else {
+        eprintln!("FAIL: antibiotic perturbation returns empty trajectory");
+        std::process::exit(1);
+    };
     check!("antibiotic_drops", h_nadir < h_initial);
     check!("antibiotic_recovers", h_final > h_nadir);
     check!("antibiotic_not_full_recovery", h_final < h_initial);
@@ -461,7 +469,7 @@ fn main() {
         experiment: "exp084".to_string(),
         benchmarks,
     };
-    let json = serde_json::to_string_pretty(&suite).expect("serialize");
+    let json = serde_json::to_string_pretty(&suite).unwrap_or_default();
 
     let out_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../control/scripts/bench_results_v16_rust_cpu.json");

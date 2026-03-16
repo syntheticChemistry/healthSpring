@@ -2,7 +2,7 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: March 16, 2026
-**Status**: V29 — Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Tier A **rewired** in both `dispatch::execute_gpu()` and `GpuContext::execute()` (Hill → `HillFunctionF64`, PopPK → `PopulationPkF64`, Diversity → `DiversityFusionGpu`). `mean()` delegated to `barracuda::stats::mean`. Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). NLME inner loop GPU primitive candidate. `fused.rs` extraction documents exact buffer layouts for `TensorSession` design. V27 adds 3 `OdeSystem` trait impls for GPU ODE codegen via `BatchedOdeRK4::generate_shader()`. See V29 handoff.
+**Status**: V30 — Cross-Spring Absorption + Zero-Panic Evolution. Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Tier A rewired (Hill, PopPK, Diversity). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). See V30 handoff.
 
 ---
 

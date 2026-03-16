@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 16, 2026
-**Status**: V29 — 73 experiments complete (Tracks 1–7), 603 tests + 173 validation checks + 113/113 cross-validation (all 7 tracks), 55+ wired JSON-RPC capabilities (capability registry). All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. V29: all inline constants centralized, barraCuda delegation, GPU context Tier A rewire, IPC error extraction unified, 42 baselines with provenance.
+**Status**: V30 — 73 experiments complete (Tracks 1–7), 611 tests + 173 validation checks + 113/113 cross-validation (all 7 tracks), 55+ wired JSON-RPC capabilities (capability registry). All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. Cross-Spring Absorption + Zero-Panic Evolution: dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml.
 
 ---
 

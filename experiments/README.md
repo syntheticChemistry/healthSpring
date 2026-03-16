@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 16, 2026
-**Status**: V29 — 73 experiments, 603 tests. Deep Debt Solutions: 4 experiment binaries refactored to domain-coherent helpers, all tolerance constants centralized, IPC error extraction unified, barraCuda `mean()` delegated, GPU context Tier A rewire, Python tolerance mirror.
+**Status**: V30 — 73 experiments, 611 tests. Cross-Spring Absorption + Zero-Panic Evolution: dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 

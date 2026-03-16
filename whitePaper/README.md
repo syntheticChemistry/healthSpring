@@ -2,7 +2,7 @@
 # healthSpring White Paper
 
 **Date:** March 16, 2026
-**Status:** V29 — 73 experiments, 603 tests, 55+ wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–7). V29: all inline constants centralized (70+ named), `mean()` delegated to barraCuda, GPU context wired to Tier A upstream ops, IPC error extraction unified, Python tolerance mirror. 42 baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Zero duplicate math, zero unsafe, zero clippy warnings workspace-wide.
+**Status:** V30 — 73 experiments, 611 tests, 55+ wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–7). Cross-Spring Absorption + Zero-Panic Evolution: dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. 42 baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Zero duplicate math, zero unsafe, zero clippy warnings workspace-wide.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---

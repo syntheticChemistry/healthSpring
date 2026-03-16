@@ -50,7 +50,7 @@ fn bench<F: Fn()>(name: &str, func: F, n_iter: usize) -> BenchResult {
         func();
         times_us.push(start.elapsed().as_nanos() as f64 / 1000.0);
     }
-    times_us.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    times_us.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
     let sum: f64 = times_us.iter().sum();
     let mean = sum / n_iter as f64;
     let p50_idx = n_iter / 2;
@@ -231,7 +231,7 @@ fn main() {
         tier: "rust_cpu".to_string(),
         benchmarks,
     };
-    let json = serde_json::to_string_pretty(&suite).expect("serialize");
+    let json = serde_json::to_string_pretty(&suite).unwrap_or_default();
 
     let out_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../control/scripts/bench_results_rust_cpu.json");

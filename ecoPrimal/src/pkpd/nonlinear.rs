@@ -10,6 +10,14 @@
 //! Reference: Rowland & Tozer, *Clinical Pharmacokinetics and
 //! Pharmacodynamics*, 5th ed., Ch. 20.
 //! Example drug: phenytoin (Ludden et al. 1977).
+//!
+//! ## barraCuda delegation
+//!
+//! - `mm_auc`: Delegates to `barracuda::health::pkpd::mm_auc` (identical signature).
+//! - `mm_pk_simulate`, `mm_css_infusion`, `mm_apparent_half_life`, `mm_auc_analytical`,
+//!   `mm_nonlinearity_ratio`: Kept local — healthSpring uses mg/day units and dose-based
+//!   APIs; barraCuda uses mg/L/h and concentration-based APIs. Conversion would add
+//!   overhead; `PHENYTOIN_PARAMS` differ (Ludden 1977 vs Rowland & Tozer).
 
 /// Michaelis-Menten PK parameters.
 #[derive(Debug, Clone)]
@@ -91,12 +99,11 @@ pub fn mm_apparent_half_life(params: &MichaelisMentenParams, concentration: f64)
 }
 
 /// AUC for Michaelis-Menten elimination (numerical trapezoidal).
+///
+/// Delegates to `barracuda::health::pkpd::mm_auc` — identical signature and formula.
 #[must_use]
 pub fn mm_auc(concs: &[f64], dt: f64) -> f64 {
-    if concs.len() < 2 {
-        return 0.0;
-    }
-    concs.windows(2).map(|w| w[0].midpoint(w[1]) * dt).sum()
+    barracuda::health::pkpd::mm_auc(concs, dt)
 }
 
 /// Analytical AUC for Michaelis-Menten IV bolus (exact, not approximation).

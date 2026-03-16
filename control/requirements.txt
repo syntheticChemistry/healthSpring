@@ -1,4 +1,8 @@
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: AGPL-3.0-or-later
 # Python dependencies for healthSpring baseline generation.
-# Pin versions to ensure reproducible baselines.
+# Pin exact versions to ensure reproducible baselines and prevent PRNG drift.
+# Pattern absorbed from groundSpring V109 (upper-bound pinning).
+#
+# IMPORTANT: NumPy 2.0 changed default PRNG behavior — upgrading without
+# re-running baselines will produce silent validation failures.
 numpy==2.1.3

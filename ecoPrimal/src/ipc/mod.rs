@@ -4,6 +4,7 @@
 //! Exposes healthSpring's science capabilities to `biomeOS` via the
 //! `SPRING_AS_PROVIDER_PATTERN`. Socket discovery follows XDG conventions.
 
+pub mod compute_dispatch;
 pub mod dispatch;
 pub mod rpc;
 pub mod socket;

@@ -31,7 +31,13 @@ async fn main() {
     println!("Exp060 CPU vs GPU Parity Matrix — toadStool Pipeline");
     println!("=====================================================\n");
 
-    let ctx = GpuContext::new().await.expect("GPU required for exp060");
+    let ctx = match GpuContext::new().await {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("FAIL: GPU required for exp060: {e}");
+            std::process::exit(1);
+        }
+    };
     let caps = Capabilities::discover();
     let mut passed = 0u32;
     let mut total = 0u32;
@@ -88,9 +94,24 @@ async fn main() {
         let gpu_result = gpu_pipe.execute_gpu(&ctx).await;
         let auto_result = gpu_pipe.execute_auto(&ctx, &caps).await;
 
-        let cpu_data = &cpu_result.stage_results.last().unwrap().output_data;
-        let gpu_data = &gpu_result.stage_results.last().unwrap().output_data;
-        let auto_data = &auto_result.stage_results.last().unwrap().output_data;
+        let cpu_data = if let Some(s) = cpu_result.stage_results.last() {
+            &s.output_data
+        } else {
+            eprintln!("FAIL: CPU pipeline produced no stage results");
+            std::process::exit(1);
+        };
+        let gpu_data = if let Some(s) = gpu_result.stage_results.last() {
+            &s.output_data
+        } else {
+            eprintln!("FAIL: GPU pipeline produced no stage results");
+            std::process::exit(1);
+        };
+        let auto_data = if let Some(s) = auto_result.stage_results.last() {
+            &s.output_data
+        } else {
+            eprintln!("FAIL: Auto pipeline produced no stage results");
+            std::process::exit(1);
+        };
 
         check(
             &format!("hill_{n_concs}: CPU vs GPU length"),

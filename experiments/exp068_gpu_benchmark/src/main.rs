@@ -99,7 +99,9 @@ fn main() {
     }
     check!(
         "hill_cpu_scales_with_n",
-        hill_points.last().unwrap().cpu_mean_us > hill_points[0].cpu_mean_us
+        hill_points
+            .last()
+            .is_some_and(|p| p.cpu_mean_us > hill_points[0].cpu_mean_us)
     );
     crossovers.push(CrossoverResult {
         operation: "HillSweep".to_string(),
@@ -139,7 +141,9 @@ fn main() {
     }
     check!(
         "pk_cpu_scales_with_n",
-        pk_points.last().unwrap().cpu_mean_us > pk_points[0].cpu_mean_us
+        pk_points
+            .last()
+            .is_some_and(|p| p.cpu_mean_us > pk_points[0].cpu_mean_us)
     );
     crossovers.push(CrossoverResult {
         operation: "PopulationPkBatch".to_string(),
@@ -188,7 +192,9 @@ fn main() {
     }
     check!(
         "div_cpu_scales_with_n",
-        div_points.last().unwrap().cpu_mean_us > div_points[0].cpu_mean_us
+        div_points
+            .last()
+            .is_some_and(|p| p.cpu_mean_us > div_points[0].cpu_mean_us)
     );
     crossovers.push(CrossoverResult {
         operation: "DiversityBatch".to_string(),
@@ -197,7 +203,7 @@ fn main() {
     });
 
     // Write results
-    let json = serde_json::to_string_pretty(&crossovers).expect("serialize");
+    let json = serde_json::to_string_pretty(&crossovers).unwrap_or_default();
     let out_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../control/scripts/bench_results_gpu_crossover.json");
     std::fs::write(&out_path, &json).unwrap_or_else(|_| println!("{json}"));

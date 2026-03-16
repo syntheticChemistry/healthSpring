@@ -145,7 +145,11 @@ fn main() {
 
     // Check 8: Oral → 0 by 48hr
     print!("\n--- Check 8: Oral → 0 by 48hr --- ");
-    let c_48 = *c_oral.last().expect("oral curve has at least one point");
+    let Some(c_last) = c_oral.last() else {
+        eprintln!("FAIL: oral curve has at least one point");
+        std::process::exit(1);
+    };
+    let c_48 = *c_last;
     if c_48 < tolerances::EXPONENTIAL_RESIDUAL {
         println!("[PASS] C(48hr) = {c_48:.6}");
         passed += 1;

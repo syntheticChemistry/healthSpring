@@ -65,10 +65,7 @@ fn time_op(op: &GpuOp, n_iter: usize) -> (f64, f64) {
             start.elapsed().as_nanos() as f64 / 1000.0
         })
         .collect();
-    times.sort_by(|a, b| {
-        a.partial_cmp(b)
-            .expect("benchmark times are finite and comparable")
-    });
+    times.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
     let mean = times.iter().sum::<f64>() / times.len() as f64;
     let p95 = times[(times.len() as f64 * 0.95) as usize];
     (mean, p95)
@@ -378,7 +375,7 @@ fn main() {
         experiment: "exp085".into(),
         results: bench_results,
     };
-    let json = serde_json::to_string_pretty(&suite).expect("serialize");
+    let json = serde_json::to_string_pretty(&suite).unwrap_or_default();
     let out_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../control/scripts/bench_results_v16_gpu_scaling.json");
     if let Some(parent) = out_path.parent() {

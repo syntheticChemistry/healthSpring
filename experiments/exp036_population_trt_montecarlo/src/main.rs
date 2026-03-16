@@ -146,7 +146,7 @@ fn main() {
     // --- Check 2: Vd median near typical ---
     println!("\n--- Check 2: Vd median near typical ---");
     let mut vd_sorted = vd_arr.clone();
-    vd_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    vd_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap_or(core::cmp::Ordering::Equal));
     let vd_med = vd_sorted[n_patients / 2];
     let vd_relative_err = (vd_med - pop_trt::VD_TYPICAL).abs() / pop_trt::VD_TYPICAL;
     if vd_relative_err < 0.05 {

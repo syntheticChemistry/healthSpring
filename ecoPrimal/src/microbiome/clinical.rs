@@ -3,6 +3,15 @@
 //!
 //! Extracted from the microbiome root module for single-responsibility.
 //! All functions are re-exported from `microbiome::*`.
+//!
+//! ## barraCuda delegation
+//!
+//! - `antibiotic_perturbation_abundances`: Delegates to `barracuda::health::microbiome::antibiotic_perturbation`
+//!   (species-level exponential kill).
+//! - `antibiotic_perturbation`: Kept local — Shannon diversity time course (Dethlefsen & Relman 2011);
+//!   barraCuda has species-level perturbation only.
+//! - `scfa_production`, `gut_serotonin_production`, `tryptophan_availability`: Kept local — different
+//!   signatures (fiber-first vs params-first, Shannon-based vs `microbiome_factor`) and parameter sets.
 
 // ── FMT Microbiota Transplant ──────────────────────────────────────────
 
@@ -54,6 +63,20 @@ pub fn bray_curtis(a: &[f64], b: &[f64]) -> f64 {
 }
 
 // ── Antibiotic Perturbation Model ──────────────────────────────────────
+
+/// Species-level antibiotic perturbation: exponential kill with species-specific susceptibility.
+///
+/// Delegates to `barracuda::health::microbiome::antibiotic_perturbation`.
+/// Returns perturbed abundance vector. For Shannon diversity time course, use
+/// `antibiotic_perturbation` (below) instead.
+#[must_use]
+pub fn antibiotic_perturbation_abundances(
+    abundances: &[f64],
+    susceptibilities: &[f64],
+    duration_h: f64,
+) -> Vec<f64> {
+    barracuda::health::microbiome::antibiotic_perturbation(abundances, susceptibilities, duration_h)
+}
 
 /// Simulate Shannon diversity time course under antibiotic perturbation
 /// and recovery. Returns `(time, shannon)` pairs.
