@@ -3,7 +3,7 @@
 
 **Last Updated**: March 10, 2026
 **Status**: Design — extends baseCamp Paper 16 (Anaerobic-Aerobic QS Phase Transition)
-**Depends on**: `ecoPrimal/src/microbiome.rs`, NestGate NCBI provider, wetSpring Anderson framework
+**Depends on**: `ecoPrimal/src/microbiome/mod.rs`, NestGate NCBI provider, wetSpring Anderson framework
 
 ---
 
@@ -120,7 +120,7 @@ Where:
   more signaling → more coordination → more "extended" community behavior)
 - `α` = mixing parameter (fit from data, expected ~0.6-0.8 structural-dominant)
 
-### New Functions in `microbiome.rs`
+### New Functions in `microbiome/mod.rs`
 
 ```rust
 /// Fraction of community members carrying genes from a specific QS family.
@@ -156,16 +156,16 @@ recovery kinetics after antibiotic perturbation.
 3. Build presence/absence matrix as `data/qs_gene_matrix.json`
 4. NestGate caching: `ncbi:gene:{gene_id}` content-addressed storage
 
-### Phase B: Rust Module (`microbiome.rs` extension, ~1 day)
+### Phase B: Rust Module (`microbiome/mod.rs` extension, ~1 day)
 
 1. Add `QsGeneMatrix`, `QsFamily`, `QsProfile` types
 2. Implement `qs_gene_density()`, `qs_profile()`, `effective_disorder()`
 3. Unit tests: known communities with known QS gene complements
 4. Validate: healthy community should have lower `W_effective` than dysbiotic
 
-### Phase C: Anderson Integration (Exp084, ~1 day)
+### Phase C: Anderson Integration (Exp107, ~1 day)
 
-1. New experiment: `exp084_qs_anderson`
+1. New experiment: `exp107_qs_anderson`
 2. Compare `W` (structural only) vs `W_effective` (structural + QS) for:
    - Healthy gut community
    - Dysbiotic community (C. diff dominated)
@@ -187,12 +187,12 @@ recovery kinetics after antibiotic perturbation.
 
 | Component | Location | Status |
 |-----------|----------|--------|
-| `evenness_to_disorder()` | `ecoPrimal/src/microbiome.rs` | Existing |
-| `anderson_hamiltonian_1d()` | `ecoPrimal/src/microbiome.rs` | Existing |
-| `colonization_resistance()` | `ecoPrimal/src/microbiome.rs` | Existing |
-| Anderson eigensolver (QL) | `ecoPrimal/src/microbiome.rs` | Existing |
+| `evenness_to_disorder()` | `ecoPrimal/src/microbiome/mod.rs` | Existing |
+| `anderson_hamiltonian_1d()` | `ecoPrimal/src/microbiome/mod.rs` | Existing |
+| `colonization_resistance()` | `ecoPrimal/src/microbiome/mod.rs` | Existing |
+| Anderson eigensolver (QL) | `ecoPrimal/src/microbiome/mod.rs` | Existing |
 | NCBI Gene API | NestGate provider | Existing in wetSpring, planned for healthSpring |
 | QS gene matrix | `data/qs_gene_matrix.json` | **New** |
-| `qs_gene_density()` | `ecoPrimal/src/microbiome.rs` | **New** |
-| `qs_profile()` | `ecoPrimal/src/microbiome.rs` | **New** |
-| `effective_disorder()` | `ecoPrimal/src/microbiome.rs` | **New** |
+| `qs_gene_density()` | `ecoPrimal/src/microbiome/mod.rs` | **New** |
+| `qs_profile()` | `ecoPrimal/src/microbiome/mod.rs` | **New** |
+| `effective_disorder()` | `ecoPrimal/src/microbiome/mod.rs` | **New** |

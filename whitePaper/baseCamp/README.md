@@ -32,8 +32,8 @@ for onboarding that group.
 | 01 | [gonzales/](gonzales/) | Gonzales, Lisabeth, Neubig, Ellsworth | PK/PD → living systems + drug discovery (Tracks 1, 6, 7) | **Complete** (T1, T6, T7) | 73 | 79 |
 | 02 | [fajgenbaum/](fajgenbaum/) | Fajgenbaum (Every Cure) | MATRIX drug repurposing + Anderson geometry (Track 7) | **Ingested + Extended** | — | — |
 | 03 | [mok/](mok/) | Dr. Charles Mok | Testosterone PK, TRT outcomes, HRV cross-track (Track 4) | **Complete** | 96 | 86 |
-| 04 | [cdiff_colonization.md](cdiff_colonization.md) | TBD | Anderson localization → gut colonization, FMT (Track 2) | **Complete** | 36 | 48 |
-| 05 | [biosignal_sovereign.md](biosignal_sovereign.md) | TBD | Edge biosignal processing (Track 3) | **Complete** | 44 | 44 |
+| 04 | [cdiff_colonization.md](cdiff_colonization.md) | — | Anderson localization → gut colonization, FMT (Track 2) | **Complete** | 36 | 48 |
+| 05 | [biosignal_sovereign.md](biosignal_sovereign.md) | — | Edge biosignal processing (Track 3) | **Complete** | 44 | 44 |
 
 ### Per-Org Directory Contents
 
@@ -49,8 +49,8 @@ baseCamp/
 │   └── cost_access_methods.md   ← Deep cost/access/data/methods breakdown
 ├── mok/
 │   └── README.md                ← Sub-thesis: TRT claim verification + endocrinology
-├── cdiff_colonization.md        ← Sub-thesis: Anderson → gut colonization (to be promoted to subdir)
-└── biosignal_sovereign.md       ← Sub-thesis: Edge biosignal (to be promoted to subdir)
+├── cdiff_colonization.md        ← Sub-thesis: Anderson → gut colonization
+└── biosignal_sovereign.md       ← Sub-thesis: Edge biosignal
 ```
 
 The authoritative versions are in the per-org subdirectories.
@@ -97,7 +97,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | GPU Scaling Bench (Exp085) | — | 10 | 47 | 57 |
 | toadStool V16 Dispatch (Exp086) | — | — | 24 | 24 |
 | Mixed NUCLEUS V16 (Exp087) | — | — | 35 | 35 |
-| **Lib unit tests** | — | — | **536** | 536 |
+| **Lib unit tests** | — | — | **544** | 544 |
 | **metalForge tests** | — | — | **33** | 33 |
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **4** | 4 |
@@ -201,19 +201,21 @@ The challenge is to **extract quantifiable claims** and **validate them against 
 Every healthSpring experiment inherits validated primitives from upstream springs:
 
 ```
-wetSpring (V101, 9,060+ checks)
+wetSpring (V123, 1,703 tests, 376 experiments)
     └─ 16S diversity → Exp010 (Shannon/Simpson/Pielou/Chao1)
     └─ Anderson lattice → Exp011 (gut colonization)
     └─ Gonzales immunology (Exp273-286) → baseline for all Track 1
+    └─ OrExit zero-panic pattern → V30 graceful validation
 
-neuralSpring (V90)
+neuralSpring (S157)
     └─ nS-601 (Hill/IC50) → Exp001 (human JAK inhibitors)
     └─ nS-603 (lokivetmab PK) → Exp004 (mAb cross-species transfer)
     └─ nS-604 (tissue lattice) → planned tissue lattice extension
     └─ nS-605 (MATRIX) → **VALIDATED** — Exp090 MATRIX scoring
+    └─ Dual-format capability parsing → V30 cross-primal discovery
 
-groundSpring (V100) → planned uncertainty propagation on clinical models
-hotSpring → planned lattice tissue finite-size scaling
+groundSpring (V109) → uncertainty propagation, zero-panic pattern → V30
+hotSpring (v0.6.31) → planned lattice tissue finite-size scaling
 ```
 
 ---
@@ -278,9 +280,9 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 
 ---
 
-## Next Steps (V22+)
+## Next Steps (Post V30)
 
-### Remaining (Post V25)
+### Science Extensions
 
 1. **DD-006 iPSC validation** — Gonzales iPSC skin model validation
 2. **DD-007 Ellsworth med chem** — Medicinal chemistry lead optimization
@@ -291,7 +293,14 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 4. **NLME GPU shaders** — FOCE per-subject gradient, VPC Monte Carlo
 5. **Anderson eigensolve** — GPU shader for gut lattice localization length
 6. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG
-7. **DNA/protein integration** — neuralSpring + wetSpring convergence for drug targets
+7. **TensorSession** — When barraCuda ships fused multi-op pipeline API
+
+### Cross-Spring Absorption (Identified V30)
+
+8. **HMM biosignal regime** — Absorb `HmmBatchForwardF64` from neuralSpring for cardiac state detection
+9. **ESN clinical prediction** — Absorb Echo State Network from neuralSpring for time-series outcomes
+10. **3D tissue Anderson** — Absorb from groundSpring for tissue heterogeneity modeling
+11. **llvm-cov** — Target 90%+ line coverage (wetSpring pattern)
 
 ---
 

@@ -294,7 +294,7 @@ from local JSON files.
 
 1. **Unit tests** (no network): Mock RPC responses, test parsing, key generation, error handling
 2. **Integration tests** (NestGate running): Start NestGate locally, test full three-tier flow
-3. **Experiment validation**: Exp084 (QS gene matrix) uses `NcbiProvider` to fetch gene records,
+3. **Experiment validation**: Exp107 (QS gene matrix) uses `NcbiProvider` to fetch gene records,
    validates against known gene families
 
 ---
@@ -303,7 +303,7 @@ from local JSON files.
 
 | Module | Dependency | Direction |
 |--------|-----------|-----------|
-| `microbiome.rs` | `data::NcbiProvider` | Consumes gene records for QS matrix |
+| `microbiome/mod.rs` | `data::NcbiProvider` | Consumes gene records for QS matrix |
 | `toadstool/src/stage.rs` | None | Data fetch is pre-pipeline (input preparation) |
 | `metalForge` | None | Data fetch is not a compute workload |
 | `specs/QS_GENE_PROFILING.md` | `data::fetch_gene` | Uses to build presence/absence matrix |

@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V30** | [V30 Cross-Spring Absorption Handoff](handoffs/HEALTHSPRING_V30_CROSS_SPRING_ABSORPTION_ZERO_PANIC_HANDOFF_MAR16_2026.md) | Mar 16 | Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Supersedes V29. |
+| **V30** | [V30 Cross-Spring Absorption](handoffs/HEALTHSPRING_V30_CROSS_SPRING_ABSORPTION_ZERO_PANIC_HANDOFF_MAR16_2026.md) | Mar 16 | Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Supersedes V29. |
+| **V30** | [V30 barraCuda/toadStool Absorption](handoffs/HEALTHSPRING_V30_BARRACUDA_TOADSTOOL_ABSORPTION_HANDOFF_MAR16_2026.md) | Mar 16 | Complete absorption guide: 6 WGSL shaders, 20+ CPU primitives, compute.dispatch spec, GPU learnings, dependency contract. |
 | | *V1–V29 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
@@ -38,11 +39,12 @@ Superseded handoffs in `handoffs/archive/` — preserved as fossil record.
 | **barraCuda** | Core math, PK/PD ops, diversity, LCG PRNG, eigensolver, `Fp64Strategy`, V16 GPU ops (MM batch, SCFA batch, Beat classify) | v0.3.5 (`a60819c`) | **Live** — Tier 2+3 GPU via 6 WGSL shaders + `GpuContext` + `execute_fused`. Tier A rewire ready (Hill, PopPK, Diversity → upstream ops). |
 | **toadStool** | Compute pipeline dispatch (CPU/GPU/NPU routing, streaming, callbacks) | S142+ | **Live** — V16 StageOps dispatched via `execute_cpu`, `execute_streaming`, `execute_auto`. |
 | **metalForge** | NUCLEUS topology, substrate capabilities, PCIe P2P transfer planning, `plan_dispatch` | local | **Live** — 9 Workload variants, mixed Tower/Node/Nest dispatch, PCIe Gen4 P2P (31.5 GB/s). |
-| **wetSpring** | 16S pipeline, Anderson lattice, Gonzales immunology | V107 | Validated (9,060+ checks) |
-| **neuralSpring** | Hill dose-response, PK decay, tissue lattice, MATRIX | V90 | Validated |
-| **groundSpring** | Uncertainty propagation, spectral methods | V100 | Validated |
-| **airSpring** | CytokineBrain, sensor fusion patterns | v0.7.5 | Validated |
-| **hotSpring** | Lattice methods, Anderson spectral theory | v0.6.25+ | Validated |
+| **wetSpring** | 16S pipeline, Anderson lattice, Gonzales immunology, OrExit pattern | V123 | Validated (1,703 tests, 376 experiments) |
+| **neuralSpring** | Hill dose-response, PK decay, tissue lattice, MATRIX, dual-format caps | S157 | Validated (1,115+ tests) |
+| **groundSpring** | Uncertainty propagation, spectral methods, zero-panic pattern | V109 | Validated (912+ tests) |
+| **airSpring** | CytokineBrain, sensor fusion patterns, deny.toml | v0.8.4 | Validated |
+| **hotSpring** | Lattice methods, Anderson spectral theory, GlowPlug boot | v0.6.31 | Validated (848 tests) |
+| **ludoSpring** | Session decomposition, typed transitions, dispatch client | V22 | Validated (394 tests) |
 | **petalTongue** | UI/visualization platform + SAME DAVE neuroanatomy | v1.3.0+ | **Absorbed** + local wiring |
 
 ---

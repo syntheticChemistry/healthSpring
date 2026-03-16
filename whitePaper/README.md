@@ -92,7 +92,7 @@ without establishing causality.
 5. Can GPU-accelerated population PK provide clinically actionable dosing recommendations?
    **Answer: Yes.** GPU crossover at 100K patients, linear scaling confirmed, FOCE/SAEM sovereign.
 
-### Tracks 6–7 (New — V21, in progress)
+### Tracks 6–7 (Complete — V25)
 
 6. Can species-agnostic mathematics validate disease models across species, enabling
    causal insight from naturally occurring animal disease (rather than testing human

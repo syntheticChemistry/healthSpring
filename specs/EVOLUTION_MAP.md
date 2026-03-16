@@ -250,7 +250,7 @@ All previous blocking items resolved:
 2. ~~No GPU dispatch abstraction~~ → `GpuContext` + `execute_fused` ✓
 3. ~~`population_pk_f64.wgsl` not written~~ → LIVE with u32 xorshift32 PRNG ✓
 4. ~~No fused-op chain~~ → `execute_fused()` single encoder submission ✓
-5. ODE solver absorption status from wetSpring TBD
+5. ODE solver absorbed via `barracuda::numerical::OdeSystem` trait (V27)
 6. ~~NPU dispatch path in toadStool not production-ready~~ → `DispatchPlan` with NPU routing + PCIe P2P ✓
 7. ~~coralReef `df64_core.wgsl` preamble~~ → `strip_f64_enable()` workaround ✓
 

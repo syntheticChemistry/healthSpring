@@ -522,7 +522,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 603 tests
+cargo test --workspace                  # 611 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings
