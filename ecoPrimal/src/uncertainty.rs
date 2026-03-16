@@ -12,6 +12,8 @@
 //!
 //! All functions are pure, deterministic (given a seed), and `#[must_use]`.
 
+use barracuda::stats::mean;
+
 use crate::rng::normal_sample;
 
 /// Bootstrap confidence interval result.
@@ -76,13 +78,6 @@ const fn lcg_step(state: u64) -> u64 {
 fn resample_index(rng: &mut u64, n: usize) -> usize {
     *rng = lcg_step(*rng);
     ((*rng >> 33) as f64 / (1u64 << 31) as f64 * n as f64) as usize % n
-}
-
-fn mean(data: &[f64]) -> f64 {
-    if data.is_empty() {
-        return 0.0;
-    }
-    data.iter().sum::<f64>() / crate::validation::len_f64(data.len())
 }
 
 /// Percentile bootstrap confidence interval for the mean.
@@ -212,7 +207,7 @@ pub fn decompose_error(mbe: f64, rmse: f64) -> Decomposition {
     let rmse_sq = rmse * rmse;
     let bias_sq = mbe * mbe;
     let variance = (rmse_sq - bias_sq).max(0.0);
-    let bias_frac = if rmse_sq > 1e-30 {
+    let bias_frac = if rmse_sq > crate::tolerances::DECOMPOSITION_GUARD {
         bias_sq / rmse_sq
     } else {
         0.0

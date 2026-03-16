@@ -214,9 +214,9 @@ The mod.rs comments state: *"GpuContext fused pipeline → barracuda::session::T
 
 ---
 
-## 7. Active Handoff (V28)
+## 7. Active Handoff (V29)
 
-**File**: `wateringHole/handoffs/HEALTHSPRING_V28_DEEP_DEBT_ECOSYSTEM_MATURITY_BARRACUDA_TOADSTOOL_HANDOFF_MAR16_2026.md`
+**File**: `wateringHole/handoffs/HEALTHSPRING_V29_DEEP_DEBT_SOLUTIONS_BARRACUDA_TOADSTOOL_HANDOFF_MAR16_2026.md`
 
 **Key points:**
 - IPC evolved: `try_send()` with structured `SendError` enum

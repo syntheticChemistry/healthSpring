@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 16, 2026
-**Status:** V28 — Deep Debt + Ecosystem Maturity. 603 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. IPC evolved to Result-based, socket discovery fully capability-based, microbiome smart-refactored, WGSL magic numbers documented. Zero `#[allow()]`, zero TODO/FIXME, zero unsafe code.
+**Status:** V29 — Deep Debt Solutions + Modern Idiomatic Rust. 603 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. All inline constants centralized (70+ named), `mean()` delegated to barraCuda, GPU context wired to Tier A upstream ops, IPC error extraction unified, Python tolerance mirror, 4 experiments smart-refactored. Zero clippy warnings workspace-wide, zero `#[allow()]`, zero TODO/FIXME, zero unsafe code.
 
 ---
 

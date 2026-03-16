@@ -14,8 +14,7 @@
 
 pub use barracuda::rng::{LCG_MULTIPLIER, lcg_step, state_to_f64, uniform_f64_sequence};
 
-/// Minimum value for Box-Muller `u1` to avoid `ln(0)`.
-const BOX_MULLER_CLAMP: f64 = 1e-30;
+use crate::tolerances::BOX_MULLER_CLAMP;
 
 /// Box-Muller transform: two uniform `[0,1)` samples to one standard normal.
 ///

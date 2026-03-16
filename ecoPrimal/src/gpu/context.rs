@@ -13,10 +13,16 @@ use super::{GpuError, GpuOp, GpuResult};
 /// dispatches all operations in a single command encoder: upload once,
 /// N compute passes, readback once — the unidirectional pipeline pattern
 /// required for field-deployed devices (e.g., Raspberry Pi + eGPU).
+///
+/// When `barracuda-ops` is enabled, Tier A ops (Hill, `PopPK`, Diversity)
+/// are delegated to barraCuda's canonical GPU implementations via `execute()`.
+/// The fused pipeline still uses local WGSL until `TensorSession` is available.
 pub struct GpuContext {
     device: wgpu::Device,
     queue: wgpu::Queue,
     adapter_name: String,
+    #[cfg(feature = "barracuda-ops")]
+    barracuda_device: Option<std::sync::Arc<barracuda::device::WgpuDevice>>,
 }
 
 impl GpuContext {
@@ -59,10 +65,17 @@ impl GpuContext {
             .await
             .map_err(|e| GpuError::NoDevice(format!("{e}")))?;
 
+        #[cfg(feature = "barracuda-ops")]
+        let barracuda_device = super::barracuda_rewire::create_barracuda_device()
+            .await
+            .ok();
+
         Ok(Self {
             device,
             queue,
             adapter_name,
+            #[cfg(feature = "barracuda-ops")]
+            barracuda_device,
         })
     }
 
@@ -78,6 +91,49 @@ impl GpuContext {
     ///
     /// Returns [`GpuError`] on shader compilation, dispatch, or readback failure.
     pub async fn execute(&self, op: &GpuOp) -> Result<GpuResult, GpuError> {
+        // Tier A: delegate to barraCuda canonical ops when available
+        #[cfg(feature = "barracuda-ops")]
+        if let Some(bc) = &self.barracuda_device {
+            use super::barracuda_rewire;
+            match op {
+                GpuOp::HillSweep {
+                    emax,
+                    ec50,
+                    n,
+                    concentrations,
+                } => {
+                    return barracuda_rewire::execute_hill_barracuda(
+                        bc,
+                        *emax,
+                        *ec50,
+                        *n,
+                        concentrations,
+                    )
+                    .await;
+                }
+                GpuOp::PopulationPkBatch {
+                    n_patients,
+                    dose_mg,
+                    f_bioavail,
+                    seed,
+                } => {
+                    return barracuda_rewire::execute_pop_pk_barracuda(
+                        bc,
+                        *n_patients,
+                        *dose_mg,
+                        *f_bioavail,
+                        *seed,
+                    )
+                    .await;
+                }
+                GpuOp::DiversityBatch { communities } => {
+                    return barracuda_rewire::execute_diversity_barracuda(bc, communities).await;
+                }
+                _ => {} // Tier B ops fall through to local WGSL
+            }
+        }
+
+        // Local WGSL path (Tier A fallback + all Tier B ops)
         match op {
             GpuOp::HillSweep {
                 emax,

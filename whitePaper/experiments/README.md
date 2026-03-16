@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V28 — 73 experiments, 603 Rust tests, 55+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). IPC evolved to Result-based. Socket discovery fully capability-based. 10 experiments on `ValidationHarness` (hotSpring pattern), tolerances centralized, CI clippy::nursery enforced. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
+**Status**: V29 — 73 experiments, 603 Rust tests, 55+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). All inline constants centralized (70+ named). 4 experiment binaries refactored to domain-coherent helpers. Python tolerance mirror. 10 experiments on `ValidationHarness` (hotSpring pattern), tolerances centralized, CI clippy::nursery enforced. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
 **Last Updated**: March 16, 2026
 
 ---

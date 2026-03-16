@@ -1,6 +1,6 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.8 (V28 — Deep Debt + Ecosystem Maturity)
+**Version**: 0.9 (V29 — Deep Debt Solutions + Modern Idiomatic Rust)
 **Date**: March 16, 2026
 
 ---

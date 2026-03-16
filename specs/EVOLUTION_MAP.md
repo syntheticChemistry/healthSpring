@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 16, 2026
-**Status**: V28 — Deep Debt + Ecosystem Maturity. 73 experiments, 603 tests + 173 validation checks + 113/113 cross-validation. V28: IPC evolved to Result-based `try_send` with `SendError`; socket discovery fully capability-based (zero hardcoded primal names); microbiome smart-refactored (clinical.rs extracted); WGSL shader magic numbers documented; exp020 tolerances centralized; Track 6-7 baselines generated with provenance. V27: ODE→WGSL codegen, uncertainty module, IPC cast safety, capability registry. V25: Track 6+7 complete.
+**Status**: V29 — Deep Debt Solutions + Modern Idiomatic Rust. 73 experiments, 603 tests + 173 validation checks + 113/113 cross-validation. V29: all inline constants centralized (70+ named), `mean()` delegated to barraCuda, GPU context wired to Tier A upstream ops, IPC error extraction unified (`extract_rpc_error()`), Python tolerance mirror, 4 experiments smart-refactored, health response capability-based. V28: IPC Result-based, socket discovery capability-based, microbiome refactored, WGSL provenance. V27: ODE→WGSL codegen, uncertainty module. V25: Track 6+7 complete.
 
 ---
 

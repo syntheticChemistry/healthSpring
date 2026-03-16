@@ -1,6 +1,6 @@
 # Cross-Spring Shader Evolution — healthSpring Perspective
 
-**Updated**: March 16, 2026 (V28)
+**Updated**: March 16, 2026 (V29)
 **License**: AGPL-3.0-or-later
 
 This document tracks how WGSL shaders and math primitives flow between

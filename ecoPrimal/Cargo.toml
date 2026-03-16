@@ -25,6 +25,7 @@ npu = []
 [dependencies]
 # Validated against barraCuda rev a60819c3 (2026-03-14).
 # Path dep for local development; CI should pin to this rev.
+# barracuda-core is required for barraCuda's internal feature resolution.
 barracuda-core = { path = "../../barraCuda/crates/barracuda-core", default-features = false }
 barracuda = { path = "../../barraCuda/crates/barracuda", default-features = false }
 serde = { version = "1", features = ["derive"] }

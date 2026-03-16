@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V28 — Deep Debt + Ecosystem Maturity. 603 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. IPC evolved to Result-based `try_send`. Socket discovery fully capability-based (zero hardcoded primal names). Microbiome smart-refactored. WGSL shader magic numbers documented. barraCuda v0.3.5 pinned.
+**Status**: V29 — Deep Debt Solutions + Modern Idiomatic Rust. 603 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. All inline constants centralized, IPC error extraction unified, `mean()` delegated to barraCuda, GPU context wired to Tier A upstream ops, Python tolerance mirror, 4 experiments smart-refactored. barraCuda v0.3.5 pinned.
 **Last Updated**: March 16, 2026
 
 ---
@@ -22,8 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V27** | [V27 Deep Evolution Handoff](handoffs/HEALTHSPRING_V27_DEEP_EVOLUTION_BARRACUDA_TOADSTOOL_HANDOFF_MAR15_2026.md) | Mar 15 | ODE→WGSL codegen, uncertainty module, IPC safety, capability registry. Supersedes V25. |
-| | *V1–V25 → `handoffs/archive/`* | | Fossil record |
+| **V29** | [V29 Deep Debt Solutions Handoff](handoffs/HEALTHSPRING_V29_DEEP_DEBT_SOLUTIONS_BARRACUDA_TOADSTOOL_HANDOFF_MAR16_2026.md) | Mar 16 | Tolerance centralization, IPC unification, barraCuda delegation, GPU context rewire, Python tolerance mirror. Supersedes V28. |
+| | *V1–V28 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

@@ -16,7 +16,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-PETALTONGUE_ROOT="$(cd "${PROJECT_ROOT}/../phase2/petalTongue" 2>/dev/null && pwd || true)"
+PETALTONGUE_ROOT="${PETALTONGUE_ROOT:-$(cd "${PROJECT_ROOT}/../petalTongue" 2>/dev/null && pwd || cd "${PROJECT_ROOT}/../phase2/petalTongue" 2>/dev/null && pwd || cd "${PROJECT_ROOT}/../wateringHole/petaltongue" 2>/dev/null && pwd || true)}"
 
 MODE="${1:-web}"
 PORT="${2:-13377}"
@@ -67,7 +67,7 @@ fi
 # --- 3. Locate petalTongue ----------------------------------------------
 
 if [[ -z "${PETALTONGUE_ROOT}" ]] || [[ ! -d "${PETALTONGUE_ROOT}" ]]; then
-    die "petalTongue not found at ../phase2/petalTongue. Set PETALTONGUE_ROOT."
+    die "petalTongue not found. Set PETALTONGUE_ROOT env var."
 fi
 
 PETALTONGUE_BIN="${PETALTONGUE_ROOT}/target/release/petaltongue"

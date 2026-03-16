@@ -5,7 +5,7 @@
 **Date:** March 16, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V28 — Deep Debt + Ecosystem Maturity. 603 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V28: IPC evolved to Result-based `rpc::try_send` with structured `SendError`; socket discovery fully capability-based (zero hardcoded primal names); `microbiome/mod.rs` smart-refactored (clinical models extracted to `clinical.rs`); WGSL shader magic numbers documented with literature provenance; exp020 clinical thresholds centralized to `tolerances::*`; Track 6-7 baseline JSON generated and registered in provenance updater; `cross_validate.py` extended to all 7 tracks; 5 Python baseline scripts fixed (`datetime.timezone`). Zero unsafe, zero TODO/FIXME, zero `#[allow()]`, clippy pedantic+nursery clean.
+**Status:** V29 — Deep Debt Solutions + Modern Idiomatic Rust. 603 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V29: 4 experiment binaries refactored from monolithic `main()` to domain-coherent helpers; inline magic numbers replaced with named constants (`MACHINE_EPSILON_STRICT`, `DECOMPOSITION_GUARD`, `BOX_MULLER_CLAMP`); IPC constants centralized (`IPC_PROBE_BUF`, `IPC_RESPONSE_BUF`, `IPC_TIMEOUT_MS`); `extract_rpc_error()` unifies 4 scattered RPC error patterns; `mean()` delegated to `barracuda::stats::mean`; `GpuContext::execute()` wired to barraCuda Tier A ops; `control/tolerances.py` mirrors all 70+ Rust constants; health response uses capability-based field names. Zero unsafe, zero TODO/FIXME, zero `#[allow()]`, clippy pedantic+nursery clean workspace-wide.
 
 ---
 
@@ -33,7 +33,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V28** (Deep Debt + Ecosystem Maturity) |
+| Version | **V29** (Deep Debt Solutions + Modern Idiomatic Rust) |
 | **Total tests** | **603** (536 lib + 33 forge + 30 toadStool + 4 doc) |
 | Experiments complete | 73 (Tracks 1–7, Tier 0+1+2+3) |
 | JSON-RPC capabilities | 55+ (all wired — 0 stubs in dispatch) |
@@ -53,8 +53,26 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Clippy | **0 warnings** (`#![deny(clippy::pedantic, clippy::nursery)]`) |
 | `cargo fmt` | **0 diffs** |
 | `cargo doc` | **0 warnings** |
-| Max file size | 350 lines (`gpu/context.rs` — smart refactor, all files well under 1000-line limit) |
+| Max file size | ~430 lines (`gpu/context.rs` — smart refactor, all files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V29 Deep Debt Solutions + Modern Idiomatic Rust (from V28)
+
+V29 executes all remediation from the V28 comprehensive audit — eliminating duplicate math, centralizing all inline constants, evolving hardcoded patterns to capability-based, and wiring barraCuda delegation into the persistent GPU context.
+
+| Change | Impact |
+|--------|--------|
+| **Experiment refactoring** | `exp090`, `exp092`, `exp093`, `exp100` refactored from monolithic `main()` to domain-coherent helpers (`validate_pathway_selectivity`, `validate_batch_ranking`, `validate_hill_properties`, `validate_il31_kinetics`, etc.). Zero `clippy::too_many_lines` violations workspace-wide. |
+| **Tolerance centralization** | 3 inline `1e-15` in `validation.rs` → `MACHINE_EPSILON_STRICT`. `1e-30` in `uncertainty.rs` → `DECOMPOSITION_GUARD`. `BOX_MULLER_CLAMP` moved from `rng.rs` to `tolerances.rs`. IPC constants (`IPC_PROBE_BUF`, `IPC_RESPONSE_BUF`, `IPC_TIMEOUT_MS`) added. |
+| **IPC error extraction** | New `extract_rpc_error()` in `ipc/rpc.rs` replaces 4 scattered `unwrap_or(-1)` / `unwrap_or("unknown")` patterns across `data/rpc.rs`, `data/provenance.rs`, `visualization/capabilities.rs`, `visualization/ipc_push/client.rs`. |
+| **barraCuda `mean()` delegation** | `uncertainty.rs` local `mean()` → `barracuda::stats::mean`. Zero duplicate math between healthSpring and upstream. |
+| **GPU context rewire** | `GpuContext::execute()` now delegates Tier A ops (Hill, PopPK, Diversity) to `barracuda_rewire` when `barracuda-ops` feature is enabled. Previously only `dispatch::execute_gpu()` had this delegation. |
+| **Python tolerance mirror** | `control/tolerances.py` created with all 70+ named constants mirroring `tolerances.rs` — ensures Python baselines use identical thresholds. |
+| **Hardcoding evolution** | Health response `nestgate` / `toadstool` → `data_provider` / `compute_provider` (capability-based, no primal self-knowledge of others). Songbird well-known paths documented as intentional bootstrap exception. |
+| **NLME Cholesky documented** | Local `cholesky_solve()` in NLME solver documented as intentional optimization (2×2/3×3 matrices with fallback, not a candidate for barraCuda delegation). |
+| **Tolerance registry updated** | `specs/TOLERANCE_REGISTRY.md` expanded with guard constants (`DECOMPOSITION_GUARD`, `BOX_MULLER_CLAMP`) and IPC constants (`IPC_PROBE_BUF`, `IPC_RESPONSE_BUF`, `IPC_TIMEOUT_MS`). |
 
 ---
 

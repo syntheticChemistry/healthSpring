@@ -29,6 +29,24 @@ pub fn error(id: &serde_json::Value, code: i64, message: &str) -> String {
     .to_string()
 }
 
+/// Extract error code and message from a JSON-RPC error object.
+///
+/// Provides safe defaults (`-1` / `"unknown"`) when fields are absent,
+/// avoiding scattered `unwrap_or` patterns across IPC consumers.
+#[must_use]
+pub fn extract_rpc_error(error: &serde_json::Value) -> (i64, String) {
+    let code = error
+        .get("code")
+        .and_then(serde_json::Value::as_i64)
+        .unwrap_or(-1);
+    let message = error
+        .get("message")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("unknown")
+        .to_owned();
+    (code, message)
+}
+
 /// IPC send errors with structured context.
 #[derive(Debug)]
 pub enum SendError {

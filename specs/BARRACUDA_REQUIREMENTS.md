@@ -2,7 +2,7 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: March 16, 2026
-**Status**: V28 — Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Tier A rewire ready (Hill → `HillFunctionF64`, PopPK → `PopulationPkF64`, Diversity → `DiversityFusionGpu`). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). NLME inner loop GPU primitive candidate. `fused.rs` extraction documents exact buffer layouts for `TensorSession` design. V27 adds 3 `OdeSystem` trait impls for GPU ODE codegen via `BatchedOdeRK4::generate_shader()`. V28: All 6 WGSL shaders have documented magic numbers with literature provenance. IPC evolved to Result-based `try_send`. Socket discovery fully capability-based (zero hardcoded primal names). See V28 handoff.
+**Status**: V29 — Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Tier A **rewired** in both `dispatch::execute_gpu()` and `GpuContext::execute()` (Hill → `HillFunctionF64`, PopPK → `PopulationPkF64`, Diversity → `DiversityFusionGpu`). `mean()` delegated to `barracuda::stats::mean`. Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). NLME inner loop GPU primitive candidate. `fused.rs` extraction documents exact buffer layouts for `TensorSession` design. V27 adds 3 `OdeSystem` trait impls for GPU ODE codegen via `BatchedOdeRK4::generate_shader()`. See V29 handoff.
 
 ---
 

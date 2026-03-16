@@ -123,8 +123,8 @@ fn handle_health(state: &PrimalState) -> serde_json::Value {
         "backend": "cpu",
         "composition": {
             "provenance_trio": healthspring_barracuda::data::trio_available(),
-            "nestgate": socket::discover_data_primal().is_some(),
-            "toadstool": socket::discover_compute_primal().is_some(),
+            "data_provider": socket::discover_data_primal().is_some(),
+            "compute_provider": socket::discover_compute_primal().is_some(),
         },
     })
 }

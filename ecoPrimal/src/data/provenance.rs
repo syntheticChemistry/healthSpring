@@ -116,12 +116,8 @@ fn capability_call(
         serde_json::from_str(line.trim()).map_err(|e| format!("parse: {e}"))?;
 
     if let Some(err) = parsed.get("error") {
-        return Err(format!(
-            "rpc error: {}",
-            err.get("message")
-                .and_then(serde_json::Value::as_str)
-                .unwrap_or("unknown")
-        ));
+        let (code, message) = crate::ipc::rpc::extract_rpc_error(err);
+        return Err(format!("rpc error {code}: {message}"));
     }
 
     parsed

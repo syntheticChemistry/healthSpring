@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 16, 2026
-**Status**: V28 — 603 tests, 73 experiments, 55+ JSON-RPC capabilities backed by a capability registry. V28: IPC evolved to Result-based `try_send` with `SendError`; socket discovery fully capability-based; microbiome smart-refactored; WGSL shader magic numbers documented; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
+**Status**: V29 — 603 tests, 73 experiments, 55+ JSON-RPC capabilities backed by a capability registry. V29: all inline constants centralized (70+ named), `mean()` delegated to barraCuda, GPU context wired to Tier A upstream ops, IPC error extraction unified, Python tolerance mirror; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---

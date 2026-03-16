@@ -10,6 +10,8 @@
 
 use core::fmt;
 
+use crate::tolerances::MACHINE_EPSILON_STRICT;
+
 /// How a tolerance bound is interpreted.
 #[derive(Debug, Clone, Copy)]
 pub enum ToleranceMode {
@@ -100,7 +102,7 @@ impl ValidationHarness {
     /// Relative tolerance check: `|observed - expected| / |expected| ≤ tol`.
     /// Falls back to absolute if `|expected| < 1e-15`.
     pub fn check_rel(&mut self, label: &str, observed: f64, expected: f64, tol: f64) {
-        let passed = if expected.abs() < 1e-15 {
+        let passed = if expected.abs() < MACHINE_EPSILON_STRICT {
             (observed - expected).abs() <= tol
         } else {
             ((observed - expected) / expected).abs() <= tol
@@ -291,7 +293,7 @@ pub fn nse(observed: &[f64], predicted: &[f64]) -> f64 {
         .map(|(o, p)| (o - p).powi(2))
         .sum();
     let ss_tot: f64 = observed.iter().map(|o| (o - mean_obs).powi(2)).sum();
-    if ss_tot < 1e-15 {
+    if ss_tot < MACHINE_EPSILON_STRICT {
         return 1.0;
     }
     1.0 - ss_res / ss_tot
@@ -327,7 +329,7 @@ pub fn index_of_agreement(observed: &[f64], predicted: &[f64]) -> f64 {
         .zip(predicted)
         .map(|(o, p)| ((p - mean_obs).abs() + (o - mean_obs).abs()).powi(2))
         .sum();
-    if ss_pot < 1e-15 {
+    if ss_pot < MACHINE_EPSILON_STRICT {
         return 1.0;
     }
     1.0 - ss_res / ss_pot

@@ -2,7 +2,7 @@
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
 **Last Updated**: March 16, 2026
-**Status**: V28 — 73 experiments, 603 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. IPC evolved to Result-based. Socket discovery fully capability-based (zero hardcoded primal names). Smart microbiome refactor. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete.
+**Status**: V29 — 73 experiments, 603 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. All inline constants centralized (70+ named). `mean()` delegated to barraCuda. GPU context wired to Tier A upstream ops. IPC error extraction unified. Python tolerance mirror. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and
@@ -206,7 +206,7 @@ healthSpring can match and extend this scope:
 None of the blockers are algorithmic — the GPU shaders exist, the math is validated.
 The bottleneck is data pipeline construction.
 
-See [drug_matrix_comparison.md](drug_matrix_comparison.md) for the full comparative analysis.
+See [fajgenbaum/README.md](fajgenbaum/README.md) for the full comparative analysis (healthSpring vs Every Cure MATRIX).
 
 ### DNA/Protein Integration Path (future — via neuralSpring + wetSpring)
 

@@ -143,6 +143,12 @@ pub(super) fn optimize_individual_eta(
 
 /// Solve `H · x = b` for small symmetric positive-definite `H` via Cholesky.
 /// Falls back to diagonal solve when factorisation fails.
+///
+/// Intentionally local rather than delegating to `barracuda::linalg::cholesky`:
+/// the NLME inner loop operates on 2×2 or 3×3 `Vec<Vec<f64>>` matrices with
+/// integrated fallback. barraCuda's Cholesky targets larger flat-layout matrices
+/// with GPU promotion; wrapping it here would add conversion overhead with no
+/// precision or performance benefit at this scale.
 fn cholesky_solve(hmat: &[Vec<f64>], rhs: &[f64]) -> Vec<f64> {
     let dim = rhs.len();
     let mut lower = vec![vec![0.0; dim]; dim];

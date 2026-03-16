@@ -6,7 +6,10 @@
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"
 )]
-#![allow(clippy::similar_names)] // macro/micro pairs are standard PK notation
+#![expect(
+    clippy::similar_names,
+    reason = "macro/micro pairs are standard PK notation"
+)]
 
 //! healthSpring Exp003 — Rust validation binary
 //!

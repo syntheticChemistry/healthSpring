@@ -145,6 +145,7 @@ fn discover_by_capability(domain: &str) -> Option<PathBuf> {
 
 /// Send a `capability.list` probe and check if any capability starts with the domain.
 fn probe_capability(socket_path: &std::path::Path, domain: &str) -> bool {
+    use crate::tolerances::{IPC_PROBE_BUF, IPC_TIMEOUT_MS};
     use std::io::{Read, Write};
     use std::os::unix::net::UnixStream;
     use std::time::Duration;
@@ -152,19 +153,16 @@ fn probe_capability(socket_path: &std::path::Path, domain: &str) -> bool {
     let Ok(mut stream) = UnixStream::connect(socket_path) else {
         return false;
     };
-    stream
-        .set_read_timeout(Some(Duration::from_millis(500)))
-        .ok();
-    stream
-        .set_write_timeout(Some(Duration::from_millis(500)))
-        .ok();
+    let timeout = Duration::from_millis(IPC_TIMEOUT_MS);
+    stream.set_read_timeout(Some(timeout)).ok();
+    stream.set_write_timeout(Some(timeout)).ok();
 
     let req = "{\"jsonrpc\":\"2.0\",\"method\":\"capability.list\",\"params\":{},\"id\":1}\n";
     if stream.write_all(req.as_bytes()).is_err() || stream.flush().is_err() {
         return false;
     }
 
-    let mut buf = vec![0u8; 8192];
+    let mut buf = vec![0u8; IPC_PROBE_BUF];
     let Ok(n) = stream.read(&mut buf) else {
         return false;
     };

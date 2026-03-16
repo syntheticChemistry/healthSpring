@@ -274,6 +274,25 @@ pub const FELINE_T4_RESPONSE: f64 = 0.01;
 /// Canine gut Anderson disorder — cross-species diversity.
 pub const CANINE_GUT_ANDERSON: f64 = 0.01;
 
+// ── Numerical Guard Constants ────────────────────────────────────────
+
+/// RMSE decomposition near-zero guard — prevents `0/0` in bias fraction.
+pub const DECOMPOSITION_GUARD: f64 = 1e-30;
+
+/// Box-Muller `u1` clamp — prevents `ln(0)` in normal sampling.
+pub const BOX_MULLER_CLAMP: f64 = 1e-30;
+
+// ── IPC Configuration Constants ──────────────────────────────────────
+
+/// JSON-RPC response buffer size (bytes) for capability probes.
+pub const IPC_PROBE_BUF: usize = 8192;
+
+/// JSON-RPC response buffer size (bytes) for Songbird / petalTongue.
+pub const IPC_RESPONSE_BUF: usize = 4096;
+
+/// IPC socket read/write timeout (milliseconds).
+pub const IPC_TIMEOUT_MS: u64 = 500;
+
 #[cfg(test)]
 mod tests {
     use super::*;

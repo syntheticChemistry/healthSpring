@@ -213,3 +213,18 @@
 | exp104 | 1e-10 (identity), 1e-6 (allometric roundtrip), 1e-12 (det) | Machine epsilon + numerical |
 | exp105 | 0.01 (gut Anderson), 1e-10 (Shannon analytical), 1e-12 (det) | Numerical + machine epsilon |
 | exp106 | 0.01 (MM PK, T4), 1e-10 (half-life, Css), 1e-12 (det) | Numerical + machine epsilon |
+
+## Numerical Guard Constants (non-validation)
+
+| Constant | Value | Domain | Rationale |
+|----------|-------|--------|-----------|
+| `DECOMPOSITION_GUARD` | 1e-30 | Uncertainty | Prevents `0/0` in RMSE decomposition bias fraction |
+| `BOX_MULLER_CLAMP` | 1e-30 | PRNG | Prevents `ln(0)` in Box-Muller normal sampling |
+
+## IPC Configuration Constants
+
+| Constant | Value | Domain | Rationale |
+|----------|-------|--------|-----------|
+| `IPC_PROBE_BUF` | 8192 bytes | IPC | Response buffer for capability probes (socket.rs) |
+| `IPC_RESPONSE_BUF` | 4096 bytes | IPC | Response buffer for Songbird / petalTongue RPCs |
+| `IPC_TIMEOUT_MS` | 500 ms | IPC | Socket read/write timeout for discovery probes |

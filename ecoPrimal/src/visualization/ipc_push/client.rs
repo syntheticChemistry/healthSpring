@@ -255,17 +255,8 @@ impl PetalTonguePushClient {
             .map_err(|e| PushError::SerializationError(e.to_string()))?;
 
         if let Some(error) = response.get("error") {
-            return Err(PushError::RpcError {
-                code: error
-                    .get("code")
-                    .and_then(serde_json::Value::as_i64)
-                    .unwrap_or(-1),
-                message: error
-                    .get("message")
-                    .and_then(|m| m.as_str())
-                    .unwrap_or("unknown")
-                    .to_string(),
-            });
+            let (code, message) = crate::ipc::rpc::extract_rpc_error(error);
+            return Err(PushError::RpcError { code, message });
         }
 
         Ok(response)

@@ -9,9 +9,14 @@ use std::io::{Read, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
 
-const RPC_RESPONSE_BUF: usize = 4096;
+use crate::tolerances::IPC_RESPONSE_BUF;
 
 /// Well-known Songbird socket paths (relative to `XDG_RUNTIME_DIR`).
+///
+/// Intentional exception to capability-based discovery: Songbird *is* the
+/// discovery service, so we must know where to find it by convention.
+/// Environment overrides (`HEALTHSPRING_SONGBIRD_SOCKET`, `SONGBIRD_SOCKET`)
+/// are checked first for testing and non-standard deployments.
 const SONGBIRD_PATHS: &[&str] = &["biomeos/songbird.sock", "songbird/songbird.sock"];
 
 /// All capabilities that healthSpring can announce.
@@ -134,7 +139,7 @@ pub fn query(capability: &str) -> CapResult<String> {
         .map_err(CapabilityError::ConnectionFailed)?;
     stream.flush().map_err(CapabilityError::ConnectionFailed)?;
 
-    let mut buf = vec![0u8; RPC_RESPONSE_BUF];
+    let mut buf = vec![0u8; IPC_RESPONSE_BUF];
     let n = stream
         .read(&mut buf)
         .map_err(CapabilityError::ConnectionFailed)?;
@@ -143,17 +148,8 @@ pub fn query(capability: &str) -> CapResult<String> {
         .map_err(|e| CapabilityError::SerializationError(e.to_string()))?;
 
     if let Some(error) = response.get("error") {
-        return Err(CapabilityError::RpcError {
-            code: error
-                .get("code")
-                .and_then(serde_json::Value::as_i64)
-                .unwrap_or(-1),
-            message: error
-                .get("message")
-                .and_then(|m| m.as_str())
-                .unwrap_or("unknown")
-                .to_string(),
-        });
+        let (code, message) = crate::ipc::rpc::extract_rpc_error(error);
+        return Err(CapabilityError::RpcError { code, message });
     }
 
     response
@@ -233,7 +229,7 @@ fn send_songbird_rpc(socket_path: &PathBuf, request: &serde_json::Value) -> CapR
         .map_err(CapabilityError::ConnectionFailed)?;
     stream.flush().map_err(CapabilityError::ConnectionFailed)?;
 
-    let mut buf = vec![0u8; RPC_RESPONSE_BUF];
+    let mut buf = vec![0u8; IPC_RESPONSE_BUF];
     let n = stream
         .read(&mut buf)
         .map_err(CapabilityError::ConnectionFailed)?;
@@ -242,17 +238,8 @@ fn send_songbird_rpc(socket_path: &PathBuf, request: &serde_json::Value) -> CapR
         .map_err(|e| CapabilityError::SerializationError(e.to_string()))?;
 
     if let Some(error) = response.get("error") {
-        return Err(CapabilityError::RpcError {
-            code: error
-                .get("code")
-                .and_then(serde_json::Value::as_i64)
-                .unwrap_or(-1),
-            message: error
-                .get("message")
-                .and_then(|m| m.as_str())
-                .unwrap_or("unknown")
-                .to_string(),
-        });
+        let (code, message) = crate::ipc::rpc::extract_rpc_error(error);
+        return Err(CapabilityError::RpcError { code, message });
     }
 
     Ok(())

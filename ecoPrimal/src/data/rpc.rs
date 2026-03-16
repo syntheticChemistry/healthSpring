@@ -92,15 +92,7 @@ pub fn rpc_call(
     let resp: serde_json::Value = serde_json::from_str(line.trim())?;
 
     if let Some(error) = resp.get("error") {
-        let code = error
-            .get("code")
-            .and_then(serde_json::Value::as_i64)
-            .unwrap_or(-1);
-        let message = error
-            .get("message")
-            .and_then(serde_json::Value::as_str)
-            .unwrap_or("unknown")
-            .to_owned();
+        let (code, message) = crate::ipc::rpc::extract_rpc_error(error);
         return Err(RpcError::Server { code, message });
     }
 
