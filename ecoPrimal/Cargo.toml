@@ -31,6 +31,8 @@ barracuda = { path = "../../barraCuda/crates/barracuda", default-features = fals
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 thiserror = { version = "2", optional = true }
 clap = { version = "4", features = ["derive"] }
 wgpu = { version = "28", optional = true }

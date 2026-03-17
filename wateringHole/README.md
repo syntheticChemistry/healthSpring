@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V31 — Deep Debt Solutions + Modern Idiomatic Rust Evolution. 616 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops.
+**Status**: V32 — Cross-Spring Absorption + Ecosystem Convergence. 618 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. Structured tracing, health.liveness/readiness probes, resilient provenance trio IPC with circuit breaker.
 **Last Updated**: March 16, 2026
 
 ---
@@ -22,8 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V31** | [V31 Deep Debt + Modern Rust](handoffs/HEALTHSPRING_V31_DEEP_DEBT_MODERN_RUST_HANDOFF_MAR16_2026.md) | Mar 16 | OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops. Supersedes V30. |
-| | *V1–V30 → `handoffs/archive/`* | | Fossil record |
+| **V32** | [V32 Ecosystem Convergence](handoffs/HEALTHSPRING_V32_CROSS_SPRING_ECOSYSTEM_CONVERGENCE_HANDOFF_MAR16_2026.md) | Mar 16 | Structured tracing, health.liveness/readiness probes, resilient provenance trio IPC, dispatch refactor. Supersedes V31. |
+| | *V1–V31 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

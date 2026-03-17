@@ -10,6 +10,7 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::time::{Duration, Instant};
 
 use healthspring_barracuda::ipc::{dispatch, rpc, socket};
+use tracing::{error, info, warn};
 
 const READ_TIMEOUT_SECS: u64 = 60;
 const WRITE_TIMEOUT_SECS: u64 = 10;
@@ -33,7 +34,7 @@ fn install_signal_handler(running: &Arc<AtomicBool>) {
         let (mut reader, _writer) = match std::os::unix::net::UnixStream::pair() {
             Ok(pair) => pair,
             Err(e) => {
-                eprintln!("fatal: signal pipe creation failed: {e}");
+                error!("signal pipe creation failed: {e}");
                 std::process::exit(1);
             }
         };
@@ -79,14 +80,19 @@ fn dispatch_request(
     params: &serde_json::Value,
     state: &PrimalState,
 ) -> serde_json::Value {
-    if method == "lifecycle.health" || method == "health" || method == "health.check" {
-        return handle_health(state);
+    match method {
+        "lifecycle.health" | "health" | "health.check" | "lifecycle.status" => handle_health(state),
+        "health.liveness" => handle_liveness(),
+        "health.readiness" => handle_readiness(state),
+        _ => dispatch_extended(method, params, state),
     }
+}
 
-    if method == "lifecycle.status" {
-        return handle_health(state);
-    }
-
+fn dispatch_extended(
+    method: &str,
+    params: &serde_json::Value,
+    _state: &PrimalState,
+) -> serde_json::Value {
     if let Some(result) = dispatch::dispatch_science(method, params) {
         return result;
     }
@@ -101,7 +107,10 @@ fn dispatch_request(
         "primal.discover" => handle_primal_discover(),
         "compute.offload" => handle_compute_offload(params),
         "data.fetch" => handle_data_fetch(params),
-        _ => serde_json::json!({"error": "method_not_found", "method": method}),
+        _ => {
+            warn!(method, "unknown method requested");
+            serde_json::json!({"error": "method_not_found", "method": method})
+        }
     }
 }
 
@@ -125,6 +134,33 @@ fn handle_health(state: &PrimalState) -> serde_json::Value {
             "provenance_trio": healthspring_barracuda::data::trio_available(),
             "data_provider": socket::discover_data_primal().is_some(),
             "compute_provider": socket::discover_compute_primal().is_some(),
+        },
+    })
+}
+
+/// Lightweight liveness probe — confirms the process is responsive.
+/// Returns `{"alive": true}` unconditionally (aligned with coralReef Iter 51).
+fn handle_liveness() -> serde_json::Value {
+    serde_json::json!({"alive": true})
+}
+
+/// Readiness probe — confirms the primal can accept science workloads.
+/// Reports subsystem availability without blocking.
+fn handle_readiness(state: &PrimalState) -> serde_json::Value {
+    let provenance = healthspring_barracuda::data::trio_available();
+    let compute = socket::discover_compute_primal().is_some();
+    let data = socket::discover_data_primal().is_some();
+
+    let ready = true;
+
+    serde_json::json!({
+        "ready": ready,
+        "uptime_secs": state.start_time.elapsed().as_secs(),
+        "subsystems": {
+            "science_dispatch": true,
+            "provenance_trio": provenance,
+            "compute_provider": compute,
+            "data_provider": data,
         },
     })
 }
@@ -282,27 +318,21 @@ fn register_with_biomeos(our_socket: &Path) {
     let biomeos_socket = socket::orchestrator_socket();
 
     let target = if biomeos_socket.exists() {
-        eprintln!(
-            "[biomeos] Orchestrator found at {}",
-            biomeos_socket.display()
-        );
+        info!(path = %biomeos_socket.display(), "orchestrator found");
         Some(biomeos_socket)
     } else {
-        eprintln!(
-            "[biomeos] No orchestrator at {}, checking fallback...",
-            biomeos_socket.display()
-        );
+        info!(path = %biomeos_socket.display(), "no orchestrator, checking fallback");
         socket::fallback_registration_primal().and_then(|name| {
             let sock = socket::discover_primal(&name);
             if sock.is_some() {
-                eprintln!("[biomeos] Fallback primal '{name}' found");
+                info!(primal = %name, "fallback primal found");
             }
             sock
         })
     };
 
     let Some(ref target_socket) = target else {
-        eprintln!("[biomeos] Running standalone — no orchestrator or fallback");
+        info!("running standalone — no orchestrator or fallback");
         return;
     };
 
@@ -315,8 +345,8 @@ fn register_with_biomeos(our_socket: &Path) {
             "pid": std::process::id(),
         }),
     ) {
-        Ok(_) => eprintln!("[biomeos] Registered with lifecycle manager"),
-        Err(e) => eprintln!("[biomeos] Lifecycle registration failed: {e}"),
+        Ok(_) => info!("registered with lifecycle manager"),
+        Err(e) => warn!("lifecycle registration failed: {e}"),
     }
 
     let health_mappings = super::capabilities::build_semantic_mappings();
@@ -330,7 +360,7 @@ fn register_with_biomeos(our_socket: &Path) {
             "semantic_mappings": health_mappings,
         }),
     ) {
-        eprintln!("[biomeos] Domain capability registration failed: {e}");
+        warn!("domain capability registration failed: {e}");
     }
 
     let mut registered = 0;
@@ -350,10 +380,11 @@ fn register_with_biomeos(our_socket: &Path) {
         }
     }
 
-    eprintln!(
-        "[biomeos] {registered}/{} capabilities + {} domain registered",
-        super::capabilities::ALL_CAPABILITIES.len(),
-        super::capabilities::PRIMAL_DOMAIN
+    info!(
+        registered,
+        total = super::capabilities::ALL_CAPABILITIES.len(),
+        domain = super::capabilities::PRIMAL_DOMAIN,
+        "capabilities registered"
     );
 }
 
@@ -365,13 +396,13 @@ fn announce_to_songbird(our_socket: &Path) {
     let socket_str = our_socket.to_string_lossy();
     match healthspring_barracuda::visualization::capabilities::announce_all(&socket_str) {
         Ok(()) => {
-            eprintln!(
-                "[songbird] Announced {} health.* capabilities",
-                healthspring_barracuda::visualization::capabilities::CAPABILITIES.len()
+            info!(
+                count = healthspring_barracuda::visualization::capabilities::CAPABILITIES.len(),
+                "songbird: announced health.* capabilities"
             );
         }
         Err(e) => {
-            eprintln!("[songbird] Not available ({e}) — discovery via socket dir only");
+            info!("songbird not available ({e}) — discovery via socket dir only");
         }
     }
 }
@@ -463,22 +494,16 @@ pub fn cmd_serve() -> Result<(), String> {
         .map_err(|e| format!("Cannot set listener options: {e}"))?;
 
     let family_id = socket::get_family_id();
-    eprintln!(
-        "{} primal listening on {}",
-        super::capabilities::PRIMAL_NAME,
-        socket_path.display()
+    info!(
+        primal = super::capabilities::PRIMAL_NAME,
+        socket = %socket_path.display(),
+        family_id = %family_id,
+        domain = super::capabilities::PRIMAL_DOMAIN,
+        version = env!("CARGO_PKG_VERSION"),
+        capabilities = super::capabilities::ALL_CAPABILITIES.len(),
+        mode = "BYOB Niche (biomeOS)",
+        "primal listening"
     );
-    eprintln!("  Family ID: {family_id}");
-    eprintln!("  Domain:    {}", super::capabilities::PRIMAL_DOMAIN);
-    eprintln!("  Mode:      BYOB Niche (biomeOS)");
-    eprintln!("  Version:   {}", env!("CARGO_PKG_VERSION"));
-    eprintln!(
-        "  Capabilities ({}):",
-        super::capabilities::ALL_CAPABILITIES.len()
-    );
-    for cap in super::capabilities::ALL_CAPABILITIES {
-        eprintln!("    - {cap}");
-    }
 
     register_with_biomeos(&socket_path);
     announce_to_songbird(&socket_path);
@@ -514,13 +539,13 @@ pub fn cmd_serve() -> Result<(), String> {
                         "requests_served": heartbeat_state.requests_served.load(Ordering::Relaxed),
                     }),
                 ) {
-                    eprintln!("[heartbeat] Status update failed: {e}");
+                    warn!("heartbeat status update failed: {e}");
                 }
             }
         }
     });
 
-    eprintln!("[ready] Accepting connections...");
+    info!("accepting connections");
     for stream in listener.incoming() {
         if !running.load(Ordering::Relaxed) {
             break;
@@ -536,11 +561,11 @@ pub fn cmd_serve() -> Result<(), String> {
                     break;
                 }
             }
-            Err(e) => eprintln!("[error] Accept failed: {e}"),
+            Err(e) => error!("accept failed: {e}"),
         }
     }
 
-    eprintln!("[shutdown] Cleaning up socket...");
+    info!("shutdown — cleaning up socket");
     let _ = std::fs::remove_file(&socket_path);
     Ok(())
 }

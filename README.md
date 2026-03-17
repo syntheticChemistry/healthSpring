@@ -5,7 +5,7 @@
 **Date:** March 16, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V31 — Deep Debt Solutions + Modern Idiomatic Rust Evolution. 616 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V31: `OrExit<T>` trait (wetSpring V123 pattern); `IpcError` ecosystem-standard error type; enriched `capability.list` with `operation_dependencies` + `cost_estimates` for Pathway Learner; `LN_2` constant (no magic numbers); `#![forbid(unsafe_code)]` on all binary crate roots; capability-based data-provider socket discovery; non-async Tier A GPU ops; zero `#[allow()]`, zero `#[expect()]` without reason, clippy pedantic+nursery clean workspace-wide.
+**Status:** V32 — Cross-Spring Absorption + Ecosystem Convergence. 618 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V32: Structured `tracing` (all `eprintln!` → `tracing::info!/warn!/error!` in primal binary — all sibling springs converged); `health.liveness` + `health.readiness` probes (coralReef Iter 51 alignment); resilient provenance trio IPC with circuit breaker + exponential backoff retry (sweetGrass pattern); `tracing` + `tracing-subscriber` dependencies (pure Rust, env-filter); zero clippy warnings, zero `#[allow()]`, zero unsafe.
 
 ---
 
@@ -33,10 +33,10 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V31** (Deep Debt Solutions + Modern Idiomatic Rust Evolution) |
-| **Total tests** | **616** (548 lib + 33 forge + 30 toadStool + 5 doc) |
+| Version | **V32** (Cross-Spring Absorption + Ecosystem Convergence) |
+| **Total tests** | **618** (550 lib + 33 forge + 30 toadStool + 5 doc) |
 | Experiments complete | 73 (Tracks 1–7, Tier 0+1+2+3) |
-| JSON-RPC capabilities | 55+ (all wired — 0 stubs in dispatch) |
+| JSON-RPC capabilities | 57+ (all wired — 0 stubs in dispatch, +2 health probes) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **42** with git-tracked provenance (all 7 tracks) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
@@ -55,6 +55,23 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | `cargo doc` | **0 warnings** |
 | Max file size | ~764 lines (`toadstool/pipeline.rs` — all files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V32 Cross-Spring Absorption + Ecosystem Convergence (from V31)
+
+V32 absorbs proven patterns from the full ecoPrimals ecosystem: structured logging, health probes, and resilient IPC.
+
+| Change | Impact |
+|--------|--------|
+| **Structured `tracing`** | All `eprintln!` in `healthspring_primal` binary evolved to `tracing::info!/warn!/error!` with structured key-value fields. `tracing-subscriber` with `EnvFilter` (default `healthspring=info`, configurable via `RUST_LOG`). Aligns with all 6 sibling springs (wetSpring V124, airSpring v0.8.6, groundSpring V110, neuralSpring S159, hotSpring v0.6.32, ludoSpring V22). |
+| **`health.liveness` probe** | New lightweight JSON-RPC method returning `{"alive": true}` unconditionally — confirms process responsiveness. Aligned with coralReef Iter 51 health probe standard. |
+| **`health.readiness` probe** | New JSON-RPC method reporting subsystem availability (`science_dispatch`, `provenance_trio`, `compute_provider`, `data_provider`). Confirms the primal can accept science workloads. |
+| **Resilient provenance trio IPC** | `capability_call` wrapped with circuit breaker (5s cooldown on failure) + exponential backoff retry (50ms base, 2 retries). Absorbed from sweetGrass v0.7.18 resilience patterns. Pure Rust, zero new dependencies beyond `tracing`. 2 new tests. |
+| **Dispatch refactor** | `dispatch_request` evolved to pattern-match health probes first, then delegate to `dispatch_extended` for science and infrastructure methods. Unknown methods logged via `tracing::warn!`. |
+| **57+ JSON-RPC capabilities** | Up from 55+. 2 new: `health.liveness`, `health.readiness`. All registered in `ALL_CAPABILITIES`. |
+| **618 tests** | Up from 616 (V31). 2 new tests: circuit breaker open/close, epoch_ms sanity. Zero failures, zero clippy warnings. |
+| **Dependencies** | Added `tracing = "0.1"` + `tracing-subscriber = "0.3"` (env-filter). Both pure Rust, ecoBin compliant. |
 
 ---
 
@@ -540,7 +557,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 616 tests
+cargo test --workspace                  # 618 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

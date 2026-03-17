@@ -67,6 +67,9 @@ pub const ALL_CAPABILITIES: &[&str] = &[
     // ── Cross-primal ─────────────────────────────────────────────────
     "primal.forward",
     "primal.discover",
+    // ── Health probes (coralReef Iter 51 alignment) ─────────────────
+    "health.liveness",
+    "health.readiness",
     // ── Niche deployment (`biomeOS` graph composition) ───────────────
     "capability.list",
     // ── Compute offload (Node Atomic) ────────────────────────────────

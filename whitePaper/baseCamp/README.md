@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 16, 2026
-**Status:** V31 — Deep Debt Solutions + Modern Idiomatic Rust Evolution. 616 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops.
+**Status:** V32 — Deep Debt Solutions + Modern Idiomatic Rust Evolution. 618 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops.
 
 ---
 
@@ -102,7 +102,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **4** | 4 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **616** (tests) | **2,700+** |
+| **Total** | **688** | **287+** (Tier 0) | **618** (tests) | **2,700+** |
 
 ---
 
@@ -268,7 +268,7 @@ healthSpring evolved from experiment binaries into a biomeOS niche in V22:
 
 | Component | File | Purpose |
 |-----------|------|---------|
-| Primal binary | `ecoPrimal/src/bin/healthspring_primal.rs` | 55+ capabilities via JSON-RPC 2.0 over Unix socket |
+| Primal binary | `ecoPrimal/src/bin/healthspring_primal.rs` | 57+ capabilities via JSON-RPC 2.0 over Unix socket |
 | IPC dispatch | `ecoPrimal/src/ipc/dispatch.rs` | Method→science function routing for 6 domains |
 | Niche manifest | `graphs/healthspring_niche.toml` | Declares the niche: primals + workflow graphs |
 | Patient assessment | `graphs/healthspring_patient_assessment.toml` | ConditionalDag: 4 parallel science tracks → composite |
@@ -280,7 +280,7 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 
 ---
 
-## Next Steps (Post V31)
+## Next Steps (Post V32)
 
 ### Science Extensions
 

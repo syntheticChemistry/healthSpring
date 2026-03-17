@@ -21,6 +21,7 @@ mod capabilities;
 mod server;
 
 use clap::{Parser, Subcommand};
+use tracing_subscriber::EnvFilter;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CLI (UniBin)
@@ -52,12 +53,20 @@ enum Command {
 // ═══════════════════════════════════════════════════════════════════════════
 
 fn main() {
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| EnvFilter::new("healthspring=info")),
+        )
+        .with_writer(std::io::stderr)
+        .init();
+
     let cli = Cli::parse();
 
     match cli.command.unwrap_or(Command::Serve) {
         Command::Serve => {
             if let Err(e) = server::cmd_serve() {
-                eprintln!("[fatal] {e}");
+                tracing::error!("{e}");
                 std::process::exit(1);
             }
         }

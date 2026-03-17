@@ -21,6 +21,7 @@
 
 use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Duration;
 
 /// Result of a provenance operation — includes availability status.
@@ -86,6 +87,76 @@ fn data_provider_socket_path() -> Option<PathBuf> {
     .into_iter()
     .flatten()
     .find(|candidate| candidate.exists())
+}
+
+// ── Circuit breaker (pure Rust, absorbed from sweetGrass resilience) ────
+//
+// Epoch-millis of last trio failure.  When non-zero and recent (within
+// `CIRCUIT_OPEN_MS`), new calls short-circuit immediately to avoid
+// hammering a dead service.  Resets automatically after the cooldown.
+
+static LAST_FAILURE_EPOCH_MS: AtomicU64 = AtomicU64::new(0);
+const CIRCUIT_OPEN_MS: u64 = 5_000;
+const MAX_RETRIES: u32 = 2;
+const RETRY_BASE_MS: u64 = 50;
+
+fn epoch_ms_now() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(0, |d| {
+            // Millis won't exceed u64 until ~584 million years from UNIX epoch.
+            #[expect(clippy::cast_possible_truncation, reason = "epoch millis fits u64")]
+            let ms = d.as_millis() as u64;
+            ms
+        })
+}
+
+fn circuit_is_open() -> bool {
+    let last = LAST_FAILURE_EPOCH_MS.load(Ordering::Relaxed);
+    last > 0 && epoch_ms_now().saturating_sub(last) < CIRCUIT_OPEN_MS
+}
+
+fn record_failure() {
+    LAST_FAILURE_EPOCH_MS.store(epoch_ms_now(), Ordering::Relaxed);
+}
+
+fn record_success() {
+    LAST_FAILURE_EPOCH_MS.store(0, Ordering::Relaxed);
+}
+
+/// `capability_call` with circuit breaker + exponential backoff retry.
+///
+/// Retries transient I/O failures up to `MAX_RETRIES` times. If the
+/// circuit breaker is open (recent failure within `CIRCUIT_OPEN_MS`),
+/// the call short-circuits immediately.
+fn resilient_capability_call(
+    socket_path: &Path,
+    capability: &str,
+    operation: &str,
+    args: &serde_json::Value,
+) -> Result<serde_json::Value, String> {
+    if circuit_is_open() {
+        return Err("circuit open — trio recently unavailable".into());
+    }
+
+    let mut last_err = String::new();
+    for attempt in 0..=MAX_RETRIES {
+        match capability_call(socket_path, capability, operation, args) {
+            Ok(v) => {
+                record_success();
+                return Ok(v);
+            }
+            Err(e) => {
+                last_err = e;
+                if attempt < MAX_RETRIES {
+                    let delay = RETRY_BASE_MS * 2_u64.saturating_pow(attempt);
+                    std::thread::sleep(Duration::from_millis(delay));
+                }
+            }
+        }
+    }
+    record_failure();
+    Err(last_err)
 }
 
 /// Send a `capability.call` to the Neural API over Unix socket.
@@ -173,7 +244,7 @@ pub fn begin_data_session(dataset_name: &str) -> ProvenanceResult {
         "description": format!("Data fetch: {dataset_name}"),
     });
 
-    capability_call(&socket, "dag", "create_session", &args).map_or_else(
+    resilient_capability_call(&socket, "dag", "create_session", &args).map_or_else(
         |_| unavailable_result(&format!("local-{dataset_name}")),
         |result| {
             let session_id = result
@@ -202,7 +273,7 @@ pub fn record_fetch_step(session_id: &str, step: &serde_json::Value) -> Provenan
         "event": step,
     });
 
-    capability_call(&socket, "dag", "append_event", &args).map_or_else(
+    resilient_capability_call(&socket, "dag", "append_event", &args).map_or_else(
         |_| unavailable_result("unavailable"),
         |result| {
             let vertex_id = result
@@ -239,7 +310,7 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
     };
 
     // Step 1: Dehydrate (rhizoCrypt)
-    let Ok(dehydration) = capability_call(
+    let Ok(dehydration) = resilient_capability_call(
         &socket,
         "dag",
         "dehydrate",
@@ -255,7 +326,7 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         .to_owned();
 
     // Step 2: Commit (loamSpine)
-    let Ok(commit_result) = capability_call(
+    let Ok(commit_result) = resilient_capability_call(
         &socket,
         "commit",
         "session",
@@ -285,7 +356,7 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         .to_owned();
 
     // Step 3: Attribute (sweetGrass) — best effort
-    let braid_id = capability_call(
+    let braid_id = resilient_capability_call(
         &socket,
         "provenance",
         "create_braid",
@@ -379,5 +450,21 @@ mod tests {
         let r = unavailable_result("local-test");
         assert!(!r.available);
         assert_eq!(r.id, "local-test");
+    }
+
+    #[test]
+    fn circuit_breaker_opens_on_failure() {
+        record_success();
+        assert!(!circuit_is_open());
+        record_failure();
+        assert!(circuit_is_open());
+        record_success();
+        assert!(!circuit_is_open());
+    }
+
+    #[test]
+    fn epoch_ms_now_returns_reasonable_value() {
+        let now = epoch_ms_now();
+        assert!(now > 1_700_000_000_000);
     }
 }

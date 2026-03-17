@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 16, 2026
-**Status**: V31 — 73 experiments complete (Tracks 1–7), 616 tests + 173 validation checks + 113/113 cross-validation (all 7 tracks), 55+ wired JSON-RPC capabilities (capability registry). All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. Deep Debt Solutions + Modern Idiomatic Rust: OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops.
+**Status**: V32 — 73 experiments complete (Tracks 1–7), 618 tests + 173 validation checks + 113/113 cross-validation (all 7 tracks), 57+ wired JSON-RPC capabilities (capability registry). All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. Deep Debt Solutions + Modern Idiomatic Rust: OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops.
 
 ---
 
