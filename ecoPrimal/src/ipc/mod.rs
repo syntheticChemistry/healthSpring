@@ -6,5 +6,6 @@
 
 pub mod compute_dispatch;
 pub mod dispatch;
+pub mod protocol;
 pub mod rpc;
 pub mod socket;

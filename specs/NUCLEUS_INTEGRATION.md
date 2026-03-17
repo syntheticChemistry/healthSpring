@@ -2,7 +2,7 @@
 # biomeOS NUCLEUS Local Integration Plan
 
 **Last Updated**: March 16, 2026
-**Status**: V32 — Cross-Spring Absorption + Ecosystem Convergence. `UniBin`-compliant `healthspring_primal` binary. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Capability-based primal discovery. Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
+**Status**: V33 — Protocol Evolution + Centralized Cast Algebra. `UniBin`-compliant `healthspring_primal` binary. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Capability-based primal discovery. Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

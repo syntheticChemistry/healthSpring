@@ -190,19 +190,16 @@ pub fn build_query_payload(capability: &str) -> serde_json::Value {
 }
 
 fn discover_songbird() -> CapResult<PathBuf> {
-    if let Ok(path) = std::env::var("HEALTHSPRING_SONGBIRD_SOCKET") {
-        let p = PathBuf::from(path);
-        if p.exists() {
-            return Ok(p);
-        }
+    // Env-var overrides first (generic pattern from ipc::protocol).
+    if let Some(p) = crate::ipc::protocol::socket_from_env("HEALTHSPRING_SONGBIRD_SOCKET") {
+        return Ok(p);
     }
-    if let Ok(path) = std::env::var("SONGBIRD_SOCKET") {
-        let path = PathBuf::from(path);
-        if path.exists() {
-            return Ok(path);
-        }
+    if let Some(p) = crate::ipc::protocol::socket_from_env("SONGBIRD_SOCKET") {
+        return Ok(p);
     }
 
+    // XDG convention scan — Songbird is the discovery service, so we locate
+    // it by well-known relative paths rather than capability probing.
     if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
         let runtime = PathBuf::from(runtime);
         if let Some(p) = SONGBIRD_PATHS.iter().find_map(|rel| {

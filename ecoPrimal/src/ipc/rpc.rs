@@ -66,6 +66,27 @@ pub enum IpcError {
     Timeout,
 }
 
+impl IpcError {
+    /// Whether this error is likely transient and worth retrying.
+    ///
+    /// `Connect` and `Timeout` are transient (the remote may come up).
+    /// `Write`/`Read` are transient (socket may have been interrupted).
+    /// `InvalidJson`, `NoResult`, and `RpcError` are permanent.
+    #[must_use]
+    pub const fn is_recoverable(&self) -> bool {
+        matches!(
+            self,
+            Self::Connect(_) | Self::Timeout | Self::Write(_) | Self::Read(_)
+        )
+    }
+
+    /// Whether this is a JSON-RPC protocol-level error (-32700 to -32600).
+    #[must_use]
+    pub const fn is_protocol_error(&self) -> bool {
+        matches!(self, Self::RpcError { code, .. } if *code >= -32700 && *code <= -32600)
+    }
+}
+
 /// Backward-compatible alias — new code should use [`IpcError`] directly.
 pub type SendError = IpcError;
 
@@ -189,5 +210,43 @@ mod tests {
     #[test]
     fn ipc_timeout_display() {
         assert_eq!(IpcError::Timeout.to_string(), "ipc timeout");
+    }
+
+    #[test]
+    fn connect_is_recoverable() {
+        let err = IpcError::Connect(std::io::Error::new(
+            std::io::ErrorKind::ConnectionRefused,
+            "refused",
+        ));
+        assert!(err.is_recoverable());
+    }
+
+    #[test]
+    fn timeout_is_recoverable() {
+        assert!(IpcError::Timeout.is_recoverable());
+    }
+
+    #[test]
+    fn rpc_error_is_not_recoverable() {
+        let err = IpcError::RpcError {
+            code: -32601,
+            message: "method not found".into(),
+        };
+        assert!(!err.is_recoverable());
+    }
+
+    #[test]
+    fn protocol_error_classification() {
+        let protocol = IpcError::RpcError {
+            code: -32601,
+            message: "method not found".into(),
+        };
+        assert!(protocol.is_protocol_error());
+
+        let application = IpcError::RpcError {
+            code: -1,
+            message: "domain error".into(),
+        };
+        assert!(!application.is_protocol_error());
     }
 }

@@ -9,16 +9,9 @@
 
 use core::f64::consts::PI;
 
-/// Convert index to f64 (avoids repeated `clippy::cast_precision_loss`).
-#[expect(clippy::cast_precision_loss, reason = "indices ≪ 2^52")]
-pub(crate) const fn idx_to_f64(v: usize) -> f64 {
-    v as f64
-}
-
-#[expect(clippy::cast_precision_loss, reason = "indices ≪ 2^52")]
-pub(crate) const fn u64_to_f64(v: u64) -> f64 {
-    v as f64
-}
+/// Re-export centralized cast helpers for intra-crate biosignal use.
+pub(crate) use crate::cast::u64_f64 as u64_to_f64;
+pub(crate) use crate::cast::usize_f64 as idx_to_f64;
 
 /// Smallest power of two >= n.
 const fn next_power_of_two(n: usize) -> usize {

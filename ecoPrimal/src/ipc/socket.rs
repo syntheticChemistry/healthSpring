@@ -88,13 +88,17 @@ pub fn discover_all_primals() -> Vec<String> {
 /// Probe for a compute primal by capability.
 ///
 /// Resolution order:
-/// 1. Explicit env `HEALTHSPRING_COMPUTE_PRIMAL` (name override for testing)
-/// 2. Scan socket dir for any primal advertising `compute.*` capability
+/// 1. Explicit socket path via `HEALTHSPRING_COMPUTE_SOCKET` env
+/// 2. Explicit primal name via `HEALTHSPRING_COMPUTE_PRIMAL` env → socket scan
+/// 3. Scan socket dir for any primal advertising `compute.*` capability
 ///
 /// No hardcoded primal names — self-knowledge only. If the compute primal
 /// changes its name, capability discovery still works.
 #[must_use]
 pub fn discover_compute_primal() -> Option<PathBuf> {
+    if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_COMPUTE_SOCKET") {
+        return Some(path);
+    }
     if let Some(path) = std::env::var("HEALTHSPRING_COMPUTE_PRIMAL")
         .ok()
         .and_then(|name| discover_primal(&name))
@@ -107,12 +111,16 @@ pub fn discover_compute_primal() -> Option<PathBuf> {
 /// Probe for a data primal by capability.
 ///
 /// Resolution order:
-/// 1. Explicit env `HEALTHSPRING_DATA_PRIMAL` (name override for testing)
-/// 2. Scan socket dir for any primal advertising `data.*` capability
+/// 1. Explicit socket path via `HEALTHSPRING_DATA_SOCKET` env
+/// 2. Explicit primal name via `HEALTHSPRING_DATA_PRIMAL` env → socket scan
+/// 3. Scan socket dir for any primal advertising `data.*` capability
 ///
 /// No hardcoded primal names — self-knowledge only.
 #[must_use]
 pub fn discover_data_primal() -> Option<PathBuf> {
+    if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_DATA_SOCKET") {
+        return Some(path);
+    }
     if let Some(path) = std::env::var("HEALTHSPRING_DATA_PRIMAL")
         .ok()
         .and_then(|name| discover_primal(&name))

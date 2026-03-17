@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V32 — Cross-Spring Absorption + Ecosystem Convergence. 73 experiments, 618 Rust tests, 57+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). Structured tracing, health probes, resilient provenance trio IPC. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
+**Status**: V33 — Protocol Evolution + Centralized Cast Algebra. 73 experiments, 635 Rust tests, 57+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). Structured tracing, health probes, resilient provenance trio IPC. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
 **Last Updated**: March 16, 2026
 
 ---

@@ -32,8 +32,10 @@
 //! | [`visualization`] | petalTongue schema: `DataChannel`, `ClinicalRange` | — |
 //! | [`uncertainty`] | Bootstrap, jackknife, bias–variance decomposition | — |
 //! | [`wfdb`] | PhysioNet WFDB format parser (`.hea`, `.dat`, `.atr`) | — |
+//! | [`cast`] | Safe numeric cast helpers (`usize_f64`, `u64_f64`, `f64_usize`) | — |
 
 pub mod biosignal;
+pub mod cast;
 pub mod comparative;
 pub mod data;
 pub mod diagnostic;

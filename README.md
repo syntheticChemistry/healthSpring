@@ -5,7 +5,7 @@
 **Date:** March 16, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V32 — Cross-Spring Absorption + Ecosystem Convergence. 618 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V32: Structured `tracing` (all `eprintln!` → `tracing::info!/warn!/error!` in primal binary — all sibling springs converged); `health.liveness` + `health.readiness` probes (coralReef Iter 51 alignment); resilient provenance trio IPC with circuit breaker + exponential backoff retry (sweetGrass pattern); `tracing` + `tracing-subscriber` dependencies (pure Rust, env-filter); zero clippy warnings, zero `#[allow()]`, zero unsafe.
+**Status:** V33 — Protocol Evolution + Centralized Cast Algebra. 635 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V33: `IpcError::is_recoverable()` for transient/permanent classification (neuralSpring S161 pattern); `DispatchOutcome` enum separating protocol vs application RPC errors (groundSpring V112 / biomeOS v2.46); `ipc::protocol` module with generic `socket_from_env()`/`discover_primal_socket()` replacing per-primal discovery boilerplate; centralized `cast` module (`usize_f64`, `u64_f64`, `f64_usize`, `usize_u32`) absorbed from groundSpring V112; biosignal FFT cast helpers consolidated to re-export from `cast`; zero clippy warnings, zero `#[allow()]`, zero unsafe.
 
 ---
 
@@ -33,8 +33,8 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V32** (Cross-Spring Absorption + Ecosystem Convergence) |
-| **Total tests** | **618** (550 lib + 33 forge + 30 toadStool + 5 doc) |
+| Version | **V33** (Protocol Evolution + Centralized Cast Algebra) |
+| **Total tests** | **635** (567 lib + 33 forge + 30 toadStool + 5 doc) |
 | Experiments complete | 73 (Tracks 1–7, Tier 0+1+2+3) |
 | JSON-RPC capabilities | 57+ (all wired — 0 stubs in dispatch, +2 health probes) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
@@ -55,6 +55,22 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | `cargo doc` | **0 warnings** |
 | Max file size | ~764 lines (`toadstool/pipeline.rs` — all files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V33 Protocol Evolution + Centralized Cast Algebra (from V32)
+
+V33 evolves the IPC protocol layer and centralizes numeric cast patterns across the codebase.
+
+| Change | Impact |
+|--------|--------|
+| **`IpcError::is_recoverable()`** | Classifies transient (Connect, Timeout, Write, Read) vs permanent (InvalidJson, NoResult, RpcError) failures. Enables smarter retry decisions across all IPC consumers. Absorbed from neuralSpring S161. |
+| **`IpcError::is_protocol_error()`** | Identifies JSON-RPC protocol-level errors (-32700 to -32600) vs application errors. |
+| **`DispatchOutcome` enum** | New `ipc::protocol` module separating RPC responses into `Ok`, `ProtocolError`, `ApplicationError`. Absorbed from groundSpring V112 / biomeOS v2.46. Includes `classify_response()`, `parse_rpc_response()`, `is_method_not_found()`. 6 new tests. |
+| **Generic discovery helpers** | `protocol::socket_from_env()` and `protocol::discover_primal_socket()` replace per-primal env-var boilerplate. `discover_compute_primal()` and `discover_data_primal()` now accept direct socket paths via `HEALTHSPRING_COMPUTE_SOCKET`/`HEALTHSPRING_DATA_SOCKET`. Songbird discovery also evolved to use `socket_from_env()`. |
+| **`cast` module** | Centralized safe numeric cast helpers: `usize_f64`, `u64_f64`, `f64_usize`, `usize_u32`. Absorbed from groundSpring V112. Each documents its precision guarantee. 5 new tests. |
+| **FFT cast consolidation** | `biosignal::fft::idx_to_f64`/`u64_to_f64` replaced with re-exports from `cast` module — single source of truth for all numeric casts. |
+| **635 tests** | Up from 618 (V32). 17 new tests across `ipc::rpc`, `ipc::protocol`, `cast`. Zero failures, zero clippy warnings. |
 
 ---
 

@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 16, 2026
-**Status**: V32 — Cross-Spring Absorption + Ecosystem Convergence. 618 tests, 73 experiments, 57+ JSON-RPC capabilities backed by a capability registry. Structured tracing, health probes, resilient provenance trio IPC; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
+**Status**: V33 — Protocol Evolution + Centralized Cast Algebra. 635 tests, 73 experiments, 57+ JSON-RPC capabilities backed by a capability registry. Structured tracing, health probes, resilient provenance trio IPC; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---
@@ -11,7 +11,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 618 |
+| Rust tests (workspace) | 635 |
 | Python control checks | 42 baselines, 113/113 cross-validation (all 7 tracks) |
 | Experiments | 73 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |

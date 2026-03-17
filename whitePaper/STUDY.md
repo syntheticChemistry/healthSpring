@@ -1,6 +1,6 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.9 (V32 — Cross-Spring Absorption + Ecosystem Convergence)
+**Version**: 0.9 (V33 — Protocol Evolution + Centralized Cast Algebra)
 **Date**: March 16, 2026
 
 ---
@@ -181,7 +181,7 @@ analysis pipeline, and integration of QS gene profiling for microbial drug targe
 
 ## 3. What We Have Learned
 
-Six months of validation across 73 experiments, 618 tests, and 45 reproduced papers
+Six months of validation across 73 experiments, 635 tests, and 45 reproduced papers
 have produced several key insights:
 
 ### 3.1 Species-agnostic mathematics works
