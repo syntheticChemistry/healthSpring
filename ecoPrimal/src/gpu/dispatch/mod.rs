@@ -48,8 +48,7 @@ pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
                     *ec50,
                     *n,
                     concentrations,
-                )
-                .await;
+                );
             }
             GpuOp::PopulationPkBatch {
                 n_patients,
@@ -63,12 +62,10 @@ pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
                     *dose_mg,
                     *f_bioavail,
                     *seed,
-                )
-                .await;
+                );
             }
             GpuOp::DiversityBatch { communities } => {
-                return barracuda_rewire::execute_diversity_barracuda(&bc_device, communities)
-                    .await;
+                return barracuda_rewire::execute_diversity_barracuda(&bc_device, communities);
             }
             _ => {} // Tier B ops fall through to local WGSL path below
         }

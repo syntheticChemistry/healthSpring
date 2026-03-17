@@ -49,16 +49,33 @@ pub struct DataProvenanceChain {
     pub braid_id: String,
 }
 
-/// Discover the Neural API socket for trio communication.
-fn neural_api_socket_path() -> Option<PathBuf> {
+/// Well-known socket name for the data-provider primal's API endpoint.
+///
+/// The default `"neural-api"` reflects the historical naming. Overridable via
+/// `DATA_PROVIDER_SOCK_PREFIX` env var — capability-based discovery makes the
+/// provider identity irrelevant; any primal exposing `dag.*` capabilities works.
+const DEFAULT_DATA_PROVIDER_PREFIX: &str = "neural-api";
+
+/// Discover the data-provider API socket for trio communication.
+///
+/// Resolution order:
+/// 1. `DATA_PROVIDER_SOCKET` (explicit override)
+/// 2. `BIOMEOS_SOCKET_DIR/<prefix>-<family>.sock`
+/// 3. `XDG_RUNTIME_DIR/biomeos/<prefix>-<family>.sock`
+fn data_provider_socket_path() -> Option<PathBuf> {
     let family_id = std::env::var("FAMILY_ID")
         .or_else(|_| std::env::var("BIOMEOS_FAMILY_ID"))
         .unwrap_or_else(|_| "default".to_string());
 
-    let sock_name = format!("neural-api-{family_id}.sock");
+    let prefix = std::env::var("DATA_PROVIDER_SOCK_PREFIX")
+        .unwrap_or_else(|_| DEFAULT_DATA_PROVIDER_PREFIX.to_string());
+
+    let sock_name = format!("{prefix}-{family_id}.sock");
 
     [
-        std::env::var("NEURAL_API_SOCKET").ok().map(PathBuf::from),
+        std::env::var("DATA_PROVIDER_SOCKET")
+            .ok()
+            .map(PathBuf::from),
         std::env::var("BIOMEOS_SOCKET_DIR")
             .ok()
             .map(|d| PathBuf::from(d).join(&sock_name)),
@@ -141,7 +158,7 @@ fn unavailable_result(id: &str) -> ProvenanceResult {
 /// without provenance tracking.
 #[must_use]
 pub fn begin_data_session(dataset_name: &str) -> ProvenanceResult {
-    let Some(socket) = neural_api_socket_path() else {
+    let Some(socket) = data_provider_socket_path() else {
         return unavailable_result(&format!("local-{dataset_name}"));
     };
 
@@ -176,7 +193,7 @@ pub fn begin_data_session(dataset_name: &str) -> ProvenanceResult {
 /// Record a data fetch step (e.g., NCBI query, `UniProt` scan) in the DAG.
 #[must_use]
 pub fn record_fetch_step(session_id: &str, step: &serde_json::Value) -> ProvenanceResult {
-    let Some(socket) = neural_api_socket_path() else {
+    let Some(socket) = data_provider_socket_path() else {
         return unavailable_result("unavailable");
     };
 
@@ -217,7 +234,7 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         braid_id: String::new(),
     };
 
-    let Some(socket) = neural_api_socket_path() else {
+    let Some(socket) = data_provider_socket_path() else {
         return unavailable;
     };
 
@@ -302,7 +319,7 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
 /// Check if the provenance trio is available (Neural API socket exists).
 #[must_use]
 pub fn trio_available() -> bool {
-    neural_api_socket_path().is_some()
+    data_provider_socket_path().is_some()
 }
 
 #[cfg(test)]

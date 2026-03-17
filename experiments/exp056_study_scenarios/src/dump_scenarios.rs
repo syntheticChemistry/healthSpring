@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
 //! Push healthSpring scenarios to `petalTongue` via IPC, or write JSON to disk.
 //!
 //! When `petalTongue` is running (discovered via socket), pushes live visualization
@@ -22,8 +23,10 @@ use std::fs;
 use std::path::Path;
 
 fn main() {
+    use healthspring_barracuda::validation::OrExit;
+
     let out = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/scenarios");
-    fs::create_dir_all(&out).expect("create sandbox/scenarios/");
+    fs::create_dir_all(&out).or_exit("create sandbox/scenarios/");
 
     println!("=== healthSpring scenario dump ===\n");
 
@@ -33,13 +36,13 @@ fn main() {
     let write_to_disk = |entries: &[(&str, String)], trt: &[(String, PatientTrtProfile)]| {
         for (name, json) in entries {
             let path = out.join(name);
-            fs::write(&path, json).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
+            fs::write(&path, json).or_exit(&format!("write {}", path.display()));
             println!("  wrote {} ({} KB)", name, json.len() / 1024);
         }
         for (sid, profile) in trt {
             let json = trt_clinical_json(profile);
             let path = out.join(format!("{sid}.json"));
-            fs::write(&path, &json).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
+            fs::write(&path, &json).or_exit(&format!("write {}", path.display()));
             println!("  wrote {sid}.json ({} KB)", json.len() / 1024);
         }
         println!(

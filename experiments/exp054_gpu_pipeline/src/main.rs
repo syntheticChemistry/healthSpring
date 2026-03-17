@@ -49,7 +49,7 @@ fn build_workload() -> Vec<GpuOp> {
                 state = state
                     .wrapping_mul(6_364_136_223_846_793_005)
                     .wrapping_add(1);
-                #[expect(clippy::cast_precision_loss)]
+                #[expect(clippy::cast_precision_loss, reason = "PRNG state fits f64")]
                 let v = (state >> 33) as f64 / f64::from(u32::MAX) + 0.01;
                 abundances.push(v);
                 total += v;

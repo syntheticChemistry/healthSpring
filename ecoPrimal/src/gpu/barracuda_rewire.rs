@@ -8,7 +8,7 @@
 //! - `PopulationPkBatch` → `barracuda::ops::PopulationPkF64::new()`
 //! - `DiversityBatch` → `barracuda::ops::bio::DiversityFusionGpu::new()`
 //!
-//! Tier B ops (MM, SCFA, BeatClassify) remain on local shaders until barraCuda
+//! Tier B ops (MM, SCFA, `BeatClassify`) remain on local shaders until barraCuda
 //! absorbs them.
 //!
 //! This module is only compiled when `barracuda-ops` is enabled. CI runs
@@ -24,7 +24,11 @@ use barracuda::ops::population_pk_f64::{PopulationPkConfig, PopulationPkF64};
 use super::{GpuError, GpuResult};
 
 /// Execute Hill dose-response via barraCuda upstream op.
-pub async fn execute_hill_barracuda(
+///
+/// # Errors
+///
+/// Returns [`GpuError::Dispatch`] if the GPU op creation or execution fails.
+pub fn execute_hill_barracuda(
     device: &Arc<WgpuDevice>,
     emax: f64,
     ec50: f64,
@@ -40,7 +44,15 @@ pub async fn execute_hill_barracuda(
 }
 
 /// Execute population PK Monte Carlo via barraCuda upstream op.
-pub async fn execute_pop_pk_barracuda(
+///
+/// # Errors
+///
+/// Returns [`GpuError::Dispatch`] if the GPU op creation or execution fails.
+#[expect(
+    clippy::cast_possible_truncation,
+    reason = "n_patients and seed fit u32 for GPU dispatch"
+)]
+pub fn execute_pop_pk_barracuda(
     device: &Arc<WgpuDevice>,
     n_patients: usize,
     dose_mg: f64,
@@ -57,14 +69,17 @@ pub async fn execute_pop_pk_barracuda(
     let pk_op = PopulationPkF64::new(Arc::clone(device), config)
         .map_err(|e| GpuError::Dispatch(format!("barraCuda PopulationPkF64: {e}")))?;
     let results = pk_op
-        .simulate(n_patients, seed)
+        .simulate(n_patients as u32, seed as u32)
         .map_err(|e| GpuError::Dispatch(format!("barraCuda PopulationPkF64::simulate: {e}")))?;
     Ok(GpuResult::PopulationPkBatch(results))
 }
 
 /// Execute diversity batch via barraCuda upstream op.
-#[expect(clippy::cast_possible_truncation, reason = "community sizes fit u32")]
-pub async fn execute_diversity_barracuda(
+///
+/// # Errors
+///
+/// Returns [`GpuError::Dispatch`] if the GPU op creation or execution fails.
+pub fn execute_diversity_barracuda(
     device: &Arc<WgpuDevice>,
     communities: &[Vec<f64>],
 ) -> Result<GpuResult, GpuError> {

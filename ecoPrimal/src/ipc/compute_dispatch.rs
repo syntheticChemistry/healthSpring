@@ -123,6 +123,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[expect(clippy::unwrap_used, reason = "test code")]
     fn submit_fails_without_compute_primal() {
         let result = submit("hill_sweep", &serde_json::json!({"n": 1000}));
         assert!(result.is_err());

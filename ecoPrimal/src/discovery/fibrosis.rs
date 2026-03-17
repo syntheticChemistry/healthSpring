@@ -184,12 +184,12 @@ mod tests {
 
     #[test]
     fn fibrotic_geometry_zero_thickness() {
-        assert_eq!(fibrotic_geometry_factor(10.0, 0.0), 0.0);
+        assert!((fibrotic_geometry_factor(10.0, 0.0)).abs() < f64::EPSILON);
     }
 
     #[test]
     fn score_product_identity() {
         let combined = fibrosis_matrix_score(0.7, 0.4, 1.1);
-        assert!((combined - 0.7 * 0.4 * 1.1).abs() < tolerances::MACHINE_EPSILON);
+        assert!((0.7_f64 * 0.4).mul_add(-1.1, combined).abs() < tolerances::MACHINE_EPSILON);
     }
 }

@@ -169,6 +169,7 @@ mod tests {
     use barracuda::numerical::BatchedOdeRK4;
 
     #[test]
+    #[expect(clippy::unwrap_used, reason = "test code")]
     fn mm_cpu_integration_decays() {
         let initial = vec![25.0];
         let params = vec![10.0, 4.0, 50.0];
@@ -189,6 +190,7 @@ mod tests {
     }
 
     #[test]
+    #[expect(clippy::unwrap_used, reason = "test code")]
     fn oral_1comp_cpu_absorbs_then_eliminates() {
         let initial = vec![100.0, 0.0];
         let params = vec![100.0, 0.8, 50.0, 1.0, 0.1];
@@ -206,6 +208,7 @@ mod tests {
     }
 
     #[test]
+    #[expect(clippy::unwrap_used, reason = "test code")]
     fn two_comp_mass_balance() {
         let c0 = 10.0;
         let initial = vec![c0, 0.0];
@@ -224,6 +227,7 @@ mod tests {
     }
 
     #[test]
+    #[expect(clippy::unwrap_used, reason = "test code")]
     fn mm_batch_integration() {
         let initial = vec![25.0, 10.0];
         let params = vec![10.0, 4.0, 50.0, 10.0, 4.0, 50.0];

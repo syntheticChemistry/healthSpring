@@ -47,17 +47,29 @@ pub fn extract_rpc_error(error: &serde_json::Value) -> (i64, String) {
     (code, message)
 }
 
-/// IPC send errors with structured context.
+/// Structured IPC error aligned with ecosystem convention
+/// (`biomeOS`, `airSpring`, `groundSpring` use equivalent variants).
+///
+/// Aliased as `SendError` for backward compatibility.
 #[derive(Debug)]
-pub enum SendError {
+pub enum IpcError {
     Connect(std::io::Error),
     Write(std::io::Error),
     Read(std::io::Error),
     InvalidJson(serde_json::Error),
     NoResult,
+    /// Remote JSON-RPC error with code and message.
+    RpcError {
+        code: i64,
+        message: String,
+    },
+    Timeout,
 }
 
-impl std::fmt::Display for SendError {
+/// Backward-compatible alias — new code should use [`IpcError`] directly.
+pub type SendError = IpcError;
+
+impl std::fmt::Display for IpcError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Connect(e) => write!(f, "connect: {e}"),
@@ -65,6 +77,8 @@ impl std::fmt::Display for SendError {
             Self::Read(e) => write!(f, "read: {e}"),
             Self::InvalidJson(e) => write!(f, "parse: {e}"),
             Self::NoResult => write!(f, "response missing 'result' field"),
+            Self::RpcError { code, message } => write!(f, "rpc error {code}: {message}"),
+            Self::Timeout => write!(f, "ipc timeout"),
         }
     }
 }
@@ -76,18 +90,18 @@ impl std::fmt::Display for SendError {
 ///
 /// # Errors
 ///
-/// Returns [`SendError`] if the socket connection, write, read, or JSON
+/// Returns [`IpcError`] if the socket connection, write, read, or JSON
 /// parsing fails, or if the response lacks a `result` field.
 pub fn try_send(
     socket_path: &std::path::Path,
     method: &str,
     params: &serde_json::Value,
-) -> Result<serde_json::Value, SendError> {
+) -> Result<serde_json::Value, IpcError> {
     use std::io::{BufRead, BufReader, Write};
     use std::os::unix::net::UnixStream;
     use std::time::Duration;
 
-    let mut stream = UnixStream::connect(socket_path).map_err(SendError::Connect)?;
+    let mut stream = UnixStream::connect(socket_path).map_err(IpcError::Connect)?;
     stream.set_read_timeout(Some(Duration::from_secs(10))).ok();
     stream.set_write_timeout(Some(Duration::from_secs(10))).ok();
 
@@ -98,23 +112,23 @@ pub fn try_send(
         "id": 1,
     });
 
-    let payload = serde_json::to_string(&request).map_err(SendError::InvalidJson)?;
+    let payload = serde_json::to_string(&request).map_err(IpcError::InvalidJson)?;
     stream
         .write_all(payload.as_bytes())
-        .map_err(SendError::Write)?;
-    stream.write_all(b"\n").map_err(SendError::Write)?;
-    stream.flush().map_err(SendError::Write)?;
+        .map_err(IpcError::Write)?;
+    stream.write_all(b"\n").map_err(IpcError::Write)?;
+    stream.flush().map_err(IpcError::Write)?;
     stream
         .shutdown(std::net::Shutdown::Write)
-        .map_err(SendError::Write)?;
+        .map_err(IpcError::Write)?;
 
     let mut reader = BufReader::new(stream);
     let mut line = String::new();
-    reader.read_line(&mut line).map_err(SendError::Read)?;
+    reader.read_line(&mut line).map_err(IpcError::Read)?;
 
     let parsed: serde_json::Value =
-        serde_json::from_str(line.trim()).map_err(SendError::InvalidJson)?;
-    parsed.get("result").cloned().ok_or(SendError::NoResult)
+        serde_json::from_str(line.trim()).map_err(IpcError::InvalidJson)?;
+    parsed.get("result").cloned().ok_or(IpcError::NoResult)
 }
 
 /// Send a JSON-RPC request to a Unix socket (fire-and-forget).
@@ -149,6 +163,7 @@ mod tests {
     }
 
     #[test]
+    #[expect(clippy::unwrap_used, reason = "test code")]
     fn try_send_connect_fails_gracefully() {
         let path = std::path::Path::new("/tmp/nonexistent_healthspring_rpc_test.sock");
         let result = try_send(path, "health.check", &serde_json::json!({}));
@@ -158,7 +173,21 @@ mod tests {
 
     #[test]
     fn send_error_display() {
-        let err = SendError::NoResult;
+        let err = IpcError::NoResult;
         assert_eq!(err.to_string(), "response missing 'result' field");
+    }
+
+    #[test]
+    fn ipc_rpc_error_display() {
+        let err = IpcError::RpcError {
+            code: -32601,
+            message: "method not found".into(),
+        };
+        assert_eq!(err.to_string(), "rpc error -32601: method not found");
+    }
+
+    #[test]
+    fn ipc_timeout_display() {
+        assert_eq!(IpcError::Timeout.to_string(), "ipc timeout");
     }
 }

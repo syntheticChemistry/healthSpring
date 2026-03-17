@@ -24,14 +24,14 @@ const DIV_SPECIES: usize = 50;
 fn make_concentrations(n: usize) -> Vec<f64> {
     (0..n)
         .map(|i| {
-            #[expect(clippy::cast_precision_loss)]
+            #[expect(clippy::cast_precision_loss, reason = "scaling factor fits f64")]
             let frac = i as f64 / (n.max(1) - 1).max(1) as f64;
             0.01 * 1000.0_f64.powf(frac)
         })
         .collect()
 }
 
-#[expect(clippy::cast_precision_loss)]
+#[expect(clippy::cast_precision_loss, reason = "counter/PRNG fits f64")]
 fn make_communities(n_communities: usize) -> Vec<Vec<f64>> {
     (0..n_communities)
         .map(|seed| {
@@ -65,7 +65,7 @@ fn format_count(n: usize) -> String {
 }
 
 fn format_rate(n: usize, secs: f64) -> String {
-    #[expect(clippy::cast_precision_loss)]
+    #[expect(clippy::cast_precision_loss, reason = "scaling factor fits f64")]
     let rate = n as f64 / secs;
     if rate >= 1e9 {
         format!("{:.1} G/s", rate / 1e9)

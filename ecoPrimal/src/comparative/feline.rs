@@ -140,6 +140,10 @@ mod tests {
     use crate::tolerances;
 
     #[test]
+    #[expect(
+        clippy::assertions_on_constants,
+        reason = "validating const parameter sanity"
+    )]
     fn feline_params_positive() {
         assert!(FELINE_METHIMAZOLE.vmax > 0.0);
         assert!(FELINE_METHIMAZOLE.km > 0.0);
@@ -187,6 +191,10 @@ mod tests {
     }
 
     #[test]
+    #[expect(
+        clippy::assertions_on_constants,
+        reason = "validating const parameter sanity"
+    )]
     fn cross_species_vmax_scaling() {
         assert!(HUMAN_METHIMAZOLE.vmax > FELINE_METHIMAZOLE.vmax);
         assert!(HUMAN_METHIMAZOLE.vd > FELINE_METHIMAZOLE.vd);

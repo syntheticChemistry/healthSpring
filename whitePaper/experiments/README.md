@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V30 — 73 experiments, 611 Rust tests, 55+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). Cross-Spring Absorption + Zero-Panic Evolution: dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
+**Status**: V31 — 73 experiments, 616 Rust tests, 55+ wired JSON-RPC capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). Deep Debt Solutions + Modern Idiomatic Rust: OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
 **Last Updated**: March 16, 2026
 
 ---

@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 16, 2026
-**Status**: V30 — 73 experiments, 611 tests. Cross-Spring Absorption + Zero-Panic Evolution: dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml.
+**Status**: V31 — 73 experiments, 616 tests. Deep Debt Solutions + Modern Idiomatic Rust: OrExit<T> trait, IpcError alignment, enriched capability.list, zero magic numbers, #![forbid(unsafe_code)] complete, capability-based discovery.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 

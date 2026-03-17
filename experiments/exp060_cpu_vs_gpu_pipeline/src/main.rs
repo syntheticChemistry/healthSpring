@@ -26,7 +26,10 @@ fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
 }
 
 #[tokio::main]
-#[expect(clippy::too_many_lines)]
+#[expect(
+    clippy::too_many_lines,
+    reason = "sequential GPU parity matrix across 3 kernels × 3 scales"
+)]
 async fn main() {
     println!("Exp060 CPU vs GPU Parity Matrix — toadStool Pipeline");
     println!("=====================================================\n");

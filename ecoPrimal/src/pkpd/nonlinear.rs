@@ -90,12 +90,12 @@ pub fn mm_css_infusion(params: &MichaelisMentenParams, rate_mg_per_day: f64) -> 
 
 /// Apparent first-order half-life at a given concentration.
 ///
-/// `t½_app = 0.693·(Km + C)·Vd / Vmax`
+/// `t½_app = ln(2)·(Km + C)·Vd / Vmax`
 ///
 /// This increases with C — the hallmark of nonlinear PK.
 #[must_use]
 pub fn mm_apparent_half_life(params: &MichaelisMentenParams, concentration: f64) -> f64 {
-    0.693 * (params.km + concentration) * params.vd / params.vmax
+    std::f64::consts::LN_2 * (params.km + concentration) * params.vd / params.vmax
 }
 
 /// AUC for Michaelis-Menten elimination (numerical trapezoidal).

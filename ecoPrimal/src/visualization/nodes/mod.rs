@@ -19,7 +19,11 @@ use crate::diagnostic::DiagnosticAssessment;
 use super::types::{DataChannel, ScenarioEdge, ScenarioNode};
 
 pub(super) fn risk_to_health(risk: f64) -> u8 {
-    #[expect(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+    #[expect(
+        clippy::cast_possible_truncation,
+        clippy::cast_sign_loss,
+        reason = "clamped [0,100] fits u8"
+    )]
     let h = ((1.0 - risk.clamp(0.0, 1.0)) * 100.0) as u8;
     h
 }

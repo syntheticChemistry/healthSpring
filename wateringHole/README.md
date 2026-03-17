@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V30 — Cross-Spring Absorption + Zero-Panic Evolution. 611 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml.
+**Status**: V31 — Deep Debt Solutions + Modern Idiomatic Rust Evolution. 616 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops.
 **Last Updated**: March 16, 2026
 
 ---
@@ -22,9 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V30** | [V30 Cross-Spring Absorption](handoffs/HEALTHSPRING_V30_CROSS_SPRING_ABSORPTION_ZERO_PANIC_HANDOFF_MAR16_2026.md) | Mar 16 | Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Supersedes V29. |
-| **V30** | [V30 barraCuda/toadStool Absorption](handoffs/HEALTHSPRING_V30_BARRACUDA_TOADSTOOL_ABSORPTION_HANDOFF_MAR16_2026.md) | Mar 16 | Complete absorption guide: 6 WGSL shaders, 20+ CPU primitives, compute.dispatch spec, GPU learnings, dependency contract. |
-| | *V1–V29 → `handoffs/archive/`* | | Fossil record |
+| **V31** | [V31 Deep Debt + Modern Rust](handoffs/HEALTHSPRING_V31_DEEP_DEBT_MODERN_RUST_HANDOFF_MAR16_2026.md) | Mar 16 | OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops. Supersedes V30. |
+| | *V1–V30 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

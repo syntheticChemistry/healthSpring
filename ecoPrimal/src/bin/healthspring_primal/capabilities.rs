@@ -107,6 +107,9 @@ pub fn build_semantic_mappings() -> serde_json::Value {
 }
 
 /// Capability listing (`biomeOS` niche composition).
+///
+/// Enriched response includes `operation_dependencies` and `cost_estimates`
+/// so Pathway Learner can plan optimal execution graphs.
 pub fn handle_capability_list() -> serde_json::Value {
     let science: Vec<&str> = ALL_CAPABILITIES
         .iter()
@@ -132,6 +135,66 @@ pub fn handle_capability_list() -> serde_json::Value {
         "total": ALL_CAPABILITIES.len(),
         "science": science,
         "infrastructure": infra,
+        "operation_dependencies": operation_dependencies(),
+        "cost_estimates": cost_estimates(),
+    })
+}
+
+/// Dependency graph between science operations for Pathway Learner.
+fn operation_dependencies() -> serde_json::Value {
+    serde_json::json!({
+        "science.diagnostic.assess_patient": [
+            "science.pkpd.one_compartment_pk",
+            "science.microbiome.shannon_index",
+            "science.microbiome.anderson_gut",
+            "science.biosignal.hrv_metrics",
+            "science.endocrine.testosterone_pk",
+        ],
+        "science.diagnostic.population_montecarlo": [
+            "science.diagnostic.assess_patient",
+        ],
+        "science.diagnostic.composite_risk": [
+            "science.diagnostic.assess_patient",
+        ],
+        "science.clinical.trt_scenario": [
+            "science.endocrine.testosterone_pk",
+            "science.endocrine.trt_outcomes",
+            "science.biosignal.hrv_metrics",
+        ],
+        "science.pkpd.nlme_foce": [
+            "science.pkpd.population_pk",
+        ],
+        "science.pkpd.nlme_saem": [
+            "science.pkpd.population_pk",
+        ],
+        "science.pkpd.vpc_simulate": [
+            "science.pkpd.nlme_foce",
+        ],
+        "science.microbiome.gut_brain_serotonin": [
+            "science.microbiome.shannon_index",
+        ],
+        "science.biosignal.fuse_channels": [
+            "science.biosignal.pan_tompkins",
+            "science.biosignal.ppg_spo2",
+            "science.biosignal.eda_analysis",
+        ],
+    })
+}
+
+/// Relative cost estimates (CPU milliseconds for typical inputs).
+fn cost_estimates() -> serde_json::Value {
+    serde_json::json!({
+        "science.pkpd.hill_dose_response":            {"cpu_ms": 0.01, "gpu_eligible": true},
+        "science.pkpd.one_compartment_pk":             {"cpu_ms": 0.1,  "gpu_eligible": false},
+        "science.pkpd.population_pk":                  {"cpu_ms": 50.0, "gpu_eligible": true},
+        "science.pkpd.nlme_foce":                      {"cpu_ms": 500.0, "gpu_eligible": false},
+        "science.pkpd.nlme_saem":                      {"cpu_ms": 800.0, "gpu_eligible": false},
+        "science.microbiome.shannon_index":            {"cpu_ms": 0.01, "gpu_eligible": true},
+        "science.microbiome.anderson_gut":             {"cpu_ms": 5.0,  "gpu_eligible": false},
+        "science.biosignal.pan_tompkins":              {"cpu_ms": 1.0,  "gpu_eligible": false},
+        "science.biosignal.arrhythmia_classification": {"cpu_ms": 2.0,  "gpu_eligible": true},
+        "science.diagnostic.assess_patient":           {"cpu_ms": 10.0, "gpu_eligible": false},
+        "science.diagnostic.population_montecarlo":    {"cpu_ms": 100.0, "gpu_eligible": true},
     })
 }
 

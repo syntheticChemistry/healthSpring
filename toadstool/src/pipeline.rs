@@ -125,7 +125,7 @@ impl Pipeline {
     /// This is the unidirectional pipeline: data flows CPU → GPU → CPU with
     /// no round-trips between stages.
     #[cfg(feature = "gpu")]
-    #[expect(clippy::cast_precision_loss)]
+    #[expect(clippy::cast_precision_loss, reason = "nanosecond timing fits f64")]
     pub async fn execute_gpu(&self, ctx: &GpuContext) -> PipelineResult {
         let mut results = Vec::with_capacity(self.stages.len());
         let mut total_time = 0.0;
@@ -159,7 +159,10 @@ impl Pipeline {
                 match ctx.execute_fused(&batch_ops).await {
                     Ok(gpu_results) => {
                         let elapsed = start.elapsed();
-                        #[expect(clippy::cast_precision_loss)]
+                        #[expect(
+                            clippy::cast_precision_loss,
+                            reason = "nanosecond timing fits f64"
+                        )]
                         let elapsed_us = elapsed.as_nanos() as f64 / 1000.0;
                         let per_stage = elapsed_us / batch_indices.len().max(1) as f64;
 
@@ -211,7 +214,7 @@ impl Pipeline {
     /// Uses metalForge routing: GPU-capable stages with sufficient element
     /// counts go to GPU; everything else runs on CPU.
     #[cfg(feature = "gpu")]
-    #[expect(clippy::cast_precision_loss)]
+    #[expect(clippy::cast_precision_loss, reason = "nanosecond timing fits f64")]
     pub async fn execute_auto(
         &self,
         ctx: &GpuContext,
@@ -251,7 +254,7 @@ impl Pipeline {
             match ctx.execute_fused(&gpu_ops).await {
                 Ok(gpu_results) => {
                     let elapsed = start.elapsed();
-                    #[expect(clippy::cast_precision_loss)]
+                    #[expect(clippy::cast_precision_loss, reason = "nanosecond timing fits f64")]
                     let elapsed_us = elapsed.as_nanos() as f64 / 1000.0;
                     let per_stage = elapsed_us / gpu_stage_indices.len().max(1) as f64;
 

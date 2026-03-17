@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 16, 2026
-**Status:** V30 — Cross-Spring Absorption + Zero-Panic Evolution. 611 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml.
+**Status:** V31 — Deep Debt Solutions + Modern Idiomatic Rust Evolution. 616 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops.
 
 ---
 
@@ -102,7 +102,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **4** | 4 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **611** (tests) | **2,700+** |
+| **Total** | **688** | **287+** (Tier 0) | **616** (tests) | **2,700+** |
 
 ---
 
@@ -205,16 +205,16 @@ wetSpring (V123, 1,703 tests, 376 experiments)
     └─ 16S diversity → Exp010 (Shannon/Simpson/Pielou/Chao1)
     └─ Anderson lattice → Exp011 (gut colonization)
     └─ Gonzales immunology (Exp273-286) → baseline for all Track 1
-    └─ OrExit zero-panic pattern → V30 graceful validation
+    └─ OrExit zero-panic pattern → V31 graceful validation
 
 neuralSpring (S157)
     └─ nS-601 (Hill/IC50) → Exp001 (human JAK inhibitors)
     └─ nS-603 (lokivetmab PK) → Exp004 (mAb cross-species transfer)
     └─ nS-604 (tissue lattice) → planned tissue lattice extension
     └─ nS-605 (MATRIX) → **VALIDATED** — Exp090 MATRIX scoring
-    └─ Dual-format capability parsing → V30 cross-primal discovery
+    └─ Dual-format capability parsing → V31 cross-primal discovery
 
-groundSpring (V109) → uncertainty propagation, zero-panic pattern → V30
+groundSpring (V109) → uncertainty propagation, zero-panic pattern → V31
 hotSpring (v0.6.31) → planned lattice tissue finite-size scaling
 ```
 
@@ -280,7 +280,7 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 
 ---
 
-## Next Steps (Post V30)
+## Next Steps (Post V31)
 
 ### Science Extensions
 
@@ -295,7 +295,7 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 6. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG
 7. **TensorSession** — When barraCuda ships fused multi-op pipeline API
 
-### Cross-Spring Absorption (Identified V30)
+### Cross-Spring Absorption (Identified V31)
 
 8. **HMM biosignal regime** — Absorb `HmmBatchForwardF64` from neuralSpring for cardiac state detection
 9. **ESN clinical prediction** — Absorb Echo State Network from neuralSpring for time-series outcomes

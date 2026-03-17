@@ -108,8 +108,7 @@ impl GpuContext {
                         *ec50,
                         *n,
                         concentrations,
-                    )
-                    .await;
+                    );
                 }
                 GpuOp::PopulationPkBatch {
                     n_patients,
@@ -123,11 +122,10 @@ impl GpuContext {
                         *dose_mg,
                         *f_bioavail,
                         *seed,
-                    )
-                    .await;
+                    );
                 }
                 GpuOp::DiversityBatch { communities } => {
-                    return barracuda_rewire::execute_diversity_barracuda(bc, communities).await;
+                    return barracuda_rewire::execute_diversity_barracuda(bc, communities);
                 }
                 _ => {} // Tier B ops fall through to local WGSL
             }

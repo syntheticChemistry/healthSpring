@@ -83,6 +83,7 @@ mod tests {
     }
 
     #[test]
+    #[expect(clippy::unwrap_used, reason = "test code")]
     fn healthy_higher_resistance_than_dysbiotic() {
         let params = validated_gut_params();
         let healthy = params

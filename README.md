@@ -5,7 +5,7 @@
 **Date:** March 16, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V30 — Cross-Spring Absorption + Zero-Panic Evolution. 611 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V30: dual-format capability parsing (neuralSpring/ludoSpring interop); zero-panic validation binaries (groundSpring pattern — ~100 expect/unwrap sites evolved to graceful exit); `compute_dispatch` typed IPC client for toadStool direct dispatch; `barracuda::health::*` CPU delegation (mm_auc, scr_rate, antibiotic_perturbation); `deny.toml` with `wildcards=deny`; Python dependency provenance. Zero unsafe, zero TODO/FIXME, zero `#[allow()]`, zero `#[expect()]` without reason, clippy pedantic+nursery clean workspace-wide.
+**Status:** V31 — Deep Debt Solutions + Modern Idiomatic Rust Evolution. 616 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V31: `OrExit<T>` trait (wetSpring V123 pattern); `IpcError` ecosystem-standard error type; enriched `capability.list` with `operation_dependencies` + `cost_estimates` for Pathway Learner; `LN_2` constant (no magic numbers); `#![forbid(unsafe_code)]` on all binary crate roots; capability-based data-provider socket discovery; non-async Tier A GPU ops; zero `#[allow()]`, zero `#[expect()]` without reason, clippy pedantic+nursery clean workspace-wide.
 
 ---
 
@@ -33,8 +33,8 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V30** (Cross-Spring Absorption + Zero-Panic Evolution) |
-| **Total tests** | **611** (544 lib + 33 forge + 30 toadStool + 4 doc) |
+| Version | **V31** (Deep Debt Solutions + Modern Idiomatic Rust Evolution) |
+| **Total tests** | **616** (548 lib + 33 forge + 30 toadStool + 5 doc) |
 | Experiments complete | 73 (Tracks 1–7, Tier 0+1+2+3) |
 | JSON-RPC capabilities | 55+ (all wired — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
@@ -53,8 +53,26 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Clippy | **0 warnings** (`#![deny(clippy::pedantic, clippy::nursery)]`) |
 | `cargo fmt` | **0 diffs** |
 | `cargo doc` | **0 warnings** |
-| Max file size | ~430 lines (`gpu/context.rs` — smart refactor, all files well under 1000-line limit) |
+| Max file size | ~764 lines (`toadstool/pipeline.rs` — all files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V31 Deep Debt Solutions + Modern Idiomatic Rust Evolution (from V30)
+
+V31 executes deep debt solutions and evolves to modern idiomatic Rust patterns across the entire codebase.
+
+| Change | Impact |
+|--------|--------|
+| **`OrExit<T>` trait** | Absorbed from wetSpring V123. Centralized zero-panic pattern for `Result<T,E>` and `Option<T>` — replaces per-site `let-else` with `val.or_exit("context")`. Used in dump binaries. 2 new tests. |
+| **`IpcError` ecosystem type** | `SendError` evolved to `IpcError` with `RpcError{code,message}` and `Timeout` variants, aligning with biomeOS/airSpring/groundSpring. Backward-compatible `SendError` alias preserved. 2 new tests. |
+| **Enriched `capability.list`** | Response now includes `operation_dependencies` (DAG of science ops) and `cost_estimates` (CPU ms + GPU eligibility) for Pathway Learner execution graph planning. |
+| **Magic numbers eliminated** | `0.693` → `std::f64::consts::LN_2` in Michaelis-Menten half-life. `assert_eq!` on floats → `abs() < EPSILON`. `suboptimal_flops` → `.mul_add()`. |
+| **`#![forbid(unsafe_code)]` complete** | Added to 3 remaining dump binaries (`exp050`, `exp056`, `exp063`). All 73 binary crate roots now forbid unsafe. |
+| **Capability-based data provider** | `neural-api` hardcoded socket prefix evolved to `DATA_PROVIDER_SOCK_PREFIX` env override with `DEFAULT_DATA_PROVIDER_PREFIX` fallback. Any primal exposing `dag.*` capabilities works. |
+| **Non-async Tier A GPU ops** | `execute_hill_barracuda`, `execute_pop_pk_barracuda`, `execute_diversity_barracuda` stripped of unused `async` — barraCuda ops are synchronous. Eliminates false async overhead. |
+| **barraCuda API alignment** | `PopulationPkF64::simulate()` signature updated for upstream `u32` parameters (was `usize`/`u64`). |
+| **616 tests** | Up from 611 (V30). 5 new tests: 2 OrExit, 2 IpcError, 1 doc. Zero failures, zero clippy warnings. |
 
 ---
 
@@ -522,7 +540,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 611 tests
+cargo test --workspace                  # 616 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

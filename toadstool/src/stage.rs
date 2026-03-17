@@ -169,7 +169,7 @@ impl Stage {
     /// GPU-native stage cannot be mapped to a `GpuOp`; this cannot happen for
     /// valid `StageOp` variants.
     #[must_use]
-    #[expect(clippy::cast_precision_loss)]
+    #[expect(clippy::cast_precision_loss, reason = "elapsed microseconds fits f64")]
     #[expect(
         clippy::tuple_array_conversions,
         reason = "destructured (shannon, simpson) to [f64; 2] is clearer than From"
@@ -288,7 +288,7 @@ fn failed_stage_result(stage: &Stage, start: &std::time::Instant) -> StageResult
     }
 }
 
-#[expect(clippy::cast_precision_loss)]
+#[expect(clippy::cast_precision_loss, reason = "counter/PRNG fits f64")]
 fn generate_data(n: usize, seed: u64) -> Vec<f64> {
     let mut data = Vec::with_capacity(n);
     let mut state = seed;
@@ -310,7 +310,7 @@ fn apply_transform(data: &[f64], kind: TransformKind) -> Vec<f64> {
     }
 }
 
-#[expect(clippy::cast_precision_loss)]
+#[expect(clippy::cast_precision_loss, reason = "element count fits f64")]
 fn apply_reduce(data: &[f64], kind: ReduceKind) -> f64 {
     if data.is_empty() {
         return 0.0;
@@ -329,7 +329,7 @@ fn apply_reduce(data: &[f64], kind: ReduceKind) -> f64 {
 
 /// Multi-channel biosignal fusion: averages interleaved channel data into
 /// a single fused signal, then appends per-channel energy ratios.
-#[expect(clippy::cast_precision_loss)]
+#[expect(clippy::cast_precision_loss, reason = "element count fits f64")]
 fn fuse_biosignal_channels(data: &[f64], n_channels: usize) -> Vec<f64> {
     if n_channels == 0 || data.is_empty() {
         return vec![];

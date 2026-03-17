@@ -167,7 +167,10 @@ fn print_plan(plan: &DispatchPlan) {
     );
 }
 
-#[expect(clippy::too_many_lines)]
+#[expect(
+    clippy::too_many_lines,
+    reason = "sequential dispatch validation across 5 hardware scenarios"
+)]
 fn main() {
     println!("Exp061 Mixed Hardware Dispatch — metalForge NUCLEUS");
     println!("====================================================\n");

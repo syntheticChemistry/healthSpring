@@ -7,9 +7,9 @@
 
 ## 1. Current State
 
-healthSpring is a **biomeOS niche** — discoverable at runtime via capability probes. 73 experiments (Exp001-106), 611 tests:
+healthSpring is a **biomeOS niche** — discoverable at runtime via capability probes. 73 experiments (Exp001-106), 616 tests:
 - Python + NumPy (Tier 0 — 42 baselines with provenance, 113/113 cross-validation checks across all 7 tracks)
-- Rust + healthspring-barracuda crate (Tier 1 — 611 tests, 55+ JSON-RPC capabilities)
+- Rust + healthspring-barracuda crate (Tier 1 — 616 tests, 55+ JSON-RPC capabilities)
 - GPU via wgpu/WGSL (Tier 2 — 6 shaders, GpuContext, fused pipeline)
 - metalForge substrate routing (Tier 3 — 33 tests)
 - petalTongue IPC integration (Exp064 — Unix socket JSON-RPC push)

@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 16, 2026
-**Status**: V30 — 611 tests, 73 experiments, 55+ JSON-RPC capabilities backed by a capability registry. Cross-Spring Absorption + Zero-Panic Evolution: dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
+**Status**: V31 — 616 tests, 73 experiments, 55+ JSON-RPC capabilities backed by a capability registry. Deep Debt Solutions + Modern Idiomatic Rust: OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---
@@ -11,7 +11,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 611 |
+| Rust tests (workspace) | 616 |
 | Python control checks | 42 baselines, 113/113 cross-validation (all 7 tracks) |
 | Experiments | 73 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |

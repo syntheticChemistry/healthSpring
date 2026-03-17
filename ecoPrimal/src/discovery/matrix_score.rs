@@ -175,7 +175,7 @@ mod tests {
 
     #[test]
     fn pathway_empty_off_targets() {
-        assert_eq!(pathway_selectivity_score(10.0, &[]), 0.0);
+        assert!((pathway_selectivity_score(10.0, &[])).abs() < f64::EPSILON);
     }
 
     #[test]
@@ -192,7 +192,7 @@ mod tests {
 
     #[test]
     fn tissue_geometry_zero_thickness() {
-        assert_eq!(tissue_geometry_factor(10.0, 0.0), 0.0);
+        assert!((tissue_geometry_factor(10.0, 0.0)).abs() < f64::EPSILON);
     }
 
     #[test]
@@ -222,7 +222,7 @@ mod tests {
     #[test]
     fn combined_product_identity() {
         let combined = matrix_combined_score(0.8, 0.6, 1.2);
-        assert!((combined - 0.8 * 0.6 * 1.2).abs() < tolerances::MACHINE_EPSILON);
+        assert!((0.8_f64 * 0.6).mul_add(-1.2, combined).abs() < tolerances::MACHINE_EPSILON);
     }
 
     #[test]

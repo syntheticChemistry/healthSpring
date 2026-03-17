@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![forbid(unsafe_code)]
 //! Generates patient-specific TRT scenario JSON files for petalTongue.
 //!
 //! Each patient archetype produces a standalone JSON file in
@@ -12,8 +13,10 @@ use std::fs;
 use std::path::Path;
 
 fn main() {
+    use healthspring_barracuda::validation::OrExit;
+
     let out = Path::new("sandbox/scenarios");
-    fs::create_dir_all(out).expect("create output dir");
+    fs::create_dir_all(out).or_exit("create output dir");
 
     let patients = vec![
         ("clinical-trt-young-athlete.json", {
@@ -82,7 +85,7 @@ fn main() {
     for (filename, patient) in &patients {
         let json = trt_clinical_json(patient);
         let path = out.join(filename);
-        fs::write(&path, &json).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
+        fs::write(&path, &json).or_exit(&format!("write {}", path.display()));
         println!(
             "  wrote {} ({} bytes, {} nodes)",
             path.display(),
