@@ -1,23 +1,27 @@
-# healthSpring V33 — Protocol Evolution + Centralized Cast Algebra
+# healthSpring V33 Handoff — Protocol Evolution + Centralized Cast Algebra
 
 **Date:** March 16, 2026
-**Version:** V33
-**Previous:** V32 (Cross-Spring Absorption + Ecosystem Convergence)
+**From:** healthSpring V33
+**To:** toadStool, biomeOS, all springs (informational)
 **License:** AGPL-3.0-or-later (scyBorg Provenance Trio)
+**Covers:** V32 → V33
 
 ---
 
-## Summary
+## Executive Summary
 
-V33 evolves the IPC protocol layer with structured error classification and
-centralizes numeric cast patterns across the codebase. All changes absorbed
-from sibling springs and core primals — zero novel patterns.
+- **635 tests** (up from 618), zero clippy warnings, zero unsafe, zero `#[allow()]`
+- **`IpcError::is_recoverable()`** classifies transient vs permanent IPC failures
+- **`DispatchOutcome` enum** separates protocol vs application RPC errors
+- **Generic discovery helpers** replace per-primal env-var boilerplate
+- **Centralized `cast` module** consolidates numeric casts from 15+ call sites
+- All changes absorbed from sibling springs — zero novel patterns
 
 ---
 
-## Changes
+## What Changed
 
-### 1. `IpcError` Evolution
+### 1. `IpcError` Evolution (`ipc::rpc`)
 
 - Added `is_recoverable()` — classifies `Connect`, `Timeout`, `Write`, `Read`
   as transient; `InvalidJson`, `NoResult`, `RpcError` as permanent.
@@ -25,35 +29,76 @@ from sibling springs and core primals — zero novel patterns.
 - Pattern source: neuralSpring S161 `IpcError::is_recoverable()`.
 - 4 new tests.
 
-### 2. `DispatchOutcome` Enum
+### 2. `DispatchOutcome` Enum (new `ipc::protocol` module)
 
-- New `ipc::protocol` module with `DispatchOutcome::Ok`, `ProtocolError`,
-  `ApplicationError`.
-- `classify_response()` parses JSON-RPC responses into structured outcomes.
+- `DispatchOutcome::Ok(Value)`, `ProtocolError { code, message }`,
+  `ApplicationError { code, message }`.
+- `classify_response()` parses JSON-RPC response values into structured outcomes.
 - `parse_rpc_response()` for string input with `serde_json::Error` propagation.
-- `is_method_not_found()` and `is_protocol_error()` helpers.
+- `is_method_not_found()` and `is_protocol_error()` query helpers.
 - Pattern source: groundSpring V112 / biomeOS v2.46.
 - 6 new tests.
 
-### 3. Generic Discovery Helpers
+### 3. Generic Discovery Helpers (`ipc::protocol`)
 
-- `protocol::socket_from_env(env_var)` — resolve socket path from env var.
-- `protocol::discover_primal_socket(env_override, name_prefix)` — generic
-  env-then-scan discovery replacing per-primal boilerplate.
+- `socket_from_env(env_var)` — resolve socket path from env var, returns `None`
+  if unset or file doesn't exist.
+- `discover_primal_socket(env_override, name_prefix)` — generic env-then-scan
+  discovery replacing per-primal boilerplate.
 - `discover_compute_primal()` now accepts `HEALTHSPRING_COMPUTE_SOCKET` (direct
-  socket path) in addition to existing `HEALTHSPRING_COMPUTE_PRIMAL` (name scan).
+  socket path) before name-based scan.
 - `discover_data_primal()` likewise accepts `HEALTHSPRING_DATA_SOCKET`.
 - Songbird discovery evolved to use `socket_from_env()`.
 - 2 new tests.
 
-### 4. `cast` Module
+### 4. `cast` Module (new top-level module)
 
-- Centralized safe numeric cast helpers: `usize_f64`, `u64_f64`, `f64_usize`,
-  `usize_u32` (saturating).
-- Each function documents precision guarantee and carries `#[expect]` with reason.
-- Pattern source: groundSpring V112 `casts` module.
-- `biosignal::fft::idx_to_f64`/`u64_to_f64` replaced with re-exports from `cast`.
+- `usize_f64(n)` — exact for lengths up to 2^53.
+- `u64_f64(n)` — exact for values up to 2^53.
+- `f64_usize(x)` — truncating, caller ensures non-negative.
+- `usize_u32(n)` — saturating at `u32::MAX`.
+- Each documents its precision guarantee. `#[expect]` with reasons.
+- `biosignal::fft::idx_to_f64`/`u64_to_f64` replaced with re-exports.
+- Pattern source: groundSpring V112.
 - 5 new tests.
+
+---
+
+## Ecosystem Relevance
+
+### For toadStool
+
+- `DispatchOutcome` can be used to classify RPC responses from springs that
+  invoke `compute.dispatch`. Protocol errors → retry; application errors → propagate.
+- `socket_from_env()` / `discover_primal_socket()` reduce boilerplate for any
+  primal needing multi-primal discovery.
+
+### For biomeOS
+
+- `IpcError::is_recoverable()` enables smarter retry logic in orchestration
+  graphs that call healthSpring science methods.
+- `DispatchOutcome::is_method_not_found()` supports graceful fallback when a
+  requested capability isn't available on a given primal version.
+
+### For all springs
+
+- `cast` module pattern worth absorbing — centralizes numeric precision lints.
+- Generic discovery helpers reduce per-spring env-var proliferation.
+
+---
+
+## Files Changed
+
+| File | Change |
+|------|--------|
+| `ecoPrimal/src/ipc/rpc.rs` | `is_recoverable()`, `is_protocol_error()` on `IpcError`, 4 tests |
+| `ecoPrimal/src/ipc/protocol.rs` | **New** — `DispatchOutcome`, `classify_response()`, `socket_from_env()`, `discover_primal_socket()`, 8 tests |
+| `ecoPrimal/src/ipc/mod.rs` | Added `pub mod protocol` |
+| `ecoPrimal/src/ipc/socket.rs` | `discover_compute_primal()`/`discover_data_primal()` use `socket_from_env()` |
+| `ecoPrimal/src/cast.rs` | **New** — `usize_f64`, `u64_f64`, `f64_usize`, `usize_u32`, 5 tests |
+| `ecoPrimal/src/lib.rs` | Added `pub mod cast` |
+| `ecoPrimal/src/biosignal/fft.rs` | `idx_to_f64`/`u64_to_f64` → re-exports from `cast` |
+| `ecoPrimal/src/visualization/capabilities.rs` | Songbird discovery → `socket_from_env()` |
 
 ---
 
@@ -81,10 +126,7 @@ from sibling springs and core primals — zero novel patterns.
 
 ---
 
-## Next Priorities (P2/P3)
+## Superseded Handoffs
 
-- JSON-RPC proptest fuzz (requires `proptest` dependency)
-- NestGate `model.register`/`model.locate` integration
-- SourDough `sourdough validate primal/unibin/ecobin` CI
-- Squirrel AI bridge for health-domain inference
-- Manifest-based primal discovery (toadStool pattern)
+- V32 Ecosystem Convergence → `archive/`
+- V32 toadStool/barraCuda Absorption → `archive/`

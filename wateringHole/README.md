@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V33** | [V33 Protocol Evolution + Cast Algebra](handoffs/HEALTHSPRING_V33_PROTOCOL_EVOLUTION_CAST_ALGEBRA_HANDOFF_MAR16_2026.md) | Mar 16 | IpcError::is_recoverable(), DispatchOutcome enum, generic discovery helpers, centralized cast module, FFT cast consolidation. Supersedes V32. |
+| **V33** | [V33 Protocol Evolution + Cast Algebra](handoffs/HEALTHSPRING_V33_PROTOCOL_EVOLUTION_CAST_ALGEBRA_HANDOFF_MAR16_2026.md) | Mar 16 | IpcError::is_recoverable(), DispatchOutcome enum, generic discovery helpers, centralized cast module. Supersedes V32. |
+| **V33** | [V33 toadStool/barraCuda Absorption](handoffs/HEALTHSPRING_V33_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR16_2026.md) | Mar 16 | 3 Tier B shaders for barraCuda, 12+ module consumption map, GPU learnings, IPC patterns, action items for barraCuda/toadStool/coralReef. |
 | | *V1–V32 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive

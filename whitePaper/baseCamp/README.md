@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 16, 2026
-**Status:** V32 — Cross-Spring Absorption + Ecosystem Convergence. 618 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. Structured tracing, health.liveness/readiness probes, resilient provenance trio IPC with circuit breaker, 57+ JSON-RPC capabilities.
+**Status:** V33 — Protocol Evolution + Centralized Cast Algebra. 635 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. IpcError::is_recoverable(), DispatchOutcome enum, generic discovery, centralized cast module, 57+ JSON-RPC capabilities.
 
 ---
 
@@ -280,7 +280,7 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 
 ---
 
-## Next Steps (Post V32)
+## Next Steps (Post V33)
 
 ### Science Extensions
 
