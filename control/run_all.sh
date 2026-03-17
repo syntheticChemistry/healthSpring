@@ -82,6 +82,30 @@ echo ""
 echo "--- validation ---"
 run_script "control/validation/exp040_barracuda_cpu.py" || true
 
+# --- discovery (Track 7) ---
+echo ""
+echo "--- discovery ---"
+for py in control/discovery/exp090_matrix_scoring.py \
+         control/discovery/exp091_addrc_hts.py \
+         control/discovery/exp092_compound_library.py \
+         control/discovery/exp093_chembl_jak_panel.py \
+         control/discovery/exp094_rho_mrtf_fibrosis.py; do
+    run_script "$py" || true
+done
+
+# --- comparative (Track 6) ---
+echo ""
+echo "--- comparative ---"
+for py in control/comparative/exp100_canine_il31.py \
+         control/comparative/exp101_canine_jak1.py \
+         control/comparative/exp102_il31_pruritus_timecourse.py \
+         control/comparative/exp103_lokivetmab_duration.py \
+         control/comparative/exp104_cross_species_pk.py \
+         control/comparative/exp105_canine_gut_anderson.py \
+         control/comparative/exp106_feline_hyperthyroid.py; do
+    run_script "$py" || true
+done
+
 # --- update provenance ---
 echo ""
 echo "--- update provenance ---"

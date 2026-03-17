@@ -36,7 +36,8 @@ python3 control/pkpd/exp001_hill_dose_response.py
 # All baselines (runs each script, overwrites JSON)
 for py in control/pkpd/*.py control/microbiome/*.py \
           control/biosignal/*.py control/endocrine/*.py \
-          control/validation/*.py; do
+          control/validation/*.py control/discovery/*.py \
+          control/comparative/*.py; do
     [ "$(basename "$py")" = "cross_validate.py" ] && continue
     python3 "$py"
 done
@@ -72,7 +73,7 @@ python3 control/pkpd/cross_validate.py
 ```
 
 Loads each baseline JSON and compares values against the Rust binary
-outputs. Reports 104 checks across all 24 Tier 0+1 experiments.
+outputs. Reports 113 checks across all 42 Tier 0+1 experiments (7 tracks).
 
 ## Benchmarks
 

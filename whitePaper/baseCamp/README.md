@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 16, 2026
-**Status:** V32 — Deep Debt Solutions + Modern Idiomatic Rust Evolution. 618 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops.
+**Status:** V32 — Cross-Spring Absorption + Ecosystem Convergence. 618 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. Structured tracing, health.liveness/readiness probes, resilient provenance trio IPC with circuit breaker, 57+ JSON-RPC capabilities.
 
 ---
 

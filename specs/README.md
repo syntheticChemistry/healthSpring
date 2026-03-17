@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 16, 2026
-**Status**: V32 — 618 tests, 73 experiments, 57+ JSON-RPC capabilities backed by a capability registry. Deep Debt Solutions + Modern Idiomatic Rust: OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
+**Status**: V32 — Cross-Spring Absorption + Ecosystem Convergence. 618 tests, 73 experiments, 57+ JSON-RPC capabilities backed by a capability registry. Structured tracing, health probes, resilient provenance trio IPC; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---

@@ -2,7 +2,7 @@
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
 **Last Updated**: March 16, 2026
-**Status**: V32 — 73 experiments, 618 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. Deep Debt Solutions + Modern Idiomatic Rust: OrExit trait, IpcError, enriched capability.list, magic number cleanup, forbid(unsafe_code), capability-based discovery, non-async Tier A GPU ops. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete.
+**Status**: V32 — Cross-Spring Absorption + Ecosystem Convergence. 73 experiments, 618 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. Structured tracing, health probes, resilient provenance trio IPC. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and

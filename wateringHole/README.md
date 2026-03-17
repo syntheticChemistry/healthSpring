@@ -23,6 +23,7 @@ The wateringHole is where springs coordinate. Handoff documents record:
 | Version | File | Date | Scope |
 |---------|------|------|-------|
 | **V32** | [V32 Ecosystem Convergence](handoffs/HEALTHSPRING_V32_CROSS_SPRING_ECOSYSTEM_CONVERGENCE_HANDOFF_MAR16_2026.md) | Mar 16 | Structured tracing, health.liveness/readiness probes, resilient provenance trio IPC, dispatch refactor. Supersedes V31. |
+| **V32** | [V32 toadStool/barraCuda Absorption](handoffs/HEALTHSPRING_V32_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR16_2026.md) | Mar 16 | Full absorption handoff: 3 Tier B shaders for barraCuda, GPU learnings, toadStool integration status, action items for barraCuda/toadStool/coralReef teams. |
 | | *V1–V31 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive

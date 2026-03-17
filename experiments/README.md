@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 16, 2026
-**Status**: V32 — 73 experiments, 618 tests. Deep Debt Solutions + Modern Idiomatic Rust: OrExit<T> trait, IpcError alignment, enriched capability.list, zero magic numbers, #![forbid(unsafe_code)] complete, capability-based discovery.
+**Status**: V32 — Cross-Spring Absorption + Ecosystem Convergence. 73 experiments, 618 tests. Structured tracing, health probes, resilient provenance trio IPC.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 

@@ -2,7 +2,7 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: March 16, 2026
-**Status**: V32 — Deep Debt Solutions + Modern Idiomatic Rust Evolution. Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Tier A rewired (Hill, PopPK, Diversity). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). See V32 handoff.
+**Status**: V32 — Cross-Spring Absorption + Ecosystem Convergence. Tier 2+3 GPU live. barraCuda v0.3.5 pinned. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Tier A rewired (Hill, PopPK, Diversity). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). See V32 handoff.
 
 ---
 
