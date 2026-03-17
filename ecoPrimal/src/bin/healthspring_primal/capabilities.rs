@@ -2,8 +2,8 @@
 
 //! Capability definitions and semantic mappings for the healthSpring primal.
 
-pub const PRIMAL_NAME: &str = "healthspring";
-pub const PRIMAL_DOMAIN: &str = "health";
+pub use healthspring_barracuda::PRIMAL_DOMAIN;
+pub use healthspring_barracuda::PRIMAL_NAME;
 
 /// Every capability this primal advertises to `biomeOS`.
 pub const ALL_CAPABILITIES: &[&str] = &[
@@ -74,8 +74,11 @@ pub const ALL_CAPABILITIES: &[&str] = &[
     "capability.list",
     // ── Compute offload (Node Atomic) ────────────────────────────────
     "compute.offload",
+    "compute.shader_compile", // coralReef coordination
     // ── Data (`NestGate` routing) ────────────────────────────────────
     "data.fetch",
+    // ── Model inference (Squirrel coordination) ─────────────────────
+    "model.inference_route",
 ];
 
 /// Build semantic mappings for capability registration with biomeOS.
@@ -125,6 +128,7 @@ pub fn handle_capability_list() -> serde_json::Value {
             c.starts_with("primal.")
                 || c.starts_with("compute.")
                 || c.starts_with("data.")
+                || c.starts_with("model.")
                 || c.starts_with("capability.")
                 || c.starts_with("provenance.")
         })

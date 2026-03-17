@@ -5,13 +5,14 @@ use crate::diagnostic::DiagnosticAssessment;
 use crate::visualization::types::{ClinicalRange, DataChannel, ScenarioNode};
 
 use super::health_to_status;
+use crate::PRIMAL_NAME;
 
 pub(super) fn build_endocrine_node(a: &DiagnosticAssessment, health: u8) -> ScenarioNode {
     ScenarioNode {
         id: "endocrine".into(),
         name: "Endocrine Outcomes".into(),
         node_type: "compute".into(),
-        family: "healthspring".into(),
+        family: PRIMAL_NAME.into(),
         status: health_to_status(health).into(),
         health,
         confidence: 97,

@@ -5,6 +5,7 @@
 //! providing gut Anderson parameters. This module exports the validated
 //! parameters from Tracks 2 and 6 in a form other springs can consume.
 
+use crate::provenance::AnalyticalProvenance;
 use serde::{Deserialize, Serialize};
 
 /// Gut Anderson parameters for cross-spring consumption.
@@ -18,6 +19,38 @@ pub struct GutAndersonParams {
     pub localization_length_xi: f64,
     pub colonization_resistance: f64,
 }
+
+/// Provenance for each validated gut parameter entry.
+///
+/// Order matches [`validated_gut_params`]: human healthy, human `dysbiotic_cdi`,
+/// human `post_fmt`, canine healthy, canine `ad_affected`.
+pub const VALIDATED_GUT_PROVENANCE: [AnalyticalProvenance; 5] = [
+    AnalyticalProvenance {
+        formula: "Shannon 3.0, Pielou 0.85 (control healthy)",
+        reference: "exp010, control/microbiome/exp010_diversity_indices.py",
+        doi: None,
+    },
+    AnalyticalProvenance {
+        formula: "C. difficile dysbiosis Anderson params",
+        reference: "exp012, control/microbiome/exp012_cdiff_resistance.py",
+        doi: None,
+    },
+    AnalyticalProvenance {
+        formula: "Post-FMT recovery Anderson params",
+        reference: "exp013, control/microbiome/exp013_fmt_rcdi.py",
+        doi: None,
+    },
+    AnalyticalProvenance {
+        formula: "Canine healthy gut Anderson params",
+        reference: "exp105, comparative medicine track",
+        doi: None,
+    },
+    AnalyticalProvenance {
+        formula: "Canine AD-affected gut Anderson params",
+        reference: "exp105, comparative medicine track",
+        doi: None,
+    },
+];
 
 /// Published gut Anderson parameters from healthSpring validation.
 ///

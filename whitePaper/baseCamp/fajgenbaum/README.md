@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring vs. Every Cure MATRIX — Comparative Analysis
 
-**Last Updated**: March 14, 2026
-**Status**: V21. Onboarding document for researchers whose work we have ingested and evolved —
+**Last Updated**: March 17, 2026
+**Status**: V35. Onboarding document for researchers whose work we have ingested and evolved —
 particularly Fajgenbaum (MATRIX), Lisabeth (ADDRC HTS), and collaborators entering the
 healthSpring ecosystem.
 **Audience**: Drug discovery researchers, pharmacologists, computational biologists, and anyone

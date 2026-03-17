@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # biomeOS NUCLEUS Local Integration Plan
 
-**Last Updated**: March 16, 2026
-**Status**: V33 — Protocol Evolution + Centralized Cast Algebra. `UniBin`-compliant `healthspring_primal` binary. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Capability-based primal discovery. Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
+**Last Updated**: March 17, 2026
+**Status**: V35 — Protocol Evolution + Centralized Cast Algebra. `UniBin`-compliant `healthspring_primal` binary. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Capability-based primal discovery. Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** March 16, 2026
-**Status:** V33 — Protocol Evolution + Centralized Cast Algebra. 635 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. IpcError::is_recoverable(), DispatchOutcome enum, generic discovery, centralized cast module, 57+ JSON-RPC capabilities.
+**Last Updated:** March 17, 2026
+**Status:** V35 — IPC Resilience + Sovereign Dispatch. 613 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. IpcError::is_recoverable(), DispatchOutcome enum, generic discovery, centralized cast module, 57+ JSON-RPC capabilities.
 
 ---
 
@@ -97,12 +97,12 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | GPU Scaling Bench (Exp085) | — | 10 | 47 | 57 |
 | toadStool V16 Dispatch (Exp086) | — | — | 24 | 24 |
 | Mixed NUCLEUS V16 (Exp087) | — | — | 35 | 35 |
-| **Lib unit tests** | — | — | **544** | 544 |
+| **Lib unit tests** | — | — | **567+** | 567+ |
 | **metalForge tests** | — | — | **33** | 33 |
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **4** | 4 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **618** (tests) | **2,700+** |
+| **Total** | **688** | **287+** (Tier 0) | **613** (tests) | **2,700+** |
 
 ---
 
@@ -280,7 +280,7 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 
 ---
 
-## Next Steps (Post V33)
+## Next Steps (Post V35)
 
 ### Science Extensions
 

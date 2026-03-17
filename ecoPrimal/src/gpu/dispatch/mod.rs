@@ -20,8 +20,8 @@ use super::{GpuError, GpuOp, GpuResult};
 
 /// Execute a GPU operation on live hardware.
 ///
-/// Acquires a wgpu device, compiles the appropriate WGSL shader, dispatches
-/// compute, and reads back results.
+/// Tries sovereign dispatch (coralReef + toadStool) first when available,
+/// then barraCuda upstream ops, then local wgpu path.
 ///
 /// # Errors
 ///
@@ -30,6 +30,12 @@ use super::{GpuError, GpuOp, GpuResult};
 /// [`GpuError::Readback`] on buffer map failure.
 #[expect(clippy::too_many_lines, reason = "dispatch match over GpuOp variants")]
 pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
+    // ── Sovereign path (coralReef compile + toadStool dispatch) ─────
+    #[cfg(feature = "sovereign-dispatch")]
+    if let Some(result) = super::sovereign::try_sovereign_dispatch(op) {
+        return result;
+    }
+
     // ── Tier A: barraCuda upstream ops (when feature-gated) ─────────
     #[cfg(feature = "barracuda-ops")]
     {

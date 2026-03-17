@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V33 — Protocol Evolution + Centralized Cast Algebra. 635 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. IpcError::is_recoverable(), DispatchOutcome enum, generic discovery helpers, centralized cast module.
-**Last Updated**: March 16, 2026
+**Status**: V35 — Protocol Evolution + Centralized Cast Algebra. 613 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. IpcError::is_recoverable(), DispatchOutcome enum, generic discovery helpers, centralized cast module.
+**Last Updated**: March 17, 2026
 
 ---
 

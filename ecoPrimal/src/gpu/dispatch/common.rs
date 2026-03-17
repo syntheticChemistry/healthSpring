@@ -7,6 +7,13 @@ pub const WG_SIZE: u32 = 256;
 
 /// Strip `enable f64;` — naga parses f64 types natively when `SHADER_F64`
 /// feature is negotiated at device creation.
+///
+/// ## Legacy path
+///
+/// This is the **legacy** WGSL preprocessor workaround. The sovereign pipeline
+/// ([`crate::gpu::sovereign`]) uses coralReef's native f64 lowering instead —
+/// no stripping required. When `sovereign-dispatch` is available and coralReef
+/// is discoverable, the sovereign path bypasses this entirely.
 pub fn strip_f64_enable(source: &str) -> String {
     source.replace("enable f64;", "")
 }

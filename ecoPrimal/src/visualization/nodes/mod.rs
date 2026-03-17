@@ -17,6 +17,7 @@ use pkpd::build_pk_node;
 use crate::diagnostic::DiagnosticAssessment;
 
 use super::types::{DataChannel, ScenarioEdge, ScenarioNode};
+use crate::PRIMAL_NAME;
 
 pub(super) fn risk_to_health(risk: f64) -> u8 {
     #[expect(
@@ -51,7 +52,7 @@ pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<S
             id: "patient".into(),
             name: patient_name.into(),
             node_type: "patient".into(),
-            family: "healthspring".into(),
+            family: PRIMAL_NAME.into(),
             status: health_to_status(patient_health).into(),
             health: patient_health,
             confidence: 95,
@@ -77,7 +78,7 @@ pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<S
             id: "gut-trt-axis".into(),
             name: "Gut\u{2013}TRT Axis".into(),
             node_type: "discovery".into(),
-            family: "healthspring".into(),
+            family: PRIMAL_NAME.into(),
             status: health_to_status(gut_health).into(),
             health: gut_health,
             confidence: 80,
@@ -99,7 +100,7 @@ pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<S
             id: "hrv-cardiac".into(),
             name: "HRV\u{2013}Cardiac".into(),
             node_type: "discovery".into(),
-            family: "healthspring".into(),
+            family: PRIMAL_NAME.into(),
             status: health_to_status(hrv_health).into(),
             health: hrv_health,
             confidence: 95,

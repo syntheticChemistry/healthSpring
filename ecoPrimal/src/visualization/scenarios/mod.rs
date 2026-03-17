@@ -198,7 +198,7 @@ pub(crate) fn node(
         id: id.into(),
         name: name.into(),
         node_type: node_type.into(),
-        family: "healthspring".into(),
+        family: crate::PRIMAL_NAME.into(),
         status: "healthy".into(),
         health: 100,
         confidence: 95,

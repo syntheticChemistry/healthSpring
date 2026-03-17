@@ -204,27 +204,22 @@ fn main() {
     benchmarks.push(result);
 
     let trajectory = antibiotic_perturbation(2.2, 0.7, 5.0, 0.1, 5.0, 30.0, 0.01);
-    let (_, h_initial) = if let Some(p) = trajectory.first() {
-        *p
-    } else {
+    let (_, h_initial) = trajectory.first().copied().unwrap_or_else(|| {
         eprintln!("FAIL: antibiotic perturbation returns empty trajectory");
-        std::process::exit(1);
-    };
-    let (_, h_nadir) = if let Some(p) = trajectory
+        std::process::exit(1)
+    });
+    let (_, h_nadir) = trajectory
         .iter()
         .min_by(|aa, bb| aa.1.partial_cmp(&bb.1).unwrap_or(std::cmp::Ordering::Equal))
-    {
-        *p
-    } else {
-        eprintln!("FAIL: trajectory has no points");
-        std::process::exit(1);
-    };
-    let (_, h_final) = if let Some(p) = trajectory.last() {
-        *p
-    } else {
+        .copied()
+        .unwrap_or_else(|| {
+            eprintln!("FAIL: trajectory has no points");
+            std::process::exit(1)
+        });
+    let (_, h_final) = trajectory.last().copied().unwrap_or_else(|| {
         eprintln!("FAIL: antibiotic perturbation returns empty trajectory");
-        std::process::exit(1);
-    };
+        std::process::exit(1)
+    });
     check!("antibiotic_drops", h_nadir < h_initial);
     check!("antibiotic_recovers", h_final > h_nadir);
     check!("antibiotic_not_full_recovery", h_final < h_initial);

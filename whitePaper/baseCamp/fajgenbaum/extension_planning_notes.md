@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Fajgenbaum Extension Planning Notes
 
-**Status**: Addressed in V21–V23. See EXTENSION_PLAN.md for the structured plan.
+**Status**: Addressed in V21–V23. See EXTENSION_PLAN.md for the structured plan. Superseded by V35.
 
 The original informal planning questions (dataset expansion, new systems, Anderson QS
 gene profiling, compute/data hunger, LAN tower deployment, NestGate NCBI integration,

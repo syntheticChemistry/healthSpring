@@ -3,10 +3,6 @@
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
 #![expect(
-    clippy::too_many_lines,
-    reason = "validation binary — linear check sequence"
-)]
-#![expect(
     clippy::similar_names,
     reason = "iv/oral parameter variants are intentionally parallel"
 )]
@@ -21,6 +17,7 @@ use healthspring_barracuda::pkpd::{
     pk_oral_one_compartment,
 };
 use healthspring_barracuda::tolerances;
+use healthspring_barracuda::validation::{OrExit, ValidationHarness};
 
 const DOSE_IV: f64 = 500.0;
 const VD_IV: f64 = 50.0;
@@ -43,41 +40,31 @@ fn linspace(start: f64, end: f64, n: usize) -> Vec<f64> {
 }
 
 fn main() {
-    let mut passed = 0_u32;
-    let mut failed = 0_u32;
+    let mut h = ValidationHarness::new("Exp002 One-Compartment PK");
     let times = linspace(0.0, 48.0, 1000);
     let k_e_iv = core::f64::consts::LN_2 / HL_IV;
     let k_e_oral = core::f64::consts::LN_2 / HL_ORAL;
     let c0_iv = DOSE_IV / VD_IV;
 
-    println!("{}", "=".repeat(72));
-    println!("healthSpring Exp002 [Rust]: One-Compartment PK Models");
-    println!("{}", "=".repeat(72));
-
     // Check 1: IV C(0)
-    print!("\n--- Check 1: IV C(0) = Dose/Vd --- ");
     let c_at_0 = pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, 0.0);
-    if (c_at_0 - c0_iv).abs() < tolerances::MACHINE_EPSILON {
-        println!("[PASS] C(0) = {c_at_0:.4}");
-        passed += 1;
-    } else {
-        println!("[FAIL] C(0) = {c_at_0:.4}");
-        failed += 1;
-    }
+    h.check_abs(
+        "IV C(0) = Dose/Vd",
+        c_at_0,
+        c0_iv,
+        tolerances::MACHINE_EPSILON,
+    );
 
     // Check 2: IV at half-life
-    print!("\n--- Check 2: IV at half-life → C0/2 --- ");
     let c_at_hl = pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, HL_IV);
-    if (c_at_hl - c0_iv / 2.0).abs() < tolerances::HALF_LIFE_POINT {
-        println!("[PASS] C(t½) = {c_at_hl:.6}");
-        passed += 1;
-    } else {
-        println!("[FAIL] C(t½) = {c_at_hl:.6}");
-        failed += 1;
-    }
+    h.check_abs(
+        "IV at half-life → C0/2",
+        c_at_hl,
+        c0_iv / 2.0,
+        tolerances::HALF_LIFE_POINT,
+    );
 
     // Check 3: IV monotonically decreasing
-    print!("\n--- Check 3: IV monotonically decreasing --- ");
     let c_iv: Vec<f64> = times
         .iter()
         .map(|&t| pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, t))
@@ -85,137 +72,80 @@ fn main() {
     let mono_dec = c_iv
         .windows(2)
         .all(|w| w[0] >= w[1] - tolerances::MACHINE_EPSILON_STRICT);
-    if mono_dec {
-        println!("[PASS]");
-        passed += 1;
-    } else {
-        println!("[FAIL]");
-        failed += 1;
-    }
+    h.check_bool("IV monotonically decreasing", mono_dec);
 
     // Check 4: IV AUC
-    print!("\n--- Check 4: IV AUC analytical --- ");
     let auc_iv_num = auc_trapezoidal(&times, &c_iv);
     let auc_iv_ana = DOSE_IV / (VD_IV * k_e_iv);
-    let rel_err_iv = (auc_iv_num - auc_iv_ana).abs() / auc_iv_ana;
-    if rel_err_iv < tolerances::AUC_TRAPEZOIDAL {
-        println!("[PASS] num={auc_iv_num:.2}, ana={auc_iv_ana:.2} (err={rel_err_iv:.4})");
-        passed += 1;
-    } else {
-        println!("[FAIL] err={rel_err_iv:.4}");
-        failed += 1;
-    }
+    h.check_rel(
+        "IV AUC analytical",
+        auc_iv_num,
+        auc_iv_ana,
+        tolerances::AUC_TRAPEZOIDAL,
+    );
 
     // Check 5: Oral C(0) = 0
-    print!("\n--- Check 5: Oral C(0) = 0 --- ");
     let c_oral_0 = pk_oral_one_compartment(DOSE_ORAL, F_ORAL, VD_ORAL, KA_ORAL, k_e_oral, 0.0);
-    if c_oral_0.abs() < tolerances::MACHINE_EPSILON {
-        println!("[PASS]");
-        passed += 1;
-    } else {
-        println!("[FAIL] C(0) = {c_oral_0}");
-        failed += 1;
-    }
+    h.check_abs(
+        "Oral C(0) = 0",
+        c_oral_0.abs(),
+        0.0,
+        tolerances::MACHINE_EPSILON,
+    );
 
     // Check 6: Oral Cmax at Tmax > 0
-    print!("\n--- Check 6: Oral Cmax at Tmax > 0 --- ");
     let c_oral: Vec<f64> = times
         .iter()
         .map(|&t| pk_oral_one_compartment(DOSE_ORAL, F_ORAL, VD_ORAL, KA_ORAL, k_e_oral, t))
         .collect();
     let (cmax, tmax) = find_cmax_tmax(&times, &c_oral);
-    if cmax > 0.0 && tmax > 0.0 {
-        println!("[PASS] Cmax={cmax:.4} at Tmax={tmax:.2} hr");
-        passed += 1;
-    } else {
-        println!("[FAIL]");
-        failed += 1;
-    }
+    h.check_bool("Oral Cmax at Tmax > 0", cmax > 0.0 && tmax > 0.0);
 
     // Check 7: Tmax analytical
-    print!("\n--- Check 7: Tmax analytical --- ");
     let tmax_ana = oral_tmax(KA_ORAL, k_e_oral);
-    if (tmax - tmax_ana).abs() < tolerances::TMAX_NUMERICAL {
-        println!("[PASS] num={tmax:.3}, ana={tmax_ana:.3}");
-        passed += 1;
-    } else {
-        println!("[FAIL] num={tmax:.3}, ana={tmax_ana:.3}");
-        failed += 1;
-    }
+    h.check_abs(
+        "Tmax analytical",
+        tmax,
+        tmax_ana,
+        tolerances::TMAX_NUMERICAL,
+    );
 
     // Check 8: Oral → 0 by 48hr
-    print!("\n--- Check 8: Oral → 0 by 48hr --- ");
-    let Some(c_last) = c_oral.last() else {
-        eprintln!("FAIL: oral curve has at least one point");
-        std::process::exit(1);
-    };
-    let c_48 = *c_last;
-    if c_48 < tolerances::EXPONENTIAL_RESIDUAL {
-        println!("[PASS] C(48hr) = {c_48:.6}");
-        passed += 1;
-    } else {
-        println!("[FAIL] C(48hr) = {c_48:.6}");
-        failed += 1;
-    }
+    let c_48 = c_oral
+        .last()
+        .copied()
+        .or_exit("oral curve has at least one point");
+    h.check_upper("Oral → 0 by 48hr", c_48, tolerances::EXPONENTIAL_RESIDUAL);
 
     // Check 9: Oral AUC > 0
-    print!("\n--- Check 9: Oral AUC > 0 --- ");
     let auc_oral = auc_trapezoidal(&times, &c_oral);
-    if auc_oral > 0.0 {
-        println!("[PASS] AUC = {auc_oral:.2}");
-        passed += 1;
-    } else {
-        println!("[FAIL]");
-        failed += 1;
-    }
+    h.check_bool("Oral AUC > 0", auc_oral > 0.0);
 
     // Check 10: Oral AUC analytical
-    print!("\n--- Check 10: Oral AUC analytical --- ");
     let auc_oral_ana = (F_ORAL * DOSE_ORAL) / (VD_ORAL * k_e_oral);
-    let rel_err_oral = (auc_oral - auc_oral_ana).abs() / auc_oral_ana;
-    if rel_err_oral < tolerances::AUC_TRAPEZOIDAL {
-        println!("[PASS] num={auc_oral:.2}, ana={auc_oral_ana:.2} (err={rel_err_oral:.4})");
-        passed += 1;
-    } else {
-        println!("[FAIL] err={rel_err_oral:.4}");
-        failed += 1;
-    }
+    h.check_rel(
+        "Oral AUC analytical",
+        auc_oral,
+        auc_oral_ana,
+        tolerances::AUC_TRAPEZOIDAL,
+    );
 
     // Check 11: Multiple doses accumulate
-    print!("\n--- Check 11: Multiple IV doses accumulate --- ");
     let c_multi = pk_multiple_dose(|t| pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, t), 8.0, 6, &times);
     let peak_after_first = times
         .iter()
         .zip(c_multi.iter())
         .filter_map(|(&t, &c)| if t >= 8.0 { Some(c) } else { None })
         .fold(f64::NEG_INFINITY, f64::max);
-    if peak_after_first > c0_iv {
-        println!("[PASS] multi={peak_after_first:.4} > C0={c0_iv:.4}");
-        passed += 1;
-    } else {
-        println!("[FAIL]");
-        failed += 1;
-    }
+    h.check_bool("Multiple IV doses accumulate", peak_after_first > c0_iv);
 
     // Check 12: All non-negative
-    print!("\n--- Check 12: All concentrations ≥ 0 --- ");
     let all_ok = c_iv.iter().all(|&c| c >= 0.0)
         && c_oral.iter().all(|&c| c >= 0.0)
         && c_multi
             .iter()
             .all(|&c| c >= -tolerances::MACHINE_EPSILON_TIGHT);
-    if all_ok {
-        println!("[PASS]");
-        passed += 1;
-    } else {
-        println!("[FAIL]");
-        failed += 1;
-    }
+    h.check_bool("All concentrations ≥ 0", all_ok);
 
-    let total = passed + failed;
-    println!("\n{}", "=".repeat(72));
-    println!("TOTAL: {passed}/{total} PASS, {failed}/{total} FAIL");
-    println!("{}", "=".repeat(72));
-
-    std::process::exit(i32::from(failed > 0));
+    h.exit();
 }

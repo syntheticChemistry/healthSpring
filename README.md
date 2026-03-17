@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 16, 2026
+**Date:** March 17, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V33 — Protocol Evolution + Centralized Cast Algebra. 635 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V33: `IpcError::is_recoverable()` for transient/permanent classification (neuralSpring S161 pattern); `DispatchOutcome` enum separating protocol vs application RPC errors (groundSpring V112 / biomeOS v2.46); `ipc::protocol` module with generic `socket_from_env()`/`discover_primal_socket()` replacing per-primal discovery boilerplate; centralized `cast` module (`usize_f64`, `u64_f64`, `f64_usize`, `usize_u32`) absorbed from groundSpring V112; biosignal FFT cast helpers consolidated to re-export from `cast`; zero clippy warnings, zero `#[allow()]`, zero unsafe.
+**Status:** V35 — IPC Resilience + Sovereign Dispatch. 613 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V35: thiserror `IpcError` (8 variants + query helpers), `CircuitBreaker` + `RetryPolicy` (exponential backoff), `DispatchOutcome<T>` (protocol/application error separation), 4-format capability parsing, proptest IPC fuzzing, `safe_cast` module, sovereign GPU dispatch via `CoralReefDevice`, `deny.toml` hardened (`multiple-versions = "deny"`, `yanked = "deny"`). Zero clippy warnings, zero `#[allow()]`, zero unsafe. 79 capabilities.
 
 ---
 
@@ -33,10 +33,10 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V33** (Protocol Evolution + Centralized Cast Algebra) |
-| **Total tests** | **635** (567 lib + 33 forge + 30 toadStool + 5 doc) |
+| Version | **V35** (IPC Resilience + Sovereign Dispatch) |
+| **Total tests** | **613** (567+ lib + 33 forge + 30 toadStool + 5 doc) |
 | Experiments complete | 73 (Tracks 1–7, Tier 0+1+2+3) |
-| JSON-RPC capabilities | 57+ (all wired — 0 stubs in dispatch, +2 health probes) |
+| JSON-RPC capabilities | 79 (all wired — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **42** with git-tracked provenance (all 7 tracks) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
@@ -53,7 +53,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Clippy | **0 warnings** (`#![deny(clippy::pedantic, clippy::nursery)]`) |
 | `cargo fmt` | **0 diffs** |
 | `cargo doc` | **0 warnings** |
-| Max file size | ~764 lines (`toadstool/pipeline.rs` — all files well under 1000-line limit) |
+| Max file size | ~350 lines (all files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
 
 ---
@@ -474,11 +474,13 @@ healthSpring/
 │       ├── endocrine.rs  # Track 4: testosterone PK, decline, TRT outcomes, gut axis
 │       ├── wfdb.rs      # WFDB parser (PhysioNet Format 212/16, annotations)
 │       ├── rng.rs       # Deterministic LCG PRNG (centralized)
+│       ├── safe_cast.rs # Checked numeric conversions (usize_u32, usize_f64, f64_f32)
 │       ├── gpu/         # Tier 2: GPU dispatch + GpuContext + fused pipeline
 │       │   ├── mod.rs
 │       │   ├── dispatch.rs
 │       │   ├── context.rs  # GpuContext (350 LOC — single-op + fused orchestrator)
-│       │   └── fused.rs    # Per-op buffer prep + readback decode (extracted from context)
+│       │   ├── fused.rs    # Per-op buffer prep + readback decode (extracted from context)
+│       │   └── sovereign.rs # Sovereign GPU dispatch via CoralReefDevice
 │       ├── discovery/    # Track 7: MATRIX, HTS, compound, fibrosis
 │       │   ├── matrix_score.rs
 │       │   ├── hts.rs
@@ -533,11 +535,13 @@ healthSpring/
 │   ├── exp100–exp106/   # Track 6: Comparative Medicine
 │   ├── ipc/              # biomeOS IPC (JSON-RPC 2.0 dispatch)
 │   │   ├── mod.rs
-│   │   ├── dispatch/     # 55+ method → science function routing
+│   │   ├── dispatch/     # 79 method → science function routing
 │   │   │   ├── mod.rs    # Central dispatch table
 │   │   │   └── handlers/ # Domain handlers (pkpd, microbiome, biosignal, clinical)
 │   │   ├── rpc.rs        # JSON-RPC response helpers + client
-│   │   └── socket.rs     # XDG socket path resolution + primal discovery
+│   │   ├── socket.rs     # XDG socket path resolution + primal discovery
+│   │   ├── error.rs      # thiserror IpcError (8 variants + query helpers)
+│   │   └── resilience.rs # CircuitBreaker + RetryPolicy
 │   └── bin/
 │       └── healthspring_primal.rs  # UniBin-compliant biomeOS primal binary
 ├── graphs/             # biomeOS niche definition + workflow graphs
@@ -555,8 +559,8 @@ healthSpring/
 │           └── transfer.rs   # PCIe P2P transfer planning
 ├── toadstool/           # Compute dispatch pipeline
 │   └── src/
-│       ├── pipeline.rs  # execute(), execute_gpu(), execute_streaming(), execute_auto()
-│       └── stage.rs     # StageOp, BiosignalFusion, AucTrapezoidal, BrayCurtis
+│       ├── pipeline/    # execute(), execute_gpu(), execute_streaming(), execute_auto()
+│       └── stage/      # StageOp, BiosignalFusion, AucTrapezoidal, BrayCurtis
 ├── specs/               # Paper queue, evolution map, compute profile, integration plan
 ├── whitePaper/          # Scientific documentation
 │   ├── baseCamp/        # Faculty-linked sub-theses

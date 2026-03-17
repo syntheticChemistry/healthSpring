@@ -9,8 +9,7 @@
 
 use std::path::PathBuf;
 
-/// This primal's socket name (healthSpring).
-const PRIMAL_NAME: &str = "healthspring";
+use crate::PRIMAL_NAME;
 
 /// Return the biomeOS socket directory, with XDG fallback.
 #[must_use]
@@ -130,6 +129,50 @@ pub fn discover_data_primal() -> Option<PathBuf> {
     discover_by_capability("data")
 }
 
+/// Probe for a shader compiler primal (coralReef) by capability.
+///
+/// Resolution order:
+/// 1. Explicit socket path via `HEALTHSPRING_SHADER_SOCKET` env
+/// 2. Explicit primal name via `HEALTHSPRING_SHADER_PRIMAL` env → socket scan
+/// 3. Scan socket dir for any primal advertising `shader.*` capability
+///
+/// No hardcoded primal names — self-knowledge only.
+#[must_use]
+pub fn discover_shader_compiler() -> Option<PathBuf> {
+    if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_SHADER_SOCKET") {
+        return Some(path);
+    }
+    if let Some(path) = std::env::var("HEALTHSPRING_SHADER_PRIMAL")
+        .ok()
+        .and_then(|name| discover_primal(&name))
+    {
+        return Some(path);
+    }
+    discover_by_capability("shader")
+}
+
+/// Probe for an inference primal (Squirrel) by capability.
+///
+/// Resolution order:
+/// 1. Explicit socket path via `HEALTHSPRING_INFERENCE_SOCKET` env
+/// 2. Explicit primal name via `HEALTHSPRING_INFERENCE_PRIMAL` env → socket scan
+/// 3. Scan socket dir for any primal advertising `model.*` capability
+///
+/// No hardcoded primal names — self-knowledge only.
+#[must_use]
+pub fn discover_inference_primal() -> Option<PathBuf> {
+    if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_INFERENCE_SOCKET") {
+        return Some(path);
+    }
+    if let Some(path) = std::env::var("HEALTHSPRING_INFERENCE_PRIMAL")
+        .ok()
+        .and_then(|name| discover_primal(&name))
+    {
+        return Some(path);
+    }
+    discover_by_capability("model")
+}
+
 /// Discover a primal by capability domain: query each visible socket with
 /// `capability.list` and check for matching domain prefix.
 fn discover_by_capability(domain: &str) -> Option<PathBuf> {
@@ -154,15 +197,18 @@ fn discover_by_capability(domain: &str) -> Option<PathBuf> {
 /// Extract capability strings from a `capability.list` result, handling all
 /// known response formats across the ecosystem:
 ///
-/// 1. `result.science` (healthSpring format — array of science capabilities)
-/// 2. `result.capabilities` (neuralSpring/ludoSpring format — flat array)
-/// 3. `result.capabilities.capabilities` (nested object format)
-/// 4. `result` itself is an array (raw format)
-fn extract_capability_strings(result: &serde_json::Value) -> Vec<&str> {
+/// - **Format A** (healthSpring): `{"science": [...], "infrastructure": [...]}`
+/// - **Format B** (neuralSpring flat): `{"capabilities": ["cap1", "cap2"]}`
+/// - **Format C** (nested object): `{"capabilities": {"capabilities": ["cap1"]}}`
+/// - **Format D** (raw array): `["cap1", "cap2"]`
+/// - **Format E** (result wrapper): `{"result": {"capabilities": [...]}}` or
+///   `{"result": ["cap1", "cap2"]}`
+#[must_use]
+pub fn extract_capability_strings(result: &serde_json::Value) -> Vec<&str> {
+    let val = result.get("result").unwrap_or(result);
     let arrays_to_check: &[Option<&serde_json::Value>] = &[
-        result.get("science"),
-        result
-            .get("capabilities")
+        val.get("science"),
+        val.get("capabilities")
             .and_then(|c| {
                 if c.is_array() {
                     Some(c)
@@ -170,13 +216,9 @@ fn extract_capability_strings(result: &serde_json::Value) -> Vec<&str> {
                     c.get("capabilities")
                 }
             })
-            .or_else(|| result.get("capabilities")),
-        result.get("infrastructure"),
-        if result.is_array() {
-            Some(result)
-        } else {
-            None
-        },
+            .or_else(|| val.get("capabilities")),
+        val.get("infrastructure"),
+        if val.is_array() { Some(val) } else { None },
     ];
 
     arrays_to_check
@@ -284,5 +326,57 @@ mod tests {
         let result = serde_json::json!(["compute.hill", "compute.diversity"]);
         let caps = extract_capability_strings(&result);
         assert!(caps.contains(&"compute.hill"));
+    }
+
+    #[test]
+    fn extract_caps_result_wrapper_object() {
+        let result = serde_json::json!({
+            "result": {"capabilities": ["model.infer", "model.load"]}
+        });
+        let caps = extract_capability_strings(&result);
+        assert!(caps.contains(&"model.infer"));
+        assert!(caps.contains(&"model.load"));
+    }
+
+    #[test]
+    fn extract_caps_result_wrapper_array() {
+        let result = serde_json::json!({
+            "result": ["cap1", "cap2"]
+        });
+        let caps = extract_capability_strings(&result);
+        assert!(caps.contains(&"cap1"));
+        assert!(caps.contains(&"cap2"));
+    }
+
+    #[test]
+    fn discover_shader_compiler_returns_option() {
+        // No env set, no shader primal in socket dir → typically None.
+        // Verifies function runs without panic.
+        let _ = discover_shader_compiler();
+    }
+
+    #[test]
+    fn discover_inference_primal_returns_option() {
+        // No env set, no model primal in socket dir → typically None.
+        // Verifies function runs without panic.
+        let _ = discover_inference_primal();
+    }
+
+    #[test]
+    fn extract_caps_shader_domain_matches() {
+        let result = serde_json::json!({
+            "capabilities": ["shader.compile", "shader.validate"]
+        });
+        let caps = extract_capability_strings(&result);
+        assert!(caps.iter().any(|s| s.starts_with("shader.")));
+    }
+
+    #[test]
+    fn extract_caps_model_domain_matches() {
+        let result = serde_json::json!({
+            "capabilities": ["model.inference_route", "model.load"]
+        });
+        let caps = extract_capability_strings(&result);
+        assert!(caps.iter().any(|s| s.starts_with("model.")));
     }
 }

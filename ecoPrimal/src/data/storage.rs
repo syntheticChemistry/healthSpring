@@ -5,6 +5,7 @@
 //! Local cache lives under `$HEALTHSPRING_DATA_ROOT/ncbi_cache/` or
 //! `data/ncbi_cache/` relative to workspace root.
 
+use crate::QS_GENE_MATRIX_FILE;
 use std::path::PathBuf;
 
 /// Build a `NestGate`-compatible content key.
@@ -34,14 +35,14 @@ pub fn local_cache_path(db: &str, id: &str) -> PathBuf {
 #[must_use]
 pub fn qs_matrix_path() -> PathBuf {
     let root = data_root();
-    let path = root.join("qs_gene_matrix.json");
+    let path = root.join(QS_GENE_MATRIX_FILE);
     if path.exists() {
         return path;
     }
 
     // Cold storage fallback
     if let Ok(cold) = std::env::var("HEALTHSPRING_COLD_STORAGE") {
-        let cold_path = PathBuf::from(cold).join("qs_gene_matrix.json");
+        let cold_path = PathBuf::from(cold).join(QS_GENE_MATRIX_FILE);
         if cold_path.exists() {
             return cold_path;
         }

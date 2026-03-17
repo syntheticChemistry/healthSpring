@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** March 16, 2026
-**Status:** V33 — Protocol Evolution + Centralized Cast Algebra. 73 experiments, 635 tests, 57+ wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–7). Structured tracing, health probes, resilient provenance trio IPC. 42 baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Zero duplicate math, zero unsafe, zero clippy warnings workspace-wide.
+**Date:** March 17, 2026
+**Status:** V35 — IPC Resilience + Sovereign Dispatch. 73 experiments, 613 tests, 79 wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–7). Structured tracing, health probes, resilient provenance trio IPC. 42 baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Zero duplicate math, zero unsafe, zero clippy warnings workspace-wide.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -44,7 +44,7 @@ without establishing causality.
 | Order | Document | What you'll learn |
 |:-----:|----------|------------------|
 | 4 | [baseCamp/README.md](baseCamp/README.md) | All 73 experiments, validation counts, per-track status |
-| 5 | [baseCamp/gonzales.md](baseCamp/gonzales.md) | PK/PD sub-thesis: Gonzales canine → human → drug discovery pipeline |
+| 5 | [baseCamp/gonzales/README.md](baseCamp/gonzales/README.md) | PK/PD sub-thesis: Gonzales canine → human → drug discovery pipeline |
 | 6 | [baseCamp/EXTENSION_PLAN.md](baseCamp/EXTENSION_PLAN.md) | Where we're going: Tracks 6–7, datasets, QS gene profiling, living systems |
 
 ### For drug discovery team (Gonzales/Lisabeth/ADDRC/Fajgenbaum)
@@ -194,8 +194,8 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 | [STUDY.md](STUDY.md) | Main narrative — abstract, domains, validation, what we learned | Reviewers, collaborators, clinicians |
 | [METHODOLOGY.md](METHODOLOGY.md) | Validation protocol — four-tier design, acceptance criteria, tolerances | Technical validation |
 | [baseCamp/README.md](baseCamp/README.md) | Experiment inventory, per-track validation summary, GPU pipeline | All |
-| [baseCamp/gonzales.md](baseCamp/gonzales.md) | PK/PD + drug discovery sub-thesis (Gonzales, Lisabeth, Neubig, Ellsworth) | Drug discovery team |
-| [baseCamp/mok_testosterone.md](baseCamp/mok_testosterone.md) | TRT claim verification sub-thesis (Mok) | Endocrinology |
+| [baseCamp/gonzales/README.md](baseCamp/gonzales/README.md) | PK/PD + drug discovery sub-thesis (Gonzales, Lisabeth, Neubig, Ellsworth) | Drug discovery team |
+| [baseCamp/mok/README.md](baseCamp/mok/README.md) | TRT claim verification sub-thesis (Mok) | Endocrinology |
 | [baseCamp/cdiff_colonization.md](baseCamp/cdiff_colonization.md) | Anderson → gut colonization resistance | Microbiome / infectious disease |
 | [baseCamp/biosignal_sovereign.md](baseCamp/biosignal_sovereign.md) | Edge biosignal processing (ECG, PPG, EDA) | Biosignal / wearables |
 | [baseCamp/fajgenbaum/](baseCamp/fajgenbaum/) | MATRIX comparison + cost/access/methods ($48.3M vs. ~$5K) | Drug discovery, Fajgenbaum, funders |
@@ -209,7 +209,7 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 
 | Sub-thesis | Domain | Faculty | Status |
 |-----------|--------|---------|--------|
-| [gonzales/](baseCamp/gonzales/) | PK/PD → living systems + drug discovery | Gonzales, Lisabeth, Neubig, Ellsworth | **Complete** (Track 1), **Queued** (Tracks 6–7) |
+| [gonzales/](baseCamp/gonzales/) | PK/PD → living systems + drug discovery | Gonzales, Lisabeth, Neubig, Ellsworth | **Complete** (Track 1), **Complete** (Tracks 6–7) |
 | [fajgenbaum/](baseCamp/fajgenbaum/) | MATRIX drug repurposing + Anderson geometry | Fajgenbaum (Every Cure) | **Ingested + Extended** (Track 7) |
 | [mok/](baseCamp/mok/) | TRT claim verification + endocrine modeling | Mok (Allure Medical) | **Complete** — Exp030-038 (Track 4) |
 | [cdiff_colonization.md](baseCamp/cdiff_colonization.md) | Anderson localization → gut colonization resistance | (TBD) | **Complete** — Exp010-013 (Track 2) |
@@ -234,8 +234,8 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 
 | Metric | Value |
 |--------|-------|
-| Experiments | 61 complete (Tracks 1–5), 15 queued (Tracks 6–7) |
-| Rust tests | 395 (329 barraCuda + 33 forge + 30 toadStool + 3 doc-tests) |
+| Experiments | 73 complete (Tracks 1–7), 15 queued |
+| Rust tests | 613 (567+ lib + 33 forge + 30 toadStool + 5 doc) |
 | Python checks | 194 cross-validation |
 | Paper queue | 30/30 complete, 15 new queued |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |

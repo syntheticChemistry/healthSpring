@@ -32,7 +32,7 @@
 //! ## Data source
 //!
 //! The QS gene matrix is built from NCBI Gene/Protein by
-//! `data/fetch_qs_genes.py` and deserialized from `qs_gene_matrix.json`.
+//! `data/fetch_qs_genes.py` and deserialized from [`crate::QS_GENE_MATRIX_FILE`].
 //! See `specs/QS_GENE_PROFILING.md` for the full design.
 
 use serde::Deserialize;
@@ -86,7 +86,7 @@ impl QsFamily {
 
 /// QS gene presence/absence matrix: species × families.
 ///
-/// Deserialized from `qs_gene_matrix.json` produced by `data/fetch_qs_genes.py`.
+/// Deserialized from [`crate::QS_GENE_MATRIX_FILE`] produced by `data/fetch_qs_genes.py`.
 /// Each row is a genus/species, each column a [`QsFamily`].
 #[derive(Debug, Clone, Deserialize)]
 pub struct QsGeneMatrix {

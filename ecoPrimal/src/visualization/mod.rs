@@ -18,6 +18,7 @@ mod types;
 
 pub use types::*;
 
+use crate::PRIMAL_NAME;
 use crate::diagnostic::{DiagnosticAssessment, PopulationResult, RiskLevel};
 
 /// Map a clinical risk level to a display string.
@@ -97,7 +98,7 @@ pub fn annotate_population(mut scenario: HealthScenario, pop: &PopulationResult)
         id: "population".into(),
         name: format!("Population (n={})", pop.n_patients),
         node_type: "storage".into(),
-        family: "healthspring".into(),
+        family: PRIMAL_NAME.into(),
         status: "healthy".into(),
         health: 100,
         confidence: 99,

@@ -16,7 +16,10 @@ categories = ["science", "command-line-utilities"]
 default = []
 gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck"]
 barracuda-ops = ["gpu"]
-nestgate = ["dep:thiserror"]
+# Sovereign dispatch via barraCuda CoralReefDevice: WGSL → coralReef compile →
+# toadStool dispatch → native binary. Replaces strip_f64_enable() workaround.
+sovereign-dispatch = ["gpu", "barracuda/sovereign-dispatch"]
+nestgate = []
 # NPU dispatch is a future evolution — Akida driver will be discovered at
 # runtime via capability-based probing, not compiled in as a path dep.
 # See metalForge::probe_npu() and specs/EVOLUTION_MAP.md.
@@ -33,7 +36,7 @@ serde_json = "1"
 
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-thiserror = { version = "2", optional = true }
+thiserror = "2"
 clap = { version = "4", features = ["derive"] }
 wgpu = { version = "28", optional = true }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"], optional = true }
@@ -46,6 +49,7 @@ path = "src/bin/healthspring_primal/main.rs"
 [dev-dependencies]
 approx = "0.5"
 criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1"
 
 [[bench]]
 name = "cpu_parity"

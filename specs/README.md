@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: March 16, 2026
-**Status**: V33 — Protocol Evolution + Centralized Cast Algebra. 635 tests, 73 experiments, 57+ JSON-RPC capabilities backed by a capability registry. Structured tracing, health probes, resilient provenance trio IPC; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
+**Last Updated**: March 17, 2026
+**Status**: V35 — Protocol Evolution + Centralized Cast Algebra. 613 tests, 73 experiments, 79 JSON-RPC capabilities backed by a capability registry. Structured tracing, health probes, resilient provenance trio IPC; 42 baselines with provenance; 113/113 cross-validation checks (all 7 tracks).
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery
 
 ---
@@ -11,7 +11,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 635 |
+| Rust tests (workspace) | 613 |
 | Python control checks | 42 baselines, 113/113 cross-validation (all 7 tracks) |
 | Experiments | 73 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |

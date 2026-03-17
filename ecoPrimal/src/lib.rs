@@ -33,6 +33,14 @@
 //! | [`uncertainty`] | Bootstrap, jackknife, bias–variance decomposition | — |
 //! | [`wfdb`] | PhysioNet WFDB format parser (`.hea`, `.dat`, `.atr`) | — |
 //! | [`cast`] | Safe numeric cast helpers (`usize_f64`, `u64_f64`, `f64_usize`) | — |
+//! | [`safe_cast`] | Checked casts returning `Result` (`usize_u32`, `usize_f64`, `f64_f32`) | — |
+
+/// Canonical primal identity — single source of truth for all modules.
+pub const PRIMAL_NAME: &str = "healthspring";
+/// The biomeOS domain this primal serves.
+pub const PRIMAL_DOMAIN: &str = "health";
+/// QS gene matrix data file name (shared across storage, fetch, and QS modules).
+pub const QS_GENE_MATRIX_FILE: &str = "qs_gene_matrix.json";
 
 pub mod biosignal;
 pub mod cast;
@@ -49,6 +57,7 @@ pub mod pkpd;
 pub mod provenance;
 pub mod qs;
 pub mod rng;
+pub mod safe_cast;
 pub mod tolerances;
 pub mod uncertainty;
 pub mod validation;

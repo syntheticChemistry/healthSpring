@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: March 16, 2026
-**Status**: V33 — Protocol Evolution + Centralized Cast Algebra. 73 experiments, 635 tests. Structured tracing, health probes, resilient provenance trio IPC.
+**Last Updated**: March 17, 2026
+**Status**: V35 — IPC Resilience + Sovereign Dispatch. 73 experiments, 613 tests.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
 

@@ -6,6 +6,10 @@
 
 pub mod compute_dispatch;
 pub mod dispatch;
+pub mod error;
+#[cfg(test)]
+pub mod proptest_ipc;
 pub mod protocol;
+pub mod resilience;
 pub mod rpc;
 pub mod socket;

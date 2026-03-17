@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! PK/PD visualization nodes.
 
+use crate::PRIMAL_NAME;
 use crate::diagnostic::DiagnosticAssessment;
 use crate::visualization::types::{ClinicalRange, DataChannel, ScenarioNode};
 
@@ -9,7 +10,7 @@ pub(super) fn build_pk_node(a: &DiagnosticAssessment) -> ScenarioNode {
         id: "pk".into(),
         name: "PK/PD Engine".into(),
         node_type: "compute".into(),
-        family: "healthspring".into(),
+        family: PRIMAL_NAME.into(),
         status: "healthy".into(),
         health: 100,
         confidence: 100,

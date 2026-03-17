@@ -97,24 +97,27 @@ async fn main() {
         let gpu_result = gpu_pipe.execute_gpu(&ctx).await;
         let auto_result = gpu_pipe.execute_auto(&ctx, &caps).await;
 
-        let cpu_data = if let Some(s) = cpu_result.stage_results.last() {
-            &s.output_data
-        } else {
-            eprintln!("FAIL: CPU pipeline produced no stage results");
-            std::process::exit(1);
-        };
-        let gpu_data = if let Some(s) = gpu_result.stage_results.last() {
-            &s.output_data
-        } else {
-            eprintln!("FAIL: GPU pipeline produced no stage results");
-            std::process::exit(1);
-        };
-        let auto_data = if let Some(s) = auto_result.stage_results.last() {
-            &s.output_data
-        } else {
-            eprintln!("FAIL: Auto pipeline produced no stage results");
-            std::process::exit(1);
-        };
+        let cpu_data = cpu_result.stage_results.last().map_or_else(
+            || {
+                eprintln!("FAIL: CPU pipeline produced no stage results");
+                std::process::exit(1)
+            },
+            |s| &s.output_data,
+        );
+        let gpu_data = gpu_result.stage_results.last().map_or_else(
+            || {
+                eprintln!("FAIL: GPU pipeline produced no stage results");
+                std::process::exit(1)
+            },
+            |s| &s.output_data,
+        );
+        let auto_data = auto_result.stage_results.last().map_or_else(
+            || {
+                eprintln!("FAIL: Auto pipeline produced no stage results");
+                std::process::exit(1)
+            },
+            |s| &s.output_data,
+        );
 
         check(
             &format!("hill_{n_concs}: CPU vs GPU length"),

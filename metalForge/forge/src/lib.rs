@@ -203,6 +203,13 @@ impl Capabilities {
         }
     }
 
+    #[cfg_attr(
+        not(feature = "gpu"),
+        expect(
+            clippy::missing_const_for_fn,
+            reason = "non-const when gpu feature is enabled"
+        )
+    )]
     fn probe_gpu() -> Option<GpuInfo> {
         #[cfg(feature = "gpu")]
         {

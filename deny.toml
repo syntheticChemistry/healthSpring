@@ -4,6 +4,7 @@
 
 [advisories]
 vulnerability = "deny"
+yanked = "deny"
 unmaintained = "warn"
 
 [licenses]

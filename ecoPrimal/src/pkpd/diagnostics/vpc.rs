@@ -1,112 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Population PK diagnostics — CWRES, VPC, and GOF (Goodness-of-Fit).
+
+//! VPC (Visual Predictive Check) simulation.
 //!
-//! Standard population PK model evaluation plots as described in FDA
-//! guidance and Hooker et al. (2007). All diagnostic data is returned
-//! as structured types ready for `petalTongue` `DataChannel` rendering.
-//!
-//! ## Diagnostics
-//!
-//! - **CWRES** (Conditional Weighted Residuals): residuals standardised by
-//!   the FOCE conditional variance approximation.
-//! - **VPC** (Visual Predictive Check): simulation-based model evaluation
-//!   comparing observed data quantiles against model-predicted quantiles.
-//! - **GOF** (Goodness-of-Fit): observed vs predicted, residual vs time,
-//!   and QQ-normal plots.
+//! Simulation-based model evaluation comparing observed data quantiles
+//! against model-predicted quantiles. Bins by time, computes 5th/50th/95th
+//! percentiles, and simulates replicate datasets for prediction bands.
 
-use super::nlme::{NlmeResult, StructuralModel, Subject};
-
-/// Conditional Weighted Residuals for one subject.
-#[derive(Debug, Clone)]
-pub struct SubjectCwres {
-    pub subject_idx: usize,
-    pub times: Vec<f64>,
-    pub residuals: Vec<f64>,
-}
-
-/// Compute CWRES for all subjects given an NLME result.
-///
-/// `CWRES_ij = (y_ij - f(theta, eta_i, t_ij)) / sqrt(sigma)`
-///
-/// This is the FOCE-I approximation where residuals are scaled by the
-/// square root of the estimated residual variance.
-#[must_use]
-pub fn compute_cwres(
-    model: StructuralModel,
-    subjects: &[Subject],
-    result: &NlmeResult,
-) -> Vec<SubjectCwres> {
-    let sigma_sqrt = result.sigma.sqrt().max(1e-15);
-
-    subjects
-        .iter()
-        .enumerate()
-        .map(|(idx, subj)| {
-            let eta = &result.individual_etas[idx];
-            let residuals: Vec<f64> = subj
-                .times
-                .iter()
-                .zip(subj.observations.iter())
-                .map(|(&time, &obs)| {
-                    let pred = model(&result.theta, eta, subj.dose, time);
-                    (obs - pred) / sigma_sqrt
-                })
-                .collect();
-            SubjectCwres {
-                subject_idx: idx,
-                times: subj.times.clone(),
-                residuals,
-            }
-        })
-        .collect()
-}
-
-/// Aggregate CWRES statistics across all subjects.
-#[derive(Debug, Clone)]
-pub struct CwresSummary {
-    /// All CWRES values (concatenated across subjects).
-    pub all_residuals: Vec<f64>,
-    /// Corresponding time points.
-    pub all_times: Vec<f64>,
-    /// Mean of CWRES (should be ~0 for well-specified model).
-    pub mean: f64,
-    /// Standard deviation of CWRES (should be ~1).
-    pub std_dev: f64,
-}
-
-/// Compute aggregate CWRES summary for model evaluation.
-#[must_use]
-pub fn cwres_summary(subject_cwres: &[SubjectCwres]) -> CwresSummary {
-    let mut all_residuals = Vec::new();
-    let mut all_times = Vec::new();
-
-    for sc in subject_cwres {
-        all_residuals.extend_from_slice(&sc.residuals);
-        all_times.extend_from_slice(&sc.times);
-    }
-
-    let count = all_residuals.len();
-    let (mean, std_dev) = if count > 0 {
-        #[expect(clippy::cast_precision_loss, reason = "residual count fits f64")]
-        let n_f = count as f64;
-        let m: f64 = all_residuals.iter().sum::<f64>() / n_f;
-        let variance: f64 = all_residuals.iter().map(|&r| (r - m).powi(2)).sum::<f64>() / n_f;
-        (m, variance.sqrt())
-    } else {
-        (0.0, 0.0)
-    };
-
-    CwresSummary {
-        all_residuals,
-        all_times,
-        mean,
-        std_dev,
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// VPC (Visual Predictive Check)
-// ═══════════════════════════════════════════════════════════════════════
+use super::super::nlme::{NlmeResult, StructuralModel, Subject};
 
 /// VPC result containing observed and simulated quantile bands.
 #[derive(Debug, Clone)]
@@ -310,90 +210,6 @@ fn simulate_from_model(
         .collect()
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// GOF (Goodness-of-Fit)
-// ═══════════════════════════════════════════════════════════════════════
-
-/// Goodness-of-fit diagnostic data.
-#[derive(Debug, Clone)]
-pub struct GofResult {
-    /// Observed concentrations.
-    pub observed: Vec<f64>,
-    /// Individual predicted concentrations (using individual etas).
-    pub individual_predicted: Vec<f64>,
-    /// Population predicted concentrations (eta = 0).
-    pub population_predicted: Vec<f64>,
-    /// Observation times.
-    pub times: Vec<f64>,
-    /// Individual weighted residuals.
-    pub individual_residuals: Vec<f64>,
-    /// R-squared (observed vs individual predicted).
-    pub r_squared_individual: f64,
-    /// R-squared (observed vs population predicted).
-    pub r_squared_population: f64,
-}
-
-/// Compute goodness-of-fit diagnostics.
-#[must_use]
-pub fn compute_gof(model: StructuralModel, subjects: &[Subject], result: &NlmeResult) -> GofResult {
-    let n_eta = result.omega_diag.len();
-    let eta_zero = vec![0.0; n_eta];
-    let sigma_sqrt = result.sigma.sqrt().max(1e-15);
-
-    let mut observed = Vec::new();
-    let mut individual_predicted = Vec::new();
-    let mut population_predicted = Vec::new();
-    let mut times = Vec::new();
-    let mut individual_residuals = Vec::new();
-
-    for (idx, subj) in subjects.iter().enumerate() {
-        let eta = &result.individual_etas[idx];
-        for (&time, &obs) in subj.times.iter().zip(subj.observations.iter()) {
-            let ipred = model(&result.theta, eta, subj.dose, time);
-            let ppred = model(&result.theta, &eta_zero, subj.dose, time);
-
-            observed.push(obs);
-            individual_predicted.push(ipred);
-            population_predicted.push(ppred);
-            times.push(time);
-            individual_residuals.push((obs - ipred) / sigma_sqrt);
-        }
-    }
-
-    let r_sq_ind = r_squared(&observed, &individual_predicted);
-    let r_sq_pop = r_squared(&observed, &population_predicted);
-
-    GofResult {
-        observed,
-        individual_predicted,
-        population_predicted,
-        times,
-        individual_residuals,
-        r_squared_individual: r_sq_ind,
-        r_squared_population: r_sq_pop,
-    }
-}
-
-/// R-squared between observed and predicted values.
-fn r_squared(observed: &[f64], predicted: &[f64]) -> f64 {
-    if observed.is_empty() {
-        return 0.0;
-    }
-    #[expect(clippy::cast_precision_loss, reason = "observation count fits f64")]
-    let mean_obs = observed.iter().sum::<f64>() / observed.len() as f64;
-    let ss_tot: f64 = observed.iter().map(|&o| (o - mean_obs).powi(2)).sum();
-    let ss_res: f64 = observed
-        .iter()
-        .zip(predicted.iter())
-        .map(|(&o, &p)| (o - p).powi(2))
-        .sum();
-    if ss_tot > 1e-15 {
-        1.0 - ss_res / ss_tot
-    } else {
-        0.0
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -436,28 +252,6 @@ mod tests {
     }
 
     #[test]
-    fn cwres_has_correct_size() {
-        let (subjects, result) = fitted_result();
-        let cwres = compute_cwres(oral_one_compartment_model, &subjects, &result);
-        assert_eq!(cwres.len(), 20);
-        for sc in &cwres {
-            assert_eq!(sc.residuals.len(), 12);
-        }
-    }
-
-    #[test]
-    fn cwres_summary_mean_near_zero() {
-        let (subjects, result) = fitted_result();
-        let cwres = compute_cwres(oral_one_compartment_model, &subjects, &result);
-        let summary = cwres_summary(&cwres);
-        assert!(
-            summary.mean.abs() < 2.0,
-            "CWRES mean should be near 0: got {}",
-            summary.mean
-        );
-    }
-
-    #[test]
     fn vpc_produces_bands() {
         let (subjects, result) = fitted_result();
         let vpc = compute_vpc(
@@ -483,40 +277,6 @@ mod tests {
                 "p50 <= p95 in bin {bin_idx}"
             );
         }
-    }
-
-    #[test]
-    fn gof_individual_better_than_population() {
-        let (subjects, result) = fitted_result();
-        let gof = compute_gof(oral_one_compartment_model, &subjects, &result);
-        assert!(
-            gof.r_squared_individual >= gof.r_squared_population,
-            "individual R² ({}) >= population R² ({})",
-            gof.r_squared_individual,
-            gof.r_squared_population
-        );
-    }
-
-    #[test]
-    fn gof_sizes_correct() {
-        let (subjects, result) = fitted_result();
-        let gof = compute_gof(oral_one_compartment_model, &subjects, &result);
-        let expected_n = 20 * 12;
-        assert_eq!(gof.observed.len(), expected_n);
-        assert_eq!(gof.individual_predicted.len(), expected_n);
-        assert_eq!(gof.population_predicted.len(), expected_n);
-        assert_eq!(gof.individual_residuals.len(), expected_n);
-    }
-
-    #[test]
-    fn gof_deterministic() {
-        let (subjects, result) = fitted_result();
-        let g1 = compute_gof(oral_one_compartment_model, &subjects, &result);
-        let g2 = compute_gof(oral_one_compartment_model, &subjects, &result);
-        assert_eq!(
-            g1.r_squared_individual.to_bits(),
-            g2.r_squared_individual.to_bits()
-        );
     }
 
     #[test]

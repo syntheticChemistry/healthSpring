@@ -15,6 +15,7 @@
 use healthspring_barracuda::microbiome::{self, communities};
 use healthspring_barracuda::provenance;
 use healthspring_barracuda::tolerances;
+use healthspring_barracuda::validation::ValidationHarness;
 const W_SCALE: f64 = 10.0;
 
 // Chao1 count data (from Python baseline)
@@ -22,8 +23,7 @@ const COUNTS_HEALTHY: [u64; 15] = [250, 200, 150, 120, 100, 80, 50, 30, 10, 5, 3
 const COUNTS_DEPLETED: [u64; 12] = [850, 50, 30, 20, 15, 10, 5, 5, 3, 2, 1, 1];
 
 fn main() {
-    let mut passed = 0_u32;
-    let mut failed = 0_u32;
+    let mut h = ValidationHarness::new("Exp010 Diversity Indices");
 
     let healthy = &communities::HEALTHY_GUT[..];
     let dysbiotic = &communities::DYSBIOTIC_GUT[..];
@@ -31,173 +31,98 @@ fn main() {
     let even = &communities::PERFECTLY_EVEN[..];
     let mono = &communities::MONOCULTURE[..];
 
-    println!("{}", "=".repeat(72));
-    println!("healthSpring Exp010 — Microbiome Diversity Indices");
-    println!("{}", "=".repeat(72));
-
-    // Check 1: Shannon — perfectly even = ln(S)
-    println!("\n--- Check 1: Shannon perfectly even = ln(S) ---");
     let h_even = microbiome::shannon_index(even);
     #[expect(clippy::cast_precision_loss, reason = "species count (10) fits f64")]
     let expected_h = (even.len() as f64).ln();
-    if (h_even - expected_h).abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
-        println!(
-            "  [PASS] H' = {h_even:.10} = ln({}) = {expected_h:.10}",
-            even.len()
-        );
-        passed += 1;
-    } else {
-        println!("  [FAIL] H' = {h_even:.10}");
-        failed += 1;
-    }
+    h.check_abs(
+        "Shannon even = ln(S)",
+        h_even,
+        expected_h,
+        tolerances::DIVERSITY_CROSS_VALIDATE,
+    );
 
-    // Check 2: Shannon — monoculture = 0
-    println!("\n--- Check 2: Shannon monoculture = 0 ---");
     let h_mono = microbiome::shannon_index(mono);
-    if h_mono.abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
-        println!("  [PASS] H' = {h_mono:.10}");
-        passed += 1;
-    } else {
-        println!("  [FAIL] H' = {h_mono:.10}");
-        failed += 1;
-    }
+    h.check_abs(
+        "Shannon monoculture",
+        h_mono,
+        0.0,
+        tolerances::DIVERSITY_CROSS_VALIDATE,
+    );
 
-    // Check 3: Shannon — ordering: even > healthy > cdiff > dysbiotic > mono
-    println!("\n--- Check 3: Shannon ordering ---");
     let h_healthy = microbiome::shannon_index(healthy);
     let h_dysbiotic = microbiome::shannon_index(dysbiotic);
     let h_cdiff = microbiome::shannon_index(cdiff);
     let ordered =
         h_even > h_healthy && h_healthy > h_cdiff && h_cdiff > h_dysbiotic && h_dysbiotic > h_mono;
-    if ordered {
-        println!(
-            "  [PASS] even({h_even:.3}) > healthy({h_healthy:.3}) > cdiff({h_cdiff:.3}) > dysbiotic({h_dysbiotic:.3}) > mono({h_mono:.3})"
-        );
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("Shannon ordering", ordered);
 
-    // Check 4: Simpson — perfectly even
-    println!("\n--- Check 4: Simpson perfectly even ---");
     let d_even = microbiome::simpson_index(even);
     #[expect(clippy::cast_precision_loss, reason = "species count (10) fits f64")]
     let expected_d = (even.len() as f64).mul_add(-0.01, 1.0);
-    if (d_even - expected_d).abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
-        println!("  [PASS] D = {d_even:.10}");
-        passed += 1;
-    } else {
-        println!("  [FAIL] D = {d_even:.10}");
-        failed += 1;
-    }
+    h.check_abs(
+        "Simpson even",
+        d_even,
+        expected_d,
+        tolerances::DIVERSITY_CROSS_VALIDATE,
+    );
 
-    // Check 5: Simpson — monoculture = 0
-    println!("\n--- Check 5: Simpson monoculture = 0 ---");
     let d_mono = microbiome::simpson_index(mono);
-    if d_mono.abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
-        println!("  [PASS] D = {d_mono:.10}");
-        passed += 1;
-    } else {
-        println!("  [FAIL] D = {d_mono:.10}");
-        failed += 1;
-    }
+    h.check_abs(
+        "Simpson monoculture",
+        d_mono,
+        0.0,
+        tolerances::DIVERSITY_CROSS_VALIDATE,
+    );
 
-    // Check 6: Simpson — healthy > dysbiotic
-    println!("\n--- Check 6: Simpson ordering ---");
     let d_healthy = microbiome::simpson_index(healthy);
     let d_dysbiotic = microbiome::simpson_index(dysbiotic);
-    if d_healthy > d_dysbiotic {
-        println!("  [PASS] healthy {d_healthy:.4} > dysbiotic {d_dysbiotic:.4}");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("Simpson ordering", d_healthy > d_dysbiotic);
 
-    // Check 7: Inverse Simpson — even = S
-    println!("\n--- Check 7: Inverse Simpson even = S ---");
     let inv_even = microbiome::inverse_simpson(even);
-    if (inv_even - 10.0).abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
-        println!("  [PASS] 1/D = {inv_even:.10} = S=10");
-        passed += 1;
-    } else {
-        println!("  [FAIL] 1/D = {inv_even:.10}");
-        failed += 1;
-    }
+    h.check_abs(
+        "Inverse Simpson even",
+        inv_even,
+        10.0,
+        tolerances::DIVERSITY_CROSS_VALIDATE,
+    );
 
-    // Check 8: Pielou — even = 1.0
-    println!("\n--- Check 8: Pielou evenness even = 1.0 ---");
     let j_even = microbiome::pielou_evenness(even);
-    if (j_even - 1.0).abs() < tolerances::DIVERSITY_CROSS_VALIDATE {
-        println!("  [PASS] J = {j_even:.10}");
-        passed += 1;
-    } else {
-        println!("  [FAIL] J = {j_even:.10}");
-        failed += 1;
-    }
+    h.check_abs(
+        "Pielou even",
+        j_even,
+        1.0,
+        tolerances::DIVERSITY_CROSS_VALIDATE,
+    );
 
-    // Check 9: Pielou — ordering
-    println!("\n--- Check 9: Pielou ordering ---");
     let j_healthy = microbiome::pielou_evenness(healthy);
     let j_dysbiotic = microbiome::pielou_evenness(dysbiotic);
     let j_cdiff = microbiome::pielou_evenness(cdiff);
-    if j_healthy > j_cdiff && j_cdiff > j_dysbiotic {
-        println!(
-            "  [PASS] healthy({j_healthy:.3}) > cdiff({j_cdiff:.3}) > dysbiotic({j_dysbiotic:.3})"
-        );
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool(
+        "Pielou ordering",
+        j_healthy > j_cdiff && j_cdiff > j_dysbiotic,
+    );
 
-    // Check 10: Chao1 ≥ S_obs
-    println!("\n--- Check 10: Chao1 ≥ observed richness ---");
     let chao1_h = microbiome::chao1(&COUNTS_HEALTHY);
     let chao1_d = microbiome::chao1(&COUNTS_DEPLETED);
     let s_obs_h = COUNTS_HEALTHY.len();
     let s_obs_d = COUNTS_DEPLETED.len();
     #[expect(clippy::cast_precision_loss, reason = "S_obs small (≤20)")]
-    if chao1_h >= s_obs_h as f64 && chao1_d >= s_obs_d as f64 {
-        println!(
-            "  [PASS] Healthy: Chao1={chao1_h:.1} ≥ S_obs={s_obs_h}; Depleted: Chao1={chao1_d:.1} ≥ S_obs={s_obs_d}"
-        );
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool(
+        "Chao1 ≥ S_obs",
+        chao1_h >= s_obs_h as f64 && chao1_d >= s_obs_d as f64,
+    );
 
-    // Check 11: Chao1 healthy > Chao1 depleted
-    println!("\n--- Check 11: Chao1 healthy > depleted ---");
-    if chao1_h > chao1_d {
-        println!("  [PASS] {chao1_h:.1} > {chao1_d:.1}");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("Chao1 healthy > depleted", chao1_h > chao1_d);
 
-    // Check 12: Anderson disorder mapping
-    println!("\n--- Check 12: Pielou → Anderson disorder W ---");
     let w_healthy = microbiome::evenness_to_disorder(j_healthy, W_SCALE);
     let w_dysbiotic = microbiome::evenness_to_disorder(j_dysbiotic, W_SCALE);
-    if w_healthy > w_dysbiotic {
-        println!("  [PASS] W(healthy)={w_healthy:.3} > W(dysbiotic)={w_dysbiotic:.3}");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("Anderson W ordering", w_healthy > w_dysbiotic);
 
-    // Check 13: All indices in valid range
-    println!("\n--- Check 13: All indices in valid ranges ---");
     let all_valid = [healthy, dysbiotic, cdiff, even, mono].iter().all(|ab| {
-        let h = microbiome::shannon_index(ab);
+        let sh = microbiome::shannon_index(ab);
         let d = microbiome::simpson_index(ab);
         let j = microbiome::pielou_evenness(ab);
-        h >= -tolerances::DIVERSITY_CROSS_VALIDATE
+        sh >= -tolerances::DIVERSITY_CROSS_VALIDATE
             && (-tolerances::DIVERSITY_CROSS_VALIDATE..=1.0 + tolerances::DIVERSITY_CROSS_VALIDATE)
                 .contains(&d)
             && (ab.len() <= 1
@@ -205,42 +130,25 @@ fn main() {
                     ..=1.0 + tolerances::DIVERSITY_CROSS_VALIDATE)
                     .contains(&j))
     });
-    if all_valid {
-        println!("  [PASS] H' ≥ 0, 0 ≤ D ≤ 1, 0 ≤ J ≤ 1 for all communities");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("All indices valid ranges", all_valid);
 
-    // Check 14: Abundance normalization
-    println!("\n--- Check 14: Abundance normalization ---");
     let all_normalized = [healthy, dysbiotic, cdiff, even, mono]
         .iter()
         .all(|ab| (ab.iter().sum::<f64>() - 1.0).abs() < tolerances::ABUNDANCE_NORMALIZATION);
-    if all_normalized {
-        println!("  [PASS] All communities sum to 1.0");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("Abundance normalization", all_normalized);
 
-    // Check 15–19: Cross-validate against exp010_baseline.json
-    println!("\n--- Check 15: Baseline JSON cross-validation ---");
+    // Cross-validate against exp010_baseline.json
     let baseline_str = include_str!("../../../control/microbiome/exp010_baseline.json");
+    if let Some(prov) = provenance::load_provenance(baseline_str) {
+        provenance::log_provenance(&prov);
+    }
     if let Some(prov) = provenance::load_provenance(baseline_str) {
         provenance::log_provenance(&prov);
     }
     let baseline: serde_json::Value = match serde_json::from_str(baseline_str) {
         Ok(b) => b,
         Err(e) => {
-            println!("  [FAIL] Could not parse baseline: {e}");
-            failed += 1;
-            let total = passed + failed;
-            println!("\n{}", "=".repeat(72));
-            println!("TOTAL: {passed}/{total} PASS, {failed}/{total} FAIL");
-            println!("{}", "=".repeat(72));
+            eprintln!("FATAL: Could not parse baseline: {e}");
             std::process::exit(1);
         }
     };
@@ -267,20 +175,9 @@ fn main() {
         w_dysbiotic,
     );
 
-    if baseline_ok {
-        println!("  [PASS] All values match exp010_baseline.json");
-        passed += 1;
-    } else {
-        println!("  [FAIL] Baseline mismatch");
-        failed += 1;
-    }
+    h.check_bool("Baseline JSON cross-validation", baseline_ok);
 
-    let total = passed + failed;
-    println!("\n{}", "=".repeat(72));
-    println!("TOTAL: {passed}/{total} PASS, {failed}/{total} FAIL");
-    println!("{}", "=".repeat(72));
-
-    std::process::exit(i32::from(failed > 0));
+    h.exit();
 }
 
 #[expect(
