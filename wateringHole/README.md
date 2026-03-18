@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V35 — Protocol Evolution + Centralized Cast Algebra. 613 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation. IpcError::is_recoverable(), DispatchOutcome enum, generic discovery helpers, centralized cast module.
-**Last Updated**: March 17, 2026
+**Status**: V37 — Cross-Ecosystem Absorption Sprint. 706 tests, 79 experiments, 49 baselines with structured provenance registry, 113/113 cross-validation. 80 capabilities. FMA sweep, centralized extract_rpc_result(), proptest fuzz, MCP tools, deny.toml hardened, leverage guide published.
+**Last Updated**: March 18, 2026
 
 ---
 

@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 18, 2026
-**Status**: V36 — Deep Debt + Ecosystem Maturity. 79 experiments complete (Tracks 1–7 + extensions), 617 tests, 45/45 papers complete. All 6 GPU ops rewired to barraCuda upstream (Tier A + B). cargo-deny in CI. Zero #[allow()], zero unsafe. All 30 Track 1–5 papers complete. Track 7 DD-001–DD-007 complete. Track 6 CM-001–CM-008 complete. QS gene matrix expanded to 200 genera × 9 families. NestGate sovereign HTTP wired. Tower Atomic bootstrap. 6 new experiments: Exp107 (QS-augmented Anderson), Exp108 (real 16S pipeline), Exp109 (MIT-BIH arrhythmia), Exp095 (iPSC skin model), Exp096 (niclosamide delivery), Exp110 (equine laminitis).
+**Status**: V37 — Cross-Ecosystem Absorption Sprint. 79 experiments complete (Tracks 1–7 + extensions), 706 tests, 45/45 papers complete. mul_add() FMA sweep, centralized extract_rpc_result(), 18 proptest IPC fuzz tests, structured provenance registry (49 records), MCP tool definitions (23 tools), deny.toml 14-crate C-dep ban, leverage guide. 80 capabilities.
 
 ---
 

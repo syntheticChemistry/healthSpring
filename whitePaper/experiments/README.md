@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V36 — Deep Debt + Ecosystem Maturity. 79 experiments, 617 Rust tests, 79 capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). Structured tracing, health probes, resilient provenance trio IPC. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
+**Status**: V37 — Cross-Ecosystem Absorption Sprint. 79 experiments, 706 Rust tests, 80 capabilities. 49 baselines with structured provenance registry. 18 proptest IPC fuzz tests. MCP tool definitions (23 tools).
 **Last Updated**: March 18, 2026
 
 ---

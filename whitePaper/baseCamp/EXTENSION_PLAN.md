@@ -2,7 +2,7 @@
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
 **Last Updated**: March 18, 2026
-**Status**: V36 — Deep Debt + Ecosystem Maturity. 79 experiments, 617 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. Structured tracing, health probes, resilient provenance trio IPC. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete. **Implemented**: exp095 (iPSC skin model), exp096 (niclosamide delivery), exp107 (QS-augmented Anderson), exp108 (real 16S Anderson), exp109 (MIT-BIH arrhythmia), exp110 (equine laminitis).
+**Status**: V37 — Cross-Ecosystem Absorption Sprint. 79 experiments, 706 tests, 49 Python baselines with structured provenance registry. MCP tool definitions (23 tools). 80 capabilities.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and
