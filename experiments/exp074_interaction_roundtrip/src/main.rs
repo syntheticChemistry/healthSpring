@@ -19,6 +19,12 @@ use healthspring_barracuda::visualization::{
     ScenarioNode, SensoryConfig, UiConfig,
 };
 
+/// Test-only mock petalTongue server for IPC roundtrip validation.
+///
+/// This is a validation binary — the mock exercises the `PetalTonguePushClient`
+/// and `StreamSession` IPC path without requiring a live petalTongue instance.
+/// Responds to `visualization.render`, `visualization.capabilities`, and
+/// `visualization.interact.subscribe` with canned JSON-RPC 2.0 responses.
 fn mock_server(listener: &UnixListener, expected_calls: usize) -> Vec<serde_json::Value> {
     let mut requests = Vec::with_capacity(expected_calls);
     for _ in 0..expected_calls {

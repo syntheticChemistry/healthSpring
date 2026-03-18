@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** March 17, 2026
-**Status:** V35 — IPC Resilience + Sovereign Dispatch. 613 tests, 73 experiments, 42 baselines with provenance, 113/113 cross-validation checks. IpcError::is_recoverable(), DispatchOutcome enum, generic discovery, centralized cast module, 57+ JSON-RPC capabilities.
+**Last Updated:** March 18, 2026
+**Status:** V36 — Deep Debt + Ecosystem Maturity. 617 tests, 79 experiments, 42 baselines with provenance, 113/113 cross-validation checks. All Tier B GPU ops rewired to barraCuda upstream (MichaelisMentenBatchGpu, ScfaBatchGpu, BeatClassifyGpu). Zero #[allow()] — all migrated to #[expect()] with reasons. Inline tolerance magic numbers centralized. IPC routing for compute.shader_compile (coralReef) and model.inference_route (Squirrel). cargo-deny in CI. Doc-tests fixed (no_run instead of ignore). Duplicate lcg_step eliminated (delegate to barracuda::rng).
 
 ---
 
@@ -11,13 +11,13 @@ Per-person translation of validated science into usable health applications. Met
 
 | Track | Domain | Experiments | Status |
 |-------|--------|-------------|--------|
-| 1 — PK/PD | Pharmacokinetics, dose-response, population modeling, PBPK, MM PK | Exp001-006, 077 | **Complete** (Tier 0+1+2) |
-| 2 — Microbiome | Gut diversity, Anderson lattice, colonization resistance, FMT, antibiotics, SCFA, serotonin | Exp010-013, 078-080 | **Complete** (Tier 0+1+2) |
-| 3 — Biosignal | ECG detection, HRV, PPG SpO2, EDA stress, arrhythmia classification, multi-channel fusion | Exp020-023, 081-082 | **Complete** (Tier 0+1+2) |
+| 1 — PK/PD | Pharmacokinetics, dose-response, population modeling, PBPK, MM PK | Exp001-006, 077, 096 | **Complete** (Tier 0+1+2) |
+| 2 — Microbiome | Gut diversity, Anderson lattice, colonization resistance, FMT, antibiotics, SCFA, serotonin | Exp010-013, 078-080, 107-108 | **Complete** (Tier 0+1+2) |
+| 3 — Biosignal | ECG detection, HRV, PPG SpO2, EDA stress, arrhythmia classification, multi-channel fusion | Exp020-023, 081-082, 109 | **Complete** (Tier 0+1+2) |
 | 4 — Endocrinology | Testosterone PK, TRT outcomes, gut axis, HRV cross-track | Exp030-038 | **Complete** (Tier 0+1) |
 | 5 — NLME | FOCE/SAEM population PK, NCA, CWRES/VPC/GOF diagnostics | Exp075-076 | **Complete** (Tier 0+1) |
-| 6 — Comparative Medicine | Species-agnostic PK, cross-species Anderson, canine AD models | Exp100-106 | **Complete** (V25) |
-| 7 — Drug Discovery | MATRIX scoring, ADDRC HTS, compound screening, iPSC validation | Exp090-094 | **Complete** (V25) |
+| 6 — Comparative Medicine | Species-agnostic PK, cross-species Anderson, canine AD models | Exp100-106, 110 | **Complete** (V25) |
+| 7 — Drug Discovery | MATRIX scoring, ADDRC HTS, compound screening, iPSC validation | Exp090-096 | **Complete** (V25) |
 
 ---
 
@@ -102,7 +102,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **4** | 4 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **613** (tests) | **2,700+** |
+| **Total** | **688** | **287+** (Tier 0) | **617** (tests) | **2,700+** |
 
 ---
 

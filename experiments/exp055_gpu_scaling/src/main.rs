@@ -352,12 +352,12 @@ async fn main() {
 
     let peak_hill = hill_results
         .iter()
-        .max_by(|a, b| a.speedup.partial_cmp(&b.speedup).unwrap())
-        .unwrap();
+        .max_by(|a, b| a.speedup.total_cmp(&b.speedup))
+        .expect("hill_results is non-empty by construction");
     let peak_pk = pk_results
         .iter()
-        .max_by(|a, b| a.speedup.partial_cmp(&b.speedup).unwrap())
-        .unwrap();
+        .max_by(|a, b| a.speedup.total_cmp(&b.speedup))
+        .expect("pk_results is non-empty by construction");
 
     println!("│                                                                │");
     println!(

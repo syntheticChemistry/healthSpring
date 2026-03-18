@@ -12,6 +12,7 @@
 //!
 //! All functions are pure, deterministic (given a seed), and `#[must_use]`.
 
+use barracuda::rng::lcg_step;
 use barracuda::stats::mean;
 
 use crate::rng::normal_sample;
@@ -61,12 +62,6 @@ pub struct Decomposition {
     pub bias_fraction: f64,
     /// Fraction of MSE attributable to noise.
     pub noise_fraction: f64,
-}
-
-const fn lcg_step(state: u64) -> u64 {
-    state
-        .wrapping_mul(6_364_136_223_846_793_005)
-        .wrapping_add(1)
 }
 
 #[expect(

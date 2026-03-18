@@ -207,7 +207,7 @@ fn main() {
         .zip(auc_arr.iter())
         .map(|(&kv, &a)| (kv, a))
         .collect();
-    paired.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
+    paired.sort_by(|a, b| a.0.total_cmp(&b.0));
     #[expect(clippy::cast_precision_loss, reason = "mid = 50")]
     let mid_f64 = mid as f64;
     let low_kv_auc: f64 = paired[..mid].iter().map(|(_, a)| a).sum::<f64>() / mid_f64;
@@ -239,7 +239,7 @@ fn main() {
     // --- Check 8: AUC percentiles ordered ---
     println!("\n--- Check 8: AUC percentiles ordered ---");
     let mut auc_sorted = auc_arr.clone();
-    auc_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    auc_sorted.sort_by(f64::total_cmp);
     let p5 = auc_sorted[n_patients / 20];
     let p50 = auc_sorted[n_patients / 2];
     let p95 = auc_sorted[19 * n_patients / 20];

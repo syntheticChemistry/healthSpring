@@ -50,6 +50,8 @@ fn dispatch_extended(
         "primal.forward" => handle_primal_forward(params),
         "primal.discover" => handle_primal_discover(),
         "compute.offload" => handle_compute_offload(params),
+        "compute.shader_compile" => handle_shader_compile(params),
+        "model.inference_route" => handle_inference_route(params),
         "data.fetch" => handle_data_fetch(params),
         _ => {
             warn!(method, "unknown method requested");
@@ -206,6 +208,39 @@ fn handle_compute_offload(params: &serde_json::Value) -> serde_json::Value {
 
     rpc::send(&compute_socket, &format!("compute.{operation}"), params).unwrap_or_else(
         || serde_json::json!({"error": "compute_offload_failed", "operation": operation}),
+    )
+}
+
+fn handle_shader_compile(params: &serde_json::Value) -> serde_json::Value {
+    let Some(shader_socket) = socket::discover_shader_compiler() else {
+        return serde_json::json!({
+            "error": "shader_compiler_not_found",
+            "hint": "start coralReef to enable sovereign shader compilation",
+            "env_override": "HEALTHSPRING_SHADER_PRIMAL",
+        });
+    };
+
+    rpc::send(&shader_socket, "shader.compile", params).unwrap_or_else(|| {
+        serde_json::json!({"error": "shader_compile_failed", "hint": "coralReef did not respond"})
+    })
+}
+
+fn handle_inference_route(params: &serde_json::Value) -> serde_json::Value {
+    let Some(inference_socket) = socket::discover_inference_primal() else {
+        return serde_json::json!({
+            "error": "inference_primal_not_found",
+            "hint": "start Squirrel to enable model inference routing",
+            "env_override": "HEALTHSPRING_INFERENCE_PRIMAL",
+        });
+    };
+
+    let operation = params
+        .get("operation")
+        .and_then(|v| v.as_str())
+        .unwrap_or("infer");
+
+    rpc::send(&inference_socket, &format!("model.{operation}"), params).unwrap_or_else(
+        || serde_json::json!({"error": "inference_route_failed", "operation": operation}),
     )
 }
 

@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V35 — Protocol Evolution + Centralized Cast Algebra. 73 experiments, 613 Rust tests, 79 wired JSON-RPC capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). Structured tracing, health probes, resilient provenance trio IPC. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
-**Last Updated**: March 17, 2026
+**Status**: V36 — Deep Debt + Ecosystem Maturity. 79 experiments, 617 Rust tests, 79 capabilities. All Tier 0+1+2+3. 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). Structured tracing, health probes, resilient provenance trio IPC. NLME population PK (FOCE/SAEM), NCA, diagnostics (CWRES/VPC/GOF), WFDB parser, 6 GPU shaders, fused pipeline.
+**Last Updated**: March 18, 2026
 
 ---
 
@@ -19,6 +19,7 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 004 | mAb PK cross-species transfer (lokivetmab → nemolizumab) | nS-603 extension | 0,1 | 12 | 7 |
 | 005 | Population PK Monte Carlo (1,000 patients) | Mould & Upton 2013 | 0,1,2 | 15 | 12 |
 | 006 | PBPK 5-tissue physiological compartments | Gabrielsson & Weiner | 0,1 | 13 | 13 |
+| 096 | Niclosamide delivery (formulation PK) | Drug delivery | 0,1 | control | binary |
 
 ### Track 2: Gut Microbiome
 
@@ -28,6 +29,8 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 011 | Anderson localization in gut lattice | wetSpring Exp107 extension | 0,1 | 12 | 14 |
 | 012 | C. diff colonization resistance score | Jenior 2021 / Anderson ξ | 0,1 | 10 | 10 |
 | 013 | FMT microbiota transplant for rCDI | van Nood 2013 / Bray-Curtis | 0,1 | 12 | 12 |
+| 107 | QS-augmented Anderson (quorum-sensing disorder) | Phase 3 QS gene profiling | 0,1 | control | binary |
+| 108 | Real 16S Anderson (HMP/NCBI SRA) | HMP pipeline | 0,1 | control | binary |
 
 ### Track 3: Biosignal Processing
 
@@ -37,6 +40,7 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 021 | HRV metrics (SDNN, RMSSD, pNN50) | Task Force 1996 | 0,1 | 10 | 10 |
 | 022 | PPG SpO2 R-value calibration | Beer-Lambert / Tremper 1989 | 0,1 | 11 | 11 |
 | 023 | Multi-channel fusion (ECG + PPG + EDA) | Composite weighted index | 0,1 | 11 | 11 |
+| 109 | MIT-BIH arrhythmia (full database validation) | PhysioNet MIT-BIH | 0,1 | control | binary |
 
 ### Track 4: Endocrinology (Testosterone PK / TRT Outcomes)
 
@@ -133,6 +137,7 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 104 | Cross-species PK allometric scaling | CM-005 | 0,1 | control | binary |
 | 105 | Canine gut microbiome Anderson lattice | CM-006 | 0,1 | control | binary |
 | 106 | Feline hyperthyroidism methimazole PK (Trepanier 2006) | CM-007 | 0,1 | control | binary |
+| 110 | Equine laminitis inflammatory cascade (hoof lamellae) | CM-008 | 0,1 | control | binary |
 
 ### Track 7: Drug Discovery (V25)
 
@@ -143,6 +148,7 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 092 | Compound IC50 profiling (library sweep) | DD-003 | 0,1 | control | binary |
 | 093 | ChEMBL JAK panel bioactivity | DD-004 | 0,1 | control | binary |
 | 094 | Rho/MRTF/SRF fibrosis pathway scoring (Neubig) | DD-005 | 0,1 | control | binary |
+| 095 | iPSC skin model readout (Gonzales) | DD-006 | 0,1 | control | binary |
 
 ### Cross-Validation
 
@@ -222,13 +228,19 @@ experiments/
 ├── exp092_compound_library/      # V25: Track 7 — compound IC50
 ├── exp093_chembl_jak_panel/      # V25: Track 7 — ChEMBL JAK panel
 ├── exp094_rho_mrtf_fibrosis/     # V25: Track 7 — fibrosis scoring
+├── exp095_ipsc_skin_model/       # V36: Track 7 — iPSC skin model
+├── exp096_niclosamide_delivery/  # V36: Track 1 — niclosamide delivery
 ├── exp100_canine_il31/           # V25: Track 6 — canine IL-31
 ├── exp101_canine_jak1/           # V25: Track 6 — JAK1 selectivity
 ├── exp102_il31_pruritus_timecourse/ # V25: Track 6 — pruritus
 ├── exp103_lokivetmab_duration/   # V25: Track 6 — lokivetmab
 ├── exp104_cross_species_pk/      # V25: Track 6 — cross-species PK
 ├── exp105_canine_gut_anderson/   # V25: Track 6 — canine gut Anderson
-└── exp106_feline_hyperthyroid/   # V25: Track 6 — feline MM PK
+├── exp106_feline_hyperthyroid/   # V25: Track 6 — feline MM PK
+├── exp107_qs_augmented_anderson/ # V36: Track 2 — QS-augmented Anderson
+├── exp108_real_16s_anderson/     # V36: Track 2 — real 16S Anderson
+├── exp109_mitbih_arrhythmia/     # V36: Track 3 — MIT-BIH arrhythmia
+└── exp110_equine_laminitis/      # V36: Track 6 — equine laminitis
 ```
 
 Controls live in `control/`:
@@ -288,7 +300,8 @@ control/
 - **083–089**: GPU V16 parity, benchmarks, toadStool dispatch, petalTongue V16
 - **090–094**: Track 7 (Drug Discovery / ADDRC)
 - **100–106**: Track 6 (Comparative Medicine / One Health)
-- **107+**: Future extensions
+- **107–110**: V36 extensions (QS Anderson, real 16S, MIT-BIH, equine laminitis)
+- **111+**: Future extensions
 
 ---
 

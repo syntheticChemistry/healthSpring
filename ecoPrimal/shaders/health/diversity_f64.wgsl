@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //
 // diversity_f64.wgsl — Shannon and Simpson diversity indices on GPU
 //

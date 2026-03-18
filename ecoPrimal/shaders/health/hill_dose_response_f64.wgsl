@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //
 // hill_dose_response_f64.wgsl — Vectorized Hill dose-response with Emax
 //

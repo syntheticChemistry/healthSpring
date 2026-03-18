@@ -9,7 +9,7 @@
 //!
 //! ## QS Families
 //!
-//! Six major QS gene families relevant to the human gut:
+//! Nine QS gene families relevant to the human gut and cross-site microbiome:
 //!
 //! | Family | Signal | Gut relevance |
 //! |--------|--------|---------------|
@@ -19,6 +19,9 @@
 //! | `Com` | CSP | *Streptococcus* competence |
 //! | `Las`/`Rhl` | HSL cascade | *Pseudomonas* (dysbiosis marker) |
 //! | `Fsr` | GBAP | *Enterococcus* virulence |
+//! | `QseBC` | Epinephrine/NE | Inter-kingdom signaling |
+//! | `VqsM` | Vibrio QS | Cholera-associated dysbiosis |
+//! | `PqsABCDE` | PQS | *Pseudomonas* pathogenesis |
 //!
 //! ## Integration with Anderson model
 //!
@@ -38,7 +41,7 @@
 use serde::Deserialize;
 
 /// Number of tracked QS gene families.
-pub const NUM_FAMILIES: usize = 6;
+pub const NUM_FAMILIES: usize = 9;
 
 /// QS gene family identifiers.
 ///
@@ -57,6 +60,12 @@ pub enum QsFamily {
     LasRhl,
     /// Fsr — gelatinase biosynthesis pheromone (*Enterococcus*)
     Fsr,
+    /// `QseBC` — epinephrine/norepinephrine inter-kingdom signaling
+    QseBC,
+    /// `VqsM` — Vibrio quorum signal
+    VqsM,
+    /// `PqsABCDE` — Pseudomonas quinolone signal
+    PqsABCDE,
 }
 
 impl QsFamily {
@@ -68,6 +77,9 @@ impl QsFamily {
         Self::Com,
         Self::LasRhl,
         Self::Fsr,
+        Self::QseBC,
+        Self::VqsM,
+        Self::PqsABCDE,
     ];
 
     /// Index into the presence matrix columns.
@@ -80,6 +92,9 @@ impl QsFamily {
             Self::Com => 3,
             Self::LasRhl => 4,
             Self::Fsr => 5,
+            Self::QseBC => 6,
+            Self::VqsM => 7,
+            Self::PqsABCDE => 8,
         }
     }
 }
@@ -256,20 +271,23 @@ mod tests {
                 "Com".into(),
                 "LasRhl".into(),
                 "Fsr".into(),
+                "QseBC".into(),
+                "VqsM".into(),
+                "PqsABCDE".into(),
             ],
-            // Bacteroides:     LuxIR=T, LuxS=T, rest false
-            // Clostridioides:  LuxS=T, Agr=T, rest false
-            // Escherichia:     LuxS=T, rest false
-            // Faecalibacterium: LuxS=T, rest false
-            // Enterococcus:    Fsr=T, rest false
-            // Pseudomonas:     LasRhl=T, rest false
+            // Bacteroides:      LuxIR=T, LuxS=T
+            // Clostridioides:   LuxS=T, Agr=T
+            // Escherichia:      LuxS=T, QseBC=T
+            // Faecalibacterium: LuxS=T
+            // Enterococcus:     Fsr=T
+            // Pseudomonas:      LasRhl=T, PqsABCDE=T
             presence: vec![
-                vec![true, true, false, false, false, false],
-                vec![false, true, true, false, false, false],
-                vec![false, true, false, false, false, false],
-                vec![false, true, false, false, false, false],
-                vec![false, false, false, false, false, true],
-                vec![false, false, false, false, true, false],
+                vec![true, true, false, false, false, false, false, false, false],
+                vec![false, true, true, false, false, false, false, false, false],
+                vec![false, true, false, false, false, false, true, false, false],
+                vec![false, true, false, false, false, false, false, false, false],
+                vec![false, false, false, false, false, true, false, false, false],
+                vec![false, false, false, false, true, false, false, false, true],
             ],
         }
     }
@@ -282,6 +300,9 @@ mod tests {
         assert_eq!(QsFamily::Com.index(), 3);
         assert_eq!(QsFamily::LasRhl.index(), 4);
         assert_eq!(QsFamily::Fsr.index(), 5);
+        assert_eq!(QsFamily::QseBC.index(), 6);
+        assert_eq!(QsFamily::VqsM.index(), 7);
+        assert_eq!(QsFamily::PqsABCDE.index(), 8);
     }
 
     #[test]
@@ -293,6 +314,9 @@ mod tests {
         assert!(m.has_gene(1, QsFamily::Agr));
         assert!(m.has_gene(4, QsFamily::Fsr));
         assert!(m.has_gene(5, QsFamily::LasRhl));
+        assert!(m.has_gene(2, QsFamily::QseBC)); // Escherichia
+        assert!(m.has_gene(5, QsFamily::PqsABCDE)); // Pseudomonas
+        assert!(!m.has_gene(0, QsFamily::VqsM)); // No Vibrio in test matrix
         assert!(!m.has_gene(99, QsFamily::LuxS));
     }
 
@@ -320,6 +344,14 @@ mod tests {
 
         let com_density = qs_gene_density(&uniform, &m, QsFamily::Com);
         assert!((com_density).abs() < 1e-10);
+
+        let qsebc_density = qs_gene_density(&uniform, &m, QsFamily::QseBC);
+        // Escherichia only = 1/6
+        assert!((qsebc_density - 1.0 / 6.0).abs() < 1e-10);
+
+        let pqs_density = qs_gene_density(&uniform, &m, QsFamily::PqsABCDE);
+        // Pseudomonas only = 1/6
+        assert!((pqs_density - 1.0 / 6.0).abs() < 1e-10);
     }
 
     #[test]
@@ -463,7 +495,7 @@ mod tests {
             assert!(parsed.is_ok(), "deserialization should succeed");
             if let Ok(p) = parsed {
                 assert_eq!(p.species.len(), 6);
-                assert_eq!(p.families.len(), 6);
+                assert_eq!(p.families.len(), 9);
                 assert_eq!(p.presence.len(), 6);
             }
         }

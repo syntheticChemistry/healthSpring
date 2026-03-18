@@ -15,15 +15,20 @@
 //!
 //! ## Usage
 //!
-//! ```rust,ignore
+//! ```rust,no_run
 //! use healthspring_barracuda::data::{NcbiProvider, DataError};
 //!
-//! let provider = NcbiProvider::discover();
-//! let result = provider.fetch("gene", "12345")?;
+//! fn example() -> Result<(), DataError> {
+//!     let provider = NcbiProvider::discover();
+//!     let result = provider.fetch("gene", "12345")?;
+//!     Ok(())
+//! }
 //! ```
 
 mod discovery;
 mod fetch;
+#[cfg(feature = "nestgate")]
+pub mod ncbi_http;
 pub mod provenance;
 mod rpc;
 mod storage;

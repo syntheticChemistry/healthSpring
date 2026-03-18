@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: March 17, 2026
-**Status**: V35 — Protocol Evolution + Centralized Cast Algebra. 73 experiments, 613 tests + 173 validation checks + 113/113 cross-validation. Structured tracing, health.liveness/readiness probes, resilient provenance trio IPC, 79 JSON-RPC capabilities. V31: OrExit, IpcError, enriched capability.list, magic number elimination. V30: Dual-format capability, zero-panic, compute_dispatch, barracuda::health delegation, deny.toml. V25: Track 6+7 complete.
+**Last Updated**: March 18, 2026
+**Status**: V36 — Deep Debt + Ecosystem Maturity. 79 experiments, 617 tests + 173 validation checks + 113/113 cross-validation. All 6 GPU ops rewired to barraCuda upstream (Tier A + B complete). Inline tolerances centralized, duplicate math eliminated. IPC routing for coralReef (shader.compile) and Squirrel (model.inference_route). cargo-deny in CI. V35: IPC resilience, sovereign dispatch. V31: OrExit, IpcError, enriched capability.list. V25: Track 6+7 complete.
 
 ---
 

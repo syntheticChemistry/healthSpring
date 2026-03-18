@@ -26,10 +26,10 @@
 //! - Eigensolver — `barracuda::special::{tridiagonal_ql, anderson_diagonalize}`
 //! - Diversity stats — `barracuda::stats::{shannon, simpson, chao1, pielou, bray_curtis}`
 //!
-//! **Tier B — Absorption candidates** (local shaders, barraCuda design pending):
-//! - `MichaelisMentenBatch` — Euler ODE per patient, bio module candidate
-//! - `ScfaBatch` — element-wise Michaelis-Menten ×3, bio module candidate
-//! - `BeatClassifyBatch` — template correlation + argmax, biosignal candidate
+//! **Tier B — Absorbed upstream, rewired** (`barracuda::ops::health`):
+//! - `MichaelisMentenBatch` → `barracuda::ops::health::MichaelisMentenBatchGpu`
+//! - `ScfaBatch` → `barracuda::ops::health::ScfaBatchGpu`
+//! - `BeatClassifyBatch` → `barracuda::ops::health::BeatClassifyGpu`
 //!
 //! **Pending architectural** (local to healthSpring until next absorption):
 //! - `GpuContext` fused pipeline → `barracuda::session::TensorSession`

@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 17, 2026
+**Date:** March 18, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V35 — IPC Resilience + Sovereign Dispatch. 613 tests, 73 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V35: thiserror `IpcError` (8 variants + query helpers), `CircuitBreaker` + `RetryPolicy` (exponential backoff), `DispatchOutcome<T>` (protocol/application error separation), 4-format capability parsing, proptest IPC fuzzing, `safe_cast` module, sovereign GPU dispatch via `CoralReefDevice`, `deny.toml` hardened (`multiple-versions = "deny"`, `yanked = "deny"`). Zero clippy warnings, zero `#[allow()]`, zero unsafe. 79 capabilities.
+**Status:** V36 — Deep Debt + Ecosystem Maturity. 617 tests, 79 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V36: Tier B GPU ops rewired to barraCuda upstream (`MichaelisMentenBatchGpu`, `ScfaBatchGpu`, `BeatClassifyGpu`), duplicate `lcg_step` eliminated (delegate to `barracuda::rng`), all `#[allow()]` migrated to `#[expect()]` with reasons, inline tolerance magic numbers centralized, IPC routing for `compute.shader_compile` (coralReef) and `model.inference_route` (Squirrel), WGSL shader licenses corrected to `AGPL-3.0-or-later`, `cargo-deny` in CI, doc-tests fixed, `unwrap`/`expect` evolved to `total_cmp` and `#[expect]`. Zero clippy warnings, zero `#[allow()]`, zero unsafe. 79 capabilities.
 
 ---
 
@@ -33,16 +33,16 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V35** (IPC Resilience + Sovereign Dispatch) |
-| **Total tests** | **613** (567+ lib + 33 forge + 30 toadStool + 5 doc) |
-| Experiments complete | 73 (Tracks 1–7, Tier 0+1+2+3) |
+| Version | **V36** (Deep Debt + Ecosystem Maturity) |
+| **Total tests** | **617** (567+ lib + 33 forge + 30 toadStool + 5 doc) |
+| Experiments complete | 79 (Tracks 1–7, Tier 0+1+2+3) |
 | JSON-RPC capabilities | 79 (all wired — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **42** with git-tracked provenance (all 7 tracks) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
 | Comparative Medicine (Track 6) | **Complete** — 7 experiments (Exp100–106), canine + feline + cross-species |
 | Drug Discovery (Track 7) | **Complete** — 5 experiments (Exp090–094), MATRIX + HTS + compound + fibrosis |
-| GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity checks |
+| GPU validation (Tier 2) | **Live** — 6 ops rewired to barraCuda (Tier A + B), fused pipeline, 42/42 parity checks |
 | CPU parity | Rust 84× faster than Python across V16 primitives |
 | biomeOS niche | **Live** — `UniBin`-compliant primal binary (`serve`/`version`/`capabilities` subcommands), SIGTERM/SIGINT handling |
 | NLME population PK | FOCE + SAEM estimation, NCA metrics, CWRES/VPC/GOF diagnostics |
@@ -53,7 +53,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Clippy | **0 warnings** (`#![deny(clippy::pedantic, clippy::nursery)]`) |
 | `cargo fmt` | **0 diffs** |
 | `cargo doc` | **0 warnings** |
-| Max file size | ~350 lines (all files well under 1000-line limit) |
+| Max file size | 731 lines (test file; all production files well under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
 
 ---

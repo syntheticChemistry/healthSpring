@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Paper Review Queue
 
-**Last Updated**: March 17, 2026
-**Status**: V35 — Protocol Evolution + Centralized Cast Algebra. 73 experiments complete (Tracks 1–7), 613 tests + 173 validation checks + 113/113 cross-validation (all 7 tracks), 79 wired JSON-RPC capabilities (capability registry). All 30 Track 1–5 papers complete. Track 7 DD-001–DD-005 complete. Track 6 CM-001–CM-007 complete. Structured tracing, health probes, resilient provenance trio IPC.
+**Last Updated**: March 18, 2026
+**Status**: V36 — Deep Debt + Ecosystem Maturity. 79 experiments complete (Tracks 1–7 + extensions), 617 tests, 45/45 papers complete. All 6 GPU ops rewired to barraCuda upstream (Tier A + B). cargo-deny in CI. Zero #[allow()], zero unsafe. All 30 Track 1–5 papers complete. Track 7 DD-001–DD-007 complete. Track 6 CM-001–CM-008 complete. QS gene matrix expanded to 200 genera × 9 families. NestGate sovereign HTTP wired. Tower Atomic bootstrap. 6 new experiments: Exp107 (QS-augmented Anderson), Exp108 (real 16S pipeline), Exp109 (MIT-BIH arrhythmia), Exp095 (iPSC skin model), Exp096 (niclosamide delivery), Exp110 (equine laminitis).
 
 ---
 
@@ -16,9 +16,9 @@
 | Track 4: Endocrinology | 9 | 9 | 9 |
 | Validation | 1 | 1 | 1 |
 | **Tracks 1–5 Total** | **30** | **30** | **30** |
-| Track 6: Comparative Medicine | 8 | 7 | 7 |
-| Track 7: Drug Discovery | 7 | 5 | 5 |
-| **Grand Total** | **45** | **42** | **42** |
+| Track 6: Comparative Medicine | 8 | 8 | 8 |
+| Track 7: Drug Discovery | 7 | 7 | 7 |
+| **Grand Total** | **45** | **45** | **45** |
 
 ---
 
@@ -63,6 +63,22 @@
 | CM-001 | Gonzales 2013 — Canine IL-31 serum kinetics | Exp100 | 14 | 14 | 0,1 |
 | CM-002 | Gonzales 2014 — Oclacitinib JAK1 selectivity | Exp101 | 15 | 15 | 0,1 |
 | CM-005 | Cross-species allometric PK bridge | Exp104 | 15 | 15 | 0,1 |
+| DD-005 | Neubig Rho/MRTF/SRF fibrosis inhibitors | Exp094 | 15 | 15 | 0,1 |
+| DD-006 | Gonzales iPSC skin model validation | Exp095 | — | 15 | 0,1 |
+| DD-007 | Ellsworth niclosamide delivery optimization | Exp096 | — | 17 | 0,1 |
+| CM-006 | Canine gut microbiome Anderson | Exp105 | — | 15 | 0,1 |
+| CM-007 | Feline hyperthyroidism PK (methimazole) | Exp106 | — | 15 | 0,1 |
+| CM-008 | Equine laminitis inflammatory cascade | Exp110 | — | 15 | 0,1 |
+
+---
+
+## Science Extension Experiments (V36)
+
+| ID | Title | Experiment | Checks | Tier |
+|----|-------|-----------|:------:|:----:|
+| EXT-001 | QS-augmented Anderson disorder (200 genera, 9 families) | Exp107 | 24 | 0,1 |
+| EXT-002 | Real 16S community Anderson pipeline (HMP + CDI) | Exp108 | 15 | 0,1 |
+| EXT-003 | MIT-BIH full arrhythmia classification | Exp109 | 22 | 0,1 |
 
 ---
 
@@ -219,8 +235,9 @@ All 30 queued papers complete at Tier 0+1. Six have Tier 2 GPU validation. Full-
 5. ~~**Track 7 DD-001–004**~~: **DONE** (V25) — Exp090–093, MATRIX scoring + HTS + compound library + ChEMBL panel
 6. ~~**Track 6 CM-001–007**~~: **DONE** (V25) — Exp100–106, canine IL-31/JAK1/pruritus/lokivetmab/gut + feline MM PK + cross-species PK
 6b. ~~**Track 7 DD-001–005**~~: **DONE** (V25) — Exp090–094, MATRIX/HTS/compound/ChEMBL/fibrosis
-6c. **Track 7 DD-006–007**: iPSC validation, Ellsworth med chem (next)
-7. **QS gene profiling**: Extend Anderson disorder with functional dimension (NCBI Gene)
+6c. ~~**Track 7 DD-006–007**~~: **DONE** (V36) — Exp095 (iPSC 15/15), Exp096 (niclosamide 17/17)
+6d. ~~**Track 6 CM-008**~~: **DONE** (V36) — Exp110 (equine laminitis 15/15)
+7. ~~**QS gene profiling**~~: **DONE** (V36) — 200 genera, 9 families (QseBC, VqsM, PqsABCDE), Exp107 (24/24)
 8. **Species-agnostic PK refactor**: Parameterize compartment models by species
 9. **GPU Tier 2**: Anderson eigensolve (Exp011) → `anderson_lyapunov_f64.wgsl`
 10. **GPU Tier 2**: Biosignal FFT (Exp020-023) → GPU radix-2 FFT for real-time ECG/PPG

@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp110"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "exp110_equine_laminitis"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../ecoPrimal" }
+serde_json = "1"

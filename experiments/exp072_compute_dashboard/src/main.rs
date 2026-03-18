@@ -2,6 +2,11 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![expect(
+    clippy::expect_used,
+    reason = "Mutex::lock().expect() is idiomatic for poisoned-mutex \
+              handling in multi-threaded streaming callbacks"
+)]
 //! Compute dashboard: wire toadStool `execute_streaming()` → petalTongue
 //! `StreamSession` for live pipeline progress visualization.
 //!

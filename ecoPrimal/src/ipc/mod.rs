@@ -13,3 +13,4 @@ pub mod protocol;
 pub mod resilience;
 pub mod rpc;
 pub mod socket;
+pub mod tower_atomic;

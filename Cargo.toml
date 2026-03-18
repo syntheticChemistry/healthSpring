@@ -79,11 +79,17 @@ members = [
     "experiments/exp100_canine_il31",
     "experiments/exp101_canine_jak1",
     "experiments/exp094_rho_mrtf_fibrosis",
+    "experiments/exp095_ipsc_skin_model",
+    "experiments/exp096_niclosamide_delivery",
     "experiments/exp102_il31_pruritus_timecourse",
     "experiments/exp103_lokivetmab_duration",
     "experiments/exp104_cross_species_pk",
     "experiments/exp105_canine_gut_anderson",
     "experiments/exp106_feline_hyperthyroid",
+    "experiments/exp107_qs_augmented_anderson",
+    "experiments/exp108_real_16s_anderson",
+    "experiments/exp109_mitbih_arrhythmia",
+    "experiments/exp110_equine_laminitis",
 ]
 
 [workspace.package]

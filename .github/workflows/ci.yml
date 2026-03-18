@@ -24,6 +24,8 @@ jobs:
       run: cargo clippy --workspace -- -D warnings -W clippy::pedantic -W clippy::nursery
     - name: Doc check
       run: cargo doc --workspace --no-deps
+    - name: Dependency audit (cargo-deny)
+      uses: EmbarkStudios/cargo-deny-action@v2
 
   test:
     runs-on: ubuntu-latest

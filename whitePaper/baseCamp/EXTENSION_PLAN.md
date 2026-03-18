@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
-**Last Updated**: March 17, 2026
-**Status**: V35 — Protocol Evolution + Centralized Cast Algebra. 73 experiments, 613 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. Structured tracing, health probes, resilient provenance trio IPC. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete.
+**Last Updated**: March 18, 2026
+**Status**: V36 — Deep Debt + Ecosystem Maturity. 79 experiments, 617 tests, 6 WGSL shaders (all with provenance docs), 30/30 papers complete. Structured tracing, health probes, resilient provenance trio IPC. 42 Python baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Tracks 6–7 (Comparative Medicine, Drug Discovery) complete. **Implemented**: exp095 (iPSC skin model), exp096 (niclosamide delivery), exp107 (QS-augmented Anderson), exp108 (real 16S Anderson), exp109 (MIT-BIH arrhythmia), exp110 (equine laminitis).
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and
@@ -243,6 +243,9 @@ parameter.
 | **AgrBDCA** | Autoinducing peptide | Staphylococcus, Clostridium | UniProt |
 | **ComABCDE** | Competence-stimulating peptide | Streptococcus | NCBI Gene |
 | **LasI/RhlI** | 3-oxo-C12-HSL, C4-HSL | Pseudomonas | NCBI Gene |
+| **QseBC** | Epinephrine/norepinephrine | Inter-kingdom signaling | NCBI Gene |
+| **VqsM** | Vibrio quorum signal | Vibrio (cholera dysbiosis) | NCBI Gene |
+| **PqsABCDE** | PQS (Pseudomonas quinolone signal) | Pseudomonas pathogenesis | NCBI Gene, UniProt |
 
 ### Integration with Anderson Model
 
@@ -267,6 +270,72 @@ and functional signaling capacity.
    (lower effective disorder, more extended states)
 
 **Data**: ~5GB from NCBI Gene/Protein, cached via NestGate
+
+---
+
+## NestGate Integration Plan
+
+healthSpring's data module (`ecoPrimal/src/data/`) already implements three-tier fetch:
+1. biomeOS `capability.call("data.ncbi_fetch", ...)` via Neural API
+2. NestGate direct JSON-RPC (`data.ncbi_search`, `storage.store/retrieve`)
+3. Local cache at `$HEALTHSPRING_DATA_ROOT/ncbi_cache/`
+
+### Missing: Sovereign HTTP Tier
+
+The sovereign tier (direct NCBI HTTP when no ecosystem services are available) needs `ureq` for E-utilities access:
+- `efetch(db, id, api_key)` — NCBI EFetch for sequences, gene records
+- `esearch(db, query, max_results)` — NCBI ESearch for accession discovery
+- `sra_metadata(accession)` — SRA Run Info for 16S datasets
+
+Content key format: `ncbi:{db}:{id}` (e.g., `ncbi:gene:12345`, `ncbi:sra:SRR000001`).
+
+### NestGate Storage API
+
+When NestGate is available, fetched data is cached via:
+- `storage.store(key, value, family_id)` — persist content
+- `storage.retrieve(key, family_id)` — fetch cached content
+- `storage.exists(key, family_id)` — check cache hit
+
+This pattern is absorbed from wetSpring V127's `ncbi/nestgate/` module.
+
+---
+
+## NUCLEUS Local Deployment Plan
+
+### Phase 0 — Tower Atomic (eastGate)
+
+```
+Tower Atomic = BearDog (crypto) + Songbird (discovery) + Neural API
+```
+
+Update `graphs/healthspring_niche_deploy.toml` to bootstrap Tower Atomic. Gives:
+- Automatic capability discovery (no manual socket paths)
+- Encrypted IPC (BearDog lineage-based auto-trust)
+- Neural API routing for any primal
+
+### Phase 1 — Node Atomic (add northGate)
+
+```
+Node Atomic = Tower Atomic + ToadStool (compute)
+```
+
+GPU job dispatch to northGate RTX 5090 via `compute.dispatch.submit`. Precision routing: f64 on Titan V, df64 on consumer GPUs.
+
+### Phase 2 — Nest Atomic (add westGate)
+
+```
+Nest Atomic = Tower Atomic + NestGate (storage)
+```
+
+Content-addressed storage on westGate ZFS (76TB). Blob replication. NCBI bulk downloads (~290GB) cached and replicated.
+
+### Phase 3 — Full NUCLEUS (all gates)
+
+```
+NUCLEUS = Tower + Node + Nest + Squirrel (AI)
+```
+
+All gates orchestrated via biomeOS. D4 cross-track Monte Carlo, Anderson 3D, real-time wearable streaming.
 
 ---
 

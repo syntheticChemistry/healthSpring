@@ -13,8 +13,13 @@
 # With just the primals and graphs, biomeOS recreates the entire diagnostic
 # pipeline. The Neural API Pathway Learner optimizes it over time.
 #
-# STATUS: v0.1.0 — initial niche (Mar 14, 2026)
+# STATUS: v0.2.0 — Tower Atomic wired (Mar 17, 2026)
 # Niche manifest: graphs/healthspring_niche.toml
+#
+# NUCLEUS Atomics:
+#   Tower Atomic = BearDog + Songbird (Nodes 1-2)
+#   Node Atomic  = Tower Atomic + ToadStool (add Node 7)
+#   Nest Atomic  = Tower Atomic + NestGate (add Node 6)
 #
 # Usage:
 #   biomeos deploy --graph graphs/healthspring_niche_deploy.toml
@@ -216,6 +221,12 @@ capabilities = [
     "provenance.record",
     "provenance.complete",
     "provenance.status",
+    # ── Discovery (7) ─────────────────────────────────────────────────
+    # Drug Discovery (DD-006 iPSC, DD-007 niclosamide)
+    "science.discovery.ipsc_skin_model",
+    "science.discovery.niclosamide_delivery",
+    # ── QS Gene Extension ──────────────────────────────────────────────
+    "science.microbiome.qs_expanded_matrix",
     # ── Cross-primal (5) ─────────────────────────────────────────────
     "primal.forward",
     "primal.discover",

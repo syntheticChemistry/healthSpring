@@ -19,7 +19,7 @@ barracuda-ops = ["gpu"]
 # Sovereign dispatch via barraCuda CoralReefDevice: WGSL → coralReef compile →
 # toadStool dispatch → native binary. Replaces strip_f64_enable() workaround.
 sovereign-dispatch = ["gpu", "barracuda/sovereign-dispatch"]
-nestgate = []
+nestgate = ["dep:ureq"]
 # NPU dispatch is a future evolution — Akida driver will be discovered at
 # runtime via capability-based probing, not compiled in as a path dep.
 # See metalForge::probe_npu() and specs/EVOLUTION_MAP.md.
@@ -41,6 +41,7 @@ clap = { version = "4", features = ["derive"] }
 wgpu = { version = "28", optional = true }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"], optional = true }
 bytemuck = { version = "1", features = ["derive"], optional = true }
+ureq = { version = "3", optional = true }
 
 [[bin]]
 name = "healthspring_primal"
