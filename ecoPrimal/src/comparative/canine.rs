@@ -168,7 +168,7 @@ pub fn pruritus_vas_response(il31_pg_ml: f64) -> f64 {
 #[must_use]
 pub fn lokivetmab_pk(dose_mg_kg: f64, body_weight_kg: f64, t_days: f64) -> f64 {
     let vd_ml_kg = 85.0;
-    let t_half_days = 7.0 * dose_mg_kg / 0.5 + 7.0;
+    let t_half_days = 14.0_f64.mul_add(dose_mg_kg, 7.0);
     let k_el = core::f64::consts::LN_2 / t_half_days;
 
     let dose_mg = dose_mg_kg * body_weight_kg;

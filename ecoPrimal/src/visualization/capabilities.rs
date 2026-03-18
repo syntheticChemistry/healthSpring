@@ -152,8 +152,7 @@ pub fn query(capability: &str) -> CapResult<String> {
         return Err(CapabilityError::RpcError { code, message });
     }
 
-    response
-        .get("result")
+    crate::ipc::rpc::extract_rpc_result(&response)
         .and_then(|r| r.get("socket"))
         .and_then(|s| s.as_str())
         .map(String::from)

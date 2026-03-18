@@ -208,9 +208,7 @@ fn capability_call(
         return Err(format!("rpc error {code}: {message}"));
     }
 
-    parsed
-        .get("result")
-        .cloned()
+    crate::ipc::rpc::extract_rpc_result_owned(&parsed)
         .ok_or_else(|| "no result in response".to_string())
 }
 

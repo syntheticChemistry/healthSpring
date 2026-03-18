@@ -10,6 +10,7 @@
 use std::path::PathBuf;
 
 use crate::PRIMAL_NAME;
+use crate::ipc::rpc;
 
 /// Return the biomeOS socket directory, with XDG fallback.
 #[must_use]
@@ -205,7 +206,7 @@ fn discover_by_capability(domain: &str) -> Option<PathBuf> {
 ///   `{"result": ["cap1", "cap2"]}`
 #[must_use]
 pub fn extract_capability_strings(result: &serde_json::Value) -> Vec<&str> {
-    let val = result.get("result").unwrap_or(result);
+    let val = rpc::extract_rpc_result(result).unwrap_or(result);
     let arrays_to_check: &[Option<&serde_json::Value>] = &[
         val.get("science"),
         val.get("capabilities")
@@ -256,7 +257,7 @@ fn probe_capability(socket_path: &std::path::Path, domain: &str) -> bool {
         return false;
     };
 
-    let Some(result) = resp.get("result") else {
+    let Some(result) = rpc::extract_rpc_result(&resp) else {
         return false;
     };
 

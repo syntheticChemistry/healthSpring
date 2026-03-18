@@ -5,7 +5,7 @@
 **Date:** March 18, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V36 — Deep Debt + Ecosystem Maturity. 617 tests, 79 experiments, 42 Python baselines with provenance, 113/113 cross-validation checks (all 7 tracks). V36: Tier B GPU ops rewired to barraCuda upstream (`MichaelisMentenBatchGpu`, `ScfaBatchGpu`, `BeatClassifyGpu`), duplicate `lcg_step` eliminated (delegate to `barracuda::rng`), all `#[allow()]` migrated to `#[expect()]` with reasons, inline tolerance magic numbers centralized, IPC routing for `compute.shader_compile` (coralReef) and `model.inference_route` (Squirrel), WGSL shader licenses corrected to `AGPL-3.0-or-later`, `cargo-deny` in CI, doc-tests fixed, `unwrap`/`expect` evolved to `total_cmp` and `#[expect]`. Zero clippy warnings, zero `#[allow()]`, zero unsafe. 79 capabilities.
+**Status:** V37 — Cross-Ecosystem Absorption Sprint. 706 tests, 79 experiments, 49 Python baselines with structured provenance registry, 113/113 cross-validation checks (all 7 tracks). V37: `mul_add()` FMA sweep (8 sites across PK/ODE/biosignal/QS — IEEE 754 fused multiply-add for accuracy), centralized `extract_rpc_result()` + `extract_rpc_result_owned()` (6 call sites migrated), `deny.toml` hardened with 14-crate C-dep ban list (ecoBin compliance from groundSpring V115), 18 new proptest IPC fuzz tests (extract/classify/capability round-trips), Python provenance registry (49 structured records with completeness test), MCP tool definitions (23 tools for Squirrel AI coordination), `mcp.tools.list` JSON-RPC method, leverage guide published. V36: Tier B GPU rewire, zero `#[allow()]`, `cargo-deny` in CI. Zero clippy, zero unsafe, zero `#[allow()]`. 80 capabilities.
 
 ---
 
@@ -33,12 +33,12 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V36** (Deep Debt + Ecosystem Maturity) |
-| **Total tests** | **617** (567+ lib + 33 forge + 30 toadStool + 5 doc) |
+| Version | **V37** (Cross-Ecosystem Absorption Sprint) |
+| **Total tests** | **706** (617+ lib + 18 proptest + 30 IPC fuzz + 7 doc + experiment bins) |
 | Experiments complete | 79 (Tracks 1–7, Tier 0+1+2+3) |
-| JSON-RPC capabilities | 79 (all wired — 0 stubs in dispatch) |
+| JSON-RPC capabilities | 80 (79 science + `mcp.tools.list` — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
-| Python baselines | **42** with git-tracked provenance (all 7 tracks) |
+| Python baselines | **49** with structured provenance registry (all 7 tracks) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
 | Comparative Medicine (Track 6) | **Complete** — 7 experiments (Exp100–106), canine + feline + cross-species |
 | Drug Discovery (Track 7) | **Complete** — 5 experiments (Exp090–094), MATRIX + HTS + compound + fibrosis |

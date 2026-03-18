@@ -24,7 +24,7 @@ pub fn auc_trapezoidal(times: &[f64], concentrations: &[f64]) -> f64 {
     let mut auc = 0.0;
     for i in 1..times.len() {
         let dt = times[i] - times[i - 1];
-        auc += 0.5 * (concentrations[i - 1] + concentrations[i]) * dt;
+        auc = (0.5 * dt).mul_add(concentrations[i - 1] + concentrations[i], auc);
     }
     auc
 }

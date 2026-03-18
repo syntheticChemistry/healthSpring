@@ -433,7 +433,7 @@ mod tests {
 
         let w_struct = 0.8 * w_scale;
         let w_func = (1.0 - prof.total_qs_density) * w_scale;
-        let expected = alpha * w_struct + (1.0 - alpha) * w_func;
+        let expected = alpha.mul_add(w_struct, (1.0 - alpha) * w_func);
 
         assert!(
             (w_eff - expected).abs() < 1e-10,

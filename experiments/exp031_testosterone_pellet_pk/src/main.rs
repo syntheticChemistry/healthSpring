@@ -142,7 +142,7 @@ fn main() {
             pp::DURATION_DAYS,
         );
         if i > 0 {
-            auc += 0.5 * (c_prev + c) * dt;
+            auc = (0.5 * dt).mul_add(c_prev + c, auc);
         }
         c_prev = c;
     }

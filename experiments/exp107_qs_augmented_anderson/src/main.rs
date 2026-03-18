@@ -164,7 +164,7 @@ fn main() {
 
     // === Check 6: Formula consistency ===
     let w_func_healthy = (1.0 - prof_healthy.total_qs_density.clamp(0.0, 1.0)) * W_SCALE;
-    let expected = ALPHA * w_struct_healthy + (1.0 - ALPHA) * w_func_healthy;
+    let expected = ALPHA.mul_add(w_struct_healthy, (1.0 - ALPHA) * w_func_healthy);
     h.check_abs(
         "W_eff formula",
         w_eff_healthy,

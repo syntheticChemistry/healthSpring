@@ -84,14 +84,14 @@ pub fn generate_synthetic_ppg(
             .wrapping_add(1);
         let noise = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.001;
 
-        red[i] = dc_red + ac_red * pulse + noise;
+        red[i] = ac_red.mul_add(pulse, dc_red + noise);
 
         rng_state = rng_state
             .wrapping_mul(crate::rng::LCG_MULTIPLIER)
             .wrapping_add(1);
         let noise_ir = (u64_to_f64(rng_state >> 33) / f64::from(u32::MAX) - 0.5) * 0.001;
 
-        ir[i] = dc_ir + ac_ir * pulse + noise_ir;
+        ir[i] = ac_ir.mul_add(pulse, dc_ir + noise_ir);
     }
 
     SyntheticPpg {

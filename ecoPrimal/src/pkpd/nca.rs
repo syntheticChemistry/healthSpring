@@ -172,7 +172,7 @@ pub fn aumc_trapezoidal(times: &[f64], concentrations: &[f64]) -> f64 {
         let dt = times[i] - times[i - 1];
         let tc_prev = times[i - 1] * concentrations[i - 1];
         let tc_curr = times[i] * concentrations[i];
-        aumc += 0.5 * (tc_prev + tc_curr) * dt;
+        aumc = (0.5 * dt).mul_add(tc_prev + tc_curr, aumc);
     }
     aumc
 }

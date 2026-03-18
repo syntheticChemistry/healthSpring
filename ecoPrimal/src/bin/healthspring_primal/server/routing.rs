@@ -42,6 +42,7 @@ fn dispatch_extended(
     }
 
     match method {
+        "mcp.tools.list" => handle_mcp_tools_list(),
         "capability.list" => crate::capabilities::handle_capability_list(),
         "provenance.begin" => handle_provenance_begin(params),
         "provenance.record" => handle_provenance_record(params),
@@ -58,6 +59,10 @@ fn dispatch_extended(
             serde_json::json!({"error": "method_not_found", "method": method})
         }
     }
+}
+
+fn handle_mcp_tools_list() -> serde_json::Value {
+    healthspring_barracuda::ipc::mcp::tool_definitions_json()
 }
 
 fn handle_health(state: &PrimalState) -> serde_json::Value {

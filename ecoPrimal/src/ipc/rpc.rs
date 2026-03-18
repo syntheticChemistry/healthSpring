@@ -52,6 +52,26 @@ pub fn extract_rpc_error(error: &serde_json::Value) -> (i64, String) {
     (code, message)
 }
 
+/// Extracts the `"result"` field from a JSON-RPC 2.0 response.
+///
+/// Returns `None` if the response contains an `"error"` field or has no `"result"`.
+#[must_use]
+pub fn extract_rpc_result(response: &serde_json::Value) -> Option<&serde_json::Value> {
+    if response.get("error").is_some() {
+        return None;
+    }
+    response.get("result")
+}
+
+/// Consuming variant of [`extract_rpc_result`] that clones the result value.
+#[must_use]
+pub fn extract_rpc_result_owned(response: &serde_json::Value) -> Option<serde_json::Value> {
+    if response.get("error").is_some() {
+        return None;
+    }
+    response.get("result").cloned()
+}
+
 const READ_TIMEOUT_MS: u64 = 10_000;
 
 /// Send a JSON-RPC request with full error context.
@@ -112,7 +132,7 @@ pub fn try_send(
         return Err(IpcError::RpcReject { code, message });
     }
 
-    parsed.get("result").cloned().ok_or(IpcError::EmptyResponse)
+    extract_rpc_result_owned(&parsed).ok_or(IpcError::EmptyResponse)
 }
 
 /// Send a JSON-RPC request to a Unix socket (fire-and-forget).

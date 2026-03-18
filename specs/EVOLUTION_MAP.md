@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 18, 2026
-**Status**: V36 — Deep Debt + Ecosystem Maturity. 79 experiments, 617 tests + 173 validation checks + 113/113 cross-validation. All 6 GPU ops rewired to barraCuda upstream (Tier A + B complete). Inline tolerances centralized, duplicate math eliminated. IPC routing for coralReef (shader.compile) and Squirrel (model.inference_route). cargo-deny in CI. V35: IPC resilience, sovereign dispatch. V31: OrExit, IpcError, enriched capability.list. V25: Track 6+7 complete.
+**Status**: V37 — Cross-Ecosystem Absorption Sprint. 79 experiments, 706 tests + 173 validation checks + 113/113 cross-validation. `mul_add()` FMA sweep (8 sites). Centralized `extract_rpc_result()`. `deny.toml` 14-crate C-dep ban list. 18 proptest IPC fuzz tests. Structured provenance registry (49 records). MCP tool definitions (23 tools, `mcp.tools.list`). Leverage guide published. V36: All 6 GPU ops rewired (Tier A + B). V35: IPC resilience, sovereign dispatch.
 
 ---
 

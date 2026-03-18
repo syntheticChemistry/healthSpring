@@ -96,8 +96,7 @@ pub fn rpc_call(
         return Err(RpcError::Server { code, message });
     }
 
-    resp.get("result")
-        .cloned()
+    crate::ipc::rpc::extract_rpc_result_owned(&resp)
         .ok_or_else(|| RpcError::Unexpected("missing 'result' field".into()))
 }
 
