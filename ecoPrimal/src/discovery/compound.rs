@@ -247,7 +247,7 @@ mod tests {
 
     #[test]
     fn selectivity_index_zero_on_target() {
-        assert!((selectivity_index(0.0, 100.0)).abs() < f64::EPSILON);
+        assert!((selectivity_index(0.0, 100.0)).abs() < tolerances::MACHINE_EPSILON);
     }
 
     #[test]

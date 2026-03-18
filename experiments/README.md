@@ -1,9 +1,9 @@
 # healthSpring Experiments
 
-**Last Updated**: March 17, 2026
-**Status**: V35 — IPC Resilience + Sovereign Dispatch. 73 experiments, 613 tests.
+**Last Updated**: March 18, 2026
+**Status**: V38 — Deep Debt Completion + Standardized Validation. 79 experiments, 719 tests.
 
-Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3).
+Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3). **All 79 experiments** now use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
 
 ---
 
@@ -62,18 +62,18 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
-| 050 | `exp050_diagnostic_pipeline` | Integrated 4-track patient diagnostic | structural |
-| 050 | `exp050_scenario_dump` | Scenario JSON dump | structural |
-| 051 | `exp051_population_diagnostic` | Population diagnostic Monte Carlo | structural |
-| 052 | `exp052_petaltongue_render` | petalTongue scenario schema validation | structural |
+| 050 | `exp050_diagnostic_pipeline` | Integrated 4-track patient diagnostic | ValidationHarness |
+| 050 | `exp050_scenario_dump` | Scenario JSON dump | ValidationHarness |
+| 051 | `exp051_population_diagnostic` | Population diagnostic Monte Carlo | ValidationHarness |
+| 052 | `exp052_petaltongue_render` | petalTongue scenario schema validation | ValidationHarness |
 
 ### GPU Pipeline (Exp053-055) — Tier 2
 
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
 | 053 | `exp053_gpu_parity` | WGSL shader output vs CPU baseline | 17 |
-| 054 | `exp054_gpu_pipeline` | Fused pipeline + toadStool GPU dispatch | structural |
-| 055 | `exp055_gpu_scaling` | 1K→10M scaling, crossover analysis | structural |
+| 054 | `exp054_gpu_pipeline` | Fused pipeline + toadStool GPU dispatch | ValidationHarness |
+| 055 | `exp055_gpu_scaling` | 1K→10M scaling, crossover analysis | ValidationHarness |
 
 ### Visualization (Exp056) — petalTongue
 
@@ -94,20 +94,20 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
-| 063 | `exp063_clinical_trt_scenarios` | Patient-parameterized TRT (5 archetypes) | structural |
-| 064 | `exp064_ipc_push` | IPC push to petalTongue (JSON-RPC) | structural |
-| 065 | `exp065_live_dashboard` | Live streaming dashboard (ECG, HRV, PK) | structural |
+| 063 | `exp063_clinical_trt_scenarios` | Patient-parameterized TRT (5 archetypes) | ValidationHarness |
+| 064 | `exp064_ipc_push` | IPC push to petalTongue (JSON-RPC) | ValidationHarness |
+| 065 | `exp065_live_dashboard` | Live streaming dashboard (ECG, HRV, PK) | ValidationHarness |
 
 ### Compute & Benchmark (Exp066-072)
 
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
-| 066 | `exp066_barracuda_cpu_bench` | barraCuda CPU benchmark timing | structural |
-| 067 | `exp067_gpu_parity_extended` | Extended GPU kernel validation | structural |
-| 068 | `exp068_gpu_benchmark` | GPU throughput at scale | structural |
-| 069 | `exp069_toadstool_dispatch_matrix` | toadStool stage assignment validation | structural |
-| 070 | `exp070_pcie_p2p_bypass` | PCIe P2P bypass (NPU→GPU direct) | structural |
-| 071 | `exp071_mixed_system_pipeline` | CPU+GPU+NPU coordinated execution | structural |
+| 066 | `exp066_barracuda_cpu_bench` | barraCuda CPU benchmark timing | ValidationHarness |
+| 067 | `exp067_gpu_parity_extended` | Extended GPU kernel validation | ValidationHarness |
+| 068 | `exp068_gpu_benchmark` | GPU throughput at scale | ValidationHarness |
+| 069 | `exp069_toadstool_dispatch_matrix` | toadStool stage assignment validation | ValidationHarness |
+| 070 | `exp070_pcie_p2p_bypass` | PCIe P2P bypass (NPU→GPU direct) | ValidationHarness |
+| 071 | `exp071_mixed_system_pipeline` | CPU+GPU+NPU coordinated execution | ValidationHarness |
 | 072 | `exp072_compute_dashboard` | toadStool streaming → petalTongue live gauges | 8 |
 
 ### petalTongue Evolution (Exp073-074)
@@ -162,7 +162,7 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 088 | `exp088_unified_dashboard` | Unified dashboard — all scenarios (original + V16 + compute) validated, pushed, or dumped | 326 |
 | 089 | `exp089_patient_explorer` | Patient explorer — diagnostic + V16 analysis, CLI params, streaming to petalTongue | 14 |
 
-### Track 7: Drug Discovery (Exp090-094) — V25
+### Track 7: Drug Discovery (Exp090-096) — V25+
 
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
@@ -171,8 +171,10 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 092 | `exp092_compound_library` | Batch IC50 profiling + selectivity ranking | 14 |
 | 093 | `exp093_chembl_jak_panel` | ChEMBL JAK kinase selectivity panel | 14 |
 | 094 | `exp094_rho_mrtf_fibrosis` | Rho/MRTF/SRF fibrosis pathway scoring (Neubig) | 14 |
+| 095 | `exp095_ipsc_skin_model` | iPSC skin model (Gonzales/Ellsworth) | ValidationHarness |
+| 096 | `exp096_niclosamide_delivery` | Niclosamide delivery (Ellsworth med chem) | ValidationHarness |
 
-### Track 6: Comparative Medicine (Exp100-106) — V25
+### Track 6: Comparative Medicine (Exp100-110) — V25+
 
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
@@ -183,6 +185,10 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 104 | `exp104_cross_species_pk` | Cross-species allometric PK scaling | 12 |
 | 105 | `exp105_canine_gut_anderson` | Canine gut microbiome Anderson lattice | 13 |
 | 106 | `exp106_feline_hyperthyroid` | Feline hyperthyroidism methimazole PK | 14 |
+| 107 | `exp107_qs_augmented_anderson` | QS-augmented Anderson localization | ValidationHarness |
+| 108 | `exp108_real_16s_anderson` | Real 16S Anderson (wetSpring integration) | ValidationHarness |
+| 109 | `exp109_mitbih_arrhythmia` | MIT-BIH arrhythmia classification | ValidationHarness |
+| 110 | `exp110_equine_laminitis` | Equine laminitis model | ValidationHarness |
 
 ---
 

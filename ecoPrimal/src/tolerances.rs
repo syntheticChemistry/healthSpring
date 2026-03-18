@@ -293,6 +293,29 @@ pub const IPC_RESPONSE_BUF: usize = 4096;
 /// IPC socket read/write timeout (milliseconds).
 pub const IPC_TIMEOUT_MS: u64 = 500;
 
+// ── Test and guard constants ────────────────────────────────────────────
+
+/// Unit test assertions — tight tolerance for analytical identities (qs, gpu, uncertainty, etc.).
+pub const TEST_ASSERTION_TIGHT: f64 = 1e-10;
+
+/// Unit test assertions — loose tolerance for pkpd diagnostics.
+pub const TEST_ASSERTION_LOOSE: f64 = 0.01;
+
+/// Unit test assertions — medium tolerance for diagnostics, NCA, compound tests.
+pub const TEST_ASSERTION_MEDIUM: f64 = 1e-6;
+
+/// Denominator guard — prevents division by zero in ppg, nca, diagnostics, discovery.
+pub const DIVISION_GUARD: f64 = 1e-15;
+
+/// `SpO2` clinical tolerance (percent) in ppg tests.
+pub const SPO2_CLINICAL_TOLERANCE: f64 = 5.0;
+
+/// NCA local tolerance — iterative bisection and numerical identity checks.
+pub const NCA_TOLERANCE: f64 = 1e-6;
+
+/// Unit test assertions — 2% relative error for AUC, NCA, compartment tests.
+pub const TEST_ASSERTION_2_PERCENT: f64 = 0.02;
+
 #[cfg(test)]
 mod tests {
     use super::*;

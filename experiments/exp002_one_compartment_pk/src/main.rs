@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::similar_names,
     reason = "iv/oral parameter variants are intentionally parallel"

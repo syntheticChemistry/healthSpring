@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp022 validation: PPG `SpO2` R-value calibration
 //!
 //! Cross-validates `healthspring_barracuda::biosignal` PPG pipeline:

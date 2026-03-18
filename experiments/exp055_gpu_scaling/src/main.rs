@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![forbid(unsafe_code)]
 
 //! Exp055: GPU scaling benchmark — single GPU at population scale.
@@ -14,6 +15,7 @@
 //! laptop) handles population-scale health computations without infrastructure.
 
 use healthspring_barracuda::gpu::{GpuContext, GpuOp, GpuResult, execute_cpu};
+use healthspring_barracuda::validation::ValidationHarness;
 use std::time::Instant;
 
 const HILL_SIZES: &[usize] = &[1_000, 10_000, 100_000, 1_000_000, 5_000_000, 10_000_000];
@@ -89,6 +91,7 @@ struct BenchResult {
 )]
 #[tokio::main]
 async fn main() {
+    let mut h = ValidationHarness::new("exp055_gpu_scaling");
     println!("Exp055 GPU Scaling — Single GPU at Population Scale");
     println!("====================================================\n");
 
@@ -374,5 +377,22 @@ async fn main() {
     println!("│  Thesis: one GPU where people are — not infrastructure.        │");
     println!("│  Same pipeline maps to TPU/NPU when hardware becomes native.   │");
     println!("└──────────────────────────────────────────────────────────────────┘");
-    std::process::exit(0);
+
+    h.check_bool(
+        "hill_benchmark_completed",
+        hill_results.iter().any(|r| r.speedup > 0.0),
+    );
+    h.check_bool(
+        "pk_benchmark_completed",
+        pk_results.iter().any(|r| r.speedup > 0.0),
+    );
+    h.check_bool(
+        "div_benchmark_completed",
+        div_results.iter().any(|r| r.speedup > 0.0),
+    );
+    h.check_bool(
+        "fused_benchmark_completed",
+        !hill_results.is_empty() && !pk_results.is_empty() && !div_results.is_empty(),
+    );
+    h.exit();
 }

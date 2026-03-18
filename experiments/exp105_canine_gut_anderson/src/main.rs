@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 
 //! Exp105: Canine gut microbiome Anderson lattice (CM-006)
 //!

@@ -226,6 +226,7 @@ pub fn pbpk_auc(times: &[f64], concentrations: &[f64]) -> f64 {
 #[expect(clippy::expect_used, reason = "test code")]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn standard_tissues_have_five_compartments() {
@@ -274,7 +275,10 @@ mod tests {
         let tissues = standard_human_tissues();
         let (_, profile, _) = pbpk_iv_simulate(&tissues, 100.0, 5.0, 0.01, 0.001);
         let c0 = 100.0 / 5.0;
-        assert!((profile[0] - c0).abs() < 1e-6, "initial C = dose/Vblood");
+        assert!(
+            (profile[0] - c0).abs() < tolerances::TEST_ASSERTION_MEDIUM,
+            "initial C = dose/Vblood"
+        );
     }
 
     #[test]

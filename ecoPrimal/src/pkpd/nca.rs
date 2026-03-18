@@ -254,8 +254,7 @@ pub fn nca_iv(
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    const TOL: f64 = 1e-6;
+    use crate::tolerances;
 
     #[expect(clippy::cast_precision_loss, reason = "test profile indices fit f64")]
     fn iv_profile(
@@ -281,17 +280,23 @@ mod tests {
 
         let result = nca_iv(&times, &concs, dose, 3);
 
-        assert!((result.cmax - dose / vd).abs() < TOL, "Cmax = Dose/Vd");
-        assert!(result.tmax.abs() < TOL, "Tmax = 0 for IV bolus");
+        assert!(
+            (result.cmax - dose / vd).abs() < tolerances::NCA_TOLERANCE,
+            "Cmax = Dose/Vd"
+        );
+        assert!(
+            result.tmax.abs() < tolerances::NCA_TOLERANCE,
+            "Tmax = 0 for IV bolus"
+        );
         assert!(result.lambda_z > 0.0, "lambda_z estimated");
         assert!(
-            (result.lambda_z - ke).abs() < 0.01,
+            (result.lambda_z - ke).abs() < tolerances::TEST_ASSERTION_LOOSE,
             "lambda_z ~ ke: got {}",
             result.lambda_z
         );
         let expected_half = core::f64::consts::LN_2 / ke;
         assert!(
-            (result.half_life - expected_half).abs() < 0.1,
+            (result.half_life - expected_half).abs() < tolerances::TMAX_NUMERICAL,
             "t½ ~ ln2/ke"
         );
     }
@@ -308,7 +313,7 @@ mod tests {
 
         let rel_err = (result.auc_inf - analytical_auc).abs() / analytical_auc;
         assert!(
-            rel_err < 0.01,
+            rel_err < tolerances::TEST_ASSERTION_LOOSE,
             "AUC(0-inf) within 1%: got {}, expected {}",
             result.auc_inf,
             analytical_auc
@@ -326,7 +331,10 @@ mod tests {
         let result = nca_iv(&times, &concs, dose, 3);
 
         let rel_err = (result.cl_obs - cl_expected).abs() / cl_expected;
-        assert!(rel_err < 0.02, "CL within 2% of analytical");
+        assert!(
+            rel_err < tolerances::TEST_ASSERTION_2_PERCENT,
+            "CL within 2% of analytical"
+        );
     }
 
     #[test]
@@ -339,7 +347,10 @@ mod tests {
         let result = nca_iv(&times, &concs, dose, 3);
 
         let rel_err = (result.vss_obs - vd).abs() / vd;
-        assert!(rel_err < 0.05, "Vss within 5% of Vd for 1-comp model");
+        assert!(
+            rel_err < tolerances::POP_VD_MEDIAN,
+            "Vss within 5% of Vd for 1-comp model"
+        );
     }
 
     #[test]
@@ -373,7 +384,7 @@ mod tests {
 
         let rel_err = (result.mrt - mrt_expected).abs() / mrt_expected;
         assert!(
-            rel_err < 0.05,
+            rel_err < tolerances::POP_VD_MEDIAN,
             "MRT within 5%: got {}, expected {}",
             result.mrt,
             mrt_expected
@@ -396,7 +407,7 @@ mod tests {
         let concs = [1.0, 1.0, 1.0];
         let aumc = super::aumc_trapezoidal(&times, &concs);
         assert!(
-            (aumc - 2.0).abs() < 1e-10,
+            (aumc - 2.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "AUMC of constant C=1 over [0,2]: integral of t dt = 2"
         );
     }

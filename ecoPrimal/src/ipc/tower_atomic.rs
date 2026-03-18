@@ -34,28 +34,47 @@ use std::path::PathBuf;
 use super::error::IpcError;
 use super::socket;
 
-/// Tower Atomic handle — `BearDog` + `Songbird` on the local machine.
+/// Capability domains used for Tower Atomic primal discovery.
+/// These are the semantic capabilities, not primal names — any primal
+/// advertising these capabilities satisfies the Tower Atomic contract.
+const CRYPTO_CAPABILITY: &str = "crypto";
+const DISCOVERY_CAPABILITY: &str = "net.discovery";
+
+/// Default socket name prefixes, overridable via environment.
+/// These are only used as filesystem hints, not as identity assertions.
+const DEFAULT_CRYPTO_PREFIX: &str = "beardog";
+const DEFAULT_DISCOVERY_PREFIX: &str = "songbird";
+
+/// Tower Atomic handle — crypto + discovery primals on the local machine.
+///
+/// The Tower Atomic is a composed system: a crypto primal (identity/trust)
+/// plus a discovery primal (network presence). The specific primal names
+/// are not assumed — discovery is capability-based with name-prefix fallback.
 #[derive(Debug, Clone)]
 pub struct TowerAtomic {
-    beardog_socket: PathBuf,
-    songbird_socket: PathBuf,
+    crypto_socket: PathBuf,
+    discovery_socket: PathBuf,
 }
 
 impl TowerAtomic {
     /// Attempt to discover a Tower Atomic on the local machine.
     ///
-    /// Checks for `BearDog` and `Songbird` sockets in the XDG runtime
-    /// directory. Both must be present for a valid Tower Atomic.
+    /// Resolution (per primal role):
+    /// 1. Environment override (`BEARDOG_SOCKET` / `SONGBIRD_SOCKET`)
+    /// 2. Socket-dir scan by default prefix
+    /// 3. Capability probe: `crypto.*` / `net.discovery.*`
     #[must_use]
     pub fn discover() -> Option<Self> {
         let socket_dir = socket::resolve_socket_dir();
 
-        let beardog = discover_primal_in(&socket_dir, "beardog")?;
-        let songbird = discover_primal_in(&socket_dir, "songbird")?;
+        let crypto = discover_primal_in(&socket_dir, DEFAULT_CRYPTO_PREFIX)
+            .or_else(|| socket::discover_by_capability_public(CRYPTO_CAPABILITY))?;
+        let discovery = discover_primal_in(&socket_dir, DEFAULT_DISCOVERY_PREFIX)
+            .or_else(|| socket::discover_by_capability_public(DISCOVERY_CAPABILITY))?;
 
         Some(Self {
-            beardog_socket: beardog,
-            songbird_socket: songbird,
+            crypto_socket: crypto,
+            discovery_socket: discovery,
         })
     }
 
@@ -65,27 +84,27 @@ impl TowerAtomic {
     ///
     /// Returns `IpcError` if either primal fails its health check.
     pub fn health_check(&self) -> Result<(), IpcError> {
-        health_probe(&self.beardog_socket, "health")?;
-        health_probe(&self.songbird_socket, "health")?;
+        health_probe(&self.crypto_socket, "health")?;
+        health_probe(&self.discovery_socket, "health")?;
         Ok(())
     }
 
     /// Discover a primal that provides the given capability.
     ///
-    /// Queries `Songbird`'s `net.discovery` service for a primal socket
-    /// advertising the requested capability.
+    /// Queries the discovery primal's `net.discovery` service for a primal
+    /// socket advertising the requested capability.
     ///
     /// # Errors
     ///
-    /// Returns `IpcError` if `Songbird` is unreachable or no primal
-    /// provides the capability.
+    /// Returns `IpcError` if the discovery primal is unreachable or no
+    /// primal provides the capability.
     pub fn find_capability(&self, capability: &str) -> Result<PathBuf, IpcError> {
         let params = serde_json::json!({
             "capability": capability,
         });
 
         let result = super::rpc::try_send(
-            &self.songbird_socket,
+            &self.discovery_socket,
             "net.discovery.find_by_capability",
             &params,
         )?;
@@ -96,21 +115,22 @@ impl TowerAtomic {
             .map(PathBuf::from)
             .ok_or_else(|| IpcError::RpcReject {
                 code: -32000,
-                message: format!("Songbird found no primal for capability: {capability}"),
+                message: format!("discovery primal found no provider for: {capability}"),
             })
     }
 
-    /// Verify a primal's identity via `BearDog` before connecting.
+    /// Verify a primal's identity via the crypto primal before connecting.
     ///
     /// # Errors
     ///
-    /// Returns `IpcError` if `BearDog` rejects the identity or is unreachable.
+    /// Returns `IpcError` if the crypto primal rejects the identity or is
+    /// unreachable.
     pub fn verify_identity(&self, primal_name: &str) -> Result<bool, IpcError> {
         let params = serde_json::json!({
             "primal": primal_name,
         });
 
-        let result = super::rpc::try_send(&self.beardog_socket, "crypto.verify_primal", &params)?;
+        let result = super::rpc::try_send(&self.crypto_socket, "crypto.verify_primal", &params)?;
 
         Ok(result
             .get("trusted")
@@ -118,22 +138,22 @@ impl TowerAtomic {
             .unwrap_or(false))
     }
 
-    /// Path to the `BearDog` socket.
+    /// Path to the crypto primal socket.
     #[must_use]
-    pub fn beardog_socket(&self) -> &std::path::Path {
-        &self.beardog_socket
+    pub fn crypto_socket(&self) -> &std::path::Path {
+        &self.crypto_socket
     }
 
-    /// Path to the `Songbird` socket.
+    /// Path to the discovery primal socket.
     #[must_use]
-    pub fn songbird_socket(&self) -> &std::path::Path {
-        &self.songbird_socket
+    pub fn discovery_socket(&self) -> &std::path::Path {
+        &self.discovery_socket
     }
 
     /// Whether the Tower Atomic is available.
     #[must_use]
     pub fn is_available(&self) -> bool {
-        self.beardog_socket.exists() && self.songbird_socket.exists()
+        self.crypto_socket.exists() && self.discovery_socket.exists()
     }
 }
 
@@ -214,7 +234,7 @@ mod tests {
     fn discover_primal_in_nonexistent_dir() {
         let result = discover_primal_in(
             std::path::Path::new("/tmp/nonexistent_biomeos_test_dir"),
-            "beardog",
+            DEFAULT_CRYPTO_PREFIX,
         );
         assert!(result.is_none());
     }
@@ -228,15 +248,15 @@ mod tests {
     #[test]
     fn tower_atomic_socket_accessors() {
         let tower = TowerAtomic {
-            beardog_socket: PathBuf::from("/tmp/test-beardog.sock"),
-            songbird_socket: PathBuf::from("/tmp/test-songbird.sock"),
+            crypto_socket: PathBuf::from("/tmp/test-crypto.sock"),
+            discovery_socket: PathBuf::from("/tmp/test-discovery.sock"),
         };
-        assert!(tower.beardog_socket().to_string_lossy().contains("beardog"));
+        assert!(tower.crypto_socket().to_string_lossy().contains("crypto"));
         assert!(
             tower
-                .songbird_socket()
+                .discovery_socket()
                 .to_string_lossy()
-                .contains("songbird")
+                .contains("discovery")
         );
     }
 }

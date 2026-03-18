@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — sequential NUCLEUS topology checks"
@@ -22,6 +23,8 @@
 //! The topology mirrors Eastgate hardware: CPU + RTX GPU + NPU on a
 //! single node with `PCIe` Gen4 interconnect.
 
+use healthspring_barracuda::tolerances;
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_forge::dispatch::{DispatchPlan, plan_dispatch};
 use healthspring_forge::nucleus::{
     DeviceStatus, Nest, NestId, Node, NodeId, PcieGeneration, Tower,
@@ -30,16 +33,6 @@ use healthspring_forge::transfer::{TransferMethod, plan_transfer};
 use healthspring_forge::{
     Capabilities, GpuInfo, NpuInfo, PrecisionRouting, Substrate, Workload, select_substrate,
 };
-
-fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
-    *total += 1;
-    if ok {
-        *passed += 1;
-        println!("  [PASS] {name}");
-    } else {
-        println!("  [FAIL] {name}");
-    }
-}
 
 fn eastgate_tower() -> Tower {
     Tower {
@@ -100,8 +93,7 @@ fn full_caps() -> Capabilities {
 }
 
 fn main() {
-    let mut passed = 0u32;
-    let mut total = 0u32;
+    let mut h = ValidationHarness::new("exp087_mixed_nucleus_v16");
 
     println!("{}", "=".repeat(72));
     println!("healthSpring Exp087 — metalForge Mixed NUCLEUS V16 Dispatch");
@@ -113,37 +105,16 @@ fn main() {
     // ── 1. Tower Topology Validation ────────────────────────────────────
     println!("\n── 1. Tower Topology ──────────────────────────────────────────");
 
-    check(
-        "Tower: 1 node",
-        tower.nodes.len() == 1,
-        &mut passed,
-        &mut total,
-    );
-    check(
+    h.check_exact("Tower: 1 node", tower.nodes.len() as u64, 1);
+    h.check_exact(
         "Tower: 3 nests (CPU+GPU+NPU)",
-        tower.total_nests() == 3,
-        &mut passed,
-        &mut total,
+        tower.total_nests() as u64,
+        3,
     );
     let substrates = tower.available_substrates();
-    check(
-        "Tower: CPU available",
-        substrates.contains(&Substrate::Cpu),
-        &mut passed,
-        &mut total,
-    );
-    check(
-        "Tower: GPU available",
-        substrates.contains(&Substrate::Gpu),
-        &mut passed,
-        &mut total,
-    );
-    check(
-        "Tower: NPU available",
-        substrates.contains(&Substrate::Npu),
-        &mut passed,
-        &mut total,
-    );
+    h.check_bool("Tower: CPU available", substrates.contains(&Substrate::Cpu));
+    h.check_bool("Tower: GPU available", substrates.contains(&Substrate::Gpu));
+    h.check_bool("Tower: NPU available", substrates.contains(&Substrate::Npu));
 
     // ── 2. V16 Workload Routing ─────────────────────────────────────────
     println!("\n── 2. V16 Workload Routing (with full caps) ───────────────────");
@@ -181,28 +152,22 @@ fn main() {
         println!("  {label:30} → {sub:?}");
     }
 
-    check(
+    h.check_bool(
         "Routing: MM 10K → GPU",
         select_substrate(
             &Workload::MichaelisMentenBatch { n_patients: 10_000 },
             &caps,
         ) == Substrate::Gpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Routing: SCFA 5K → GPU",
         select_substrate(&Workload::ScfaBatch { n_elements: 5_000 }, &caps) == Substrate::Gpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Routing: Beat 10K → GPU",
         select_substrate(&Workload::BeatClassifyBatch { n_beats: 10_000 }, &caps) == Substrate::Gpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Routing: Biosignal detect → NPU",
         select_substrate(
             &Workload::BiosignalDetect {
@@ -210,14 +175,10 @@ fn main() {
             },
             &caps,
         ) == Substrate::Npu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Routing: Analytical → CPU",
         select_substrate(&Workload::Analytical, &caps) == Substrate::Cpu,
-        &mut passed,
-        &mut total,
     );
 
     // ── 3. PCIe P2P Bypass (GPU ↔ NPU) ─────────────────────────────────
@@ -240,59 +201,45 @@ fn main() {
     };
     let node = &tower.nodes[0];
 
-    check(
+    h.check_bool(
         "P2P: GPU → NPU possible on same node",
         node.can_p2p_transfer(&gpu_nest, &npu_nest),
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "P2P: NPU → GPU possible on same node",
         node.can_p2p_transfer(&npu_nest, &gpu_nest),
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "P2P: same device rejected",
         !node.can_p2p_transfer(&gpu_nest, &gpu_nest),
-        &mut passed,
-        &mut total,
     );
 
     let gpu_to_npu = plan_transfer(gpu_nest, npu_nest, 1_000_000, Some(node));
-    check(
+    h.check_bool(
         "Transfer GPU→NPU: P2P method",
         gpu_to_npu.method == TransferMethod::PcieP2p,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Transfer GPU→NPU: positive bandwidth",
         gpu_to_npu.estimated_bandwidth_gbps > 0.0,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Transfer GPU→NPU: positive time",
         gpu_to_npu.estimated_time_us() > 0.0,
-        &mut passed,
-        &mut total,
     );
 
     let cpu_to_gpu = plan_transfer(cpu_nest, gpu_nest, 1_000_000, Some(node));
-    check(
+    h.check_bool(
         "Transfer CPU→GPU: P2P DMA on same node",
         cpu_to_gpu.method == TransferMethod::PcieP2p,
-        &mut passed,
-        &mut total,
     );
 
     let pcie_bw = PcieGeneration::Gen4.lane_bandwidth_gbps();
-    check(
-        &format!("PCIe Gen4 per-lane: {pcie_bw:.3} GB/s"),
-        (pcie_bw - 1.969).abs() < 0.01,
-        &mut passed,
-        &mut total,
+    h.check_abs(
+        "PCIe Gen4 per-lane bandwidth",
+        pcie_bw,
+        1.969,
+        tolerances::PCIE_BANDWIDTH,
     );
 
     // ── 4. Mixed V16 Dispatch Plan ──────────────────────────────────────
@@ -318,57 +265,35 @@ fn main() {
 
     let plan: DispatchPlan = plan_dispatch(&dispatch_workloads, &caps, &tower);
 
-    check(
-        "Dispatch: 5 assignments",
-        plan.assignments.len() == 5,
-        &mut passed,
-        &mut total,
-    );
-    check(
+    h.check_exact("Dispatch: 5 assignments", plan.assignments.len() as u64, 5);
+    h.check_bool(
         "Dispatch: stages 0-2 → GPU",
         plan.assignments[0].substrate == Substrate::Gpu
             && plan.assignments[1].substrate == Substrate::Gpu
             && plan.assignments[2].substrate == Substrate::Gpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Dispatch: stage 3 → NPU",
         plan.assignments[3].substrate == Substrate::Npu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Dispatch: stage 4 → CPU",
         plan.assignments[4].substrate == Substrate::Cpu,
-        &mut passed,
-        &mut total,
     );
 
     let subs_used = plan.substrates_used();
-    check(
-        "Dispatch: uses all 3 substrates",
-        subs_used.len() == 3,
-        &mut passed,
-        &mut total,
-    );
-    check(
+    h.check_exact("Dispatch: uses all 3 substrates", subs_used.len() as u64, 3);
+    h.check_bool(
         "Dispatch: substrate transitions > 0",
         plan.n_substrate_transitions > 0,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Dispatch: total transfer bytes > 0",
         plan.total_transfer_bytes > 0,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "Dispatch: transfer time > 0",
         plan.total_transfer_time_us() > 0.0,
-        &mut passed,
-        &mut total,
     );
 
     println!(
@@ -392,32 +317,26 @@ fn main() {
     ];
 
     let gpu_plan = plan_dispatch(&gpu_only, &caps, &tower);
-    check(
+    h.check_exact(
         "GPU-only: 0 transitions",
-        gpu_plan.n_substrate_transitions == 0,
-        &mut passed,
-        &mut total,
+        gpu_plan.n_substrate_transitions as u64,
+        0,
     );
-    check(
+    h.check_bool(
         "GPU-only: all GPU",
         gpu_plan
             .assignments
             .iter()
             .all(|a| a.substrate == Substrate::Gpu),
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "GPU-only: no transfers",
         gpu_plan.assignments.iter().all(|a| a.transfer.is_none()),
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_exact(
         "GPU-only: 0 transfer bytes",
-        gpu_plan.total_transfer_bytes == 0,
-        &mut passed,
-        &mut total,
+        gpu_plan.total_transfer_bytes as u64,
+        0,
     );
 
     // ── 6. NPU→GPU P2P in dispatch plan ─────────────────────────────────
@@ -435,36 +354,27 @@ fn main() {
     ];
 
     let p2p_plan = plan_dispatch(&p2p_workloads, &caps, &tower);
-    check(
+    h.check_bool(
         "P2P dispatch: stage 0 → NPU",
         p2p_plan.assignments[0].substrate == Substrate::Npu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "P2P dispatch: stage 1 → GPU",
         p2p_plan.assignments[1].substrate == Substrate::Gpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_exact(
         "P2P dispatch: 1 transition",
-        p2p_plan.n_substrate_transitions == 1,
-        &mut passed,
-        &mut total,
+        p2p_plan.n_substrate_transitions as u64,
+        1,
     );
     if let Some(transfer) = &p2p_plan.assignments[1].transfer {
-        check(
+        h.check_bool(
             "P2P dispatch: transfer method is PcieP2p",
             transfer.method == TransferMethod::PcieP2p,
-            &mut passed,
-            &mut total,
         );
-        check(
+        h.check_bool(
             "P2P dispatch: bypasses CPU roundtrip",
             transfer.method != TransferMethod::HostStaged,
-            &mut passed,
-            &mut total,
         );
         println!(
             "  NPU→GPU transfer: {} bytes, {:.1}us, {:.2} GB/s",
@@ -474,12 +384,5 @@ fn main() {
         );
     }
 
-    // ── Summary ─────────────────────────────────────────────────────────
-    println!("\n{}", "=".repeat(72));
-    println!("Exp087 Mixed NUCLEUS V16 Dispatch: {passed}/{total} PASS");
-    println!("{}", "=".repeat(72));
-
-    if passed != total {
-        std::process::exit(1);
-    }
+    h.exit();
 }

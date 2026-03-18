@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp077: Michaelis-Menten Nonlinear Pharmacokinetics
 //!
 //! Validates capacity-limited elimination (phenytoin-like).

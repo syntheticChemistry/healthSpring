@@ -217,6 +217,7 @@ mod tests {
         NlmeConfig, SyntheticPopConfig, foce, generate_synthetic_population,
         oral_one_compartment_model,
     };
+    use crate::tolerances;
 
     fn fitted_result() -> (Vec<Subject>, NlmeResult) {
         let theta = vec![2.3, 4.4, 0.4];
@@ -281,11 +282,11 @@ mod tests {
 
     #[test]
     fn percentile_edge_cases() {
-        assert!((percentile(&[1.0], 50.0) - 1.0).abs() < 1e-10);
-        assert!((percentile(&[], 50.0)).abs() < 1e-10);
+        assert!((percentile(&[1.0], 50.0) - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((percentile(&[], 50.0)).abs() < tolerances::TEST_ASSERTION_TIGHT);
         let vals = vec![1.0, 2.0, 3.0, 4.0, 5.0];
-        assert!((percentile(&vals, 0.0) - 1.0).abs() < 1e-10);
-        assert!((percentile(&vals, 100.0) - 5.0).abs() < 1e-10);
-        assert!((percentile(&vals, 50.0) - 3.0).abs() < 1e-10);
+        assert!((percentile(&vals, 0.0) - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((percentile(&vals, 100.0) - 5.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((percentile(&vals, 50.0) - 3.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 }

@@ -114,11 +114,15 @@ pub fn assess_stress(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn scr_rate_basic() {
         let r = scr_rate(6, 120.0);
-        assert!((r - 3.0).abs() < 1e-10, "6 events in 2 min = 3/min");
+        assert!(
+            (r - 3.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "6 events in 2 min = 3/min"
+        );
     }
 
     #[test]

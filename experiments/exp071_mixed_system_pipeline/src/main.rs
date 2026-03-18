@@ -2,6 +2,7 @@
 #![deny(clippy::all)]
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — exercises mixed hardware pipeline sequentially"
@@ -11,6 +12,7 @@
 //! (NPU biosignal → GPU `PopPK` → CPU diagnostic fusion) using NUCLEUS topology,
 //! validates stage assignments, transfer plans, and end-to-end correctness.
 
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_forge::dispatch::plan_dispatch;
 use healthspring_forge::nucleus::{
     DeviceStatus, Nest, NestId, Node, NodeId, PcieGeneration, Tower,
@@ -21,20 +23,7 @@ use healthspring_toadstool::pipeline::Pipeline;
 use healthspring_toadstool::stage::{ReduceKind, Stage, StageOp, TransformKind};
 
 fn main() {
-    let mut passed = 0u32;
-    let mut failed = 0u32;
-
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {
-            if $cond {
-                passed += 1;
-                println!("  [PASS] {}", $name);
-            } else {
-                eprintln!("  [FAIL] {}", $name);
-                failed += 1;
-            }
-        };
-    }
+    let mut h = ValidationHarness::new("exp071_mixed_system_pipeline");
 
     println!("Exp071: Mixed System Pipeline");
     println!("==============================");
@@ -100,17 +89,17 @@ fn main() {
         sample_rate_hz: 360,
     };
     let biosignal_sub = healthspring_forge::select_substrate(&biosignal_workload, &caps);
-    check!("biosignal_routes_to_npu", biosignal_sub == Substrate::Npu);
+    h.check_bool("biosignal_routes_to_npu", biosignal_sub == Substrate::Npu);
 
     println!("\n=== Stage 2: Population PK (GPU-targeted) ===");
     let pk_workload = Workload::PopulationPk { n_patients: 5000 };
     let pk_sub = healthspring_forge::select_substrate(&pk_workload, &caps);
-    check!("pop_pk_routes_to_gpu", pk_sub == Substrate::Gpu);
+    h.check_bool("pop_pk_routes_to_gpu", pk_sub == Substrate::Gpu);
 
     println!("\n=== Stage 3: Diagnostic Fusion (CPU) ===");
     let diag_workload = Workload::Analytical;
     let diag_sub = healthspring_forge::select_substrate(&diag_workload, &caps);
-    check!("diagnostic_routes_to_cpu", diag_sub == Substrate::Cpu);
+    h.check_bool("diagnostic_routes_to_cpu", diag_sub == Substrate::Cpu);
 
     // --- Dispatch plan ---
     println!("\n=== Dispatch Plan ===");
@@ -121,52 +110,52 @@ fn main() {
     ];
     let plan = plan_dispatch(&workloads, &caps, &tower);
 
-    check!("plan_3_assignments", plan.assignments.len() == 3);
-    check!(
+    h.check_bool("plan_3_assignments", plan.assignments.len() == 3);
+    h.check_bool(
         "assignment_0_npu",
-        plan.assignments[0].substrate == Substrate::Npu
+        plan.assignments[0].substrate == Substrate::Npu,
     );
-    check!(
+    h.check_bool(
         "assignment_1_gpu",
-        plan.assignments[1].substrate == Substrate::Gpu
+        plan.assignments[1].substrate == Substrate::Gpu,
     );
-    check!(
+    h.check_bool(
         "assignment_2_cpu",
-        plan.assignments[2].substrate == Substrate::Cpu
+        plan.assignments[2].substrate == Substrate::Cpu,
     );
-    check!("plan_2_transitions", plan.n_substrate_transitions == 2);
+    h.check_bool("plan_2_transitions", plan.n_substrate_transitions == 2);
 
     // NPU→GPU should be P2P
     if let Some(ref transfer) = plan.assignments[1].transfer {
-        check!("npu_to_gpu_p2p", transfer.method == TransferMethod::PcieP2p);
-        check!(
+        h.check_bool("npu_to_gpu_p2p", transfer.method == TransferMethod::PcieP2p);
+        h.check_bool(
             "npu_to_gpu_bandwidth_gt_20gbps",
-            transfer.estimated_bandwidth_gbps > 20.0
+            transfer.estimated_bandwidth_gbps > 20.0,
         );
     } else {
-        check!("npu_to_gpu_has_transfer", false);
+        h.check_bool("npu_to_gpu_has_transfer", false);
     }
 
     // GPU→CPU should be P2P
     if let Some(ref transfer) = plan.assignments[2].transfer {
-        check!("gpu_to_cpu_p2p", transfer.method == TransferMethod::PcieP2p);
+        h.check_bool("gpu_to_cpu_p2p", transfer.method == TransferMethod::PcieP2p);
     } else {
-        check!("gpu_to_cpu_has_transfer", false);
+        h.check_bool("gpu_to_cpu_has_transfer", false);
     }
 
     // Substrates used
     let subs = plan.substrates_used();
-    check!("uses_3_substrates", subs.len() == 3);
-    check!(
+    h.check_bool("uses_3_substrates", subs.len() == 3);
+    h.check_bool(
         "substrates_npu_gpu_cpu",
-        subs == vec![Substrate::Npu, Substrate::Gpu, Substrate::Cpu]
+        subs == vec![Substrate::Npu, Substrate::Gpu, Substrate::Cpu],
     );
 
     // Transfer overhead
     let overhead = plan.total_transfer_time_us();
-    check!(
+    h.check_bool(
         &format!("transfer_overhead_{overhead:.1}us"),
-        overhead > 0.0
+        overhead > 0.0,
     );
 
     // --- Execute toadStool pipeline on CPU (reference) ---
@@ -210,33 +199,33 @@ fn main() {
     });
 
     let result = pipeline.execute_cpu();
-    check!("pipeline_success", result.success);
-    check!("pipeline_4_stages", result.stage_results.len() == 4);
-    check!(
+    h.check_bool("pipeline_success", result.success);
+    h.check_bool("pipeline_4_stages", result.stage_results.len() == 4);
+    h.check_bool(
         "ecg_360_samples",
-        result.stage_results[0].output_data.len() == 360
+        result.stage_results[0].output_data.len() == 360,
     );
-    check!(
+    h.check_bool(
         "biosignal_fused_output",
-        !result.stage_results[1].output_data.is_empty()
+        !result.stage_results[1].output_data.is_empty(),
     );
-    check!(
+    h.check_bool(
         "pop_pk_200_patients",
-        result.stage_results[2].output_data.len() == 200
+        result.stage_results[2].output_data.len() == 200,
     );
-    check!(
+    h.check_bool(
         "pop_pk_all_positive",
-        result.stage_results[2].output_data.iter().all(|&v| v > 0.0)
+        result.stage_results[2].output_data.iter().all(|&v| v > 0.0),
     );
-    check!(
+    h.check_bool(
         "diagnostic_scalar",
-        result.stage_results[3].output_data.len() == 1
+        result.stage_results[3].output_data.len() == 1,
     );
-    check!(
+    h.check_bool(
         "diagnostic_positive",
-        result.stage_results[3].output_data[0] > 0.0
+        result.stage_results[3].output_data[0] > 0.0,
     );
-    check!("pipeline_time_positive", result.total_time_us > 0.0);
+    h.check_bool("pipeline_time_positive", result.total_time_us > 0.0);
 
     // --- Extended pipeline with new stage types ---
     println!("\n=== Extended Pipeline (AUC + Bray-Curtis) ===");
@@ -267,14 +256,14 @@ fn main() {
     });
 
     let ext_result = ext_pipeline.execute_cpu();
-    check!("ext_pipeline_success", ext_result.success);
-    check!(
+    h.check_bool("ext_pipeline_success", ext_result.success);
+    h.check_bool(
         "ext_auc_scalar",
-        ext_result.stage_results[2].output_data.len() == 1
+        ext_result.stage_results[2].output_data.len() == 1,
     );
-    check!(
+    h.check_bool(
         "ext_auc_positive",
-        ext_result.stage_results[2].output_data[0] > 0.0
+        ext_result.stage_results[2].output_data[0] > 0.0,
     );
 
     // Bray-Curtis standalone
@@ -291,21 +280,18 @@ fn main() {
         },
     });
     let bc_result = bc_pipeline.execute_cpu();
-    check!("bc_pipeline_success", bc_result.success);
-    check!(
+    h.check_bool("bc_pipeline_success", bc_result.success);
+    h.check_bool(
         "bc_3_pairs",
-        bc_result.stage_results[0].output_data.len() == 3
+        bc_result.stage_results[0].output_data.len() == 3,
     );
-    check!(
+    h.check_bool(
         "bc_all_in_range",
         bc_result.stage_results[0]
             .output_data
             .iter()
-            .all(|&v| (0.0..=1.0).contains(&v))
+            .all(|&v| (0.0..=1.0).contains(&v)),
     );
 
-    let total = passed + failed;
-    println!("\n==============================");
-    println!("Exp071 Mixed System Pipeline: {passed}/{total} checks passed");
-    std::process::exit(i32::from(passed != total));
+    h.exit();
 }

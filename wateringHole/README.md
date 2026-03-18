@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V37 — Cross-Ecosystem Absorption Sprint. 706 tests, 79 experiments, 49 baselines with structured provenance registry, 113/113 cross-validation. 80 capabilities. FMA sweep, centralized extract_rpc_result(), proptest fuzz, MCP tools, deny.toml hardened, leverage guide published.
+**Status**: V38 — Deep Debt Audit Complete. 719 tests, 79 experiments, 79/79 ValidationHarness, 70+ named tolerances, 49 provenance records with DOI, typed IPC dispatch. 80 capabilities. clippy::nursery enforced workspace-wide.
 **Last Updated**: March 18, 2026
 
 ---
@@ -22,9 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V33** | [V33 Protocol Evolution + Cast Algebra](handoffs/HEALTHSPRING_V33_PROTOCOL_EVOLUTION_CAST_ALGEBRA_HANDOFF_MAR16_2026.md) | Mar 16 | IpcError::is_recoverable(), DispatchOutcome enum, generic discovery helpers, centralized cast module. Supersedes V32. |
-| **V33** | [V33 toadStool/barraCuda Absorption](handoffs/HEALTHSPRING_V33_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR16_2026.md) | Mar 16 | 3 Tier B shaders for barraCuda, 12+ module consumption map, GPU learnings, IPC patterns, action items for barraCuda/toadStool/coralReef. |
-| | *V1–V32 → `handoffs/archive/`* | | Fossil record |
+| **V38** | [V38 toadStool/barraCuda Evolution](handoffs/HEALTHSPRING_V38_TOADSTOOL_BARRACUDA_EVOLUTION_HANDOFF_MAR18_2026.md) | Mar 18 | Deep debt audit complete: 79/79 ValidationHarness, named tolerances, typed IPC dispatch, provenance DOI citations. Action items for barraCuda/toadStool. Supersedes V37. |
+| | *V1–V37 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

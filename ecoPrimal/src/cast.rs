@@ -42,15 +42,16 @@ pub fn usize_u32(n: usize) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn usize_f64_exact() {
-        assert!((usize_f64(1_000_000) - 1_000_000.0).abs() < f64::EPSILON);
+        assert!((usize_f64(1_000_000) - 1_000_000.0).abs() < tolerances::MACHINE_EPSILON);
     }
 
     #[test]
     fn u64_f64_exact() {
-        assert!((u64_f64(42) - 42.0).abs() < f64::EPSILON);
+        assert!((u64_f64(42) - 42.0).abs() < tolerances::MACHINE_EPSILON);
     }
 
     #[test]

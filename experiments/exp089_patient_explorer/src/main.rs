@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::cast_precision_loss,
     reason = "patient parameter conversions, small counts"

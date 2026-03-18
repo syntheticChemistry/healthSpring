@@ -30,6 +30,14 @@ pub struct ProvenanceRecord {
     pub description: &'static str,
     /// Number of validation checks in the script (0 if not applicable).
     pub checks: u32,
+    /// Git commit hash of the Python baseline run (empty string if not applicable).
+    pub git_commit: &'static str,
+    /// Date the baseline was generated (empty string if not applicable).
+    pub run_date: &'static str,
+    /// Exact command used to generate the baseline (empty string if not applicable).
+    pub exact_command: &'static str,
+    /// Literature-derived baseline source: citation (DOI, database accession), figure/table/dataset (empty if Python-derived).
+    pub baseline_source: &'static str,
 }
 
 /// Registry of all Python control scripts in `control/`.
@@ -45,6 +53,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Hill dose-response 4-parameter IC50/EC50 for JAK inhibitors",
         checks: 8,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "Hill 1910 J Physiol doi:10.1113/jphysiol.1910.sp001397",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -53,6 +65,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "One-compartment PK: IV bolus, oral absorption, AUC, Cmax, Tmax",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -61,6 +77,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Two-compartment PK model (IV bolus)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -69,6 +89,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "mAb PK cross-species transfer (lokivetmab → nemolizumab/dupilumab)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -77,6 +101,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Population PK Monte Carlo with IIV",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -85,6 +113,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "PBPK 5-tissue compartments (liver, kidney, muscle, fat, rest)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -93,6 +125,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Michaelis-Menten nonlinear PK (phenytoin-like)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -101,6 +137,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Cross-validation: Python baseline JSON self-consistency",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     // Track 2: Microbiome
     ProvenanceRecord {
@@ -110,6 +150,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Shannon, Simpson, Pielou, Chao1 diversity indices",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-08",
+        exact_command: "python3 control/microbiome/exp010_diversity_indices.py",
+        baseline_source: "Shannon 1948 doi:10.1002/j.1538-7305.1948.tb01338.x; Anderson 1958 doi:10.1103/PhysRev.109.1492",
     },
     ProvenanceRecord {
         track: "microbiome",
@@ -118,6 +162,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Anderson localization in 1D gut microbiome lattice",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-08",
+        exact_command: "python3 control/microbiome/exp011_anderson_gut_lattice.py",
+        baseline_source: "Anderson 1958 Phys Rev doi:10.1103/PhysRev.109.1492",
     },
     ProvenanceRecord {
         track: "microbiome",
@@ -126,6 +174,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "C. difficile colonization resistance score",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-08",
+        exact_command: "python3 control/microbiome/exp012_cdiff_resistance.py",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "microbiome",
@@ -134,6 +186,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "FMT for recurrent C. diff infection (rCDI)",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-08",
+        exact_command: "python3 control/microbiome/exp013_fmt_rcdi.py",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "microbiome",
@@ -142,6 +198,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Antibiotic perturbation recovery (Shannon diversity)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "microbiome",
@@ -150,6 +210,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "SCFA production (Michaelis-Menten fermentation)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "microbiome",
@@ -158,6 +222,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Gut-brain serotonin pathway (diversity → tryptophan)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     // Track 3: Biosignal
     ProvenanceRecord {
@@ -167,6 +235,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Pan-Tompkins QRS detection in ECG",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "Pan & Tompkins 1985 IEEE Trans Biomed Eng",
     },
     ProvenanceRecord {
         track: "biosignal",
@@ -175,6 +247,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "HRV metrics (RMSSD, pNN50, SDNN)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "biosignal",
@@ -183,6 +259,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "PPG SpO2 R-value calibration",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "biosignal",
@@ -191,6 +271,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Multi-channel biosignal fusion (ECG + PPG + EDA)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "biosignal",
@@ -199,6 +283,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "EDA autonomic stress detection",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "biosignal",
@@ -207,6 +295,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Arrhythmia beat classification (Normal, PVC, PAC)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "MIT-BIH Arrhythmia Database (Moody & Mark 2001 IEEE Eng Med Biol 20:45)",
     },
     // Track 4: Endocrine
     ProvenanceRecord {
@@ -216,6 +308,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Testosterone IM injection PK (cypionate depot)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -224,6 +320,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Testosterone pellet depot PK (zero-order release)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -232,6 +332,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Age-related testosterone decline (Harman 2001)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "Harman et al. 2001 JCEM doi:10.1210/jcem.86.2.7219",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -240,6 +344,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "TRT metabolic response: weight/waist trajectory",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -248,6 +356,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "TRT cardiovascular response (LDL, HDL, CRP, BP)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -256,6 +368,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "TRT and Type 2 diabetes (HbA1c, HOMA-IR)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -264,6 +380,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Population TRT Monte Carlo (10K virtual patients)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -272,6 +392,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Testosterone-gut axis: microbiome stratification",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -280,6 +404,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "HRV × TRT cardiovascular cross-track",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     // Track 5: Comparative
     ProvenanceRecord {
@@ -289,6 +417,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Canine IL-31 serum kinetics in atopic dermatitis",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/comparative/exp100_canine_il31.py",
+        baseline_source: "Gonzales 2013 Vet Dermatol 24:48 doi:10.1111/j.1365-3164.2012.01098.x; Gonzales 2016 Vet Dermatol 27:34 (VAS EC50)",
     },
     ProvenanceRecord {
         track: "comparative",
@@ -297,6 +429,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Canine oclacitinib JAK1 selectivity validation",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/comparative/exp101_canine_jak1.py",
+        baseline_source: "Gonzales 2014 JVPT 37:317; ChEMBL JAK panel (oclacitinib 10 nM JAK1)",
     },
     ProvenanceRecord {
         track: "comparative",
@@ -305,6 +441,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "IL-31 pruritus time-course baseline",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/comparative/exp102_il31_pruritus_timecourse.py",
+        baseline_source: "Gonzales 2016 Vet Dermatol 27:34 (pruritus VAS time-course)",
     },
     ProvenanceRecord {
         track: "comparative",
@@ -313,6 +453,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Lokivetmab dose-duration baseline",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/comparative/exp103_lokivetmab_duration.py",
+        baseline_source: "Fleck/Gonzales 2021 Vet Dermatol 32:681 (~14d at 0.5 mg/kg, threshold ~3 µg/mL)",
     },
     ProvenanceRecord {
         track: "comparative",
@@ -321,6 +465,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Cross-species allometric PK scaling",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/comparative/exp104_cross_species_pk.py",
+        baseline_source: "Mahmood 2006 J Pharm Sci 95:1810 doi:10.1002/jps.20590 (CL ∝ BW^0.75)",
     },
     ProvenanceRecord {
         track: "comparative",
@@ -329,6 +477,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Canine gut Anderson diversity baseline",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/comparative/exp105_canine_gut_anderson.py",
+        baseline_source: "Shannon 1948 + Anderson 1958 (evenness → disorder → ξ)",
     },
     ProvenanceRecord {
         track: "comparative",
@@ -337,6 +489,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Feline hyperthyroidism methimazole PK baseline",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/comparative/exp106_feline_hyperthyroid.py",
+        baseline_source: "Trepanier 2006 JVIM 20:18 (methimazole MM PK, T4 response)",
     },
     // Track 6: Discovery
     ProvenanceRecord {
@@ -346,6 +502,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Anderson-augmented MATRIX drug repurposing scoring",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/discovery/exp090_matrix_scoring.py",
+        baseline_source: "Fajgenbaum DC et al. NEJM 379:1941 (MATRIX pathway × geometry × disorder)",
     },
     ProvenanceRecord {
         track: "discovery",
@@ -354,6 +514,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "ADDRC high-throughput screening analysis (Z', SSMD)",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/discovery/exp091_addrc_hts.py",
+        baseline_source: "Zhang 1999 J Biomol Screen 4:67 doi:10.1177/108705719900400206 (Z'-factor); SSMD",
     },
     ProvenanceRecord {
         track: "discovery",
@@ -362,6 +526,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "ADDRC compound library batch IC50 profiling",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/discovery/exp092_compound_library.py",
+        baseline_source: "Hill 1910 J Physiol doi:10.1113/jphysiol.1910.sp001397 (IC50, selectivity index)",
     },
     ProvenanceRecord {
         track: "discovery",
@@ -370,6 +538,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "ChEMBL JAK inhibitor selectivity panel",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/discovery/exp093_chembl_jak_panel.py",
+        baseline_source: "ChEMBL database; oclacitinib/tofacitinib/ruxolitinib/baricitinib IC50s",
     },
     ProvenanceRecord {
         track: "discovery",
@@ -378,6 +550,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Rho/MRTF/SRF fibrosis scoring baseline",
         checks: 0,
+        git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+        run_date: "2026-03-16",
+        exact_command: "python3 control/discovery/exp094_rho_mrtf_fibrosis.py",
+        baseline_source: "Haak 2014 JPET 349:480 doi:10.1124/jpet.114.213520 (CCG-1423, CCG-203971)",
     },
     // Track 7: Validation
     ProvenanceRecord {
@@ -387,6 +563,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "barraCuda CPU parity analytical baselines",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     // Track 8: Scripts
     ProvenanceRecord {
@@ -396,6 +576,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "barraCuda CPU vs Python benchmark timing",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "scripts",
@@ -404,6 +588,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "V16 CPU parity benchmarks (Python baseline)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "scripts",
@@ -412,6 +600,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Rust CPU vs Python benchmark comparison",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "scripts",
@@ -420,6 +612,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "GPU scaling validation (Python control)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "scripts",
@@ -428,6 +624,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Centralized tolerance constants (Python mirror of tolerances.rs)",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
     ProvenanceRecord {
         track: "scripts",
@@ -436,6 +636,10 @@ pub const PROVENANCE_REGISTRY: &[ProvenanceRecord] = &[
         python_version: "3.10+",
         description: "Update baseline JSON files with provenance metadata",
         checks: 0,
+        git_commit: "",
+        run_date: "",
+        exact_command: "",
+        baseline_source: "",
     },
 ];
 

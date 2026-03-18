@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 
 //! Exp106: Feline hyperthyroidism methimazole PK (Trepanier 2006, CM-007)
 //!

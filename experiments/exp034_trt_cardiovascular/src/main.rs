@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! healthSpring Exp034 — TRT Cardiovascular Response (Rust validation)
 
 use healthspring_barracuda::endocrine::{self, cv_params as cv};

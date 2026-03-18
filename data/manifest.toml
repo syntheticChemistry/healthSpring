@@ -99,7 +99,9 @@ status = "planned"
 [datasets.geo_androgen_receptor]
 description = "Androgen receptor expression across tissues (GEO series)"
 source = "NCBI GEO"
-accessions = []  # specific GSE to be determined
+# Candidate series: GSE21034 (prostate AR ChIP-seq), GSE70627 (AR tissue panel),
+# GSE28680 (canine AR expression). Final selection pending track-4 experiment design.
+accessions = []
 license = "Public domain (NCBI)"
 size_estimate = "~50GB raw"
 output = "geo_ar/"

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![forbid(unsafe_code)]
 
 //! Exp061: Mixed hardware dispatch via `metalForge` NUCLEUS topology.
@@ -9,22 +10,13 @@
 //! based on workload type and element count, and generates correct transfer
 //! plans between devices (`PCIe` P2P, host-staged, network IPC).
 
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_forge::dispatch::{DispatchPlan, plan_dispatch};
 use healthspring_forge::nucleus::{
     DeviceStatus, Nest, NestId, Node, NodeId, PcieGeneration, Tower,
 };
 use healthspring_forge::transfer::TransferMethod;
 use healthspring_forge::{Capabilities, GpuInfo, NpuInfo, PrecisionRouting, Substrate, Workload};
-
-fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
-    *total += 1;
-    if ok {
-        *passed += 1;
-        println!("  [PASS] {name}");
-    } else {
-        println!("  [FAIL] {name}");
-    }
-}
 
 fn workstation_tower() -> Tower {
     Tower {
@@ -175,8 +167,7 @@ fn main() {
     println!("Exp061 Mixed Hardware Dispatch — metalForge NUCLEUS");
     println!("====================================================\n");
 
-    let mut passed = 0u32;
-    let mut total = 0u32;
+    let mut h = ValidationHarness::new("exp061_mixed_hardware_dispatch");
 
     // -----------------------------------------------------------------------
     // Scenario 1: Full healthSpring pipeline on workstation (CPU+GPU+NPU)
@@ -208,78 +199,47 @@ fn main() {
     let plan = plan_dispatch(&workloads, &caps, &tower);
     print_plan(&plan);
 
-    check(
-        "s1: 5 stages assigned",
-        plan.assignments.len() == 5,
-        &mut passed,
-        &mut total,
-    );
-    check(
+    h.check_bool("s1: 5 stages assigned", plan.assignments.len() == 5);
+    h.check_bool(
         "s1: Hill -> GPU",
         plan.assignments[0].substrate == Substrate::Gpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "s1: PopPK -> GPU",
         plan.assignments[1].substrate == Substrate::Gpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "s1: Diversity -> GPU",
         plan.assignments[2].substrate == Substrate::Gpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "s1: Biosignal -> NPU",
         plan.assignments[3].substrate == Substrate::Npu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "s1: Endocrine -> CPU",
         plan.assignments[4].substrate == Substrate::Cpu,
-        &mut passed,
-        &mut total,
     );
 
-    check(
+    h.check_bool(
         "s1: GPU->NPU via PCIe P2P",
         plan.assignments[3]
             .transfer
             .as_ref()
             .is_some_and(|t| t.method == TransferMethod::PcieP2p),
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "s1: NPU->CPU via PCIe P2P",
         plan.assignments[4]
             .transfer
             .as_ref()
             .is_some_and(|t| t.method == TransferMethod::PcieP2p),
-        &mut passed,
-        &mut total,
     );
-    check(
-        "s1: 2 transitions",
-        plan.n_substrate_transitions == 2,
-        &mut passed,
-        &mut total,
-    );
-    check(
-        "s1: transfer time > 0",
-        plan.total_transfer_time_us() > 0.0,
-        &mut passed,
-        &mut total,
-    );
-    check(
+    h.check_exact("s1: 2 transitions", plan.n_substrate_transitions as u64, 2);
+    h.check_bool("s1: transfer time > 0", plan.total_transfer_time_us() > 0.0);
+    h.check_bool(
         "s1: 3 substrates used",
         plan.substrates_used() == vec![Substrate::Gpu, Substrate::Npu, Substrate::Cpu],
-        &mut passed,
-        &mut total,
     );
 
     // -----------------------------------------------------------------------
@@ -291,27 +251,19 @@ fn main() {
     let plan_cpu = plan_dispatch(&workloads, &caps_cpu, &tower);
     print_plan(&plan_cpu);
 
-    check(
+    h.check_bool(
         "s2: all stages on CPU",
         plan_cpu
             .assignments
             .iter()
             .all(|a| a.substrate == Substrate::Cpu),
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_exact(
         "s2: 0 transitions",
-        plan_cpu.n_substrate_transitions == 0,
-        &mut passed,
-        &mut total,
+        plan_cpu.n_substrate_transitions as u64,
+        0,
     );
-    check(
-        "s2: 0 transfer bytes",
-        plan_cpu.total_transfer_bytes == 0,
-        &mut passed,
-        &mut total,
-    );
+    h.check_exact("s2: 0 transfer bytes", plan_cpu.total_transfer_bytes, 0);
 
     // -----------------------------------------------------------------------
     // Scenario 3: Biosignal fusion pipeline (NPU-centric)
@@ -332,29 +284,22 @@ fn main() {
     let plan_bio = plan_dispatch(&workloads_bio, &caps, &tower);
     print_plan(&plan_bio);
 
-    check(
+    h.check_bool(
         "s3: detect -> NPU",
         plan_bio.assignments[0].substrate == Substrate::Npu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "s3: fusion -> NPU",
         plan_bio.assignments[1].substrate == Substrate::Npu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "s3: analytical -> CPU",
         plan_bio.assignments[2].substrate == Substrate::Cpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_exact(
         "s3: NPU->CPU transition",
-        plan_bio.n_substrate_transitions == 1,
-        &mut passed,
-        &mut total,
+        plan_bio.n_substrate_transitions as u64,
+        1,
     );
 
     // -----------------------------------------------------------------------
@@ -376,20 +321,17 @@ fn main() {
     let plan_small = plan_dispatch(&workloads_small, &caps, &tower);
     print_plan(&plan_small);
 
-    check(
+    h.check_bool(
         "s4: all small -> CPU",
         plan_small
             .assignments
             .iter()
             .all(|a| a.substrate == Substrate::Cpu),
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_exact(
         "s4: 0 transitions",
-        plan_small.n_substrate_transitions == 0,
-        &mut passed,
-        &mut total,
+        plan_small.n_substrate_transitions as u64,
+        0,
     );
 
     // -----------------------------------------------------------------------
@@ -401,23 +343,19 @@ fn main() {
     let plan_cluster = plan_dispatch(&workloads, &caps, &cluster);
     print_plan(&plan_cluster);
 
-    check(
+    h.check_bool(
         "s5: GPU stages use local node",
         plan_cluster.assignments[0].nest_id.node == 0,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_exact(
         "s5: cluster has 2 nodes 5 nests",
-        cluster.total_nests() == 4,
-        &mut passed,
-        &mut total,
+        cluster.total_nests() as u64,
+        4,
     );
 
     // -----------------------------------------------------------------------
     // Summary
     // -----------------------------------------------------------------------
     println!("====================================================");
-    println!("Exp061 Mixed Hardware Dispatch: {passed}/{total} checks passed");
-    std::process::exit(i32::from(passed != total));
+    h.exit();
 }

@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp088: Unified dashboard — generates, validates, and optionally pushes
 //! all healthSpring `petalTongue` scenarios (original tracks + V16 + compute).
 

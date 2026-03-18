@@ -2,9 +2,8 @@
 
 use super::*;
 use crate::pkpd::{auc_trapezoidal, find_cmax_tmax, pk_multiple_dose};
+use crate::tolerances;
 use core::f64::consts::LN_2;
-
-const TOL: f64 = 1e-10;
 
 const DOSE_IV: f64 = 500.0;
 const VD_IV: f64 = 50.0;
@@ -25,14 +24,14 @@ const DOSE_2C: f64 = 240.0;
 #[test]
 fn iv_c0_equals_dose_over_vd() {
     let c0 = pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, 0.0);
-    assert!((c0 - DOSE_IV / VD_IV).abs() < TOL);
+    assert!((c0 - DOSE_IV / VD_IV).abs() < tolerances::TEST_ASSERTION_TIGHT);
 }
 
 #[test]
 fn iv_at_half_life_is_half() {
     let c = pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, HL_IV);
     let expected = (DOSE_IV / VD_IV) / 2.0;
-    assert!((c - expected).abs() < 1e-6);
+    assert!((c - expected).abs() < tolerances::TEST_ASSERTION_MEDIUM);
 }
 
 #[test]
@@ -43,7 +42,10 @@ fn iv_monotonically_decreasing() {
         .map(|&t| pk_iv_bolus(DOSE_IV, VD_IV, HL_IV, t))
         .collect();
     for w in concs.windows(2) {
-        assert!(w[0] >= w[1] - TOL, "IV not monotonically decreasing");
+        assert!(
+            w[0] >= w[1] - tolerances::TEST_ASSERTION_TIGHT,
+            "IV not monotonically decreasing"
+        );
     }
 }
 
@@ -58,14 +60,17 @@ fn iv_auc_matches_analytical() {
     let k_e = LN_2 / HL_IV;
     let auc_ana = DOSE_IV / (VD_IV * k_e);
     let rel_err = (auc_num - auc_ana).abs() / auc_ana;
-    assert!(rel_err < 0.01, "AUC rel err {rel_err}");
+    assert!(
+        rel_err < tolerances::TEST_ASSERTION_LOOSE,
+        "AUC rel err {rel_err}"
+    );
 }
 
 #[test]
 fn oral_c0_is_zero() {
     let k_e = LN_2 / HL_ORAL;
     let c = pk_oral_one_compartment(DOSE_ORAL, F_ORAL, VD_ORAL, KA_ORAL, k_e, 0.0);
-    assert!(c.abs() < TOL);
+    assert!(c.abs() < tolerances::TEST_ASSERTION_TIGHT);
 }
 
 #[test]
@@ -93,7 +98,7 @@ fn oral_tmax_matches_analytical() {
         .collect();
     let (_, tmax_num) = find_cmax_tmax(&times, &concs);
     assert!(
-        (tmax_num - tmax_ana).abs() < 0.1,
+        (tmax_num - tmax_ana).abs() < tolerances::TMAX_NUMERICAL,
         "Tmax numerical={tmax_num}, analytical={tmax_ana}"
     );
 }
@@ -102,7 +107,7 @@ fn oral_tmax_matches_analytical() {
 fn oral_decays_by_48hr() {
     let k_e = LN_2 / HL_ORAL;
     let c = pk_oral_one_compartment(DOSE_ORAL, F_ORAL, VD_ORAL, KA_ORAL, k_e, 48.0);
-    assert!(c < 0.01, "C(48hr) = {c}");
+    assert!(c < tolerances::TEST_ASSERTION_LOOSE, "C(48hr) = {c}");
 }
 
 #[test]
@@ -116,7 +121,10 @@ fn oral_auc_matches_analytical() {
     let auc_num = auc_trapezoidal(&times, &concs);
     let auc_ana = (F_ORAL * DOSE_ORAL) / (VD_ORAL * k_e);
     let rel_err = (auc_num - auc_ana).abs() / auc_ana;
-    assert!(rel_err < 0.01, "Oral AUC rel err {rel_err}");
+    assert!(
+        rel_err < tolerances::TEST_ASSERTION_LOOSE,
+        "Oral AUC rel err {rel_err}"
+    );
 }
 
 #[test]
@@ -152,7 +160,12 @@ fn all_concentrations_nonneg() {
 
     assert!(c_iv.iter().all(|&c| c >= 0.0), "IV non-negative");
     assert!(c_oral.iter().all(|&c| c >= 0.0), "Oral non-negative");
-    assert!(c_multi.iter().all(|&c| c >= -1e-12), "Multi non-negative");
+    assert!(
+        c_multi
+            .iter()
+            .all(|&c| c >= -tolerances::MACHINE_EPSILON_TIGHT),
+        "Multi non-negative"
+    );
 }
 
 #[test]
@@ -167,7 +180,7 @@ fn two_comp_sum_identity() {
     let eigenvalue_sum = alpha + beta;
     let rate_constant_sum = K10_2C + K12_2C + K21_2C;
     assert!(
-        (eigenvalue_sum - rate_constant_sum).abs() < TOL,
+        (eigenvalue_sum - rate_constant_sum).abs() < tolerances::TEST_ASSERTION_TIGHT,
         "α+β = k10+k12+k21"
     );
 }
@@ -178,7 +191,7 @@ fn two_comp_product_identity() {
     let eigenvalue_prod = alpha * beta;
     let rate_constant_prod = K10_2C * K21_2C;
     assert!(
-        (eigenvalue_prod - rate_constant_prod).abs() < TOL,
+        (eigenvalue_prod - rate_constant_prod).abs() < tolerances::TEST_ASSERTION_TIGHT,
         "α·β = k10·k21"
     );
 }
@@ -186,7 +199,10 @@ fn two_comp_product_identity() {
 #[test]
 fn two_comp_c0() {
     let c = pk_two_compartment_iv(DOSE_2C, V1_2C, K10_2C, K12_2C, K21_2C, 0.0);
-    assert!((c - DOSE_2C / V1_2C).abs() < TOL, "C(0) = Dose/V1");
+    assert!(
+        (c - DOSE_2C / V1_2C).abs() < tolerances::TEST_ASSERTION_TIGHT,
+        "C(0) = Dose/V1"
+    );
 }
 
 #[test]
@@ -196,7 +212,12 @@ fn two_comp_nonneg() {
         .iter()
         .map(|&t| pk_two_compartment_iv(DOSE_2C, V1_2C, K10_2C, K12_2C, K21_2C, t))
         .collect();
-    assert!(concs.iter().all(|&c| c >= -1e-12), "all non-negative");
+    assert!(
+        concs
+            .iter()
+            .all(|&c| c >= -tolerances::MACHINE_EPSILON_TIGHT),
+        "all non-negative"
+    );
 }
 
 #[test]
@@ -207,7 +228,10 @@ fn two_comp_monotonic_dec() {
         .map(|&t| pk_two_compartment_iv(DOSE_2C, V1_2C, K10_2C, K12_2C, K21_2C, t))
         .collect();
     for w in concs.windows(2) {
-        assert!(w[0] >= w[1] - 1e-12, "central monotonic decreasing");
+        assert!(
+            w[0] >= w[1] - tolerances::MACHINE_EPSILON_TIGHT,
+            "central monotonic decreasing"
+        );
     }
 }
 
@@ -229,7 +253,10 @@ fn two_comp_auc_analytical() {
     let auc_num = auc_trapezoidal(&times, &concs);
     let auc_ana = DOSE_2C / (V1_2C * K10_2C);
     let rel_err = (auc_num - auc_ana).abs() / auc_ana;
-    assert!(rel_err < 0.01, "AUC rel err {rel_err}");
+    assert!(
+        rel_err < tolerances::TEST_ASSERTION_LOOSE,
+        "AUC rel err {rel_err}"
+    );
 }
 
 #[test]
@@ -237,7 +264,10 @@ fn two_comp_a_plus_b_eq_c0() {
     let c0 = DOSE_2C / V1_2C;
     let (alpha, beta) = micro_to_macro(K10_2C, K12_2C, K21_2C);
     let (a, b) = two_compartment_ab(c0, alpha, beta, K21_2C);
-    assert!((a + b - c0).abs() < TOL, "A+B = C0");
+    assert!(
+        (a + b - c0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+        "A+B = C0"
+    );
 }
 
 #[test]
@@ -256,5 +286,8 @@ fn two_comp_reduces_to_one() {
         .zip(c_one.iter())
         .map(|(a, b)| (a - b).abs())
         .fold(0.0, f64::max);
-    assert!(max_diff < 1e-10, "k12=0 → one-compartment, diff={max_diff}");
+    assert!(
+        max_diff < tolerances::TEST_ASSERTION_TIGHT,
+        "k12=0 → one-compartment, diff={max_diff}"
+    );
 }

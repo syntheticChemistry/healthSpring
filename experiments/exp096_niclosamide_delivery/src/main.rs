@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp096: Niclosamide drug delivery optimization (DD-007)
 //!
 //! Validates niclosamide physicochemical properties, PBPK, and delivery optimization.

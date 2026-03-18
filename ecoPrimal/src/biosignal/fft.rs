@@ -140,16 +140,23 @@ pub fn irfft(re: &[f64], im: &[f64], n: usize) -> Vec<f64> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn rfft_dc_component() {
         let signal = vec![1.0; 8];
         let (re, im) = rfft(&signal);
-        assert!((re[0] - 8.0).abs() < 1e-10, "DC = sum of all samples");
-        assert!(im[0].abs() < 1e-10, "DC imaginary = 0");
+        assert!(
+            (re[0] - 8.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "DC = sum of all samples"
+        );
+        assert!(
+            im[0].abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "DC imaginary = 0"
+        );
         for (k, component) in re.iter().enumerate().skip(1) {
             assert!(
-                component.abs() < 1e-10,
+                component.abs() < tolerances::TEST_ASSERTION_TIGHT,
                 "no AC for constant signal at k={k}"
             );
         }
@@ -162,7 +169,7 @@ mod tests {
         let recovered = irfft(&re, &im, signal.len());
         for (i, (&orig, &rec)) in signal.iter().zip(recovered.iter()).enumerate() {
             assert!(
-                (orig - rec).abs() < 1e-10,
+                (orig - rec).abs() < tolerances::TEST_ASSERTION_TIGHT,
                 "mismatch at {i}: {orig} vs {rec}"
             );
         }
@@ -175,7 +182,7 @@ mod tests {
         let recovered = irfft(&re, &im, signal.len());
         for (i, (&orig, &rec)) in signal.iter().zip(recovered.iter()).enumerate() {
             assert!(
-                (orig - rec).abs() < 1e-8,
+                (orig - rec).abs() < tolerances::DIVERSITY_CROSS_VALIDATE,
                 "mismatch at {i}: {orig} vs {rec}"
             );
         }

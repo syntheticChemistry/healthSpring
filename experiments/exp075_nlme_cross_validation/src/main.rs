@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp075: Cross-validate NLME (FOCE/SAEM) against published NONMEM
 //! testosterone PK population parameters and nlmixr-style results.
 //!
@@ -35,20 +36,10 @@ use healthspring_barracuda::pkpd::{
     NlmeConfig, SyntheticPopConfig, compute_cwres, compute_gof, cwres_summary, foce,
     generate_synthetic_population, nca_iv, oral_one_compartment_model, saem,
 };
+use healthspring_barracuda::tolerances::{FOCE_THETA_RECOVERY, NCA_AUC_INF, NCA_LAMBDA_Z};
+use healthspring_barracuda::validation::ValidationHarness;
 
-macro_rules! check {
-    ($passed:expr, $failed:expr, $name:expr, $cond:expr) => {
-        if $cond {
-            $passed += 1;
-            println!("  PASS: {}", $name);
-        } else {
-            $failed += 1;
-            println!("  FAIL: {}", $name);
-        }
-    };
-}
-
-fn validate_foce_recovery(passed: &mut u32, failed: &mut u32) {
+fn validate_foce_recovery(h: &mut ValidationHarness) {
     println!("\n=== FOCE Parameter Recovery (Simulation-Estimation) ===");
 
     let theta_true = vec![-2.44, 4.25, -0.77];
@@ -95,25 +86,21 @@ fn validate_foce_recovery(passed: &mut u32, failed: &mut u32) {
         let rel_err = (est - truth).abs() / truth.abs().max(0.01);
         let label = ["ln(CL)", "ln(Vd)", "ln(ka)"][idx];
         println!("  {label}: est={est:.4}, true={truth:.4}, rel_err={rel_err:.4}");
-        check!(
-            *passed,
-            *failed,
-            format!("FOCE theta[{idx}] ({label}) within 30% of truth"),
-            rel_err < 0.30
+        h.check_bool(
+            &format!("FOCE theta[{idx}] ({label}) within 30% of truth"),
+            rel_err < FOCE_THETA_RECOVERY,
         );
     }
 
-    check!(*passed, *failed, "FOCE sigma > 0", result.sigma > 0.0);
+    h.check_bool("FOCE sigma > 0", result.sigma > 0.0);
 
-    check!(
-        *passed,
-        *failed,
+    h.check_bool(
         "FOCE has 50 individual eta vectors",
-        result.individual_etas.len() == 50
+        result.individual_etas.len() == 50,
     );
 }
 
-fn validate_saem_recovery(passed: &mut u32, failed: &mut u32) {
+fn validate_saem_recovery(h: &mut ValidationHarness) {
     println!("\n=== SAEM Parameter Recovery (Simulation-Estimation) ===");
 
     let theta_true = vec![-2.44, 4.25, -0.77];
@@ -160,18 +147,16 @@ fn validate_saem_recovery(passed: &mut u32, failed: &mut u32) {
         let rel_err = (est - truth).abs() / truth.abs().max(0.01);
         let label = ["ln(CL)", "ln(Vd)", "ln(ka)"][idx];
         println!("  {label}: est={est:.4}, true={truth:.4}, rel_err={rel_err:.4}");
-        check!(
-            *passed,
-            *failed,
-            format!("SAEM theta[{idx}] ({label}) within 30% of truth"),
-            rel_err < 0.30
+        h.check_bool(
+            &format!("SAEM theta[{idx}] ({label}) within 30% of truth"),
+            rel_err < FOCE_THETA_RECOVERY,
         );
     }
 
-    check!(*passed, *failed, "SAEM sigma > 0", result.sigma > 0.0);
+    h.check_bool("SAEM sigma > 0", result.sigma > 0.0);
 }
 
-fn validate_diagnostics(passed: &mut u32, failed: &mut u32) {
+fn validate_diagnostics(h: &mut ValidationHarness) {
     println!("\n=== Diagnostic Validation (CWRES, GOF) ===");
 
     let theta = vec![-2.44, 4.25, -0.77];
@@ -212,33 +197,24 @@ fn validate_diagnostics(passed: &mut u32, failed: &mut u32) {
     println!("  CWRES mean: {:.4}", summary.mean);
     println!("  CWRES std:  {:.4}", summary.std_dev);
 
-    check!(
-        *passed,
-        *failed,
-        "CWRES mean within [-3, 3]",
-        summary.mean.abs() < 3.0
-    );
+    h.check_bool("CWRES mean within [-3, 3]", summary.mean.abs() < 3.0);
 
     let gof = compute_gof(oral_one_compartment_model, &subjects, &result);
     println!("  GOF individual R²: {:.4}", gof.r_squared_individual);
     println!("  GOF population R²: {:.4}", gof.r_squared_population);
 
-    check!(
-        *passed,
-        *failed,
+    h.check_bool(
         "GOF individual R² >= population R²",
-        gof.r_squared_individual >= gof.r_squared_population
+        gof.r_squared_individual >= gof.r_squared_population,
     );
 
-    check!(
-        *passed,
-        *failed,
-        format!("GOF has {} observations (30 subjects × 14 times)", 30 * 14),
-        gof.observed.len() == 30 * 14
+    h.check_bool(
+        &format!("GOF has {} observations (30 subjects × 14 times)", 30 * 14),
+        gof.observed.len() == 30 * 14,
     );
 }
 
-fn validate_nca_crosscheck(passed: &mut u32, failed: &mut u32) {
+fn validate_nca_crosscheck(h: &mut ValidationHarness) {
     println!("\n=== NCA Cross-Check ===");
 
     let ke = 0.087 / 70.0;
@@ -269,39 +245,36 @@ fn validate_nca_crosscheck(passed: &mut u32, failed: &mut u32) {
         nca.half_life
     );
 
-    let lz_err = (nca.lambda_z - ke).abs() / ke;
-    check!(
-        *passed,
-        *failed,
-        format!("NCA lambda_z within 5% of ke (err={lz_err:.4})"),
-        lz_err < 0.05
+    h.check_rel(
+        &format!(
+            "NCA lambda_z within 5% of ke (err={:.4})",
+            (nca.lambda_z - ke).abs() / ke
+        ),
+        nca.lambda_z,
+        ke,
+        NCA_LAMBDA_Z,
     );
 
-    let auc_err = (nca.auc_inf - analytical_auc).abs() / analytical_auc;
-    check!(
-        *passed,
-        *failed,
-        format!("NCA AUC_inf within 2% of analytical (err={auc_err:.4})"),
-        auc_err < 0.02
+    h.check_rel(
+        &format!(
+            "NCA AUC_inf within 5% of analytical (err={:.4})",
+            (nca.auc_inf - analytical_auc).abs() / analytical_auc
+        ),
+        nca.auc_inf,
+        analytical_auc,
+        NCA_AUC_INF,
     );
 
     let cl_err = (nca.cl_obs - analytical_cl).abs() / analytical_cl;
-    check!(
-        *passed,
-        *failed,
-        format!("NCA CL within 2% of analytical (err={cl_err:.4})"),
-        cl_err < 0.02
+    h.check_bool(
+        &format!("NCA CL within 2% of analytical (err={cl_err:.4})"),
+        cl_err < 0.02,
     );
 
-    check!(
-        *passed,
-        *failed,
-        "NCA R² > 0.999 for mono-exponential",
-        nca.r_squared > 0.999
-    );
+    h.check_bool("NCA R² > 0.999 for mono-exponential", nca.r_squared > 0.999);
 }
 
-fn validate_determinism(passed: &mut u32, failed: &mut u32) {
+fn validate_determinism(h: &mut ValidationHarness) {
     println!("\n=== Determinism Validation ===");
 
     let theta = vec![-2.44, 4.25, -0.77];
@@ -329,7 +302,7 @@ fn validate_determinism(passed: &mut u32, failed: &mut u32) {
             }
         }
     }
-    check!(*passed, *failed, "synthetic data deterministic", all_match);
+    h.check_bool("synthetic data deterministic", all_match);
 
     let foce_cfg = NlmeConfig {
         n_theta: 3,
@@ -355,11 +328,9 @@ fn validate_determinism(passed: &mut u32, failed: &mut u32) {
         &foce_cfg,
     );
 
-    check!(
-        *passed,
-        *failed,
+    h.check_bool(
         "FOCE objective deterministic",
-        r1.objective.to_bits() == r2.objective.to_bits()
+        r1.objective.to_bits() == r2.objective.to_bits(),
     );
 
     let r3 = saem(
@@ -379,11 +350,9 @@ fn validate_determinism(passed: &mut u32, failed: &mut u32) {
         &foce_cfg,
     );
 
-    check!(
-        *passed,
-        *failed,
+    h.check_bool(
         "SAEM objective deterministic",
-        r3.objective.to_bits() == r4.objective.to_bits()
+        r3.objective.to_bits() == r4.objective.to_bits(),
     );
 }
 
@@ -396,19 +365,13 @@ fn main() {
     println!("  CL = 0.087 L/day, Vd = 70 L, ka(IM) = 0.462/day");
     println!("  BSV: CL 25% CV, Vd 20% CV, ka 35% CV");
 
-    let mut passed = 0_u32;
-    let mut failed = 0_u32;
+    let mut h = ValidationHarness::new("exp075_nlme_cross_validation");
 
-    validate_foce_recovery(&mut passed, &mut failed);
-    validate_saem_recovery(&mut passed, &mut failed);
-    validate_diagnostics(&mut passed, &mut failed);
-    validate_nca_crosscheck(&mut passed, &mut failed);
-    validate_determinism(&mut passed, &mut failed);
+    validate_foce_recovery(&mut h);
+    validate_saem_recovery(&mut h);
+    validate_diagnostics(&mut h);
+    validate_nca_crosscheck(&mut h);
+    validate_determinism(&mut h);
 
-    println!("\n======================================================================");
-    println!("Results: {passed} passed, {failed} failed");
-
-    if failed > 0 {
-        std::process::exit(1);
-    }
+    h.exit();
 }

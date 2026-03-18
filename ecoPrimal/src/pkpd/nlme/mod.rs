@@ -180,6 +180,7 @@ pub fn generate_synthetic_population(cfg: &SyntheticPopConfig<'_>) -> Vec<Subjec
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     fn default_test_config() -> NlmeConfig {
         NlmeConfig {
@@ -402,7 +403,10 @@ mod tests {
         let eta = vec![0.0, 0.0];
         let c0 = iv_one_compartment_model(&theta, &eta, 100.0, 0.0);
         let vd = theta[1].exp();
-        assert!((c0 - 100.0 / vd).abs() < 1e-10, "C(0) = Dose/Vd");
+        assert!(
+            (c0 - 100.0 / vd).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "C(0) = Dose/Vd"
+        );
         assert!(iv_one_compartment_model(&theta, &eta, 100.0, 100.0) < c0);
     }
 

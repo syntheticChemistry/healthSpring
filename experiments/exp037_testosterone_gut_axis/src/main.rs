@@ -2,10 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
-#![expect(
-    clippy::too_many_lines,
-    reason = "validation binary — linear check sequence"
-)]
+#![deny(clippy::nursery)]
 //! healthSpring Exp037 — Testosterone-Gut Axis (Rust validation)
 //!
 //! Cross-track (Track 2 × Track 4) validation. Uses deterministic
@@ -15,14 +12,10 @@
 use healthspring_barracuda::endocrine::{self, gut_axis_params as gap};
 use healthspring_barracuda::microbiome;
 use healthspring_barracuda::tolerances::MACHINE_EPSILON;
+use healthspring_barracuda::validation::ValidationHarness;
 
 fn main() {
-    let mut passed = 0u32;
-    let mut failed = 0u32;
-
-    println!("{}", "=".repeat(72));
-    println!("healthSpring Exp037: Testosterone-Gut Axis (Rust)");
-    println!("{}", "=".repeat(72));
+    let mut h = ValidationHarness::new("exp037_testosterone_gut_axis");
 
     // Synthetic gut communities (deterministic)
     let n_species = 50;
@@ -62,116 +55,55 @@ fn main() {
     let resp_mod = endocrine::gut_metabolic_response(xi_mod, xi_max, gap::BASE_RESPONSE_KG);
 
     // --- Check 1: Pielou ordering ---
-    println!("\n--- Check 1: Pielou ordering J(even) > J(moderate) > J(dominated) ---");
-    if j_even > j_mod && j_mod > j_dom {
-        println!("  [PASS] J: even={j_even:.3}, mod={j_mod:.3}, dom={j_dom:.3}");
-        passed += 1;
-    } else {
-        println!("  [FAIL] J: {j_even:.3}, {j_mod:.3}, {j_dom:.3}");
-        failed += 1;
-    }
+    h.check_bool("pielou_ordering", j_even > j_mod && j_mod > j_dom);
 
     // --- Check 2: Pielou in [0, 1] ---
-    println!("\n--- Check 2: Pielou in [0, 1] ---");
-    if (0.0..=1.001).contains(&j_even)
-        && (0.0..=1.001).contains(&j_dom)
-        && (0.0..=1.001).contains(&j_mod)
-    {
-        println!("  [PASS]");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool(
+        "pielou_in_bounds",
+        (0.0..=1.001).contains(&j_even)
+            && (0.0..=1.001).contains(&j_dom)
+            && (0.0..=1.001).contains(&j_mod),
+    );
 
     // --- Check 3: Shannon > 0 ---
-    println!("\n--- Check 3: Shannon H' > 0 ---");
     let h_even = microbiome::shannon_index(&even);
     let h_dom = microbiome::shannon_index(&dominated);
-    if h_even > 0.0 && h_dom > 0.0 {
-        println!("  [PASS] H'(even)={h_even:.3}, H'(dom)={h_dom:.3}");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("shannon_positive", h_even > 0.0 && h_dom > 0.0);
 
     // --- Check 4: Disorder scales with Pielou ---
-    println!("\n--- Check 4: W scales linearly with J ---");
-    if gap::DISORDER_SCALE.mul_add(-j_even, w_even).abs() < MACHINE_EPSILON
-        && gap::DISORDER_SCALE.mul_add(-j_dom, w_dom).abs() < MACHINE_EPSILON
-    {
-        println!("  [PASS]");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool(
+        "disorder_scales_with_pielou",
+        gap::DISORDER_SCALE.mul_add(-j_even, w_even).abs() < MACHINE_EPSILON
+            && gap::DISORDER_SCALE.mul_add(-j_dom, w_dom).abs() < MACHINE_EPSILON,
+    );
 
     // --- Check 5: ξ ordering ---
-    println!("\n--- Check 5: ξ(even) > ξ(mod) > ξ(dom) ---");
-    if xi_even > xi_mod && xi_mod > xi_dom {
-        println!("  [PASS] ξ: even={xi_even:.2}, mod={xi_mod:.2}, dom={xi_dom:.2}");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("xi_ordering", xi_even > xi_mod && xi_mod > xi_dom);
 
     // --- Check 6: ξ > 0 ---
-    println!("\n--- Check 6: All ξ > 0 ---");
-    if xi_even > 0.0 && xi_mod > 0.0 && xi_dom > 0.0 {
-        println!("  [PASS]");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool(
+        "all_xi_positive",
+        xi_even > 0.0 && xi_mod > 0.0 && xi_dom > 0.0,
+    );
 
     // --- Check 7: Even gut → more weight loss (more negative) ---
-    println!("\n--- Check 7: Even gut → more weight loss ---");
-    if resp_even < resp_dom {
-        println!("  [PASS] even={resp_even:.2} < dom={resp_dom:.2} kg");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("even_gut_more_weight_loss", resp_even < resp_dom);
 
     // --- Check 8: Response ordering ---
-    println!("\n--- Check 8: Response ordering ---");
-    if resp_even < resp_mod && resp_mod < resp_dom {
-        println!("  [PASS]");
-        passed += 1;
-    } else {
-        println!("  [FAIL] {resp_even:.2}, {resp_mod:.2}, {resp_dom:.2}");
-        failed += 1;
-    }
+    h.check_bool(
+        "response_ordering",
+        resp_even < resp_mod && resp_mod < resp_dom,
+    );
 
     // --- Check 9: Response magnitude plausible ---
-    println!("\n--- Check 9: Response magnitude plausible ---");
-    if resp_even < 0.0 && resp_even > -20.0 && resp_dom < 0.0 {
-        println!("  [PASS] range: [{resp_even:.2}, {resp_dom:.2}] kg");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool(
+        "response_magnitude_plausible",
+        resp_even < 0.0 && resp_even > -20.0 && resp_dom < 0.0,
+    );
 
     // --- Check 10: Zero disorder → ξ = 1 ---
-    println!("\n--- Check 10: Zero disorder → minimal ξ ---");
     let xi_zero = endocrine::anderson_localization_length(0.0, gap::LATTICE_SIZE);
-    if (xi_zero - 1.0).abs() < MACHINE_EPSILON {
-        println!("  [PASS] ξ(W=0) = {xi_zero}");
-        passed += 1;
-    } else {
-        println!("  [FAIL] ξ(W=0) = {xi_zero}");
-        failed += 1;
-    }
+    h.check_abs("xi_zero_disorder", xi_zero, 1.0, MACHINE_EPSILON);
 
-    let total = passed + failed;
-    println!("\n{}", "=".repeat(72));
-    println!("TOTAL: {passed}/{total} PASS, {failed}/{total} FAIL");
-    println!("{}", "=".repeat(72));
-    std::process::exit(i32::from(failed > 0));
+    h.exit();
 }

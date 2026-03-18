@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — sequential GPU vs CPU bench"
@@ -26,17 +27,8 @@
 use healthspring_barracuda::biosignal::classification;
 use healthspring_barracuda::gpu::{self, GpuOp, GpuResult};
 use healthspring_barracuda::microbiome;
+use healthspring_barracuda::validation::ValidationHarness;
 use serde::Serialize;
-
-fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
-    *total += 1;
-    if ok {
-        *passed += 1;
-        println!("  [PASS] {name}");
-    } else {
-        println!("  [FAIL] {name}");
-    }
-}
 
 #[derive(Serialize)]
 struct ScaleBench {
@@ -72,8 +64,7 @@ fn time_op(op: &GpuOp, n_iter: usize) -> (f64, f64) {
 }
 
 fn main() {
-    let mut passed = 0u32;
-    let mut total = 0u32;
+    let mut h = ValidationHarness::new("exp085_gpu_vs_cpu_v16_bench");
     let mut bench_results = Vec::new();
     let n_iter = 50;
 
@@ -96,29 +87,21 @@ fn main() {
         };
 
         if let GpuResult::MichaelisMentenBatch(aucs) = gpu::execute_cpu(&op) {
-            check(
+            h.check_exact(
                 &format!("MM batch {n_patients}: correct count"),
-                aucs.len() == n_patients as usize,
-                &mut passed,
-                &mut total,
+                aucs.len() as u64,
+                u64::from(n_patients),
             );
-            check(
+            h.check_bool(
                 &format!("MM batch {n_patients}: all AUC > 0"),
                 aucs.iter().all(|&a| a > 0.0),
-                &mut passed,
-                &mut total,
             );
-            check(
-                &format!("MM batch {n_patients}: deterministic"),
-                {
-                    let GpuResult::MichaelisMentenBatch(r2) = gpu::execute_cpu(&op) else {
-                        unreachable!()
-                    };
-                    aucs == r2
-                },
-                &mut passed,
-                &mut total,
-            );
+            h.check_bool(&format!("MM batch {n_patients}: deterministic"), {
+                let GpuResult::MichaelisMentenBatch(r2) = gpu::execute_cpu(&op) else {
+                    unreachable!()
+                };
+                aucs == r2
+            });
         }
 
         let (mean, p95) = time_op(&op, n_iter);
@@ -149,12 +132,7 @@ fn main() {
         n_patients: 4096,
         seed: 42,
     });
-    check(
-        "MM memory scales with patients",
-        mem_large > mem_small,
-        &mut passed,
-        &mut total,
-    );
+    h.check_bool("MM memory scales with patients", mem_large > mem_small);
 
     // ── 2. SCFA Batch: scaling from 100 to 10000 fiber inputs ───────────
     println!("\n── 2. SCFA Batch Production (scaling) ─────────────────────────");
@@ -169,25 +147,20 @@ fn main() {
         };
 
         if let GpuResult::ScfaBatch(results) = gpu::execute_cpu(&op) {
-            check(
+            h.check_exact(
                 &format!("SCFA batch {n_elements}: correct count"),
-                results.len() == n_elements as usize,
-                &mut passed,
-                &mut total,
+                results.len() as u64,
+                u64::from(n_elements),
             );
-            check(
+            h.check_bool(
                 &format!("SCFA batch {n_elements}: all positive"),
                 results
                     .iter()
                     .all(|&(a, p, b)| a > 0.0 && p > 0.0 && b > 0.0),
-                &mut passed,
-                &mut total,
             );
-            check(
+            h.check_bool(
                 &format!("SCFA batch {n_elements}: acetate > propionate > butyrate"),
                 results.iter().all(|&(a, p, b)| a > p && p > b),
-                &mut passed,
-                &mut total,
             );
         }
 
@@ -224,26 +197,21 @@ fn main() {
         };
 
         if let GpuResult::BeatClassifyBatch(results) = gpu::execute_cpu(&op) {
-            check(
+            h.check_exact(
                 &format!("Beat classify {n_beats}: correct count"),
-                results.len() == n_beats as usize,
-                &mut passed,
-                &mut total,
+                results.len() as u64,
+                u64::from(n_beats),
             );
-            check(
+            h.check_bool(
                 &format!("Beat classify {n_beats}: correct classes"),
                 results
                     .iter()
                     .enumerate()
                     .all(|(i, &(cls, _))| cls == u32::try_from(i % 3).unwrap_or(0)),
-                &mut passed,
-                &mut total,
             );
-            check(
+            h.check_bool(
                 &format!("Beat classify {n_beats}: high correlation"),
                 results.iter().all(|&(_, corr)| corr > 0.99),
-                &mut passed,
-                &mut total,
             );
         }
 
@@ -281,37 +249,23 @@ fn main() {
     ];
 
     for (idx, op) in ops.iter().enumerate() {
-        check(
+        h.check_bool(
             &format!("fused[{idx}]: shader source loaded"),
             !gpu::shader_for_op(op).is_empty(),
-            &mut passed,
-            &mut total,
         );
-        check(
+        h.check_bool(
             &format!("fused[{idx}]: memory estimate > 0"),
             gpu::gpu_memory_estimate(op) > 0,
-            &mut passed,
-            &mut total,
         );
     }
 
     let total_mem: u64 = ops.iter().map(gpu::gpu_memory_estimate).sum();
-    check(
-        &format!("fused pipeline total mem: {total_mem} bytes < 100MB"),
-        total_mem < 100_000_000,
-        &mut passed,
-        &mut total,
-    );
+    h.check_bool("fused pipeline total mem < 100MB", total_mem < 100_000_000);
 
     let fused_start = std::time::Instant::now();
     let fused_count = ops.iter().map(gpu::execute_cpu).count();
-    let fused_us = fused_start.elapsed().as_micros() as f64;
-    check(
-        &format!("fused 3-op CPU pipeline: {fused_us:.0}us"),
-        fused_count == 3,
-        &mut passed,
-        &mut total,
-    );
+    let _fused_us = fused_start.elapsed().as_micros() as f64;
+    h.check_exact("fused 3-op CPU pipeline", fused_count as u64, 3);
 
     // ── 5. metalForge routing at scale ──────────────────────────────────
     println!("\n── 5. metalForge Workload Routing (V16) ───────────────────────");
@@ -350,14 +304,12 @@ fn main() {
         println!("  {label:30} → {substrate:?}");
     }
 
-    check(
+    h.check_bool(
         "metalForge: Analytical → CPU",
         healthspring_forge::select_substrate(&healthspring_forge::Workload::Analytical, &caps)
             == healthspring_forge::Substrate::Cpu,
-        &mut passed,
-        &mut total,
     );
-    check(
+    h.check_bool(
         "metalForge: all V16 workloads route to CPU or GPU",
         workloads.iter().all(|(_, wl)| {
             let sub = healthspring_forge::select_substrate(wl, &caps);
@@ -366,8 +318,6 @@ fn main() {
                 healthspring_forge::Substrate::Cpu | healthspring_forge::Substrate::Gpu
             )
         }),
-        &mut passed,
-        &mut total,
     );
 
     // ── Output ──────────────────────────────────────────────────────────
@@ -384,11 +334,5 @@ fn main() {
     std::fs::write(&out_path, &json).unwrap_or_else(|_| println!("{json}"));
     println!("\nResults written to {}", out_path.display());
 
-    println!("\n{}", "=".repeat(72));
-    println!("Exp085 GPU vs CPU V16 Bench: {passed}/{total} PASS");
-    println!("{}", "=".repeat(72));
-
-    if passed != total {
-        std::process::exit(1);
-    }
+    h.exit();
 }

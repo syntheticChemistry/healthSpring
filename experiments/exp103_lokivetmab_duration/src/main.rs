@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 
 //! Exp103: Lokivetmab dose-duration relationship (Fleck/Gonzales 2021, CM-004)
 //!

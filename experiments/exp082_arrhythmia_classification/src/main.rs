@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp082: Arrhythmia Beat Classification
 //!
 //! Template-matching beat morphology classification: Normal, PVC, PAC.

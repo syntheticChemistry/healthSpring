@@ -138,25 +138,38 @@ pub fn ppg_extract_ac_dc(signal: &[f64]) -> (f64, f64) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn ppg_r_value_normal() {
         let r = ppg_r_value(0.02, 1.0, 0.04, 1.0);
-        assert!((r - 0.5).abs() < 1e-10, "R = 0.5 for normal SpO2");
+        assert!(
+            (r - 0.5).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "R = 0.5 for normal SpO2"
+        );
     }
 
     #[test]
     fn spo2_from_r_normal() {
         let spo2 = spo2_from_r(0.4);
-        assert!((spo2 - 100.0).abs() < 1e-10, "SpO2 = 100% at R=0.4");
+        assert!(
+            (spo2 - 100.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "SpO2 = 100% at R=0.4"
+        );
     }
 
     #[test]
     fn spo2_from_r_clamped() {
         let spo2 = spo2_from_r(-1.0);
-        assert!((spo2 - 100.0).abs() < 1e-10, "clamped to 100%");
+        assert!(
+            (spo2 - 100.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "clamped to 100%"
+        );
         let spo2_low = spo2_from_r(10.0);
-        assert!(spo2_low.abs() < 1e-10, "clamped to 0%");
+        assert!(
+            spo2_low.abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "clamped to 0%"
+        );
     }
 
     #[test]
@@ -167,7 +180,10 @@ mod tests {
         let (ac_ir, dc_ir) = ppg_extract_ac_dc(&ppg.ir);
         let r = ppg_r_value(ac_red, dc_red, ac_ir, dc_ir);
         let spo2 = spo2_from_r(r);
-        assert!((spo2 - 97.0).abs() < 5.0, "SpO2={spo2} should be ~97%");
+        assert!(
+            (spo2 - 97.0).abs() < tolerances::SPO2_CLINICAL_TOLERANCE,
+            "SpO2={spo2} should be ~97%"
+        );
     }
 
     #[test]

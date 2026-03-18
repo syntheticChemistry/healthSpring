@@ -376,6 +376,7 @@ pub fn index_of_agreement(observed: &[f64], predicted: &[f64]) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn abs_check_pass() {
@@ -435,25 +436,25 @@ mod tests {
     #[test]
     fn rmse_perfect() {
         let data = [1.0, 2.0, 3.0];
-        assert!(rmse(&data, &data) < 1e-15);
+        assert!(rmse(&data, &data) < tolerances::DIVISION_GUARD);
     }
 
     #[test]
     fn mae_perfect() {
         let data = [1.0, 2.0, 3.0];
-        assert!(mae(&data, &data) < 1e-15);
+        assert!(mae(&data, &data) < tolerances::DIVISION_GUARD);
     }
 
     #[test]
     fn nse_perfect() {
         let data = [1.0, 2.0, 3.0];
-        assert!((nse(&data, &data) - 1.0).abs() < 1e-15);
+        assert!((nse(&data, &data) - 1.0).abs() < tolerances::DIVISION_GUARD);
     }
 
     #[test]
     fn index_of_agreement_perfect() {
         let data = [1.0, 2.0, 3.0];
-        assert!((index_of_agreement(&data, &data) - 1.0).abs() < 1e-15);
+        assert!((index_of_agreement(&data, &data) - 1.0).abs() < tolerances::DIVISION_GUARD);
     }
 
     #[test]

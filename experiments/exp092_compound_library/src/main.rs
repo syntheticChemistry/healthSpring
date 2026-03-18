@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp092: ADDRC compound library batch IC50 profiling
 //!
 //! Validates selectivity index, IC50 estimation from Hill curves, batch sweep,

@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp091: ADDRC high-throughput screening analysis (Lisabeth 2024)
 //!
 //! Validates Z'-factor, SSMD, percent inhibition, and hit classification

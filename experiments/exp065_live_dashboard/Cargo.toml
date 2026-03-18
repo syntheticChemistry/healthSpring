@@ -1,7 +1,10 @@
 [package]
 name = "healthspring-exp065-live-dashboard"
 version = "0.1.0"
-edition = "2024"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
 
 [[bin]]
 name = "exp065_live_dashboard"

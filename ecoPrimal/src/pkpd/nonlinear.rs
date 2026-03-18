@@ -134,6 +134,7 @@ pub fn mm_nonlinearity_ratio(params: &MichaelisMentenParams, dose1: f64, dose2: 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn mm_simulation_monotone_decline() {
@@ -148,7 +149,7 @@ mod tests {
         let (_, concs) = mm_pk_simulate(&PHENYTOIN_PARAMS, 300.0, 1.0, 0.001);
         let c0 = 300.0 / PHENYTOIN_PARAMS.vd;
         assert!(
-            (concs[0] - c0).abs() < 1e-10,
+            (concs[0] - c0).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "initial concentration should be dose/Vd"
         );
     }
@@ -192,14 +193,17 @@ mod tests {
         let numerical = mm_auc(&concs, 0.0001);
         let analytical = mm_auc_analytical(&PHENYTOIN_PARAMS, 300.0);
         let rel_err = (numerical - analytical).abs() / analytical;
-        assert!(rel_err < 0.02, "numerical vs analytical AUC: {rel_err:.4}");
+        assert!(
+            rel_err < tolerances::TEST_ASSERTION_2_PERCENT,
+            "numerical vs analytical AUC: {rel_err:.4}"
+        );
     }
 
     #[test]
     fn mm_low_dose_approaches_linear() {
         let ratio = mm_nonlinearity_ratio(&PHENYTOIN_PARAMS, 10.0, 20.0);
         assert!(
-            (ratio - 1.0).abs() < 0.15,
+            (ratio - 1.0).abs() < tolerances::WASHOUT_HALF_LIFE,
             "at low doses, should approach linear: ratio={ratio}"
         );
     }

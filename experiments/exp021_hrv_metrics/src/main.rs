@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp021 validation: HRV metrics (RMSSD, pNN50)
 //!
 //! Cross-validates `healthspring_barracuda::biosignal` HRV pipeline:

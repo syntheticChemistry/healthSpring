@@ -174,6 +174,16 @@ pub fn discover_inference_primal() -> Option<PathBuf> {
     discover_by_capability("model")
 }
 
+/// Discover a primal by capability domain (public entry point).
+///
+/// Scans the socket directory for primals advertising capabilities that
+/// start with the given domain prefix. Used by Tower Atomic as a fallback
+/// when name-prefix scanning fails.
+#[must_use]
+pub fn discover_by_capability_public(domain: &str) -> Option<PathBuf> {
+    discover_by_capability(domain)
+}
+
 /// Discover a primal by capability domain: query each visible socket with
 /// `capability.list` and check for matching domain prefix.
 fn discover_by_capability(domain: &str) -> Option<PathBuf> {

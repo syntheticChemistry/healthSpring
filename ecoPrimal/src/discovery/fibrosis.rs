@@ -184,7 +184,7 @@ mod tests {
 
     #[test]
     fn fibrotic_geometry_zero_thickness() {
-        assert!((fibrotic_geometry_factor(10.0, 0.0)).abs() < f64::EPSILON);
+        assert!((fibrotic_geometry_factor(10.0, 0.0)).abs() < tolerances::MACHINE_EPSILON);
     }
 
     #[test]

@@ -131,21 +131,26 @@ pub mod communities {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
     use communities::*;
-
-    const TOL: f64 = 1e-10;
 
     #[test]
     fn shannon_perfectly_even() {
         let h = shannon_index(&PERFECTLY_EVEN);
         let expected = (10.0_f64).ln();
-        assert!((h - expected).abs() < TOL, "H' = ln(10)");
+        assert!(
+            (h - expected).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "H' = ln(10)"
+        );
     }
 
     #[test]
     fn shannon_monoculture_zero() {
         let h = shannon_index(&MONOCULTURE);
-        assert!(h.abs() < TOL, "H' = 0 for monoculture");
+        assert!(
+            h.abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "H' = 0 for monoculture"
+        );
     }
 
     #[test]
@@ -165,13 +170,13 @@ mod tests {
     fn simpson_perfectly_even() {
         let d = simpson_index(&PERFECTLY_EVEN);
         let expected = 10.0f64.mul_add(-0.01, 1.0);
-        assert!((d - expected).abs() < TOL);
+        assert!((d - expected).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
     fn simpson_monoculture_zero() {
         let d = simpson_index(&MONOCULTURE);
-        assert!(d.abs() < TOL);
+        assert!(d.abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -184,13 +189,13 @@ mod tests {
     #[test]
     fn inverse_simpson_even_equals_s() {
         let inv = inverse_simpson(&PERFECTLY_EVEN);
-        assert!((inv - 10.0).abs() < TOL);
+        assert!((inv - 10.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
     fn pielou_even_is_one() {
         let j = pielou_evenness(&PERFECTLY_EVEN);
-        assert!((j - 1.0).abs() < TOL);
+        assert!((j - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -234,9 +239,17 @@ mod tests {
             let h = shannon_index(ab);
             let d = simpson_index(ab);
             let j = pielou_evenness(ab);
-            assert!(h >= -TOL, "H' ≥ 0");
-            assert!((-TOL..=1.0 + TOL).contains(&d), "0 ≤ D ≤ 1");
-            assert!((-TOL..=1.0 + TOL).contains(&j), "0 ≤ J ≤ 1");
+            assert!(h >= -tolerances::TEST_ASSERTION_TIGHT, "H' ≥ 0");
+            assert!(
+                (-tolerances::TEST_ASSERTION_TIGHT..=1.0 + tolerances::TEST_ASSERTION_TIGHT)
+                    .contains(&d),
+                "0 ≤ D ≤ 1"
+            );
+            assert!(
+                (-tolerances::TEST_ASSERTION_TIGHT..=1.0 + tolerances::TEST_ASSERTION_TIGHT)
+                    .contains(&j),
+                "0 ≤ J ≤ 1"
+            );
         }
     }
 
@@ -249,7 +262,10 @@ mod tests {
         let h = anderson_hamiltonian_1d(&disorder, 1.0);
         for i in 0..l {
             for j in 0..l {
-                assert!((h[i * l + j] - h[j * l + i]).abs() < TOL, "H symmetric");
+                assert!(
+                    (h[i * l + j] - h[j * l + i]).abs() < tolerances::TEST_ASSERTION_TIGHT,
+                    "H symmetric"
+                );
             }
         }
     }
@@ -261,7 +277,7 @@ mod tests {
         let h = anderson_hamiltonian_1d(&disorder, 1.0);
         for i in 0..l {
             assert!(
-                (h[i * l + i] - disorder[i]).abs() < TOL,
+                (h[i * l + i] - disorder[i]).abs() < tolerances::TEST_ASSERTION_TIGHT,
                 "diagonal = disorder"
             );
         }
@@ -272,9 +288,12 @@ mod tests {
         let disorder = vec![0.0; 4];
         let l = 4;
         let h = anderson_hamiltonian_1d(&disorder, 2.5);
-        assert!((h[1] - 2.5).abs() < TOL);
-        assert!((h[l] - 2.5).abs() < TOL);
-        assert!(h[2].abs() < TOL, "no long-range hopping");
+        assert!((h[1] - 2.5).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((h[l] - 2.5).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!(
+            h[2].abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "no long-range hopping"
+        );
     }
 
     #[test]
@@ -288,7 +307,10 @@ mod tests {
         let psi = vec![val; l];
         let ipr = inverse_participation_ratio(&psi);
         let expected = 1.0 / l as f64;
-        assert!((ipr - expected).abs() < 1e-8, "extended state IPR = 1/L");
+        assert!(
+            (ipr - expected).abs() < tolerances::DIVERSITY_CROSS_VALIDATE,
+            "extended state IPR = 1/L"
+        );
     }
 
     #[test]
@@ -297,13 +319,16 @@ mod tests {
         let mut psi = vec![0.0; l];
         psi[50] = 1.0;
         let ipr = inverse_participation_ratio(&psi);
-        assert!((ipr - 1.0).abs() < TOL, "perfectly localized IPR = 1.0");
+        assert!(
+            (ipr - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "perfectly localized IPR = 1.0"
+        );
     }
 
     #[test]
     fn localization_length_inverse() {
         let xi = localization_length_from_ipr(0.25);
-        assert!((xi - 4.0).abs() < TOL);
+        assert!((xi - 4.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -314,14 +339,17 @@ mod tests {
 
     #[test]
     fn level_spacing_ratio_few_values() {
-        assert!((level_spacing_ratio(&[1.0, 2.0])).abs() < f64::EPSILON);
+        assert!((level_spacing_ratio(&[1.0, 2.0])).abs() < tolerances::MACHINE_EPSILON);
     }
 
     #[test]
     fn level_spacing_ratio_uniform() {
         let eigs: Vec<f64> = (0..100).map(f64::from).collect();
         let r = level_spacing_ratio(&eigs);
-        assert!((r - 1.0).abs() < 0.01, "uniform spacing → r=1.0, got {r}");
+        assert!(
+            (r - 1.0).abs() < tolerances::TEST_ASSERTION_LOOSE,
+            "uniform spacing → r=1.0, got {r}"
+        );
     }
 
     #[test]
@@ -348,7 +376,10 @@ mod tests {
     #[test]
     fn bray_curtis_identical() {
         let bc = bray_curtis(&HEALTHY_GUT, &HEALTHY_GUT);
-        assert!(bc.abs() < TOL, "identical communities → BC=0");
+        assert!(
+            bc.abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "identical communities → BC=0"
+        );
     }
 
     #[test]
@@ -362,7 +393,10 @@ mod tests {
     fn fmt_blend_pure_donor() {
         let blended = fmt_blend(&HEALTHY_GUT, &DYSBIOTIC_GUT, 1.0);
         for (a, b) in blended.iter().zip(HEALTHY_GUT.iter()) {
-            assert!((a - b).abs() < TOL, "100% engraftment = donor");
+            assert!(
+                (a - b).abs() < tolerances::TEST_ASSERTION_TIGHT,
+                "100% engraftment = donor"
+            );
         }
     }
 
@@ -370,7 +404,10 @@ mod tests {
     fn fmt_blend_zero_engraftment() {
         let blended = fmt_blend(&HEALTHY_GUT, &DYSBIOTIC_GUT, 0.0);
         for (a, b) in blended.iter().zip(DYSBIOTIC_GUT.iter()) {
-            assert!((a - b).abs() < TOL, "0% engraftment = recipient");
+            assert!(
+                (a - b).abs() < tolerances::TEST_ASSERTION_TIGHT,
+                "0% engraftment = recipient"
+            );
         }
     }
 
@@ -395,7 +432,7 @@ mod tests {
             let local = shannon_index(ab);
             let upstream = barracuda::stats::shannon_from_frequencies(ab);
             assert!(
-                (local - upstream).abs() < 1e-10,
+                (local - upstream).abs() < tolerances::TEST_ASSERTION_TIGHT,
                 "Shannon mismatch: local={local}, upstream={upstream}"
             );
         }
@@ -406,7 +443,7 @@ mod tests {
         let local = bray_curtis(&HEALTHY_GUT, &DYSBIOTIC_GUT);
         let upstream = barracuda::stats::bray_curtis(&HEALTHY_GUT, &DYSBIOTIC_GUT);
         assert!(
-            (local - upstream).abs() < 1e-10,
+            (local - upstream).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "Bray-Curtis mismatch: local={local}, upstream={upstream}"
         );
     }
@@ -424,7 +461,10 @@ mod tests {
         );
         assert_eq!(perturbed.len(), expected.len());
         for (a, b) in perturbed.iter().zip(expected.iter()) {
-            assert!((a - b).abs() < 1e-10, "delegation must match upstream");
+            assert!(
+                (a - b).abs() < tolerances::TEST_ASSERTION_TIGHT,
+                "delegation must match upstream"
+            );
         }
     }
 
@@ -483,13 +523,13 @@ mod tests {
             barracuda::special::anderson_diagonalize(&disorder, 1.0);
         for (a, b) in eigs_local.iter().zip(eigs_upstream.iter()) {
             assert!(
-                (a - b).abs() < 1e-12,
+                (a - b).abs() < tolerances::MACHINE_EPSILON_TIGHT,
                 "Eigenvalue mismatch: local={a}, upstream={b}"
             );
         }
         for (a, b) in vecs_local.iter().zip(vecs_upstream.iter()) {
             assert!(
-                (a - b).abs() < 1e-12,
+                (a - b).abs() < tolerances::MACHINE_EPSILON_TIGHT,
                 "Eigenvector mismatch: local={a}, upstream={b}"
             );
         }

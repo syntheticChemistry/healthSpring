@@ -146,8 +146,7 @@ pub fn population_pk_monte_carlo(
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    const TOL: f64 = 1e-10;
+    use crate::tolerances;
 
     #[test]
     fn lognormal_params_roundtrip() {
@@ -157,7 +156,10 @@ mod tests {
         };
         let (mu, sigma) = p.to_normal_params();
         let recovered_median = mu.exp();
-        assert!((recovered_median - 10.0).abs() < 0.5, "median ~ typical");
+        assert!(
+            (recovered_median - 10.0).abs() < 10.0 * tolerances::LOGNORMAL_RECOVERY,
+            "median ~ typical"
+        );
         assert!(sigma > 0.0);
     }
 
@@ -190,7 +192,10 @@ mod tests {
         let times = vec![0.0, 1.0, 2.0];
         let results = population_pk_cpu(1, &[10.0], &[80.0], &[1.5], 4.0, 0.79, &times);
         let c0 = pk_oral_one_compartment(4.0, 0.79, 80.0, 1.5, 10.0 / 80.0, 0.0);
-        assert!(c0.abs() < TOL, "C(0) = 0 for oral");
+        assert!(
+            c0.abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "C(0) = 0 for oral"
+        );
         assert!(results[0].cmax > 0.0);
     }
 

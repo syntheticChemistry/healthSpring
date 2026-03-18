@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! healthSpring Exp035 — TRT and Type 2 Diabetes (Rust validation)
 
 use healthspring_barracuda::endocrine::{self, diabetes_params as dp};

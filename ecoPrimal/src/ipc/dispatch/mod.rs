@@ -267,6 +267,7 @@ pub fn registered_capabilities() -> Vec<(&'static str, &'static str)> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn hill_dispatch_works() {
@@ -280,7 +281,7 @@ mod tests {
         let Some(response) = v.get("response").and_then(Value::as_f64) else {
             panic!("response field missing");
         };
-        assert!((response - 0.5).abs() < 1e-10);
+        assert!((response - 0.5).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -293,7 +294,7 @@ mod tests {
         let Some(h) = v.get("shannon").and_then(Value::as_f64) else {
             panic!("shannon field missing");
         };
-        assert!((h - 4.0_f64.ln()).abs() < 1e-10);
+        assert!((h - 4.0_f64.ln()).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]

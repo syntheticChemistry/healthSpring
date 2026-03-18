@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Live TRT clinical dashboard: builds a patient-parameterized TRT scenario
 //! and streams PK curve updates, population comparison, and outcome gauges
 //! to petalTongue via `StreamSession`.
@@ -9,6 +10,7 @@
 //! Falls back to stdout + JSON when petalTongue is not running.
 
 use healthspring_barracuda::endocrine;
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_barracuda::visualization::DataChannel;
 use healthspring_barracuda::visualization::clinical::{
     PatientTrtProfile, TrtProtocol, trt_clinical_json, trt_clinical_scenario,
@@ -155,50 +157,24 @@ fn main() {
 
     // Validation
     println!("\n--- Validation ---");
-    let mut passed = 0u32;
-    let total = 7u32;
+    let mut h = ValidationHarness::new("exp073_clinical_trt_dashboard");
 
-    let check = |name: &str, ok: bool, passed: &mut u32| {
-        if ok {
-            println!("  [PASS] {name}");
-            *passed += 1;
-        } else {
-            println!("  [FAIL] {name}");
-        }
-    };
-
-    check(
+    h.check_bool(
         "scenario_has_8_nodes",
         scenario.ecosystem.primals.len() == 8,
-        &mut passed,
     );
-    check("scenario_has_8_edges", edges.len() == 8, &mut passed);
-    check(
-        "pk_troughs_collected",
-        troughs.len() == n_weeks,
-        &mut passed,
-    );
-    check(
-        "pk_troughs_positive",
-        troughs.iter().all(|&t| t > 0.0),
-        &mut passed,
-    );
-    check(
+    h.check_bool("scenario_has_8_edges", edges.len() == 8);
+    h.check_bool("pk_troughs_collected", troughs.len() == n_weeks);
+    h.check_bool("pk_troughs_positive", troughs.iter().all(|&t| t > 0.0));
+    h.check_bool(
         "json_valid",
         serde_json::from_str::<serde_json::Value>(&json).is_ok(),
-        &mut passed,
     );
-    check(
-        "scenario_mode_clinical",
-        scenario.mode == "clinical",
-        &mut passed,
-    );
-    check(
+    h.check_bool("scenario_mode_clinical", scenario.mode == "clinical");
+    h.check_bool(
         "scenario_theme_clinical",
         scenario.ui_config.theme.contains("clinical"),
-        &mut passed,
     );
 
-    println!("\nExp073 Clinical TRT Dashboard: {passed}/{total} checks passed");
-    std::process::exit(i32::from(passed != total));
+    h.exit();
 }

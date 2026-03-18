@@ -2,6 +2,7 @@
 #![deny(clippy::all)]
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"

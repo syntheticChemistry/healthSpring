@@ -284,6 +284,7 @@ pub fn generate_synthetic_ecg(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     const FS: f64 = 360.0;
 
@@ -385,6 +386,6 @@ mod tests {
         assert_eq!(m.tp, 3);
         assert_eq!(m.fp, 0);
         assert_eq!(m.fn_count, 0);
-        assert!((m.sensitivity - 1.0).abs() < 1e-10);
+        assert!((m.sensitivity - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 }

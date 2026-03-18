@@ -2,6 +2,7 @@
 #![deny(clippy::all)]
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"
@@ -16,24 +17,13 @@
 use healthspring_barracuda::diagnostic::{
     PatientProfile, Sex, assess_patient, population_montecarlo,
 };
+use healthspring_barracuda::validation::{OrExit, ValidationHarness};
 use healthspring_barracuda::visualization::{
     annotate_population, assessment_to_scenario, full_scenario_json, scenario_to_json,
 };
 
 fn main() {
-    let mut passed = 0u32;
-    let mut failed = 0u32;
-
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {
-            if $cond {
-                passed += 1;
-            } else {
-                eprintln!("FAIL: {}", $name);
-                failed += 1;
-            }
-        };
-    }
+    let mut h = ValidationHarness::new("exp052_petaltongue_render");
 
     // --- Patient with full data ---
     let mut patient = PatientProfile::minimal(55.0, 85.0, Sex::Male);
@@ -48,173 +38,172 @@ fn main() {
     let assessment = assess_patient(&patient);
 
     // --- PK enriched data ---
-    check!(
+    h.check_exact(
         "pk_curve_101_points",
-        assessment.pk.curve_times_hr.len() == 101
+        assessment.pk.curve_times_hr.len() as u64,
+        101,
     );
-    check!(
+    h.check_abs(
         "pk_curve_starts_at_zero",
-        assessment.pk.curve_times_hr[0] == 0.0
+        assessment.pk.curve_times_hr[0],
+        0.0,
+        1e-15,
     );
-    check!(
+    h.check_abs(
         "pk_curve_ends_at_24h",
-        (assessment.pk.curve_times_hr[100] - 24.0).abs() < 0.01
+        assessment.pk.curve_times_hr[100],
+        24.0,
+        0.01,
     );
-    check!("pk_hill_50_points", assessment.pk.hill_concs.len() == 50);
-    check!(
+    h.check_exact(
+        "pk_hill_50_points",
+        assessment.pk.hill_concs.len() as u64,
+        50,
+    );
+    h.check_exact(
         "pk_hill_responses_match",
-        assessment.pk.hill_responses.len() == 50
+        assessment.pk.hill_responses.len() as u64,
+        50,
     );
 
     // --- Microbiome enriched ---
-    check!(
+    h.check_exact(
         "microbiome_abundances_passed",
-        assessment.microbiome.abundances.len() == 7
+        assessment.microbiome.abundances.len() as u64,
+        7,
     );
-    check!(
+    h.check_abs(
         "microbiome_abundances_sum_near_1",
-        (assessment.microbiome.abundances.iter().sum::<f64>() - 1.0).abs() < 0.01
+        assessment.microbiome.abundances.iter().sum::<f64>(),
+        1.0,
+        0.01,
     );
 
     // --- Biosignal enriched ---
-    check!(
+    h.check_exact(
         "biosignal_rr_intervals_from_ecg",
-        assessment.biosignal.rr_intervals_ms.len() == 9
+        assessment.biosignal.rr_intervals_ms.len() as u64,
+        9,
     );
-    check!(
+    h.check_bool(
         "biosignal_rr_positive",
         assessment
             .biosignal
             .rr_intervals_ms
             .iter()
-            .all(|&r| r > 0.0)
+            .all(|&r| r > 0.0),
     );
 
     // --- Scenario schema compatibility ---
     let scenario = assessment_to_scenario(&assessment, "Exp052 Schema Test");
     let json = scenario_to_json(&scenario);
 
-    check!("json_has_version", json.contains("\"version\": \"2.0.0\""));
-    check!(
+    h.check_bool("json_has_version", json.contains("\"version\": \"2.0.0\""));
+    h.check_bool(
         "json_has_sensory_config",
-        json.contains("\"sensory_config\"")
+        json.contains("\"sensory_config\""),
     );
-    check!("json_has_ui_config", json.contains("\"ui_config\""));
-    check!("json_has_neural_api", json.contains("\"neural_api\""));
-    check!("json_has_ecosystem_primals", json.contains("\"primals\""));
-    check!("json_has_data_channels", json.contains("\"data_channels\""));
-    check!(
+    h.check_bool("json_has_ui_config", json.contains("\"ui_config\""));
+    h.check_bool("json_has_neural_api", json.contains("\"neural_api\""));
+    h.check_bool("json_has_ecosystem_primals", json.contains("\"primals\""));
+    h.check_bool("json_has_data_channels", json.contains("\"data_channels\""));
+    h.check_bool(
         "json_has_timeseries",
-        json.contains("\"channel_type\": \"timeseries\"")
+        json.contains("\"channel_type\": \"timeseries\""),
     );
-    check!(
+    h.check_bool(
         "json_has_gauge",
-        json.contains("\"channel_type\": \"gauge\"")
+        json.contains("\"channel_type\": \"gauge\""),
     );
-    check!(
+    h.check_bool(
         "json_has_clinical_ranges",
-        json.contains("\"clinical_ranges\"")
+        json.contains("\"clinical_ranges\""),
     );
 
     // --- JSON round-trip ---
-    let scenario_val: serde_json::Value = match serde_json::from_str(&json) {
-        Ok(v) => v,
-        Err(e) => {
-            eprintln!("FAIL: valid JSON: {e}");
-            std::process::exit(1);
-        }
-    };
-    let Some(primals) = scenario_val["ecosystem"]["primals"].as_array() else {
-        eprintln!("FAIL: primals not array");
-        std::process::exit(1);
-    };
-    check!("round_trip_7_primals", primals.len() == 7);
+    let scenario_val: serde_json::Value = serde_json::from_str(&json).or_exit("valid JSON");
+    let primals = scenario_val["ecosystem"]["primals"]
+        .as_array()
+        .or_exit("primals not array");
+    h.check_exact("round_trip_7_primals", primals.len() as u64, 7);
 
-    let Some(pk) = primals.iter().find(|p| p["id"] == "pk") else {
-        eprintln!("FAIL: pk primal not found");
-        std::process::exit(1);
-    };
-    check!("pk_has_type_compute", pk["type"] == "compute");
-    check!("pk_has_family_healthspring", pk["family"] == "healthspring");
-    check!(
+    let pk = primals
+        .iter()
+        .find(|p| p["id"] == "pk")
+        .or_exit("pk primal not found");
+    h.check_bool("pk_has_type_compute", pk["type"] == "compute");
+    h.check_bool("pk_has_family_healthspring", pk["family"] == "healthspring");
+    h.check_bool(
         "pk_position_optional",
-        pk.get("position").is_none() || pk["position"].is_null() || pk["position"]["x"].is_f64()
+        pk.get("position").is_none() || pk["position"].is_null() || pk["position"]["x"].is_f64(),
     );
-    let Some(pk_channels) = pk["data_channels"].as_array() else {
-        eprintln!("FAIL: pk data_channels not array");
-        std::process::exit(1);
-    };
-    check!("pk_has_4_channels", pk_channels.len() == 4);
-    check!(
+    let pk_channels = pk["data_channels"]
+        .as_array()
+        .or_exit("pk data_channels not array");
+    h.check_exact("pk_has_4_channels", pk_channels.len() as u64, 4);
+    h.check_bool(
         "pk_first_is_timeseries",
-        pk_channels[0]["channel_type"] == "timeseries"
+        pk_channels[0]["channel_type"] == "timeseries",
     );
 
     // --- Full scenario with population ---
     let pop = population_montecarlo(&patient, 500, 42);
     let full_json = full_scenario_json(&assessment, &pop, "Exp052 Full");
-    let full: serde_json::Value = match serde_json::from_str(&full_json) {
-        Ok(v) => v,
-        Err(e) => {
-            eprintln!("FAIL: full JSON: {e}");
-            std::process::exit(1);
-        }
-    };
-    check!("full_has_edges", full["edges"].is_array());
-    let Some(full_primals) = full["ecosystem"]["primals"].as_array() else {
-        eprintln!("FAIL: full primals not array");
-        std::process::exit(1);
-    };
-    check!("full_8_primals_with_pop", full_primals.len() == 8);
-    let Some(pop_node) = full_primals.iter().find(|p| p["id"] == "population") else {
-        eprintln!("FAIL: population primal not found");
-        std::process::exit(1);
-    };
-    let Some(pop_channels) = pop_node["data_channels"].as_array() else {
-        eprintln!("FAIL: pop data_channels not array");
-        std::process::exit(1);
-    };
-    check!(
+    let full: serde_json::Value = serde_json::from_str(&full_json).or_exit("full JSON");
+    h.check_bool("full_has_edges", full["edges"].is_array());
+    let full_primals = full["ecosystem"]["primals"]
+        .as_array()
+        .or_exit("full primals not array");
+    h.check_exact("full_8_primals_with_pop", full_primals.len() as u64, 8);
+    let pop_node = full_primals
+        .iter()
+        .find(|p| p["id"] == "population")
+        .or_exit("population primal not found");
+    let pop_channels = pop_node["data_channels"]
+        .as_array()
+        .or_exit("pop data_channels not array");
+    h.check_bool(
         "pop_has_distribution",
-        pop_channels[0]["channel_type"] == "distribution"
+        pop_channels[0]["channel_type"] == "distribution",
     );
-    check!(
+    h.check_exact(
         "pop_distribution_has_values",
-        pop_channels[0]["values"].as_array().map_or(0, Vec::len) == 500
+        pop_channels[0]["values"].as_array().map_or(0, Vec::len) as u64,
+        500,
     );
 
     // --- Population with annotated scenario ---
     let scenario2 = assessment_to_scenario(&assessment, "Annotate Test");
     let annotated = annotate_population(scenario2, &pop);
-    check!("annotated_8_nodes", annotated.ecosystem.primals.len() == 8);
-
-    // --- Biosignal node has tachogram ---
-    let Some(bio_node) = primals.iter().find(|p| p["id"] == "biosignal") else {
-        eprintln!("FAIL: biosignal primal not found");
-        std::process::exit(1);
-    };
-    let Some(bio_channels) = bio_node["data_channels"].as_array() else {
-        eprintln!("FAIL: biosignal data_channels not array");
-        std::process::exit(1);
-    };
-    let has_tachogram = bio_channels.iter().any(|c| c["id"] == "rr_tachogram");
-    check!("biosignal_has_rr_tachogram", has_tachogram);
-
-    // --- Microbiome node has bar chart ---
-    let Some(micro_node) = primals.iter().find(|p| p["id"] == "microbiome") else {
-        eprintln!("FAIL: microbiome primal not found");
-        std::process::exit(1);
-    };
-    let Some(micro_channels) = micro_node["data_channels"].as_array() else {
-        eprintln!("FAIL: microbiome data_channels not array");
-        std::process::exit(1);
-    };
-    check!(
-        "microbiome_has_bar_chart",
-        micro_channels[0]["channel_type"] == "bar"
+    h.check_exact(
+        "annotated_8_nodes",
+        annotated.ecosystem.primals.len() as u64,
+        8,
     );
 
-    let total = passed + failed;
-    println!("\nExp052 petalTongue Render: {passed}/{total} checks passed",);
-    std::process::exit(i32::from(passed != total));
+    // --- Biosignal node has tachogram ---
+    let bio_node = primals
+        .iter()
+        .find(|p| p["id"] == "biosignal")
+        .or_exit("biosignal primal not found");
+    let bio_channels = bio_node["data_channels"]
+        .as_array()
+        .or_exit("biosignal data_channels not array");
+    let has_tachogram = bio_channels.iter().any(|c| c["id"] == "rr_tachogram");
+    h.check_bool("biosignal_has_rr_tachogram", has_tachogram);
+
+    // --- Microbiome node has bar chart ---
+    let micro_node = primals
+        .iter()
+        .find(|p| p["id"] == "microbiome")
+        .or_exit("microbiome primal not found");
+    let micro_channels = micro_node["data_channels"]
+        .as_array()
+        .or_exit("microbiome data_channels not array");
+    h.check_bool(
+        "microbiome_has_bar_chart",
+        micro_channels[0]["channel_type"] == "bar",
+    );
+
+    h.exit();
 }

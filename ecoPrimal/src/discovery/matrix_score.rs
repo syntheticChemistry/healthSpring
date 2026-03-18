@@ -175,7 +175,7 @@ mod tests {
 
     #[test]
     fn pathway_empty_off_targets() {
-        assert!((pathway_selectivity_score(10.0, &[])).abs() < f64::EPSILON);
+        assert!((pathway_selectivity_score(10.0, &[])).abs() < tolerances::MACHINE_EPSILON);
     }
 
     #[test]
@@ -192,7 +192,7 @@ mod tests {
 
     #[test]
     fn tissue_geometry_zero_thickness() {
-        assert!((tissue_geometry_factor(10.0, 0.0)).abs() < f64::EPSILON);
+        assert!((tissue_geometry_factor(10.0, 0.0)).abs() < tolerances::MACHINE_EPSILON);
     }
 
     #[test]

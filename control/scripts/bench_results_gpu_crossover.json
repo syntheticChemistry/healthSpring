@@ -1,35 +1,35 @@
 [
   {
     "operation": "HillSweep",
-    "crossover_n": 100000,
+    "crossover_n": 10000,
     "scale_points": [
       {
         "n_elements": 10,
-        "cpu_mean_us": 0.4059500000000001,
+        "cpu_mean_us": 1.1689499999999997,
         "estimated_gpu_us": 200.01,
         "gpu_wins": false
       },
       {
         "n_elements": 100,
-        "cpu_mean_us": 1.9983499999999998,
+        "cpu_mean_us": 7.370399999999999,
         "estimated_gpu_us": 200.1,
         "gpu_wins": false
       },
       {
         "n_elements": 1000,
-        "cpu_mean_us": 19.479200000000002,
+        "cpu_mean_us": 72.1048,
         "estimated_gpu_us": 201.0,
         "gpu_wins": false
       },
       {
         "n_elements": 10000,
-        "cpu_mean_us": 192.592,
+        "cpu_mean_us": 724.0944999999999,
         "estimated_gpu_us": 210.0,
-        "gpu_wins": false
+        "gpu_wins": true
       },
       {
         "n_elements": 100000,
-        "cpu_mean_us": 1936.9769000000003,
+        "cpu_mean_us": 7225.0794000000005,
         "estimated_gpu_us": 300.0,
         "gpu_wins": true
       }
@@ -37,59 +37,59 @@
   },
   {
     "operation": "PopulationPkBatch",
-    "crossover_n": null,
+    "crossover_n": 10000,
     "scale_points": [
       {
         "n_elements": 10,
-        "cpu_mean_us": 0.18875,
+        "cpu_mean_us": 0.364,
         "estimated_gpu_us": 200.05,
         "gpu_wins": false
       },
       {
         "n_elements": 100,
-        "cpu_mean_us": 1.1832999999999996,
+        "cpu_mean_us": 2.56805,
         "estimated_gpu_us": 200.5,
         "gpu_wins": false
       },
       {
         "n_elements": 1000,
-        "cpu_mean_us": 11.46365,
+        "cpu_mean_us": 23.995099999999997,
         "estimated_gpu_us": 205.0,
         "gpu_wins": false
       },
       {
         "n_elements": 10000,
-        "cpu_mean_us": 114.48130000000003,
+        "cpu_mean_us": 252.34004999999996,
         "estimated_gpu_us": 250.0,
-        "gpu_wins": false
+        "gpu_wins": true
       }
     ]
   },
   {
     "operation": "DiversityBatch",
-    "crossover_n": 5000,
+    "crossover_n": 1000,
     "scale_points": [
       {
         "n_elements": 10,
-        "cpu_mean_us": 1.911,
+        "cpu_mean_us": 4.753,
         "estimated_gpu_us": 200.1,
         "gpu_wins": false
       },
       {
         "n_elements": 100,
-        "cpu_mean_us": 13.951299999999998,
+        "cpu_mean_us": 41.9414,
         "estimated_gpu_us": 201.0,
         "gpu_wins": false
       },
       {
         "n_elements": 1000,
-        "cpu_mean_us": 140.2416,
+        "cpu_mean_us": 411.96600000000007,
         "estimated_gpu_us": 210.0,
-        "gpu_wins": false
+        "gpu_wins": true
       },
       {
         "n_elements": 5000,
-        "cpu_mean_us": 700.2207000000001,
+        "cpu_mean_us": 2060.3148,
         "estimated_gpu_us": 250.0,
         "gpu_wins": true
       }

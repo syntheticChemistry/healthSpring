@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp023 validation: Multi-channel biosignal fusion (ECG + PPG + EDA)
 //!
 //! Cross-validates `healthspring_barracuda::biosignal` fusion pipeline:

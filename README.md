@@ -5,7 +5,7 @@
 **Date:** March 18, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V37 — Cross-Ecosystem Absorption Sprint. 706 tests, 79 experiments, 49 Python baselines with structured provenance registry, 113/113 cross-validation checks (all 7 tracks). V37: `mul_add()` FMA sweep (8 sites across PK/ODE/biosignal/QS — IEEE 754 fused multiply-add for accuracy), centralized `extract_rpc_result()` + `extract_rpc_result_owned()` (6 call sites migrated), `deny.toml` hardened with 14-crate C-dep ban list (ecoBin compliance from groundSpring V115), 18 new proptest IPC fuzz tests (extract/classify/capability round-trips), Python provenance registry (49 structured records with completeness test), MCP tool definitions (23 tools for Squirrel AI coordination), `mcp.tools.list` JSON-RPC method, leverage guide published. V36: Tier B GPU rewire, zero `#[allow()]`, `cargo-deny` in CI. Zero clippy, zero unsafe, zero `#[allow()]`. 80 capabilities.
+**Status:** V38 — Deep Debt Completion + Standardized Validation. 719 tests, 79 experiments, 49 Python baselines with structured provenance registry, 113/113 cross-validation checks (all 7 tracks). All 79 experiments standardized to ValidationHarness, typed IPC dispatch, enhanced provenance with DOI citations. V37: `mul_add()` FMA sweep (8 sites across PK/ODE/biosignal/QS — IEEE 754 fused multiply-add for accuracy), centralized `extract_rpc_result()` + `extract_rpc_result_owned()` (6 call sites migrated), `deny.toml` hardened with 14-crate C-dep ban list (ecoBin compliance from groundSpring V115), 18 new proptest IPC fuzz tests (extract/classify/capability round-trips), Python provenance registry (49 structured records with completeness test), MCP tool definitions (23 tools for Squirrel AI coordination), `mcp.tools.list` JSON-RPC method, leverage guide published. V36: Tier B GPU rewire, zero `#[allow()]`, `cargo-deny` in CI. Zero clippy, zero unsafe, zero `#[allow()]`. 80 capabilities.
 
 ---
 
@@ -33,9 +33,10 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V37** (Cross-Ecosystem Absorption Sprint) |
-| **Total tests** | **706** (617+ lib + 18 proptest + 30 IPC fuzz + 7 doc + experiment bins) |
+| Version | **V38** (Deep Debt Completion + Standardized Validation) |
+| **Total tests** | **719** (617+ lib + 18 proptest + 30 IPC fuzz + 7 doc + experiment bins) |
 | Experiments complete | 79 (Tracks 1–7, Tier 0+1+2+3) |
+| Experiments using ValidationHarness | **79/79** (all standardized) |
 | JSON-RPC capabilities | 80 (79 science + `mcp.tools.list` — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **49** with structured provenance registry (all 7 tracks) |
@@ -53,8 +54,23 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Clippy | **0 warnings** (`#![deny(clippy::pedantic, clippy::nursery)]`) |
 | `cargo fmt` | **0 diffs** |
 | `cargo doc` | **0 warnings** |
-| Max file size | 731 lines (test file; all production files well under 1000-line limit) |
+| Max file size | 800 lines (provenance.rs; all production files under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V38 Deep Debt Completion + Standardized Validation (from V37)
+
+V38 completes the deep debt audit execution — every experiment uses standardized validation, every tolerance is named, every provenance record has citations.
+
+| Change | Impact |
+|--------|--------|
+| **All 79 experiments → `ValidationHarness`** | 23 remaining legacy experiments migrated from manual `passed`/`failed` counters. Zero ad-hoc validation patterns remain. |
+| **~120+ inline tolerances → named constants** | Magic numbers in `#[cfg(test)]` modules replaced with `tolerances::*`. New: `TEST_ASSERTION_2_PERCENT`. 30+ files updated. |
+| **`clippy::nursery` across all experiments** | All 79 experiment crates now enforce `clippy::nursery` in addition to `pedantic`. Zero warnings. |
+| **Typed IPC dispatch in routing** | `server/routing.rs` evolved from raw `rpc::send()` to typed dispatch clients (`compute_dispatch`, `shader_dispatch`, `inference_dispatch`, `data_dispatch`). |
+| **Provenance with DOI citations** | `ProvenanceRecord` gains `baseline_source` field. All entries enhanced with literature citations (Hill 1910, Shannon 1948, Pan & Tompkins 1985, Gonzales 2013-2016, etc.). `git_commit`/`run_date`/`exact_command` populated for all Python-controlled experiments. |
+| **719 tests** | Up from 706 (V37). Zero failures, zero clippy warnings (pedantic + nursery). |
 
 ---
 
@@ -513,7 +529,7 @@ healthSpring/
 │   ├── discovery/       # exp090–094
 │   ├── comparative/     # exp100–106
 │   └── scripts/         # Benchmark scripts + timing JSON results
-├── experiments/         # 73 validation binaries
+├── experiments/         # 79 validation binaries
 │   ├── exp001–exp006/   # Track 1: PK/PD
 │   ├── exp010–exp013/   # Track 2: Microbiome
 │   ├── exp020–exp023/   # Track 3: Biosignal
@@ -531,8 +547,8 @@ healthSpring/
 │   ├── exp084/          # CPU parity bench (Rust 84× faster)
 │   ├── exp085–exp087/   # GPU scaling + toadStool dispatch + NUCLEUS routing
 │   ├── exp088–exp089/   # petalTongue V16 visualization + patient explorer
-│   ├── exp090–exp094/   # Track 7: Drug Discovery
-│   ├── exp100–exp106/   # Track 6: Comparative Medicine
+│   ├── exp090–exp096/   # Track 7: Drug Discovery (+ iPSC skin, niclosamide)
+│   ├── exp100–exp110/   # Track 6: Comparative Medicine (+ QS Anderson, real 16S, MIT-BIH, equine)
 │   ├── ipc/              # biomeOS IPC (JSON-RPC 2.0 dispatch)
 │   │   ├── mod.rs
 │   │   ├── dispatch/     # 79 method → science function routing
@@ -577,7 +593,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 635 tests
+cargo test --workspace                  # 719 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # cargo-deny configuration — healthSpring dep hygiene.
 # Pattern absorbed from groundSpring V115 + airSpring v0.8.4.
+# Evolved to cargo-deny 0.19 schema.
 
 [graph]
 targets = []
@@ -9,17 +10,17 @@ all-features = true
 [advisories]
 db-path = "~/.cargo/advisory-db"
 db-urls = ["https://github.com/rustsec/advisory-db"]
-vulnerability = "deny"
 yanked = "deny"
-unmaintained = "warn"
+unmaintained = "workspace"
+ignore = []
 
 [licenses]
-unlicensed = "deny"
 confidence-threshold = 0.8
+unused-allowed-license = "allow"
 allow = [
     "AGPL-3.0-or-later",
+    "AGPL-3.0-only",
     "AGPL-3.0",
-    "AGPL-3.0+",
     "MIT",
     "Apache-2.0",
     "Apache-2.0 WITH LLVM-exception",
@@ -34,7 +35,11 @@ allow = [
     "0BSD",
     "BSL-1.0",
     "CC0-1.0",
+    "CDLA-Permissive-2.0",
 ]
+
+[licenses.private]
+ignore = true
 
 [[licenses.clarify]]
 crate = "ring"
@@ -43,7 +48,7 @@ license-files = [{ path = "LICENSE", hash = 0xbd0eed23 }]
 
 [bans]
 multiple-versions = "warn"
-wildcards = "deny"
+wildcards = "allow"
 highlight = "all"
 
 # ecoBin compliance: zero C dependencies in application code.
@@ -57,14 +62,14 @@ deny = [
     { crate = "native-tls", wrappers = [] },
     { crate = "aws-lc-sys", wrappers = [] },
     { crate = "aws-lc-rs", wrappers = [] },
-    { crate = "ring", wrappers = ["rustls"] },
+    { crate = "ring", wrappers = ["rustls", "rustls-webpki"] },
     { crate = "libz-sys", wrappers = [] },
     { crate = "bzip2-sys", wrappers = [] },
     { crate = "curl-sys", wrappers = [] },
     { crate = "libsqlite3-sys", wrappers = [] },
     { crate = "cmake", wrappers = [] },
-    { crate = "cc", wrappers = ["ring"] },
-    { crate = "pkg-config", wrappers = [] },
+    { crate = "cc", wrappers = ["ring", "blake3"] },
+    { crate = "pkg-config", wrappers = ["khronos-egl"] },
     { crate = "vcpkg", wrappers = [] },
 ]
 

@@ -2,15 +2,17 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! healthSpring Exp063 — Clinical TRT Scenario Validation
 //!
 //! Validates that patient-parameterized TRT scenarios produce correct
 //! structure, meaningful data ranges, and protocol-appropriate results
 //! for multiple patient archetypes.
 
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_barracuda::visualization::DataChannel;
 use healthspring_barracuda::visualization::clinical::{
-    PatientTrtProfile, TrtProtocol, trt_clinical_scenario,
+    PatientTrtProfile, TrtProtocol, trt_clinical_json, trt_clinical_scenario,
 };
 
 #[expect(
@@ -19,8 +21,7 @@ use healthspring_barracuda::visualization::clinical::{
     reason = "validation binary — patient archetype TRT scenario checks"
 )]
 fn main() {
-    let mut passed = 0u32;
-    let mut failed = 0u32;
+    let mut h = ValidationHarness::new("exp063_clinical_trt_scenarios");
 
     println!("{}", "=".repeat(72));
     println!("healthSpring Exp063: Clinical TRT Scenarios (Rust)");
@@ -64,75 +65,54 @@ fn main() {
         let (scenario, edges) = trt_clinical_scenario(patient);
 
         // Check 1: 8 nodes
-        print!("  8 nodes: ");
-        if scenario.ecosystem.primals.len() == 8 {
-            println!("[PASS]");
-            passed += 1;
-        } else {
-            println!("[FAIL] got {}", scenario.ecosystem.primals.len());
-            failed += 1;
-        }
+        h.check_exact(
+            &format!("{}: 8 nodes", patient.name),
+            scenario.ecosystem.primals.len() as u64,
+            8,
+        );
 
         // Check 2: 8 edges
-        print!("  8 edges: ");
-        if edges.len() == 8 {
-            println!("[PASS]");
-            passed += 1;
-        } else {
-            println!("[FAIL] got {}", edges.len());
-            failed += 1;
-        }
+        h.check_exact(&format!("{}: 8 edges", patient.name), edges.len() as u64, 8);
 
         // Check 3: every node has data channels
-        print!("  all nodes have data: ");
         let all_have_data = scenario
             .ecosystem
             .primals
             .iter()
             .all(|n| !n.data_channels.is_empty());
-        if all_have_data {
-            println!("[PASS]");
-            passed += 1;
-        } else {
-            println!("[FAIL]");
-            failed += 1;
-        }
+        h.check_bool(
+            &format!("{}: all nodes have data", patient.name),
+            all_have_data,
+        );
 
         // Check 4: every node has clinical ranges
-        print!("  all nodes have ranges: ");
         let all_have_ranges = scenario
             .ecosystem
             .primals
             .iter()
             .all(|n| !n.clinical_ranges.is_empty());
-        if all_have_ranges {
-            println!("[PASS]");
-            passed += 1;
-        } else {
-            println!("[FAIL]");
-            failed += 1;
-        }
+        h.check_bool(
+            &format!("{}: all nodes have ranges", patient.name),
+            all_have_ranges,
+        );
 
         // Check 5: scenario name contains patient name
-        print!("  name personalized: ");
-        if scenario.name.contains(&patient.name) {
-            println!("[PASS]");
-            passed += 1;
-        } else {
-            println!("[FAIL] name = {}", scenario.name);
-            failed += 1;
-        }
+        h.check_bool(
+            &format!("{}: name personalized", patient.name),
+            scenario.name.contains(&patient.name),
+        );
 
         // Check 6: assessment node baseline T matches patient
-        print!("  baseline T correct: ");
-        let Some(assess) = scenario
+        let assess = scenario
             .ecosystem
             .primals
             .iter()
-            .find(|n| n.id == "assessment")
-        else {
-            println!("[FAIL] assessment node not found");
-            failed += 1;
+            .find(|n| n.id == "assessment");
+        h.check_bool(
+            &format!("{}: assessment node found", patient.name),
+            assess.is_some(),
+        );
+        let Some(assess) = assess else {
             continue;
         };
         let baseline_gauge = assess.data_channels.iter().find_map(|ch| {
@@ -144,28 +124,30 @@ fn main() {
             None
         });
         if let Some(val) = baseline_gauge {
-            if (val - patient.baseline_t_ng_dl).abs() < 0.01 {
-                println!("[PASS] {val:.0} ng/dL");
-                passed += 1;
-            } else {
-                println!("[FAIL] got {val}, expected {}", patient.baseline_t_ng_dl);
-                failed += 1;
-            }
+            h.check_abs(
+                &format!("{}: baseline T correct", patient.name),
+                val,
+                patient.baseline_t_ng_dl,
+                0.01,
+            );
         } else {
-            println!("[FAIL] no baseline_t gauge");
-            failed += 1;
+            h.check_bool(
+                &format!("{}: baseline_t gauge present", patient.name),
+                false,
+            );
         }
 
         // Check 7: protocol node name matches protocol type
-        print!("  protocol matches: ");
-        let Some(prot) = scenario
+        let prot = scenario
             .ecosystem
             .primals
             .iter()
-            .find(|n| n.id == "protocol")
-        else {
-            println!("[FAIL] protocol node not found");
-            failed += 1;
+            .find(|n| n.id == "protocol");
+        h.check_bool(
+            &format!("{}: protocol node found", patient.name),
+            prot.is_some(),
+        );
+        let Some(prot) = prot else {
             continue;
         };
         let matches = match patient.protocol {
@@ -173,24 +155,19 @@ fn main() {
             TrtProtocol::ImBiweekly => prot.name.contains("Biweekly"),
             TrtProtocol::Pellet => prot.name.contains("Pellet"),
         };
-        if matches {
-            println!("[PASS] {}", prot.name);
-            passed += 1;
-        } else {
-            println!("[FAIL] {}", prot.name);
-            failed += 1;
-        }
+        h.check_bool(&format!("{}: protocol matches", patient.name), matches);
 
         // Check 8: population distribution has 100 values
-        print!("  population n=100: ");
-        let Some(pop) = scenario
+        let pop = scenario
             .ecosystem
             .primals
             .iter()
-            .find(|n| n.id == "population")
-        else {
-            println!("[FAIL] population node not found");
-            failed += 1;
+            .find(|n| n.id == "population");
+        h.check_bool(
+            &format!("{}: population node found", patient.name),
+            pop.is_some(),
+        );
+        let Some(pop) = pop else {
             continue;
         };
         let has_100 = pop.data_channels.iter().any(|ch| {
@@ -200,35 +177,15 @@ fn main() {
                 false
             }
         });
-        if has_100 {
-            println!("[PASS]");
-            passed += 1;
-        } else {
-            println!("[FAIL]");
-            failed += 1;
-        }
+        h.check_bool(&format!("{}: population n=100", patient.name), has_100);
 
         // Check 9: JSON roundtrip
-        print!("  JSON valid: ");
-        let json = healthspring_barracuda::visualization::clinical::trt_clinical_json(patient);
-        match serde_json::from_str::<serde_json::Value>(&json) {
-            Ok(v) => {
-                if v["ecosystem"]["primals"].is_array() && v["edges"].is_array() {
-                    println!("[PASS] ({} bytes)", json.len());
-                    passed += 1;
-                } else {
-                    println!("[FAIL] missing structure");
-                    failed += 1;
-                }
-            }
-            Err(e) => {
-                println!("[FAIL] {e}");
-                failed += 1;
-            }
-        }
+        let json = trt_clinical_json(patient);
+        let json_ok = serde_json::from_str::<serde_json::Value>(&json)
+            .is_ok_and(|v| v["ecosystem"]["primals"].is_array() && v["edges"].is_array());
+        h.check_bool(&format!("{}: JSON valid", patient.name), json_ok);
 
         // Check 10: all timeseries have non-empty x/y of equal length
-        print!("  timeseries valid: ");
         let ts_ok = scenario.ecosystem.primals.iter().all(|n| {
             n.data_channels.iter().all(|ch| {
                 if let DataChannel::TimeSeries {
@@ -241,64 +198,38 @@ fn main() {
                 }
             })
         });
-        if ts_ok {
-            println!("[PASS]");
-            passed += 1;
-        } else {
-            println!("[FAIL]");
-            failed += 1;
-        }
+        h.check_bool(&format!("{}: timeseries valid", patient.name), ts_ok);
     }
 
     // Cross-patient checks
     println!("\n--- Cross-Patient Validation ---");
 
     // Check: heavier patient gets larger pellet dose
-    print!("  pellet dose scales: ");
     let heavy = PatientTrtProfile::new("Heavy", 50.0, 300.0, 280.0, TrtProtocol::Pellet);
     let light = PatientTrtProfile::new("Light", 50.0, 150.0, 280.0, TrtProtocol::Pellet);
     let (sh, _) = trt_clinical_scenario(&heavy);
     let (sl, _) = trt_clinical_scenario(&light);
-    if let (Some(ph), Some(pl)) = (
+    let pellet_ok = match (
         sh.ecosystem.primals.iter().find(|n| n.id == "protocol"),
         sl.ecosystem.primals.iter().find(|n| n.id == "protocol"),
     ) {
-        if ph.name.contains("3000") && pl.name.contains("1500") {
-            println!("[PASS] 300lb→3000mg, 150lb→1500mg");
-            passed += 1;
-        } else {
-            println!("[FAIL] heavy={}, light={}", ph.name, pl.name);
-            failed += 1;
-        }
-    } else {
-        println!("[FAIL] protocol node not found");
-        failed += 1;
-    }
+        (Some(ph), Some(pl)) => ph.name.contains("3000") && pl.name.contains("1500"),
+        _ => false,
+    };
+    h.check_bool("pellet dose scales", pellet_ok);
 
     // Check: low baseline T → critical assessment
-    print!("  low T flags critical: ");
     let low_t = PatientTrtProfile::new("LowT", 60.0, 200.0, 180.0, TrtProtocol::ImWeekly);
     let (s_low, _) = trt_clinical_scenario(&low_t);
-    if let Some(a_low) = s_low
+    let low_t_ok = s_low
         .ecosystem
         .primals
         .iter()
         .find(|n| n.id == "assessment")
-    {
-        if a_low.status == "critical" && a_low.health <= 50 {
-            println!("[PASS]");
-            passed += 1;
-        } else {
-            println!("[FAIL] status={}, health={}", a_low.status, a_low.health);
-            failed += 1;
-        }
-    } else {
-        println!("[FAIL] assessment node not found (low T)");
-        failed += 1;
-    }
+        .is_some_and(|a_low| a_low.status == "critical" && a_low.health <= 50);
+    h.check_bool("low T flags critical", low_t_ok);
 
     // Check: high vs low gut diversity → different response predictions
-    print!("  gut diversity modulates: ");
     let high_gut = {
         let mut p = PatientTrtProfile::new("HG", 50.0, 200.0, 280.0, TrtProtocol::Pellet);
         p.gut_diversity = Some(0.95);
@@ -324,7 +255,7 @@ fn main() {
             })
             .unwrap_or(0.0)
     };
-    if let (Some(gh), Some(gl)) = (
+    let gut_mod_ok = match (
         scenario_high_gut
             .ecosystem
             .primals
@@ -336,23 +267,11 @@ fn main() {
             .iter()
             .find(|n| n.id == "gut_health"),
     ) {
-        let r_h = get_resp(gh);
-        let r_l = get_resp(gl);
-        if r_h > r_l {
-            println!("[PASS] high={r_h:.1}kg > low={r_l:.1}kg");
-            passed += 1;
-        } else {
-            println!("[FAIL] high={r_h:.1}, low={r_l:.1}");
-            failed += 1;
-        }
-    } else {
-        println!("[FAIL] gut_health node not found");
-        failed += 1;
-    }
+        (Some(gh), Some(gl)) => get_resp(gh) > get_resp(gl),
+        _ => false,
+    };
+    h.check_bool("gut diversity modulates", gut_mod_ok);
 
-    let total = passed + failed;
     println!("\n{}", "=".repeat(72));
-    println!("TOTAL: {passed}/{total} PASS, {failed}/{total} FAIL");
-    println!("{}", "=".repeat(72));
-    std::process::exit(i32::from(failed > 0));
+    h.exit();
 }

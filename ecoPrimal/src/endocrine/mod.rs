@@ -34,15 +34,17 @@ pub use trt_outcomes::{
 mod tests {
     use super::*;
     use crate::pkpd;
-
-    const TOL: f64 = 1e-10;
+    use crate::tolerances;
 
     // ── IM Depot PK (Exp030) ───────────────────────────────────────────
 
     #[test]
     fn im_c0_is_zero() {
         let c = pk_im_depot(100.0, 1.0, 70.0, 0.46, 0.087, 0.0);
-        assert!(c.abs() < TOL, "C(0) = 0 for IM depot");
+        assert!(
+            c.abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "C(0) = 0 for IM depot"
+        );
     }
 
     #[test]
@@ -84,7 +86,11 @@ mod tests {
                 )
             })
             .collect();
-        assert!(concs.iter().all(|&c| c >= -1e-12));
+        assert!(
+            concs
+                .iter()
+                .all(|&c| c >= -tolerances::MACHINE_EPSILON_TIGHT)
+        );
     }
 
     #[test]
@@ -146,7 +152,10 @@ mod tests {
             tc::VD_L,
             pellet_params::DURATION_DAYS,
         );
-        assert!(c.abs() < TOL, "Pellet C(0) = 0");
+        assert!(
+            c.abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "Pellet C(0) = 0"
+        );
     }
 
     #[test]
@@ -198,7 +207,10 @@ mod tests {
                 tc::VD_L,
                 pellet_params::DURATION_DAYS,
             );
-            assert!(c >= -1e-12, "non-negative at t={t}");
+            assert!(
+                c >= -tolerances::MACHINE_EPSILON_TIGHT,
+                "non-negative at t={t}"
+            );
         }
     }
 
@@ -207,7 +219,7 @@ mod tests {
     #[test]
     fn decline_at_onset_equals_t0() {
         let t = testosterone_decline(600.0, 0.017, 30.0, 30.0);
-        assert!((t - 600.0).abs() < TOL);
+        assert!((t - 600.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -241,13 +253,13 @@ mod tests {
     #[test]
     fn weight_at_zero_is_zero() {
         let dw = weight_trajectory(0.0, -16.0, 6.0, 60.0);
-        assert!(dw.abs() < TOL);
+        assert!(dw.abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
     fn weight_at_endpoint_matches() {
         let dw = weight_trajectory(60.0, -16.0, 6.0, 60.0);
-        assert!((dw - (-16.0)).abs() < 1e-8);
+        assert!((dw - (-16.0)).abs() < tolerances::DIVERSITY_CROSS_VALIDATE);
     }
 
     #[test]
@@ -263,13 +275,16 @@ mod tests {
     #[test]
     fn biomarker_baseline_at_t0() {
         let v = biomarker_trajectory(0.0, 165.0, 130.0, 12.0);
-        assert!((v - 165.0).abs() < TOL);
+        assert!((v - 165.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
     fn biomarker_approaches_endpoint() {
         let v = biomarker_trajectory(120.0, 165.0, 130.0, 12.0);
-        assert!((v - 130.0).abs() < 0.5, "approaches endpoint at 10τ");
+        assert!(
+            (v - 130.0).abs() < tolerances::BIOMARKER_ENDPOINT,
+            "approaches endpoint at 10τ"
+        );
     }
 
     #[test]
@@ -289,7 +304,7 @@ mod tests {
     #[test]
     fn hr_at_normalization() {
         let hr = hazard_ratio_model(600.0, 300.0, 0.44);
-        assert!((hr - 0.44).abs() < TOL);
+        assert!((hr - 0.44).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -304,7 +319,7 @@ mod tests {
     #[test]
     fn hba1c_baseline_correct() {
         let v = hba1c_trajectory(0.0, 7.60, -0.37, 3.0);
-        assert!((v - 7.60).abs() < TOL);
+        assert!((v - 7.60).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -319,7 +334,10 @@ mod tests {
             .map(|m| hba1c_trajectory(f64::from(m), 7.60, -0.37, 3.0))
             .collect();
         for w in vals.windows(2) {
-            assert!(w[0] >= w[1] - 1e-12, "monotonically decreasing");
+            assert!(
+                w[0] >= w[1] - tolerances::MACHINE_EPSILON_TIGHT,
+                "monotonically decreasing"
+            );
         }
     }
 
@@ -337,7 +355,7 @@ mod tests {
         // Lognormal mean = exp(mu + σ²/2) should equal typical
         let recovered_mean = (mu + sigma * sigma / 2.0).exp();
         assert!(
-            (recovered_mean - 70.0).abs() < 0.01,
+            (recovered_mean - 70.0).abs() < tolerances::TEST_ASSERTION_LOOSE,
             "mean ≈ typical: got {recovered_mean}"
         );
         assert!(sigma > 0.0);
@@ -346,7 +364,7 @@ mod tests {
     #[test]
     fn age_adjusted_t0_at_30() {
         let t = age_adjusted_t0(600.0, 30.0, 0.017);
-        assert!((t - 600.0).abs() < TOL);
+        assert!((t - 600.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -374,15 +392,18 @@ mod tests {
     #[test]
     fn anderson_xi_zero_disorder() {
         let xi = anderson_localization_length(0.0, 100.0);
-        assert!((xi - 1.0).abs() < TOL, "zero disorder → localized (ξ=1)");
+        assert!(
+            (xi - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "zero disorder → localized (ξ=1)"
+        );
     }
 
     #[test]
     fn evenness_to_disorder_linear() {
         let w1 = evenness_to_disorder(0.5, 5.0);
         let w2 = evenness_to_disorder(1.0, 5.0);
-        assert!((w1 - 2.5).abs() < TOL);
-        assert!((w2 - 5.0).abs() < TOL);
+        assert!((w1 - 2.5).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((w2 - 5.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -420,7 +441,10 @@ mod tests {
     #[test]
     fn hrv_trt_response_at_zero() {
         let s = hrv_trt_response(40.0, 20.0, 6.0, 0.0);
-        assert!((s - 40.0).abs() < 1e-10, "at t=0, SDNN=base");
+        assert!(
+            (s - 40.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "at t=0, SDNN=base"
+        );
     }
 
     #[test]
@@ -429,7 +453,10 @@ mod tests {
         let s12 = hrv_trt_response(40.0, 20.0, 6.0, 12.0);
         let s_inf = hrv_trt_response(40.0, 20.0, 6.0, 120.0);
         assert!(s12 > s0, "SDNN improves with TRT");
-        assert!((s_inf - 60.0).abs() < 1.0, "approaches base + delta");
+        assert!(
+            (s_inf - 60.0).abs() < tolerances::LOKIVETMAB_DURATION,
+            "approaches base + delta"
+        );
     }
 
     #[test]

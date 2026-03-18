@@ -4,6 +4,7 @@
 #![expect(clippy::unwrap_used, clippy::expect_used, reason = "test code")]
 
 use super::*;
+use crate::tolerances;
 use crate::visualization::{DataChannel, HealthScenario, ScenarioEdge};
 
 fn assert_study_invariants(
@@ -451,7 +452,7 @@ fn gauge_produces_gauge_channel() {
         } => {
             assert_eq!(id, "g1");
             assert_eq!(label, "Test Gauge");
-            assert!((*value - 50.0).abs() < 1e-9);
+            assert!((*value - 50.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
             assert_eq!(unit, "unit");
         }
         _ => panic!("expected Gauge, got {ch:?}"),

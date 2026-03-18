@@ -9,7 +9,9 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Instant;
 
-use healthspring_barracuda::ipc::{dispatch, rpc, socket};
+use healthspring_barracuda::ipc::{
+    compute_dispatch, data_dispatch, dispatch, inference_dispatch, rpc, shader_dispatch, socket,
+};
 use tracing::warn;
 
 /// Primal server state shared across connections.
@@ -198,55 +200,39 @@ fn handle_primal_discover() -> serde_json::Value {
 }
 
 fn handle_compute_offload(params: &serde_json::Value) -> serde_json::Value {
-    let operation = params
-        .get("operation")
+    let workload = params
+        .get("workload")
+        .or_else(|| params.get("operation"))
         .and_then(|v| v.as_str())
-        .unwrap_or("");
+        .unwrap_or("hill_sweep");
+    let inner_params = params
+        .get("params")
+        .cloned()
+        .unwrap_or_else(|| params.clone());
 
-    let Some(compute_socket) = socket::discover_compute_primal() else {
-        return serde_json::json!({
-            "error": "compute_primal_not_found",
-            "hint": "start Node Atomic (toadStool) to enable GPU offload",
-            "env_override": "HEALTHSPRING_COMPUTE_PRIMAL",
-        });
-    };
-
-    rpc::send(&compute_socket, &format!("compute.{operation}"), params).unwrap_or_else(
-        || serde_json::json!({"error": "compute_offload_failed", "operation": operation}),
-    )
+    match compute_dispatch::submit(workload, &inner_params) {
+        Ok(handle) => serde_json::json!({"job_id": handle.job_id, "status": "submitted"}),
+        Err(e) => serde_json::json!({"error": e.to_string()}),
+    }
 }
 
 fn handle_shader_compile(params: &serde_json::Value) -> serde_json::Value {
-    let Some(shader_socket) = socket::discover_shader_compiler() else {
-        return serde_json::json!({
-            "error": "shader_compiler_not_found",
-            "hint": "start coralReef to enable sovereign shader compilation",
-            "env_override": "HEALTHSPRING_SHADER_PRIMAL",
-        });
-    };
-
-    rpc::send(&shader_socket, "shader.compile", params).unwrap_or_else(|| {
-        serde_json::json!({"error": "shader_compile_failed", "hint": "coralReef did not respond"})
-    })
+    match shader_dispatch::compile(params) {
+        Ok(result) => result,
+        Err(e) => serde_json::json!({"error": e.to_string()}),
+    }
 }
 
 fn handle_inference_route(params: &serde_json::Value) -> serde_json::Value {
-    let Some(inference_socket) = socket::discover_inference_primal() else {
-        return serde_json::json!({
-            "error": "inference_primal_not_found",
-            "hint": "start Squirrel to enable model inference routing",
-            "env_override": "HEALTHSPRING_INFERENCE_PRIMAL",
-        });
-    };
-
     let operation = params
         .get("operation")
         .and_then(|v| v.as_str())
         .unwrap_or("infer");
 
-    rpc::send(&inference_socket, &format!("model.{operation}"), params).unwrap_or_else(
-        || serde_json::json!({"error": "inference_route_failed", "operation": operation}),
-    )
+    match inference_dispatch::route(operation, params) {
+        Ok(result) => result,
+        Err(e) => serde_json::json!({"error": e.to_string()}),
+    }
 }
 
 fn handle_data_fetch(params: &serde_json::Value) -> serde_json::Value {
@@ -256,15 +242,8 @@ fn handle_data_fetch(params: &serde_json::Value) -> serde_json::Value {
         .unwrap_or("ncbi");
     let query = params.get("query").and_then(|v| v.as_str()).unwrap_or("");
 
-    let Some(data_socket) = socket::discover_data_primal() else {
-        return serde_json::json!({
-            "error": "data_primal_not_found",
-            "hint": "start Nest Atomic (NestGate) for data routing",
-            "env_override": "HEALTHSPRING_DATA_PRIMAL",
-        });
-    };
-
-    let method = format!("data.{source}_fetch");
-    rpc::send(&data_socket, &method, &serde_json::json!({"query": query}))
-        .unwrap_or_else(|| serde_json::json!({"error": "data_fetch_failed", "source": source}))
+    match data_dispatch::fetch(source, &serde_json::json!({"query": query})) {
+        Ok(result) => result,
+        Err(e) => serde_json::json!({"error": e.to_string()}),
+    }
 }

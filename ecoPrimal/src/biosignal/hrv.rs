@@ -84,6 +84,7 @@ pub fn pnn50(peaks: &[usize], fs: f64) -> f64 {
 mod tests {
     use super::*;
     use crate::biosignal::ecg::{generate_synthetic_ecg, pan_tompkins};
+    use crate::tolerances;
 
     const FS: f64 = 360.0;
 
@@ -123,6 +124,9 @@ mod tests {
     fn rmssd_constant_rr_is_zero() {
         let peaks: Vec<usize> = (0..10).map(|i| i * 360).collect();
         let r = rmssd_ms(&peaks, 360.0);
-        assert!(r.abs() < 1e-10, "constant RR → RMSSD=0");
+        assert!(
+            r.abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "constant RR → RMSSD=0"
+        );
     }
 }

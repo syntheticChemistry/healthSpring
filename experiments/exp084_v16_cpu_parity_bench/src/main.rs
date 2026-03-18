@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear benchmark sequence"
@@ -36,6 +37,7 @@ use healthspring_barracuda::microbiome::{
 };
 use healthspring_barracuda::pkpd;
 use healthspring_barracuda::tolerances;
+use healthspring_barracuda::validation::ValidationHarness;
 use serde::Serialize;
 
 const N_ITER: usize = 100;
@@ -82,21 +84,8 @@ fn bench<F: Fn()>(name: &str, func: F, n_iter: usize) -> BenchResult {
 }
 
 fn main() {
-    let mut passed = 0u32;
-    let mut failed = 0u32;
+    let mut h = ValidationHarness::new("exp084_v16_cpu_parity_bench");
     let mut benchmarks = Vec::new();
-
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {
-            if $cond {
-                passed += 1;
-                println!("  [PASS] {}", $name);
-            } else {
-                eprintln!("  [FAIL] {}", $name);
-                failed += 1;
-            }
-        };
-    }
 
     println!("{}", "=".repeat(72));
     println!("healthSpring Exp084 — V16 CPU Parity Benchmarks");
@@ -119,7 +108,7 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("mm_simulate_runs", result.mean_us > 0.0);
+    h.check_bool("mm_simulate_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let result = bench(
@@ -138,7 +127,7 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("mm_auc_analytical_runs", result.mean_us > 0.0);
+    h.check_bool("mm_auc_analytical_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let result = bench(
@@ -157,19 +146,16 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("mm_half_life_runs", result.mean_us > 0.0);
+    h.check_bool("mm_half_life_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let c0 = 300.0 / mm_params.vd;
     let anal_auc = pkpd::mm_auc_analytical(mm_params, 300.0);
-    check!(
-        "mm_c0_correct",
-        (c0 - 6.0).abs() < tolerances::MACHINE_EPSILON
-    );
-    check!("mm_auc_positive", anal_auc > 0.0);
+    h.check_abs("mm_c0_correct", c0, 6.0, tolerances::MACHINE_EPSILON);
+    h.check_lower("mm_auc_positive", anal_auc, 0.0);
     let t_half_low = pkpd::mm_apparent_half_life(mm_params, 1.0);
     let t_half_high = pkpd::mm_apparent_half_life(mm_params, 20.0);
-    check!("mm_half_life_dose_dependent", t_half_low < t_half_high);
+    h.check_bool("mm_half_life_dose_dependent", t_half_low < t_half_high);
 
     // ── 2. Antibiotic Perturbation ──────────────────────────────────────
 
@@ -186,7 +172,7 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("antibiotic_30d_runs", result.mean_us > 0.0);
+    h.check_bool("antibiotic_30d_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let result = bench(
@@ -200,29 +186,21 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("antibiotic_365d_runs", result.mean_us > 0.0);
+    h.check_bool("antibiotic_365d_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let trajectory = antibiotic_perturbation(2.2, 0.7, 5.0, 0.1, 5.0, 30.0, 0.01);
-    let (_, h_initial) = trajectory.first().copied().unwrap_or_else(|| {
-        eprintln!("FAIL: antibiotic perturbation returns empty trajectory");
-        std::process::exit(1)
-    });
+    h.check_bool("antibiotic_perturbation_non_empty", !trajectory.is_empty());
+    let (_, h_initial) = trajectory.first().copied().unwrap_or((0.0, 0.0));
     let (_, h_nadir) = trajectory
         .iter()
         .min_by(|aa, bb| aa.1.partial_cmp(&bb.1).unwrap_or(std::cmp::Ordering::Equal))
         .copied()
-        .unwrap_or_else(|| {
-            eprintln!("FAIL: trajectory has no points");
-            std::process::exit(1)
-        });
-    let (_, h_final) = trajectory.last().copied().unwrap_or_else(|| {
-        eprintln!("FAIL: antibiotic perturbation returns empty trajectory");
-        std::process::exit(1)
-    });
-    check!("antibiotic_drops", h_nadir < h_initial);
-    check!("antibiotic_recovers", h_final > h_nadir);
-    check!("antibiotic_not_full_recovery", h_final < h_initial);
+        .unwrap_or((0.0, 0.0));
+    let (_, h_final) = trajectory.last().copied().unwrap_or((0.0, 0.0));
+    h.check_bool("antibiotic_drops", h_nadir < h_initial);
+    h.check_bool("antibiotic_recovers", h_final > h_nadir);
+    h.check_bool("antibiotic_not_full_recovery", h_final < h_initial);
 
     // ── 3. SCFA Production ──────────────────────────────────────────────
 
@@ -242,7 +220,7 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("scfa_healthy_1k_runs", result.mean_us > 0.0);
+    h.check_bool("scfa_healthy_1k_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let result = bench(
@@ -259,21 +237,21 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("scfa_dysbiotic_1k_runs", result.mean_us > 0.0);
+    h.check_bool("scfa_dysbiotic_1k_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let (acetate, propionate, butyrate) = scfa_production(20.0, &SCFA_HEALTHY_PARAMS);
     let scfa_total = acetate + propionate + butyrate;
-    check!(
+    h.check_bool(
         "scfa_acetate_dominant",
-        acetate > propionate && acetate > butyrate
+        acetate > propionate && acetate > butyrate,
     );
-    check!(
+    h.check_bool(
         "scfa_ratio_normal",
-        acetate / scfa_total > 0.50 && acetate / scfa_total < 0.70
+        acetate / scfa_total > 0.50 && acetate / scfa_total < 0.70,
     );
     let (_, _, butyrate_dys) = scfa_production(20.0, &SCFA_DYSBIOTIC_PARAMS);
-    check!("scfa_dysbiotic_less_butyrate", butyrate > butyrate_dys);
+    h.check_bool("scfa_dysbiotic_less_butyrate", butyrate > butyrate_dys);
 
     // ── 4. Gut-Brain Serotonin ──────────────────────────────────────────
 
@@ -294,7 +272,7 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("serotonin_1k_runs", result.mean_us > 0.0);
+    h.check_bool("serotonin_1k_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let result = bench(
@@ -312,19 +290,19 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("tryptophan_1k_runs", result.mean_us > 0.0);
+    h.check_bool("tryptophan_1k_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let healthy_5ht = gut_serotonin_production(50.0, 2.2, 0.01, 0.5);
     let dysbiotic_5ht = gut_serotonin_production(50.0, 0.8, 0.01, 0.5);
-    check!(
+    h.check_bool(
         "serotonin_positive",
-        healthy_5ht > 0.0 && dysbiotic_5ht > 0.0
+        healthy_5ht > 0.0 && dysbiotic_5ht > 0.0,
     );
-    check!("serotonin_diversity_dependent", healthy_5ht > dysbiotic_5ht);
+    h.check_bool("serotonin_diversity_dependent", healthy_5ht > dysbiotic_5ht);
     let trp_healthy = tryptophan_availability(100.0, 2.2);
     let trp_dysbiotic = tryptophan_availability(100.0, 0.8);
-    check!("tryptophan_higher_healthy", trp_healthy > trp_dysbiotic);
+    h.check_bool("tryptophan_higher_healthy", trp_healthy > trp_dysbiotic);
 
     // ── 5. EDA Stress Detection ─────────────────────────────────────────
 
@@ -349,7 +327,7 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("eda_scl_runs", result.mean_us > 0.0);
+    h.check_bool("eda_scl_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let result = bench(
@@ -363,7 +341,7 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("eda_phasic_runs", result.mean_us > 0.0);
+    h.check_bool("eda_phasic_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let phasic = eda_phasic(&eda_signal, 200);
@@ -379,15 +357,15 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("eda_scr_runs", result.mean_us > 0.0);
+    h.check_bool("eda_scr_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let scl = eda_scl(&eda_signal, 200);
     let mean_scl: f64 = scl.iter().sum::<f64>() / scl.len() as f64;
     let scr_rate = scr_peaks.len() as f64 / (f64::from(eda_len) / 100.0 / 60.0);
     let stress = compute_stress_index(scr_rate, mean_scl, 5.0);
-    check!("eda_stress_bounded", (0.0..=100.0).contains(&stress));
-    check!("eda_scr_found", !scr_peaks.is_empty());
+    h.check_bool("eda_stress_bounded", (0.0..=100.0).contains(&stress));
+    h.check_bool("eda_scr_found", !scr_peaks.is_empty());
 
     // ── 6. Arrhythmia Beat Classification ───────────────────────────────
 
@@ -425,7 +403,7 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("classify_1k_runs", result.mean_us > 0.0);
+    h.check_bool("classify_1k_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let result = bench(
@@ -441,21 +419,23 @@ fn main() {
         "  {:<42} mean={:.1}us  p95={:.1}us",
         result.name, result.mean_us, result.p95_us
     );
-    check!("corr_1k_runs", result.mean_us > 0.0);
+    h.check_bool("corr_1k_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
     let (cls, corr) = classify_beat(&normal, &templates, 0.5);
-    check!("classify_normal_as_normal", cls == BeatClass::Normal);
-    check!("classify_normal_corr_high", corr > 0.99);
+    h.check_bool("classify_normal_as_normal", cls == BeatClass::Normal);
+    h.check_bool("classify_normal_corr_high", corr > 0.99);
     let (cls_pvc, _) = classify_beat(&pvc, &templates, 0.5);
-    check!("classify_pvc_as_pvc", cls_pvc == BeatClass::Pvc);
+    h.check_bool("classify_pvc_as_pvc", cls_pvc == BeatClass::Pvc);
     let self_corr = normalized_correlation(&normal, &normal);
-    check!(
+    h.check_abs(
         "self_correlation_is_1",
-        (self_corr - 1.0).abs() < tolerances::MACHINE_EPSILON
+        self_corr,
+        1.0,
+        tolerances::MACHINE_EPSILON,
     );
     let cross_corr = normalized_correlation(&normal, &pvc);
-    check!("cross_corr_less_than_1", cross_corr < 0.8);
+    h.check_bool("cross_corr_less_than_1", cross_corr < 0.8);
 
     // ── Summary ─────────────────────────────────────────────────────────
 
@@ -474,12 +454,5 @@ fn main() {
     std::fs::write(&out_dir, &json).unwrap_or_else(|_| println!("{json}"));
     println!("\nResults written to {}", out_dir.display());
 
-    let total = passed + failed;
-    println!("\n{}", "=".repeat(72));
-    println!("Exp084 V16 CPU Parity Bench: {passed}/{total} PASS, {failed}/{total} FAIL");
-    println!("{}", "=".repeat(72));
-
-    if failed > 0 {
-        std::process::exit(1);
-    }
+    h.exit();
 }

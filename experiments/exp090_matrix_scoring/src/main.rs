@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp090: Anderson-augmented MATRIX drug repurposing scoring (Fajgenbaum 2018) Anderson-augmented MATRIX drug repurposing scoring (Fajgenbaum 2018)
 
 use healthspring_barracuda::discovery::{

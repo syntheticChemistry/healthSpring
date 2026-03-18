@@ -13,27 +13,38 @@ use super::protocol::{
     build_replace_params,
 };
 use super::{DataChannel, PushError, PushResult};
+use crate::ipc::socket;
 use crate::visualization::types::HealthScenario;
 
 const RPC_RESPONSE_BUF: usize = 65_536;
 
-/// Client for pushing visualization data to petalTongue
+/// Capability domain used for visualization primal discovery.
+const VISUALIZATION_CAPABILITY: &str = "visualization";
+
+/// Default socket name prefix for filesystem scanning fallback.
+const DEFAULT_VIZ_PREFIX: &str = "petaltongue";
+
+/// Client for pushing visualization data to the visualization primal.
+///
+/// Discovery is capability-based: any primal advertising `visualization.*`
+/// capabilities satisfies this client's needs. Name-prefix scanning is a
+/// fallback, not an identity assertion.
 pub struct PetalTonguePushClient {
     socket_path: PathBuf,
 }
 
 impl PetalTonguePushClient {
-    /// Discover petalTongue socket at runtime.
+    /// Discover a visualization primal socket at runtime.
     ///
     /// Resolution order (wateringHole Universal IPC v3.0):
     /// 1. `PETALTONGUE_SOCKET` env var (explicit override)
-    /// 2. `$XDG_RUNTIME_DIR/biomeos/petaltongue-*.sock` (biomeOS standard)
-    /// 3. `$XDG_RUNTIME_DIR/petaltongue/*.sock` (legacy)
+    /// 2. Capability probe: any primal advertising `visualization.*`
+    /// 3. biomeOS socket-dir scan for default prefix
+    /// 4. `$XDG_RUNTIME_DIR/{prefix}/*.sock` (legacy)
     ///
     /// # Errors
     ///
-    /// Returns `PushError::NotFound` if no petalTongue socket is found at
-    /// any of the candidate paths.
+    /// Returns `PushError::NotFound` if no visualization primal is found.
     pub fn discover() -> PushResult<Self> {
         if let Ok(path) = std::env::var("PETALTONGUE_SOCKET") {
             let path = PathBuf::from(path);
@@ -42,17 +53,20 @@ impl PetalTonguePushClient {
             }
         }
 
+        if let Some(path) = socket::discover_by_capability_public(VISUALIZATION_CAPABILITY) {
+            return Ok(Self { socket_path: path });
+        }
+
         if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
             let runtime = PathBuf::from(runtime);
 
-            // biomeOS standard path (wateringHole Universal IPC v3.0)
             let biomeos_dir = runtime.join("biomeos");
             if biomeos_dir.is_dir() {
                 if let Ok(entries) = std::fs::read_dir(&biomeos_dir) {
                     for entry in entries.flatten() {
                         let name = entry.file_name();
                         let name = name.to_string_lossy();
-                        if name.starts_with("petaltongue") && name.ends_with(".sock") {
+                        if name.starts_with(DEFAULT_VIZ_PREFIX) && name.ends_with(".sock") {
                             return Ok(Self {
                                 socket_path: entry.path(),
                             });
@@ -61,8 +75,7 @@ impl PetalTonguePushClient {
                 }
             }
 
-            // Legacy path
-            let legacy_dir = runtime.join("petaltongue");
+            let legacy_dir = runtime.join(DEFAULT_VIZ_PREFIX);
             if legacy_dir.is_dir() {
                 if let Ok(entries) = std::fs::read_dir(&legacy_dir) {
                     for entry in entries.flatten() {
@@ -75,7 +88,9 @@ impl PetalTonguePushClient {
             }
         }
 
-        Err(PushError::NotFound("no petalTongue socket found".into()))
+        Err(PushError::NotFound(
+            "no visualization primal found via capability probe or socket scan".into(),
+        ))
     }
 
     /// Create client with explicit socket path

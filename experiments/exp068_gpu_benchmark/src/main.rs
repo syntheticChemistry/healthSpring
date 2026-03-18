@@ -2,6 +2,7 @@
 #![deny(clippy::all)]
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::cast_precision_loss,
     clippy::too_many_lines,
@@ -15,6 +16,7 @@
 //! and writes crossover estimates based on known GPU dispatch overhead.
 
 use healthspring_barracuda::gpu::{GpuOp, execute_cpu};
+use healthspring_barracuda::validation::ValidationHarness;
 use serde::Serialize;
 
 const GPU_DISPATCH_OVERHEAD_US: f64 = 200.0;
@@ -45,21 +47,8 @@ fn bench_cpu_op(op: &GpuOp, n_iter: usize) -> f64 {
 }
 
 fn main() {
-    let mut passed = 0u32;
-    let mut failed = 0u32;
+    let mut h = ValidationHarness::new("exp068_gpu_benchmark");
     let mut crossovers = Vec::new();
-
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {
-            if $cond {
-                passed += 1;
-                println!("  [PASS] {}", $name);
-            } else {
-                eprintln!("  [FAIL] {}", $name);
-                failed += 1;
-            }
-        };
-    }
 
     println!("Exp068: GPU Benchmark — Crossover Analysis");
     println!("============================================");
@@ -97,11 +86,11 @@ fn main() {
             gpu_wins,
         });
     }
-    check!(
+    h.check_bool(
         "hill_cpu_scales_with_n",
         hill_points
             .last()
-            .is_some_and(|p| p.cpu_mean_us > hill_points[0].cpu_mean_us)
+            .is_some_and(|p| p.cpu_mean_us > hill_points[0].cpu_mean_us),
     );
     crossovers.push(CrossoverResult {
         operation: "HillSweep".to_string(),
@@ -139,11 +128,11 @@ fn main() {
             gpu_wins,
         });
     }
-    check!(
+    h.check_bool(
         "pk_cpu_scales_with_n",
         pk_points
             .last()
-            .is_some_and(|p| p.cpu_mean_us > pk_points[0].cpu_mean_us)
+            .is_some_and(|p| p.cpu_mean_us > pk_points[0].cpu_mean_us),
     );
     crossovers.push(CrossoverResult {
         operation: "PopulationPkBatch".to_string(),
@@ -190,11 +179,11 @@ fn main() {
             gpu_wins,
         });
     }
-    check!(
+    h.check_bool(
         "div_cpu_scales_with_n",
         div_points
             .last()
-            .is_some_and(|p| p.cpu_mean_us > div_points[0].cpu_mean_us)
+            .is_some_and(|p| p.cpu_mean_us > div_points[0].cpu_mean_us),
     );
     crossovers.push(CrossoverResult {
         operation: "DiversityBatch".to_string(),
@@ -219,8 +208,5 @@ fn main() {
         }
     }
 
-    let total = passed + failed;
-    println!("\n============================================");
-    println!("Exp068 GPU Benchmark: {passed}/{total} checks passed");
-    std::process::exit(i32::from(passed != total));
+    h.exit();
 }

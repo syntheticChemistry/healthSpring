@@ -49,13 +49,15 @@ pub fn mab_pk_sc(dose_mg: f64, vd_l: f64, half_life_days: f64, t_days: f64) -> f
 mod tests {
     use super::*;
     use crate::pkpd::find_cmax_tmax;
-
-    const TOL: f64 = 1e-10;
+    use crate::tolerances;
 
     #[test]
     fn allometric_identity_at_b0() {
         let val = allometric_scale(100.0, 15.0, 70.0, 0.0);
-        assert!((val - 100.0).abs() < TOL, "b=0 → identity");
+        assert!(
+            (val - 100.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "b=0 → identity"
+        );
     }
 
     #[test]
@@ -90,7 +92,7 @@ mod tests {
         let cl_human = allometric_scale(cl_animal, bw_dog, bw_human, allometric_exp::CLEARANCE);
         let expected_ratio = (bw_human / bw_dog).powf(0.75);
         let actual_ratio = cl_human / cl_animal;
-        assert!((actual_ratio - expected_ratio).abs() < 1e-6);
+        assert!((actual_ratio - expected_ratio).abs() < tolerances::TEST_ASSERTION_MEDIUM);
     }
 
     #[test]
@@ -109,7 +111,12 @@ mod tests {
         );
         let times: Vec<f64> = (0..2000).map(|i| 56.0 * f64::from(i) / 1999.0).collect();
         let concs: Vec<f64> = times.iter().map(|&t| mab_pk_sc(30.0, vd, hl, t)).collect();
-        assert!(concs.iter().all(|&c| c >= -1e-12), "non-negative");
+        assert!(
+            concs
+                .iter()
+                .all(|&c| c >= -tolerances::MACHINE_EPSILON_TIGHT),
+            "non-negative"
+        );
         let (cmax, tmax) = find_cmax_tmax(&times, &concs);
         assert!(cmax > 0.0, "Cmax > 0");
         assert!(tmax > 0.0, "Tmax > 0");
@@ -118,6 +125,9 @@ mod tests {
     #[test]
     fn mab_pk_sc_zero_at_t0() {
         let c = mab_pk_sc(30.0, 5.0, 20.0, 0.0);
-        assert!(c.abs() < TOL, "C(0) = 0 for SC dosing");
+        assert!(
+            c.abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "C(0) = 0 for SC dosing"
+        );
     }
 }

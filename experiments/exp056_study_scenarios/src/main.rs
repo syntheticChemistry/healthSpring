@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp056: Generate `petalTongue` scenarios for all 4 healthSpring study tracks
 //! and validate that every `DataChannel`, `ClinicalRange`, and edge is well-formed.
 

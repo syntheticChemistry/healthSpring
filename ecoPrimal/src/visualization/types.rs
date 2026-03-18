@@ -228,6 +228,7 @@ pub struct NeuralApi {
 #[expect(clippy::expect_used, reason = "test assertions use expect for clarity")]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn scenario_node_construction() {
@@ -264,8 +265,8 @@ mod tests {
     #[test]
     fn position_construction() {
         let pos = Position { x: 10.5, y: 20.0 };
-        assert!((pos.x - 10.5).abs() < 1e-10);
-        assert!((pos.y - 20.0).abs() < 1e-10);
+        assert!((pos.x - 10.5).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((pos.y - 20.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]

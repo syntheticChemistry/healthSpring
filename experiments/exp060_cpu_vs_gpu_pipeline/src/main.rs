@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![forbid(unsafe_code)]
 
 //! Exp060: CPU vs GPU parity matrix through `toadStool` pipeline.
@@ -11,19 +12,10 @@
 
 use healthspring_barracuda::gpu::GpuContext;
 use healthspring_barracuda::tolerances::{GPU_F32_TRANSCENDENTAL, GPU_STATISTICAL_PARITY};
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_forge::{Capabilities, Substrate};
 use healthspring_toadstool::pipeline::Pipeline;
 use healthspring_toadstool::stage::{Stage, StageOp, TransformKind};
-
-fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
-    *total += 1;
-    if ok {
-        *passed += 1;
-        println!("  [PASS] {name}");
-    } else {
-        println!("  [FAIL] {name}");
-    }
-}
 
 #[tokio::main]
 #[expect(
@@ -42,8 +34,7 @@ async fn main() {
         }
     };
     let caps = Capabilities::discover();
-    let mut passed = 0u32;
-    let mut total = 0u32;
+    let mut h = ValidationHarness::new("exp060_cpu_vs_gpu_pipeline");
 
     // -----------------------------------------------------------------------
     // Kernel 1: Hill dose-response at 3 scales
@@ -119,11 +110,9 @@ async fn main() {
             |s| &s.output_data,
         );
 
-        check(
+        h.check_bool(
             &format!("hill_{n_concs}: CPU vs GPU length"),
             cpu_data.len() == gpu_data.len(),
-            &mut passed,
-            &mut total,
         );
 
         let max_err: f64 = cpu_data
@@ -131,11 +120,10 @@ async fn main() {
             .zip(gpu_data.iter())
             .map(|(a, b)| (a - b).abs())
             .fold(0.0_f64, f64::max);
-        check(
-            &format!("hill_{n_concs}: max error {max_err:.2e} < {GPU_F32_TRANSCENDENTAL:.0e}"),
-            max_err < GPU_F32_TRANSCENDENTAL,
-            &mut passed,
-            &mut total,
+        h.check_upper(
+            &format!("hill_{n_concs}: max error"),
+            max_err,
+            GPU_F32_TRANSCENDENTAL,
         );
 
         let auto_max: f64 = cpu_data
@@ -143,11 +131,10 @@ async fn main() {
             .zip(auto_data.iter())
             .map(|(a, b)| (a - b).abs())
             .fold(0.0_f64, f64::max);
-        check(
-            &format!("hill_{n_concs}: auto max error {auto_max:.2e}"),
-            auto_max < GPU_F32_TRANSCENDENTAL,
-            &mut passed,
-            &mut total,
+        h.check_upper(
+            &format!("hill_{n_concs}: auto max error"),
+            auto_max,
+            GPU_F32_TRANSCENDENTAL,
         );
 
         println!(
@@ -197,15 +184,9 @@ async fn main() {
         let gpu_data = &gpu_result.stage_results[0].output_data;
         let auto_data = &auto_result.stage_results[0].output_data;
 
-        check(
-            &format!(
-                "pop_pk_{n_patients}: CPU len={} GPU len={}",
-                cpu_data.len(),
-                gpu_data.len()
-            ),
+        h.check_bool(
+            &format!("pop_pk_{n_patients}: CPU vs GPU length"),
             cpu_data.len() == gpu_data.len(),
-            &mut passed,
-            &mut total,
         );
 
         // PRNGs differ (CPU uses LCG, GPU uses xorshift32+Wang hash) —
@@ -221,13 +202,10 @@ async fn main() {
         )]
         let gpu_mean: f64 = gpu_data.iter().sum::<f64>() / gpu_data.len() as f64;
         let rel_err = (cpu_mean - gpu_mean).abs() / cpu_mean;
-        check(
-            &format!(
-                "pop_pk_{n_patients}: mean AUC rel err {rel_err:.4} < {GPU_STATISTICAL_PARITY}"
-            ),
-            rel_err < GPU_STATISTICAL_PARITY,
-            &mut passed,
-            &mut total,
+        h.check_upper(
+            &format!("pop_pk_{n_patients}: mean AUC rel err"),
+            rel_err,
+            GPU_STATISTICAL_PARITY,
         );
 
         #[expect(
@@ -236,11 +214,10 @@ async fn main() {
         )]
         let auto_mean: f64 = auto_data.iter().sum::<f64>() / auto_data.len() as f64;
         let auto_rel = (cpu_mean - auto_mean).abs() / cpu_mean;
-        check(
-            &format!("pop_pk_{n_patients}: auto mean rel err {auto_rel:.4}"),
-            auto_rel < GPU_STATISTICAL_PARITY,
-            &mut passed,
-            &mut total,
+        h.check_upper(
+            &format!("pop_pk_{n_patients}: auto mean rel err"),
+            auto_rel,
+            GPU_STATISTICAL_PARITY,
         );
 
         println!(
@@ -296,15 +273,9 @@ async fn main() {
         let gpu_data = &gpu_result.stage_results[0].output_data;
         let auto_data = &auto_result.stage_results[0].output_data;
 
-        check(
-            &format!(
-                "div_{n_communities}: length CPU={} GPU={}",
-                cpu_data.len(),
-                gpu_data.len()
-            ),
+        h.check_bool(
+            &format!("div_{n_communities}: CPU vs GPU length"),
             cpu_data.len() == gpu_data.len(),
-            &mut passed,
-            &mut total,
         );
 
         let max_err: f64 = cpu_data
@@ -312,11 +283,10 @@ async fn main() {
             .zip(gpu_data.iter())
             .map(|(a, b)| (a - b).abs())
             .fold(0.0_f64, f64::max);
-        check(
-            &format!("div_{n_communities}: max error {max_err:.2e} < {GPU_F32_TRANSCENDENTAL:.0e}"),
-            max_err < GPU_F32_TRANSCENDENTAL,
-            &mut passed,
-            &mut total,
+        h.check_upper(
+            &format!("div_{n_communities}: max error"),
+            max_err,
+            GPU_F32_TRANSCENDENTAL,
         );
 
         let auto_max: f64 = cpu_data
@@ -324,11 +294,10 @@ async fn main() {
             .zip(auto_data.iter())
             .map(|(a, b)| (a - b).abs())
             .fold(0.0_f64, f64::max);
-        check(
-            &format!("div_{n_communities}: auto max error {auto_max:.2e}"),
-            auto_max < GPU_F32_TRANSCENDENTAL,
-            &mut passed,
-            &mut total,
+        h.check_upper(
+            &format!("div_{n_communities}: auto max error"),
+            auto_max,
+            GPU_F32_TRANSCENDENTAL,
         );
 
         println!(
@@ -340,10 +309,5 @@ async fn main() {
         );
     }
 
-    // -----------------------------------------------------------------------
-    // Summary
-    // -----------------------------------------------------------------------
-    println!("=================================================");
-    println!("Exp060 CPU vs GPU Pipeline: {passed}/{total} checks passed");
-    std::process::exit(i32::from(passed != total));
+    h.exit();
 }

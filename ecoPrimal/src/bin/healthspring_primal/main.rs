@@ -2,6 +2,9 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![deny(clippy::pedantic)]
+#![deny(clippy::nursery)]
+#![deny(clippy::unwrap_used)]
+#![deny(clippy::expect_used)]
 
 //! healthSpring biomeOS Primal — BYOB Niche Deployment
 //!

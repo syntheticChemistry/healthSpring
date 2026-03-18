@@ -2,6 +2,7 @@
 #![deny(clippy::all)]
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — exercises all stage types sequentially"
@@ -12,25 +13,14 @@
 //! Tests each `StageOp` variant (including new `BiosignalFusion`, `AucTrapezoidal`,
 //! `BrayCurtis`) through the pipeline, verifying correctness and timing.
 
+use healthspring_barracuda::tolerances::MACHINE_EPSILON;
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_forge::Substrate;
 use healthspring_toadstool::pipeline::Pipeline;
 use healthspring_toadstool::stage::{ReduceKind, Stage, StageOp, TransformKind};
 
 fn main() {
-    let mut passed = 0u32;
-    let mut failed = 0u32;
-
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {
-            if $cond {
-                passed += 1;
-                println!("  [PASS] {}", $name);
-            } else {
-                eprintln!("  [FAIL] {}", $name);
-                failed += 1;
-            }
-        };
-    }
+    let mut h = ValidationHarness::new("exp069_toadstool_dispatch_matrix");
 
     println!("Exp069: toadStool Dispatch Matrix");
     println!("==================================");
@@ -65,23 +55,23 @@ fn main() {
         },
     });
     let r1 = p1.execute_cpu();
-    check!("hill_pipeline_success", r1.success);
-    check!("hill_pipeline_3_stages", r1.stage_results.len() == 3);
-    check!(
+    h.check_bool("hill_pipeline_success", r1.success);
+    h.check_bool("hill_pipeline_3_stages", r1.stage_results.len() == 3);
+    h.check_bool(
         "hill_gen_100_elements",
-        r1.stage_results[0].output_data.len() == 100
+        r1.stage_results[0].output_data.len() == 100,
     );
-    check!(
+    h.check_bool(
         "hill_transform_100_elements",
-        r1.stage_results[1].output_data.len() == 100
+        r1.stage_results[1].output_data.len() == 100,
     );
-    check!(
+    h.check_bool(
         "hill_reduce_scalar",
-        r1.stage_results[2].output_data.len() == 1
+        r1.stage_results[2].output_data.len() == 1,
     );
-    check!(
+    h.check_bool(
         "hill_sum_positive",
-        r1.stage_results[2].output_data[0] > 0.0
+        r1.stage_results[2].output_data[0] > 0.0,
     );
 
     // --- Population PK pipeline ---
@@ -105,22 +95,22 @@ fn main() {
         },
     });
     let r2 = p2.execute_cpu();
-    check!("pop_pk_success", r2.success);
-    check!(
+    h.check_bool("pop_pk_success", r2.success);
+    h.check_bool(
         "pop_pk_200_aucs",
-        r2.stage_results[0].output_data.len() == 200
+        r2.stage_results[0].output_data.len() == 200,
     );
-    check!(
+    h.check_bool(
         "pop_pk_all_positive",
-        r2.stage_results[0].output_data.iter().all(|&v| v > 0.0)
+        r2.stage_results[0].output_data.iter().all(|&v| v > 0.0),
     );
-    check!(
+    h.check_bool(
         "pop_pk_mean_scalar",
-        r2.stage_results[1].output_data.len() == 1
+        r2.stage_results[1].output_data.len() == 1,
     );
-    check!(
+    h.check_bool(
         "pop_pk_mean_positive",
-        r2.stage_results[1].output_data[0] > 0.0
+        r2.stage_results[1].output_data[0] > 0.0,
     );
 
     // --- Diversity pipeline ---
@@ -139,14 +129,14 @@ fn main() {
         },
     });
     let r3 = p3.execute_cpu();
-    check!("diversity_success", r3.success);
-    check!(
+    h.check_bool("diversity_success", r3.success);
+    h.check_bool(
         "diversity_6_values",
-        r3.stage_results[0].output_data.len() == 6
+        r3.stage_results[0].output_data.len() == 6,
     );
     let even_shannon = r3.stage_results[0].output_data[0];
     let dom_shannon = r3.stage_results[0].output_data[2];
-    check!("diversity_even_gt_dominated", even_shannon > dom_shannon);
+    h.check_bool("diversity_even_gt_dominated", even_shannon > dom_shannon);
 
     // --- BiosignalFusion pipeline ---
     println!("\n=== Pipeline: BiosignalFusion ===");
@@ -165,10 +155,10 @@ fn main() {
         operation: StageOp::BiosignalFusion { n_channels: 3 },
     });
     let r4 = p4.execute_cpu();
-    check!("biosignal_fusion_success", r4.success);
-    check!(
+    h.check_bool("biosignal_fusion_success", r4.success);
+    h.check_bool(
         "biosignal_fusion_output_len",
-        !r4.stage_results[1].output_data.is_empty()
+        !r4.stage_results[1].output_data.is_empty(),
     );
 
     // --- AUC Trapezoidal pipeline ---
@@ -188,12 +178,12 @@ fn main() {
         operation: StageOp::AucTrapezoidal { t_max: 24.0 },
     });
     let r5 = p5.execute_cpu();
-    check!("auc_pipeline_success", r5.success);
-    check!(
+    h.check_bool("auc_pipeline_success", r5.success);
+    h.check_bool(
         "auc_scalar_output",
-        r5.stage_results[1].output_data.len() == 1
+        r5.stage_results[1].output_data.len() == 1,
     );
-    check!("auc_positive", r5.stage_results[1].output_data[0] > 0.0);
+    h.check_bool("auc_positive", r5.stage_results[1].output_data[0] > 0.0);
 
     // --- Bray-Curtis pipeline ---
     println!("\n=== Pipeline: BrayCurtis ===");
@@ -206,19 +196,19 @@ fn main() {
         },
     });
     let r6 = p6.execute_cpu();
-    check!("bray_curtis_success", r6.success);
+    h.check_bool("bray_curtis_success", r6.success);
     let n_communities = communities.len();
     let expected_pairs = n_communities * (n_communities - 1) / 2;
-    check!(
+    h.check_bool(
         &format!("bray_curtis_{expected_pairs}_pairs"),
-        r6.stage_results[0].output_data.len() == expected_pairs
+        r6.stage_results[0].output_data.len() == expected_pairs,
     );
-    check!(
+    h.check_bool(
         "bray_curtis_all_in_range",
         r6.stage_results[0]
             .output_data
             .iter()
-            .all(|&v| (0.0..=1.0).contains(&v))
+            .all(|&v| (0.0..=1.0).contains(&v)),
     );
 
     // --- Filter pipeline ---
@@ -245,14 +235,14 @@ fn main() {
         },
     });
     let r7 = p7.execute_cpu();
-    check!("filter_pipeline_success", r7.success);
-    check!(
+    h.check_bool("filter_pipeline_success", r7.success);
+    h.check_bool(
         "filter_all_above_threshold",
-        r7.stage_results[1].output_data.iter().all(|&v| v > 0.5)
+        r7.stage_results[1].output_data.iter().all(|&v| v > 0.5),
     );
-    check!(
+    h.check_bool(
         "filter_reduces_count",
-        r7.stage_results[1].output_data.len() < 50
+        r7.stage_results[1].output_data.len() < 50,
     );
 
     // --- Variance reduce ---
@@ -274,14 +264,14 @@ fn main() {
         },
     });
     let r8 = p8.execute_cpu();
-    check!("variance_pipeline_success", r8.success);
-    check!(
+    h.check_bool("variance_pipeline_success", r8.success);
+    h.check_bool(
         "variance_scalar",
-        r8.stage_results[1].output_data.len() == 1
+        r8.stage_results[1].output_data.len() == 1,
     );
-    check!(
+    h.check_bool(
         "variance_positive",
-        r8.stage_results[1].output_data[0] > 0.0
+        r8.stage_results[1].output_data[0] > 0.0,
     );
 
     // --- ExpDecay transform ---
@@ -303,24 +293,23 @@ fn main() {
         },
     });
     let r9 = p9.execute_cpu();
-    check!("exp_decay_success", r9.success);
-    check!(
+    h.check_bool("exp_decay_success", r9.success);
+    h.check_bool(
         "exp_decay_20_elements",
-        r9.stage_results[1].output_data.len() == 20
+        r9.stage_results[1].output_data.len() == 20,
     );
     let decay_factor = (-0.1_f64 * 5.0).exp();
     for i in 0..20 {
         let input = r9.stage_results[0].output_data[i];
         let output = r9.stage_results[1].output_data[i];
         let expected = input * decay_factor;
-        check!(
+        h.check_abs(
             &format!("exp_decay_element_{i}"),
-            (output - expected).abs() < 1e-10
+            output,
+            expected,
+            MACHINE_EPSILON,
         );
     }
 
-    let total = passed + failed;
-    println!("\n==================================");
-    println!("Exp069 toadStool Dispatch Matrix: {passed}/{total} checks passed");
-    std::process::exit(i32::from(passed != total));
+    h.exit();
 }

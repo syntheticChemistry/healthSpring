@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Live dashboard streamer: pushes ECG, HRV, and PK data incrementally
 //! to petalTongue via IPC, simulating a real-time clinical monitoring session.
 

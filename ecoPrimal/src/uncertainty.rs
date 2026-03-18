@@ -300,12 +300,13 @@ fn std_dev(data: &[f64]) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn bootstrap_mean_contains_true_value() {
         let data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0];
         let result = bootstrap_mean(&data, 2000, 0.95, 42);
-        assert!((result.estimate - 5.5).abs() < 1e-10);
+        assert!((result.estimate - 5.5).abs() < tolerances::TEST_ASSERTION_TIGHT);
         assert!(result.ci_lower <= 5.5, "CI lower {}", result.ci_lower);
         assert!(result.ci_upper >= 5.5, "CI upper {}", result.ci_upper);
         assert!(result.std_error > 0.0);
@@ -315,7 +316,7 @@ mod tests {
     fn bootstrap_median_reasonable() {
         let data = [1.0, 2.0, 3.0, 4.0, 5.0];
         let result = bootstrap_median(&data, 1000, 0.95, 123);
-        assert!((result.estimate - 3.0).abs() < 1e-10);
+        assert!((result.estimate - 3.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
         assert!(result.ci_lower <= result.ci_upper);
     }
 
@@ -323,7 +324,7 @@ mod tests {
     fn jackknife_variance_positive() {
         let data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
         let result = jackknife_mean_variance(&data);
-        assert!((result.estimate - 3.5).abs() < 1e-10);
+        assert!((result.estimate - 3.5).abs() < tolerances::TEST_ASSERTION_TIGHT);
         assert!(result.variance > 0.0);
         assert!(result.std_error > 0.0);
     }
@@ -333,7 +334,7 @@ mod tests {
         let data = [10.0, 20.0, 30.0, 40.0];
         let result = jackknife_mean_variance(&data);
         assert!(
-            result.bias.abs() < 1e-10,
+            result.bias.abs() < tolerances::TEST_ASSERTION_TIGHT,
             "jackknife bias for mean should be ~0: {}",
             result.bias
         );
@@ -342,39 +343,39 @@ mod tests {
     #[test]
     fn decompose_pure_bias() {
         let d = decompose_error(5.0, 5.0);
-        assert!((d.bias_fraction - 1.0).abs() < 1e-10);
-        assert!(d.random_std.abs() < 1e-10);
+        assert!((d.bias_fraction - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!(d.random_std.abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
     fn decompose_pure_noise() {
         let d = decompose_error(0.0, 3.0);
-        assert!(d.bias_fraction.abs() < 1e-10);
-        assert!((d.noise_fraction - 1.0).abs() < 1e-10);
-        assert!((d.random_std - 3.0).abs() < 1e-10);
+        assert!(d.bias_fraction.abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((d.noise_fraction - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((d.random_std - 3.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
     fn decompose_mixed() {
         let d = decompose_error(3.0, 5.0);
-        assert!((d.bias_sq - 9.0).abs() < 1e-10);
-        assert!((d.variance - 16.0).abs() < 1e-10);
-        assert!((d.random_std - 4.0).abs() < 1e-10);
-        assert!((d.bias_fraction - 0.36).abs() < 1e-10);
+        assert!((d.bias_sq - 9.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((d.variance - 16.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((d.random_std - 4.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((d.bias_fraction - 0.36).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
     fn mbe_positive_bias() {
         let obs = [1.0, 2.0, 3.0];
         let model = [2.0, 3.0, 4.0];
-        assert!((mbe(&obs, &model) - 1.0).abs() < 1e-10);
+        assert!((mbe(&obs, &model) - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
     fn mbe_unbiased() {
         let obs = [1.0, 2.0, 3.0];
         let model = [1.0, 2.0, 3.0];
-        assert!(mbe(&obs, &model).abs() < 1e-10);
+        assert!(mbe(&obs, &model).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -382,8 +383,14 @@ mod tests {
         let base = [10.0, 20.0];
         let sigmas = [0.0, 0.0];
         let (m, sd) = monte_carlo_propagate(&base, &sigmas, 100, 42, |p| p[0] + p[1]);
-        assert!((m - 30.0).abs() < 1e-10, "zero noise → exact result");
-        assert!(sd.abs() < 1e-10, "zero noise → zero std");
+        assert!(
+            (m - 30.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "zero noise → exact result"
+        );
+        assert!(
+            sd.abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "zero noise → zero std"
+        );
     }
 
     #[test]

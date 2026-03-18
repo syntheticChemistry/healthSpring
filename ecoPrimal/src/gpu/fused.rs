@@ -4,6 +4,21 @@
 //!
 //! Each `prepare_*` function takes a `wgpu::Device`, an op's parameters, and
 //! a label, and returns a [`PreparedOp`] ready for compute-pass recording.
+//!
+//! ## Design: Local WGSL for All Ops
+//!
+//! The fused pipeline intentionally uses local WGSL shaders for ALL ops
+//! (including Tier A ops that are rewired to barraCuda in single-op dispatch)
+//! because:
+//!
+//! 1. The fused pipeline's value proposition is single-encoder multi-op
+//!    dispatch (upload once → N compute passes → readback once).
+//! 2. barraCuda's `TensorSession` API is the intended evolution path for fused
+//!    dispatch.
+//! 3. Mixing barraCuda ops (which create their own encoders) with local WGSL
+//!    in a single encoder would break the unidirectional pattern.
+//! 4. Evolution path: when barraCuda's `TensorSession` is mature, the fused
+//!    pipeline will migrate to it entirely.
 
 use super::dispatch::{
     BeatClassifyParams, DivParams, HillParams, MmParams, PkParams, ScfaGpuParams, WG_SIZE,

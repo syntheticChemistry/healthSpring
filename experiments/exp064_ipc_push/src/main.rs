@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp064: Push visualization data to petalTongue via IPC.
 //!
 //! Builds a scenario (PK/PD study), discovers petalTongue at runtime, and

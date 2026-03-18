@@ -372,6 +372,7 @@ pub use dispatch::execute_gpu;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn hill_sweep_cpu() {
@@ -383,8 +384,14 @@ mod tests {
         };
         if let GpuResult::HillSweep(results) = execute_cpu(&op) {
             assert_eq!(results.len(), 5);
-            assert!(results[0].abs() < 1e-10, "E(0) = 0");
-            assert!((results[2] - 50.0).abs() < 1e-10, "E(EC50) = Emax/2");
+            assert!(
+                results[0].abs() < tolerances::TEST_ASSERTION_TIGHT,
+                "E(0) = 0"
+            );
+            assert!(
+                (results[2] - 50.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
+                "E(EC50) = Emax/2"
+            );
             assert!(results[4] > 90.0, "E(100) → Emax");
         } else {
             panic!("wrong result type");

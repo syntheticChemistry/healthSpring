@@ -238,6 +238,7 @@ pub fn confusion_for_class(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn normal_template_peak_at_center() {
@@ -270,7 +271,7 @@ mod tests {
         let t = generate_normal_template(41);
         let corr = normalized_correlation(&t, &t);
         assert!(
-            (corr - 1.0).abs() < 1e-10,
+            (corr - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "self-correlation should be 1.0: {corr}"
         );
     }
@@ -312,7 +313,7 @@ mod tests {
             true_negative: 85,
             false_positive: 15,
         };
-        assert!((cm.sensitivity() - 0.9).abs() < 1e-10);
-        assert!((cm.specificity() - 0.85).abs() < 1e-10);
+        assert!((cm.sensitivity() - 0.9).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((cm.specificity() - 0.85).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 }

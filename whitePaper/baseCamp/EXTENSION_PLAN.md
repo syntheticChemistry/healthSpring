@@ -2,7 +2,7 @@
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
 **Last Updated**: March 18, 2026
-**Status**: V37 — Cross-Ecosystem Absorption Sprint. 79 experiments, 706 tests, 49 Python baselines with structured provenance registry. MCP tool definitions (23 tools). 80 capabilities.
+**Status**: V38 — Deep Debt Completion Sprint. 79 experiments, 719 tests, 49 Python baselines with structured provenance registry. MCP tool definitions (23 tools). 80 capabilities.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and

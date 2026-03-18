@@ -167,12 +167,10 @@ mod tests {
     }
 
     #[test]
-    #[expect(clippy::unwrap_used, reason = "test code")]
     fn try_send_connect_fails_gracefully() {
         let path = std::path::Path::new("/tmp/nonexistent_healthspring_rpc_test.sock");
         let result = try_send(path, "health.check", &serde_json::json!({}));
-        assert!(result.is_err());
-        assert!(matches!(result.unwrap_err(), IpcError::Connect(_)));
+        assert!(matches!(result, Err(IpcError::Connect(_))));
     }
 
     #[test]

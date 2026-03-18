@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![forbid(unsafe_code)]
 
 //! Exp054: GPU-native fused pipeline benchmark.
@@ -15,20 +16,12 @@
 //! GPU-native execution eliminates CPU roundtrips.
 
 use healthspring_barracuda::gpu::{GpuContext, GpuOp, GpuResult, execute_cpu};
+use healthspring_barracuda::tolerances::{GPU_F32_TRANSCENDENTAL, GPU_FUSED_PARITY};
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_forge::Substrate;
 use healthspring_toadstool::pipeline::Pipeline;
 use healthspring_toadstool::stage::{Stage, StageOp, TransformKind};
 use std::time::Instant;
-
-fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
-    *total += 1;
-    if ok {
-        *passed += 1;
-        println!("  [PASS] {name}");
-    } else {
-        println!("  [FAIL] {name}");
-    }
-}
 
 fn build_workload() -> Vec<GpuOp> {
     let concs: Vec<f64> = (0..1000)
@@ -88,8 +81,7 @@ async fn main() {
     println!("=================================");
     println!("Workload: 1K Hill concs + 10K PK patients + 20×50 diversity communities\n");
 
-    let mut passed = 0u32;
-    let mut total = 0u32;
+    let mut h = ValidationHarness::new("exp054_gpu_pipeline");
     let ops = build_workload();
 
     // --- Mode 1: CPU ---
@@ -98,12 +90,7 @@ async fn main() {
     let cpu_results: Vec<GpuResult> = ops.iter().map(execute_cpu).collect();
     let cpu_elapsed = cpu_start.elapsed();
     println!("  CPU total: {cpu_elapsed:?}");
-    check(
-        "CPU produced 3 results",
-        cpu_results.len() == 3,
-        &mut passed,
-        &mut total,
-    );
+    h.check_bool("CPU produced 3 results", cpu_results.len() == 3);
 
     // --- Mode 2: GPU individual dispatches ---
     println!("\n--- Mode 2: GPU individual (3 dispatches) ---");
@@ -125,12 +112,7 @@ async fn main() {
             }
             let ind_elapsed = ind_start.elapsed();
             println!("  GPU individual total: {ind_elapsed:?}");
-            check(
-                "individual produced 3 results",
-                ind_results.len() == 3,
-                &mut passed,
-                &mut total,
-            );
+            h.check_bool("individual produced 3 results", ind_results.len() == 3);
 
             // --- Mode 3: GPU fused pipeline ---
             println!("\n--- Mode 3: GPU fused pipeline (1 submission) ---");
@@ -141,12 +123,7 @@ async fn main() {
 
             match fused_results {
                 Ok(fused) => {
-                    check(
-                        "fused produced 3 results",
-                        fused.len() == 3,
-                        &mut passed,
-                        &mut total,
-                    );
+                    h.check_bool("fused produced 3 results", fused.len() == 3);
 
                     // Validate fused vs CPU
                     if let (GpuResult::HillSweep(cpu_h), GpuResult::HillSweep(fused_h)) =
@@ -158,19 +135,16 @@ async fn main() {
                             .filter(|(a, _)| a.abs() > 1e-10)
                             .map(|(a, b)| ((a - b) / a).abs())
                             .fold(0.0_f64, f64::max);
-                        check(
+                        h.check_upper(
                             &format!("Hill fused parity: max_rel={max_rel:.2e}"),
-                            max_rel < 1e-4,
-                            &mut passed,
-                            &mut total,
+                            max_rel,
+                            GPU_FUSED_PARITY,
                         );
                     }
                     if let GpuResult::PopulationPkBatch(fused_pk) = &fused[1] {
-                        check(
+                        h.check_bool(
                             &format!("PK fused: {} patients, all positive", fused_pk.len()),
                             fused_pk.len() == 10_000 && fused_pk.iter().all(|&a| a > 0.0),
-                            &mut passed,
-                            &mut total,
                         );
                     }
                     if let (GpuResult::DiversityBatch(cpu_d), GpuResult::DiversityBatch(fused_d)) =
@@ -181,13 +155,12 @@ async fn main() {
                             .zip(fused_d.iter())
                             .map(|((cs, _), (fs, _))| (cs - fs).abs())
                             .fold(0.0_f64, f64::max);
-                        check(
+                        h.check_upper(
                             &format!(
                                 "Diversity fused parity: max_shannon_err={max_shannon_err:.2e}"
                             ),
-                            max_shannon_err < 1e-4,
-                            &mut passed,
-                            &mut total,
+                            max_shannon_err,
+                            GPU_FUSED_PARITY,
                         );
                     }
 
@@ -214,16 +187,11 @@ async fn main() {
                     println!("  Fused/Individual: {fused_vs_ind:.3}x");
                     println!("  Fused/CPU:        {fused_vs_cpu:.3}x");
 
-                    check(
-                        "fused faster than individual",
-                        fused_elapsed < ind_elapsed,
-                        &mut passed,
-                        &mut total,
-                    );
+                    h.check_bool("fused faster than individual", fused_elapsed < ind_elapsed);
                 }
                 Err(e) => {
                     println!("  Fused pipeline error: {e}");
-                    check("fused execution", false, &mut passed, &mut total);
+                    h.check_bool("fused execution", false);
                 }
             }
         }
@@ -260,15 +228,13 @@ async fn main() {
     let cpu_pipe_result = pipe.execute_cpu();
     let cpu_pipe_elapsed = cpu_pipe_start.elapsed();
 
-    check(
+    h.check_bool(
         &format!(
             "toadstool CPU pipeline: {} stages, success={}",
             cpu_pipe_result.stage_results.len(),
             cpu_pipe_result.success
         ),
         cpu_pipe_result.success && cpu_pipe_result.stage_results.len() == 2,
-        &mut passed,
-        &mut total,
     );
     println!("  CPU pipeline: {cpu_pipe_elapsed:?}");
 
@@ -278,27 +244,20 @@ async fn main() {
             let gpu_pipe_result = pipe.execute_gpu(&ctx).await;
             let gpu_pipe_elapsed = gpu_pipe_start.elapsed();
 
-            check(
+            h.check_bool(
                 &format!(
                     "toadstool GPU pipeline: {} stages, success={}",
                     gpu_pipe_result.stage_results.len(),
                     gpu_pipe_result.success
                 ),
                 gpu_pipe_result.success && gpu_pipe_result.stage_results.len() == 2,
-                &mut passed,
-                &mut total,
             );
 
             let gpu_hill_on_gpu = gpu_pipe_result
                 .stage_results
                 .iter()
                 .any(|s| s.stage_name == "hill_dose_response" && s.substrate == Substrate::Gpu);
-            check(
-                "Hill stage dispatched to GPU",
-                gpu_hill_on_gpu,
-                &mut passed,
-                &mut total,
-            );
+            h.check_bool("Hill stage dispatched to GPU", gpu_hill_on_gpu);
 
             let cpu_hill = &cpu_pipe_result.stage_results[1].output_data;
             let gpu_hill = &gpu_pipe_result.stage_results[1].output_data;
@@ -309,22 +268,19 @@ async fn main() {
                     .filter(|(a, _)| a.abs() > 1e-10)
                     .map(|(a, b)| ((a - b) / a).abs())
                     .fold(0.0_f64, f64::max);
-                check(
+                h.check_upper(
                     &format!("toadstool GPU/CPU parity: max_rel={max_rel:.2e}"),
-                    max_rel < 1e-4,
-                    &mut passed,
-                    &mut total,
+                    max_rel,
+                    GPU_F32_TRANSCENDENTAL,
                 );
             } else {
-                check(
+                h.check_bool(
                     &format!(
                         "toadstool output lengths match: cpu={} gpu={}",
                         cpu_hill.len(),
                         gpu_hill.len()
                     ),
                     false,
-                    &mut passed,
-                    &mut total,
                 );
             }
 
@@ -345,6 +301,5 @@ async fn main() {
     }
 
     println!("\n=================================");
-    println!("Exp054 GPU Pipeline: {passed}/{total} checks passed");
-    std::process::exit(i32::from(passed != total));
+    h.exit();
 }

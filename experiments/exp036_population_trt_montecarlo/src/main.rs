@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear check sequence"
@@ -18,6 +19,8 @@
 
 use healthspring_barracuda::endocrine::{self, pop_trt, testosterone_cypionate as tc};
 use healthspring_barracuda::pkpd;
+use healthspring_barracuda::tolerances::{POP_AUC_CV, POP_VD_MEDIAN};
+use healthspring_barracuda::validation::ValidationHarness;
 
 fn linspace(start: f64, end: f64, n: usize) -> Vec<f64> {
     #[expect(
@@ -38,12 +41,7 @@ fn linspace(start: f64, end: f64, n: usize) -> Vec<f64> {
 }
 
 fn main() {
-    let mut passed = 0u32;
-    let mut failed = 0u32;
-
-    println!("{}", "=".repeat(72));
-    println!("healthSpring Exp036: Population TRT Monte Carlo (Rust)");
-    println!("{}", "=".repeat(72));
+    let mut h = ValidationHarness::new("exp036_population_trt_montecarlo");
 
     let n_patients: usize = 100;
     let times = linspace(0.0, 56.0, 500);
@@ -131,76 +129,45 @@ fn main() {
     }
 
     // --- Check 1: All PK params positive ---
-    println!("\n--- Check 1: All PK params positive ---");
-    if vd_arr.iter().all(|&v| v > 0.0)
-        && ka_arr.iter().all(|&v| v > 0.0)
-        && ke_arr.iter().all(|&v| v > 0.0)
-    {
-        println!("  [PASS]");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool(
+        "all_pk_params_positive",
+        vd_arr.iter().all(|&v| v > 0.0)
+            && ka_arr.iter().all(|&v| v > 0.0)
+            && ke_arr.iter().all(|&v| v > 0.0),
+    );
 
     // --- Check 2: Vd median near typical ---
-    println!("\n--- Check 2: Vd median near typical ---");
     let mut vd_sorted = vd_arr.clone();
     vd_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap_or(core::cmp::Ordering::Equal));
     let vd_med = vd_sorted[n_patients / 2];
-    let vd_relative_err = (vd_med - pop_trt::VD_TYPICAL).abs() / pop_trt::VD_TYPICAL;
-    if vd_relative_err < 0.05 {
-        println!("  [PASS] Vd median={vd_med:.2}");
-        passed += 1;
-    } else {
-        println!("  [FAIL] err={vd_relative_err:.3}");
-        failed += 1;
-    }
+    h.check_rel(
+        "vd_median_near_typical",
+        vd_med,
+        pop_trt::VD_TYPICAL,
+        POP_VD_MEDIAN,
+    );
 
     // --- Check 3: All Cmax > 0 ---
-    println!("\n--- Check 3: All Cmax > 0 ---");
-    if cmax_arr.iter().all(|&c| c > 0.0) {
-        println!("  [PASS]");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("all_cmax_positive", cmax_arr.iter().all(|&c| c > 0.0));
 
     // --- Check 4: All AUC > 0 ---
-    println!("\n--- Check 4: All AUC > 0 ---");
-    if auc_arr.iter().all(|&a| a > 0.0) {
-        println!("  [PASS]");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("all_auc_positive", auc_arr.iter().all(|&a| a > 0.0));
 
     // --- Check 5: AUC has variability ---
-    println!("\n--- Check 5: AUC variability ---");
     #[expect(clippy::cast_precision_loss, reason = "n_patients = 100")]
     let n_patients_f64 = n_patients as f64;
     let auc_mean: f64 = auc_arr.iter().sum::<f64>() / n_patients_f64;
     let auc_var: f64 =
         auc_arr.iter().map(|&a| (a - auc_mean).powi(2)).sum::<f64>() / n_patients_f64;
     let auc_cv = auc_var.sqrt() / auc_mean;
-    if auc_cv > 0.15 {
-        println!("  [PASS] CV={auc_cv:.3}");
-        passed += 1;
-    } else {
-        println!("  [FAIL] CV={auc_cv:.3}");
-        failed += 1;
-    }
+    h.check_lower("auc_cv_variability", auc_cv, POP_AUC_CV);
 
     // --- Check 6: Analytical AUC = F*D/(Vd*ke) relationship ---
-    println!("\n--- Check 6: Analytical AUC inversely proportional to ke*Vd ---");
     let ke_vd_products: Vec<f64> = ke_arr
         .iter()
         .zip(vd_arr.iter())
         .map(|(&k, &v)| k * v)
         .collect();
-    // Patients with higher ke*Vd should have lower AUC (analytical: AUC ∝ 1/(ke*Vd))
     let mid = n_patients / 2;
     let mut paired: Vec<(f64, f64)> = ke_vd_products
         .iter()
@@ -210,70 +177,37 @@ fn main() {
     paired.sort_by(|a, b| a.0.total_cmp(&b.0));
     #[expect(clippy::cast_precision_loss, reason = "mid = 50")]
     let mid_f64 = mid as f64;
-    let low_kv_auc: f64 = paired[..mid].iter().map(|(_, a)| a).sum::<f64>() / mid_f64;
+    let low_kv_auc: f64 = paired[..mid].iter().map(|(_, a)| *a).sum::<f64>() / mid_f64;
     #[expect(clippy::cast_precision_loss, reason = "n_patients - mid = 50")]
     let high_denom = (n_patients - mid) as f64;
-    let high_kv_auc: f64 = paired[mid..].iter().map(|(_, a)| a).sum::<f64>() / high_denom;
-    if low_kv_auc > high_kv_auc {
-        println!("  [PASS] low ke·Vd AUC={low_kv_auc:.2} > high ke·Vd={high_kv_auc:.2}");
-        passed += 1;
-    } else {
-        println!("  [FAIL] low={low_kv_auc:.2}, high={high_kv_auc:.2}");
-        failed += 1;
-    }
+    let high_kv_auc: f64 = paired[mid..].iter().map(|(_, a)| *a).sum::<f64>() / high_denom;
+    h.check_bool(
+        "auc_inversely_proportional_to_ke_vd",
+        low_kv_auc > high_kv_auc,
+    );
 
     // --- Check 7: Age-adjusted T0 declines ---
-    println!("\n--- Check 7: Age-adjusted T0 declines ---");
-    if t0_adj[0] > t0_adj[n_patients - 1] {
-        println!(
-            "  [PASS] T0(40)={:.1} > T0(75)={:.1}",
-            t0_adj[0],
-            t0_adj[n_patients - 1]
-        );
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool(
+        "age_adjusted_t0_declines",
+        t0_adj[0] > t0_adj[n_patients - 1],
+    );
 
     // --- Check 8: AUC percentiles ordered ---
-    println!("\n--- Check 8: AUC percentiles ordered ---");
     let mut auc_sorted = auc_arr.clone();
     auc_sorted.sort_by(f64::total_cmp);
     let p5 = auc_sorted[n_patients / 20];
     let p50 = auc_sorted[n_patients / 2];
     let p95 = auc_sorted[19 * n_patients / 20];
-    if p5 < p50 && p50 < p95 {
-        println!("  [PASS] P5={p5:.2} < P50={p50:.2} < P95={p95:.2}");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool("auc_percentiles_ordered", p5 < p50 && p50 < p95);
 
     // --- Check 9: Cohort size ---
-    println!("\n--- Check 9: Cohort size ---");
-    if cmax_arr.len() == n_patients {
-        println!("  [PASS] {n_patients}");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_exact("cohort_size", cmax_arr.len() as u64, n_patients as u64);
 
     // --- Check 10: Trough levels positive ---
-    println!("\n--- Check 10: Trough levels > 0 ---");
-    if trough_arr.iter().all(|&t| t > 0.0) {
-        println!("  [PASS]");
-        passed += 1;
-    } else {
-        println!("  [FAIL]");
-        failed += 1;
-    }
+    h.check_bool(
+        "trough_levels_positive",
+        trough_arr.iter().all(|&t| t > 0.0),
+    );
 
-    let total = passed + failed;
-    println!("\n{}", "=".repeat(72));
-    println!("TOTAL: {passed}/{total} PASS, {failed}/{total} FAIL");
-    println!("{}", "=".repeat(72));
-    std::process::exit(i32::from(failed > 0));
+    h.exit();
 }

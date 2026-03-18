@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 18, 2026
-**Status:** V37 — Cross-Ecosystem Absorption Sprint. 706 tests, 79 experiments, 49 baselines with structured provenance registry, 113/113 cross-validation checks. mul_add() FMA sweep (8 sites), centralized extract_rpc_result(), 18 proptest IPC fuzz tests, Python provenance registry (49 records), MCP tool definitions (23 tools for Squirrel AI), deny.toml 14-crate C-dep ban list, leverage guide published. 80 capabilities.
+**Status:** V38 — Deep Debt Completion Sprint. 719 tests, 79 experiments, 49 baselines with structured provenance registry, 113/113 cross-validation checks. V38 completes the deep debt audit — all 79 experiments use standardized `ValidationHarness`, all test tolerances are named constants, all provenance records have DOI citations. mul_add() FMA sweep (8 sites), centralized extract_rpc_result(), 18 proptest IPC fuzz tests, Python provenance registry (49 records), MCP tool definitions (23 tools for Squirrel AI), deny.toml 14-crate C-dep ban list, leverage guide published. 80 capabilities.
 
 ---
 

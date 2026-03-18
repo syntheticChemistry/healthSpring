@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp013 validation: FMT (Fecal Microbiota Transplant) for rCDI
 //!
 //! Validates FMT engraftment → diversity restoration pipeline:

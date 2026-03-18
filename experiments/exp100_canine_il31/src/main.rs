@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 
 //! Exp100: Canine IL-31 serum kinetics in atopic dermatitis (Gonzales 2013, CM-001)
 //!

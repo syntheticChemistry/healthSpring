@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp108 validation: Real 16S community profiles through Anderson pipeline
 //!
 //! Uses published HMP reference community profiles (hardcoded with provenance)

@@ -6,7 +6,7 @@
 //! `visualization.render.stream` JSON-RPC methods.
 
 mod client;
-mod protocol;
+pub mod protocol;
 
 pub use super::types::DataChannel;
 pub use client::PetalTonguePushClient;
@@ -44,6 +44,7 @@ impl std::error::Error for PushError {}
 #[expect(clippy::unwrap_used, clippy::expect_used, reason = "test code")]
 mod tests {
     use super::*;
+    use crate::tolerances;
     use std::path::PathBuf;
 
     use super::super::types::{
@@ -221,8 +222,8 @@ mod tests {
         let ys = op.get("y_values").and_then(|v| v.as_array()).unwrap();
         assert_eq!(xs.len(), 3);
         assert_eq!(ys.len(), 3);
-        assert!((xs[0].as_f64().unwrap() - 1.0).abs() < 1e-10);
-        assert!((ys[1].as_f64().unwrap() - 20.0).abs() < 1e-10);
+        assert!((xs[0].as_f64().unwrap() - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((ys[1].as_f64().unwrap() - 20.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]

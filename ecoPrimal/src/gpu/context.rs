@@ -91,47 +91,76 @@ impl GpuContext {
     ///
     /// Returns [`GpuError`] on shader compilation, dispatch, or readback failure.
     pub async fn execute(&self, op: &GpuOp) -> Result<GpuResult, GpuError> {
-        // Tier A: delegate to barraCuda canonical ops when available
         #[cfg(feature = "barracuda-ops")]
         if let Some(bc) = &self.barracuda_device {
-            use super::barracuda_rewire;
-            match op {
-                GpuOp::HillSweep {
-                    emax,
-                    ec50,
-                    n,
-                    concentrations,
-                } => {
-                    return barracuda_rewire::execute_hill_barracuda(
-                        bc,
-                        *emax,
-                        *ec50,
-                        *n,
-                        concentrations,
-                    );
-                }
-                GpuOp::PopulationPkBatch {
-                    n_patients,
-                    dose_mg,
-                    f_bioavail,
-                    seed,
-                } => {
-                    return barracuda_rewire::execute_pop_pk_barracuda(
-                        bc,
-                        *n_patients,
-                        *dose_mg,
-                        *f_bioavail,
-                        *seed,
-                    );
-                }
-                GpuOp::DiversityBatch { communities } => {
-                    return barracuda_rewire::execute_diversity_barracuda(bc, communities);
-                }
-                _ => {} // Tier B ops fall through to local WGSL
-            }
+            return Self::execute_via_barracuda(bc, op);
         }
 
-        // Local WGSL path (Tier A fallback + all Tier B ops)
+        self.execute_local_wgsl(op).await
+    }
+
+    /// Delegate all ops to barraCuda canonical GPU implementations.
+    ///
+    /// Tier A (Hill, PopPK, Diversity) — absorbed and validated upstream.
+    /// Tier B (MM, SCFA, BeatClassify) — absorbed upstream, rewired here.
+    #[cfg(feature = "barracuda-ops")]
+    fn execute_via_barracuda(
+        bc: &std::sync::Arc<barracuda::device::WgpuDevice>,
+        op: &GpuOp,
+    ) -> Result<GpuResult, GpuError> {
+        use super::barracuda_rewire;
+        match op {
+            GpuOp::HillSweep {
+                emax,
+                ec50,
+                n,
+                concentrations,
+            } => barracuda_rewire::execute_hill_barracuda(bc, *emax, *ec50, *n, concentrations),
+            GpuOp::PopulationPkBatch {
+                n_patients,
+                dose_mg,
+                f_bioavail,
+                seed,
+            } => barracuda_rewire::execute_pop_pk_barracuda(
+                bc,
+                *n_patients,
+                *dose_mg,
+                *f_bioavail,
+                *seed,
+            ),
+            GpuOp::DiversityBatch { communities } => {
+                barracuda_rewire::execute_diversity_barracuda(bc, communities)
+            }
+            GpuOp::MichaelisMentenBatch {
+                vmax,
+                km,
+                vd,
+                dt,
+                n_steps,
+                n_patients,
+                seed,
+            } => barracuda_rewire::execute_mm_batch_barracuda(
+                bc,
+                *vmax,
+                *km,
+                *vd,
+                *dt,
+                *n_steps,
+                *n_patients,
+                *seed,
+            ),
+            GpuOp::ScfaBatch {
+                params,
+                fiber_inputs,
+            } => barracuda_rewire::execute_scfa_batch_barracuda(bc, params, fiber_inputs),
+            GpuOp::BeatClassifyBatch { beats, templates } => {
+                barracuda_rewire::execute_beat_classify_barracuda(bc, beats, templates)
+            }
+        }
+    }
+
+    /// Execute via local WGSL shaders (fallback path without barraCuda).
+    async fn execute_local_wgsl(&self, op: &GpuOp) -> Result<GpuResult, GpuError> {
         match op {
             GpuOp::HillSweep {
                 emax,

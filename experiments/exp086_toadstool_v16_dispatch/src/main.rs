@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — sequential pipeline dispatch checks"
@@ -19,23 +20,13 @@
 use healthspring_barracuda::biosignal::classification;
 use healthspring_barracuda::microbiome;
 use healthspring_barracuda::tolerances::MACHINE_EPSILON;
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_forge::Substrate;
 use healthspring_toadstool::pipeline::Pipeline;
 use healthspring_toadstool::stage::{Stage, StageOp};
 
-fn check(name: &str, ok: bool, passed: &mut u32, total: &mut u32) {
-    *total += 1;
-    if ok {
-        *passed += 1;
-        println!("  [PASS] {name}");
-    } else {
-        println!("  [FAIL] {name}");
-    }
-}
-
 fn main() {
-    let mut passed = 0u32;
-    let mut total = 0u32;
+    let mut h = ValidationHarness::new("exp086_toadstool_v16_dispatch");
 
     println!("{}", "=".repeat(72));
     println!("healthSpring Exp086 — toadStool V16 Streaming Dispatch");
@@ -60,39 +51,21 @@ fn main() {
     });
 
     let mm_result = mm_pipe.execute_cpu();
-    check(
-        "MM pipe: success",
-        mm_result.success,
-        &mut passed,
-        &mut total,
-    );
-    check(
-        "MM pipe: 1 stage",
-        mm_result.stage_results.len() == 1,
-        &mut passed,
-        &mut total,
-    );
-    check(
+    h.check_bool("MM pipe: success", mm_result.success);
+    h.check_exact("MM pipe: 1 stage", mm_result.stage_results.len() as u64, 1);
+    h.check_exact(
         "MM pipe: 128 AUCs",
-        mm_result.stage_results[0].output_data.len() == 128,
-        &mut passed,
-        &mut total,
+        mm_result.stage_results[0].output_data.len() as u64,
+        128,
     );
-    check(
+    h.check_bool(
         "MM pipe: all AUC > 0",
         mm_result.stage_results[0]
             .output_data
             .iter()
             .all(|&v| v > 0.0),
-        &mut passed,
-        &mut total,
     );
-    check(
-        "MM pipe: timing > 0",
-        mm_result.total_time_us > 0.0,
-        &mut passed,
-        &mut total,
-    );
+    h.check_bool("MM pipe: timing > 0", mm_result.total_time_us > 0.0);
 
     // ── 2. SCFA Batch Pipeline ──────────────────────────────────────────
     println!("\n── 2. SCFA Batch Pipeline ─────────────────────────────────────");
@@ -109,26 +82,18 @@ fn main() {
     });
 
     let scfa_result = scfa_pipe.execute_cpu();
-    check(
-        "SCFA pipe: success",
-        scfa_result.success,
-        &mut passed,
-        &mut total,
-    );
-    check(
+    h.check_bool("SCFA pipe: success", scfa_result.success);
+    h.check_exact(
         "SCFA pipe: 600 values (200×3)",
-        scfa_result.stage_results[0].output_data.len() == 600,
-        &mut passed,
-        &mut total,
+        scfa_result.stage_results[0].output_data.len() as u64,
+        600,
     );
-    check(
+    h.check_bool(
         "SCFA pipe: all values > 0",
         scfa_result.stage_results[0]
             .output_data
             .iter()
             .all(|&v| v > 0.0),
-        &mut passed,
-        &mut total,
     );
 
     // ── 3. Beat Classification Batch Pipeline ───────────────────────────
@@ -157,43 +122,35 @@ fn main() {
     });
 
     let beat_result = beat_pipe.execute_cpu();
-    check(
-        "Beat pipe: success",
-        beat_result.success,
-        &mut passed,
-        &mut total,
-    );
-    check(
+    h.check_bool("Beat pipe: success", beat_result.success);
+    h.check_exact(
         "Beat pipe: 8 values (4 beats × [class, corr])",
-        beat_result.stage_results[0].output_data.len() == 8,
-        &mut passed,
-        &mut total,
+        beat_result.stage_results[0].output_data.len() as u64,
+        8,
     );
 
     let beat_data = &beat_result.stage_results[0].output_data;
-    check(
+    h.check_abs(
         "Beat pipe: beat[0] → Normal (0.0)",
-        beat_data[0].abs() < MACHINE_EPSILON,
-        &mut passed,
-        &mut total,
+        beat_data[0],
+        0.0,
+        MACHINE_EPSILON,
     );
-    check(
+    h.check_abs(
         "Beat pipe: beat[1] → PVC (1.0)",
-        (beat_data[2] - 1.0).abs() < MACHINE_EPSILON,
-        &mut passed,
-        &mut total,
+        beat_data[2],
+        1.0,
+        MACHINE_EPSILON,
     );
-    check(
+    h.check_abs(
         "Beat pipe: beat[2] → PAC (2.0)",
-        (beat_data[4] - 2.0).abs() < MACHINE_EPSILON,
-        &mut passed,
-        &mut total,
+        beat_data[4],
+        2.0,
+        MACHINE_EPSILON,
     );
-    check(
+    h.check_bool(
         "Beat pipe: correlations > 0.99",
         beat_data.chunks(2).all(|pair| pair[1] > 0.99),
-        &mut passed,
-        &mut total,
     );
 
     // ── 4. Streaming Dispatch (callbacks) ───────────────────────────────
@@ -226,32 +183,17 @@ fn main() {
     let stream_result = stream_pipe.execute_streaming(|_stage_idx, _total, _result| {
         callback_count += 1;
     });
-    check(
-        "Streaming: success",
-        stream_result.success,
-        &mut passed,
-        &mut total,
-    );
-    check(
-        "Streaming: 2 callbacks fired",
-        callback_count == 2,
-        &mut passed,
-        &mut total,
-    );
-    check(
-        "Streaming: matches CPU result",
-        {
-            let cpu = stream_pipe.execute_cpu();
-            cpu.stage_results.len() == stream_result.stage_results.len()
-                && cpu
-                    .stage_results
-                    .iter()
-                    .zip(stream_result.stage_results.iter())
-                    .all(|(a, b)| a.output_data == b.output_data)
-        },
-        &mut passed,
-        &mut total,
-    );
+    h.check_bool("Streaming: success", stream_result.success);
+    h.check_exact("Streaming: 2 callbacks fired", callback_count as u64, 2);
+    h.check_bool("Streaming: matches CPU result", {
+        let cpu = stream_pipe.execute_cpu();
+        cpu.stage_results.len() == stream_result.stage_results.len()
+            && cpu
+                .stage_results
+                .iter()
+                .zip(stream_result.stage_results.iter())
+                .all(|(a, b)| a.output_data == b.output_data)
+    });
 
     // ── 5. GPU-mappability of all V16 stages ────────────────────────────
     println!("\n── 5. GPU-Mappability (to_gpu_op) ──────────────────────────────");
@@ -269,12 +211,7 @@ fn main() {
             seed: 1,
         },
     };
-    check(
-        "MM stage maps to GpuOp",
-        mm_stage.to_gpu_op(None).is_some(),
-        &mut passed,
-        &mut total,
-    );
+    h.check_bool("MM stage maps to GpuOp", mm_stage.to_gpu_op(None).is_some());
 
     let scfa_stage = Stage {
         name: "scfa".into(),
@@ -284,11 +221,9 @@ fn main() {
             fiber_inputs: vec![5.0, 10.0, 15.0],
         },
     };
-    check(
+    h.check_bool(
         "SCFA stage maps to GpuOp",
         scfa_stage.to_gpu_op(None).is_some(),
-        &mut passed,
-        &mut total,
     );
 
     let beat_stage = Stage {
@@ -299,11 +234,9 @@ fn main() {
             templates,
         },
     };
-    check(
+    h.check_bool(
         "Beat stage maps to GpuOp",
         beat_stage.to_gpu_op(None).is_some(),
-        &mut passed,
-        &mut total,
     );
 
     // ── 6. Multi-stage mixed pipeline ───────────────────────────────────
@@ -338,37 +271,21 @@ fn main() {
     });
 
     let mixed_result = mixed.execute_cpu();
-    check(
-        "Mixed pipe: success",
-        mixed_result.success,
-        &mut passed,
-        &mut total,
-    );
-    check(
+    h.check_bool("Mixed pipe: success", mixed_result.success);
+    h.check_exact(
         "Mixed pipe: 3 stages",
-        mixed_result.stage_results.len() == 3,
-        &mut passed,
-        &mut total,
+        mixed_result.stage_results.len() as u64,
+        3,
     );
-    check(
+    h.check_exact(
         "Mixed pipe: final output = 1 value",
-        mixed_result.stage_results[2].output_data.len() == 1,
-        &mut passed,
-        &mut total,
+        mixed_result.stage_results[2].output_data.len() as u64,
+        1,
     );
-    check(
+    h.check_bool(
         "Mixed pipe: mean > 0",
         mixed_result.stage_results[2].output_data[0] > 0.0,
-        &mut passed,
-        &mut total,
     );
 
-    // ── Summary ─────────────────────────────────────────────────────────
-    println!("\n{}", "=".repeat(72));
-    println!("Exp086 toadStool V16 Dispatch: {passed}/{total} PASS");
-    println!("{}", "=".repeat(72));
-
-    if passed != total {
-        std::process::exit(1);
-    }
+    h.exit();
 }

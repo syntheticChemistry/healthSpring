@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! healthSpring Exp033 — TRT Weight/Waist Trajectory (Rust validation)
 
 use healthspring_barracuda::endocrine::{self, weight_params as wp};

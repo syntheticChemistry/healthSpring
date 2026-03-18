@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! healthSpring Exp032 — Age-Related Testosterone Decline (Rust validation)
 
 use healthspring_barracuda::endocrine::{self, decline_params as dp};

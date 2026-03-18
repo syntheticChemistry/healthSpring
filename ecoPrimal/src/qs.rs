@@ -253,6 +253,7 @@ pub fn effective_disorder(pielou_j: f64, profile: &QsProfile, alpha: f64, w_scal
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     fn test_matrix() -> QsGeneMatrix {
         QsGeneMatrix {
@@ -336,22 +337,22 @@ mod tests {
 
         let luxs_density = qs_gene_density(&uniform, &m, QsFamily::LuxS);
         // Bacteroides, Clostridioides, Escherichia, Faecalibacterium = 4/6
-        assert!((luxs_density - 4.0 / 6.0).abs() < 1e-10);
+        assert!((luxs_density - 4.0 / 6.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
 
         let agr_density = qs_gene_density(&uniform, &m, QsFamily::Agr);
         // Only Clostridioides = 1/6
-        assert!((agr_density - 1.0 / 6.0).abs() < 1e-10);
+        assert!((agr_density - 1.0 / 6.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
 
         let com_density = qs_gene_density(&uniform, &m, QsFamily::Com);
-        assert!((com_density).abs() < 1e-10);
+        assert!((com_density).abs() < tolerances::TEST_ASSERTION_TIGHT);
 
         let qsebc_density = qs_gene_density(&uniform, &m, QsFamily::QseBC);
         // Escherichia only = 1/6
-        assert!((qsebc_density - 1.0 / 6.0).abs() < 1e-10);
+        assert!((qsebc_density - 1.0 / 6.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
 
         let pqs_density = qs_gene_density(&uniform, &m, QsFamily::PqsABCDE);
         // Pseudomonas only = 1/6
-        assert!((pqs_density - 1.0 / 6.0).abs() < 1e-10);
+        assert!((pqs_density - 1.0 / 6.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -363,13 +364,16 @@ mod tests {
 
         // All species have at least one QS gene → total_qs_density = 1.0
         assert!(
-            (prof.total_qs_density - 1.0).abs() < 1e-10,
+            (prof.total_qs_density - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "all species have QS genes"
         );
 
         // LuxS density: Bacteroides(0.30) + Clostridioides(0.05) +
         //               Escherichia(0.15) + Faecalibacterium(0.30) = 0.80
-        assert!((prof.family_densities[QsFamily::LuxS.index()] - 0.80).abs() < 1e-10);
+        assert!(
+            (prof.family_densities[QsFamily::LuxS.index()] - 0.80).abs()
+                < tolerances::TEST_ASSERTION_TIGHT
+        );
 
         assert!(
             prof.signaling_diversity > 0.0,
@@ -401,7 +405,7 @@ mod tests {
         let w_eff = effective_disorder(0.8, &prof, 1.0, 20.0);
         let w_struct = 0.8 * 20.0;
         assert!(
-            (w_eff - w_struct).abs() < 1e-10,
+            (w_eff - w_struct).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "alpha=1.0 → pure structural: {w_eff} vs {w_struct}"
         );
     }
@@ -416,7 +420,7 @@ mod tests {
         let w_eff = effective_disorder(0.8, &prof, 0.0, 20.0);
         let w_func = (1.0 - prof.total_qs_density) * 20.0;
         assert!(
-            (w_eff - w_func).abs() < 1e-10,
+            (w_eff - w_func).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "alpha=0.0 → pure functional: {w_eff} vs {w_func}"
         );
     }
@@ -436,7 +440,7 @@ mod tests {
         let expected = alpha.mul_add(w_struct, (1.0 - alpha) * w_func);
 
         assert!(
-            (w_eff - expected).abs() < 1e-10,
+            (w_eff - expected).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "mixed: {w_eff} vs {expected}"
         );
     }
@@ -472,10 +476,10 @@ mod tests {
         let m = test_matrix();
         let empty: [f64; 0] = [];
         let prof = qs_profile(&empty, &m);
-        assert!((prof.total_qs_density).abs() < 1e-10);
-        assert!((prof.signaling_diversity).abs() < 1e-10);
+        assert!((prof.total_qs_density).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((prof.signaling_diversity).abs() < tolerances::TEST_ASSERTION_TIGHT);
         for &d in &prof.family_densities {
-            assert!((d).abs() < 1e-10);
+            assert!((d).abs() < tolerances::TEST_ASSERTION_TIGHT);
         }
     }
 
@@ -510,14 +514,14 @@ mod tests {
         let w_over = effective_disorder(0.8, &prof, 1.5, 20.0);
         let w_at_1 = effective_disorder(0.8, &prof, 1.0, 20.0);
         assert!(
-            (w_over - w_at_1).abs() < 1e-10,
+            (w_over - w_at_1).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "alpha>1 should clamp to 1.0"
         );
 
         let w_under = effective_disorder(0.8, &prof, -0.5, 20.0);
         let w_at_0 = effective_disorder(0.8, &prof, 0.0, 20.0);
         assert!(
-            (w_under - w_at_0).abs() < 1e-10,
+            (w_under - w_at_0).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "alpha<0 should clamp to 0.0"
         );
     }

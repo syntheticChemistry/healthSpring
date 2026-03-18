@@ -9,6 +9,7 @@ license.workspace = true
 description = "Exp062: PCIe P2P transfer validation with realistic healthSpring workload sizes"
 
 [dependencies]
+healthspring-barracuda = { path = "../../ecoPrimal" }
 healthspring-forge = { path = "../../metalForge/forge" }
 
 [[bin]]

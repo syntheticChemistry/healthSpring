@@ -167,7 +167,7 @@ mod tests {
 
     #[test]
     fn ssmd_zero_variance() {
-        assert!((ssmd(10.0, 0.0, 10.0, 0.0)).abs() < f64::EPSILON);
+        assert!((ssmd(10.0, 0.0, 10.0, 0.0)).abs() < tolerances::MACHINE_EPSILON);
     }
 
     #[test]

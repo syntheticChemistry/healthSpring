@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::expect_used,
     reason = "Mutex::lock().expect() is idiomatic for poisoned-mutex \
@@ -14,6 +15,7 @@
 //! Otherwise falls back to stdout + JSON file output suitable for offline
 //! rendering.
 
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_barracuda::visualization::ipc_push::PushError;
 use healthspring_barracuda::visualization::scenarios::scenario_with_edges_json;
 use healthspring_barracuda::visualization::scenarios::topology::{
@@ -332,66 +334,41 @@ fn main() {
     );
 
     // Validation checks
-    println!("\n--- Validation ---");
-    let mut passed = 0u32;
-    let total = 8u32;
+    let mut h = ValidationHarness::new("exp072_compute_dashboard");
 
-    let check = |name: &str, ok: bool, passed: &mut u32| {
-        if ok {
-            println!("  [PASS] {name}");
-            *passed += 1;
-        } else {
-            println!("  [FAIL] {name}");
-        }
-    };
-
-    check("pipeline_success", result.success, &mut passed);
-    check(
-        "all_stages_ran",
-        result.stage_results.len() == 7,
-        &mut passed,
-    );
-    check(
-        "total_time_positive",
-        result.total_time_us > 0.0,
-        &mut passed,
-    );
-    check(
+    h.check_bool("pipeline_success", result.success);
+    h.check_exact("all_stages_ran", result.stage_results.len() as u64, 7);
+    h.check_bool("total_time_positive", result.total_time_us > 0.0);
+    h.check_exact(
         "dispatch_scenario_has_nodes",
-        dispatch_scn.ecosystem.primals.len() == 8,
-        &mut passed,
+        dispatch_scn.ecosystem.primals.len() as u64,
+        8,
     );
-    check(
+    h.check_exact(
         "topology_scenario_has_nests",
-        topo_scenario.ecosystem.primals.len() == 3,
-        &mut passed,
+        topo_scenario.ecosystem.primals.len() as u64,
+        3,
     );
-    check(
+    h.check_bool(
         "report_json_valid",
         serde_json::from_str::<serde_json::Value>(&report_json).is_ok(),
-        &mut passed,
     );
-    check(
+    h.check_bool(
         "topo_json_valid",
         serde_json::from_str::<serde_json::Value>(&topo_json).is_ok(),
-        &mut passed,
     );
-    check(
+    h.check_bool(
         "dispatch_json_valid",
         serde_json::from_str::<serde_json::Value>(&dispatch_json).is_ok(),
-        &mut passed,
     );
 
-    println!(
-        "\nExp072 Compute Dashboard: {passed}/{total} checks passed{}",
-        if pt_connected {
-            " (live petalTongue)"
-        } else {
-            " (offline mode)"
-        }
-    );
+    if pt_connected {
+        println!("(live petalTongue)");
+    } else {
+        println!("(offline mode)");
+    }
 
-    std::process::exit(i32::from(passed != total));
+    h.exit();
 }
 
 fn infer_substrate(stage_name: &str) -> String {

@@ -2,6 +2,7 @@
 #![deny(clippy::all)]
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 #![expect(
     clippy::too_many_lines,
     reason = "validation binary — linear benchmark sequence"
@@ -16,6 +17,7 @@ use healthspring_barracuda::microbiome::{pielou_evenness, shannon_index, simpson
 use healthspring_barracuda::pkpd::{
     auc_trapezoidal, hill_dose_response, pk_oral_one_compartment, population_pk_cpu,
 };
+use healthspring_barracuda::validation::ValidationHarness;
 use serde::Serialize;
 
 const N_ITERATIONS: usize = 100;
@@ -71,20 +73,8 @@ fn bench<F: Fn()>(name: &str, func: F, n_iter: usize) -> BenchResult {
     reason = "index-to-f64 for log-spaced concentrations"
 )]
 fn main() {
-    let mut passed = 0u32;
-    let mut failed = 0u32;
+    let mut h = ValidationHarness::new("exp066_barracuda_cpu_bench");
     let mut benchmarks = Vec::new();
-
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {
-            if $cond {
-                passed += 1;
-            } else {
-                eprintln!("FAIL: {}", $name);
-                failed += 1;
-            }
-        };
-    }
 
     println!("Exp066: Rust CPU Benchmark Suite");
     println!("================================");
@@ -105,7 +95,7 @@ fn main() {
         "  {:<40} mean={:.3}us  p95={:.3}us",
         bench_result.name, bench_result.mean_us, bench_result.p95_us
     );
-    check!("hill_sweep_50_runs", bench_result.mean_us > 0.0);
+    h.check_bool("hill_sweep_50_runs", bench_result.mean_us > 0.0);
     benchmarks.push(bench_result);
 
     let concs_10k: Vec<f64> = (0..10_000)
@@ -124,7 +114,7 @@ fn main() {
         "  {:<40} mean={:.3}us  p95={:.3}us",
         bench_result.name, bench_result.mean_us, bench_result.p95_us
     );
-    check!("hill_sweep_10K_runs", bench_result.mean_us > 0.0);
+    h.check_bool("hill_sweep_10K_runs", bench_result.mean_us > 0.0);
     benchmarks.push(bench_result);
 
     let clearance = 0.15 * (85.0_f64 / 70.0).powf(0.75);
@@ -144,7 +134,7 @@ fn main() {
         "  {:<40} mean={:.3}us  p95={:.3}us",
         bench_result.name, bench_result.mean_us, bench_result.p95_us
     );
-    check!("pk_curve_101_runs", bench_result.mean_us > 0.0);
+    h.check_bool("pk_curve_101_runs", bench_result.mean_us > 0.0);
     benchmarks.push(bench_result);
 
     let abund = [0.35, 0.25, 0.20, 0.10, 0.05, 0.03, 0.02];
@@ -161,7 +151,7 @@ fn main() {
         "  {:<40} mean={:.3}us  p95={:.3}us",
         bench_result.name, bench_result.mean_us, bench_result.p95_us
     );
-    check!("diversity_7_runs", bench_result.mean_us > 0.0);
+    h.check_bool("diversity_7_runs", bench_result.mean_us > 0.0);
     benchmarks.push(bench_result);
 
     let times_pk: Vec<f64> = (0..=100).map(|i| f64::from(i) * 24.0 / 100.0).collect();
@@ -180,7 +170,7 @@ fn main() {
         "  {:<40} mean={:.3}us  p95={:.3}us",
         bench_result.name, bench_result.mean_us, bench_result.p95_us
     );
-    check!("auc_trapezoidal_runs", bench_result.mean_us > 0.0);
+    h.check_bool("auc_trapezoidal_runs", bench_result.mean_us > 0.0);
     benchmarks.push(bench_result);
 
     let n500 = 500;
@@ -200,7 +190,7 @@ fn main() {
         "  {:<40} mean={:.3}us  p95={:.3}us",
         bench_result.name, bench_result.mean_us, bench_result.p95_us
     );
-    check!("pop_mc_500_runs", bench_result.mean_us > 0.0);
+    h.check_bool("pop_mc_500_runs", bench_result.mean_us > 0.0);
     benchmarks.push(bench_result);
 
     let n5000 = 5_000;
@@ -224,7 +214,7 @@ fn main() {
         "  {:<40} mean={:.3}us  p95={:.3}us",
         bench_result.name, bench_result.mean_us, bench_result.p95_us
     );
-    check!("pop_mc_5000_runs", bench_result.mean_us > 0.0);
+    h.check_bool("pop_mc_5000_runs", bench_result.mean_us > 0.0);
     benchmarks.push(bench_result);
 
     let suite = BenchSuite {
@@ -241,7 +231,5 @@ fn main() {
     std::fs::write(&out_dir, &json).unwrap_or_else(|_| println!("{json}"));
     println!("\nResults written to {}", out_dir.display());
 
-    let total = passed + failed;
-    println!("\nExp066 Rust CPU Bench: {passed}/{total} checks passed");
-    std::process::exit(i32::from(passed != total));
+    h.exit();
 }

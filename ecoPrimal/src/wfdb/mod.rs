@@ -56,6 +56,7 @@ impl std::error::Error for WfdbError {}
 #[expect(clippy::unwrap_used, clippy::expect_used, reason = "test code")]
 mod tests {
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn parse_header_mitbih_100() {
@@ -68,11 +69,11 @@ mod tests {
         let header = parse_header(hea).expect("parse header");
         assert_eq!(header.record_name, "100");
         assert_eq!(header.n_signals, 2);
-        assert!((header.sampling_frequency - 360.0).abs() < 1e-10);
+        assert!((header.sampling_frequency - 360.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
         assert_eq!(header.n_samples, Some(650_000));
         assert_eq!(header.signals.len(), 2);
         assert_eq!(header.signals[0].format, 212);
-        assert!((header.signals[0].gain - 200.0).abs() < 1e-10);
+        assert!((header.signals[0].gain - 200.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
         assert_eq!(header.signals[0].baseline, 1024);
         assert_eq!(header.signals[0].adc_resolution, 11);
         assert_eq!(header.signals[0].description, "MLII");
@@ -85,9 +86,9 @@ mod tests {
         let header = parse_header(hea).expect("parse minimal header");
         assert_eq!(header.record_name, "rec01");
         assert_eq!(header.n_signals, 1);
-        assert!((header.sampling_frequency - 250.0).abs() < 1e-10);
+        assert!((header.sampling_frequency - 250.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
         assert_eq!(header.signals[0].format, 16);
-        assert!((header.signals[0].gain - 1000.0).abs() < 1e-10);
+        assert!((header.signals[0].gain - 1000.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]
@@ -126,13 +127,16 @@ mod tests {
     fn adc_to_physical_conversion() {
         let samples = vec![1024_i16, 1224, 824];
         let physical = adc_to_physical(&samples, 200.0, 1024);
-        assert!((physical[0]).abs() < 1e-10, "baseline → 0 mV");
         assert!(
-            (physical[1] - 1.0).abs() < 1e-10,
+            (physical[0]).abs() < tolerances::TEST_ASSERTION_TIGHT,
+            "baseline → 0 mV"
+        );
+        assert!(
+            (physical[1] - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "+200 ADC units → +1.0 mV at gain 200"
         );
         assert!(
-            (physical[2] + 1.0).abs() < 1e-10,
+            (physical[2] + 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT,
             "-200 ADC units → -1.0 mV"
         );
     }
@@ -177,7 +181,11 @@ mod tests {
     fn adc_to_physical_zero_gain() {
         let samples = vec![100_i16, 200, 300];
         let physical = adc_to_physical(&samples, 0.0, 0);
-        assert!(physical.iter().all(|&v| v.abs() < 1e-15));
+        assert!(
+            physical
+                .iter()
+                .all(|&v| v.abs() < tolerances::DIVISION_GUARD)
+        );
     }
 
     #[test]
@@ -215,9 +223,9 @@ mod tests {
         let adc_samples = vec![1024_i16, 1224, 824];
         let physical: Vec<f64> =
             AdcToPhysicalIter::new(adc_samples.into_iter(), 200.0, 1024).collect();
-        assert!((physical[0]).abs() < 1e-10);
-        assert!((physical[1] - 1.0).abs() < 1e-10);
-        assert!((physical[2] + 1.0).abs() < 1e-10);
+        assert!((physical[0]).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((physical[1] - 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
+        assert!((physical[2] + 1.0).abs() < tolerances::TEST_ASSERTION_TIGHT);
     }
 
     #[test]

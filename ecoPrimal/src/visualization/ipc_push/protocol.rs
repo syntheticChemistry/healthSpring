@@ -8,6 +8,7 @@ use super::{DataChannel, PushError, PushResult};
 use crate::visualization::types::{ClinicalRange, HealthScenario};
 
 /// Build JSON-RPC params for visualization.render (testable without socket).
+#[must_use]
 pub fn build_render_params(
     session_id: &str,
     title: &str,
@@ -36,6 +37,7 @@ pub fn build_render_params(
 }
 
 /// Build JSON-RPC params for visualization.render.stream append (testable without socket).
+#[must_use]
 pub fn build_append_params(
     session_id: &str,
     binding_id: &str,
@@ -54,6 +56,7 @@ pub fn build_append_params(
 }
 
 /// Build JSON-RPC params for visualization.render.stream gauge update (testable without socket).
+#[must_use]
 pub fn build_gauge_params(session_id: &str, binding_id: &str, value: f64) -> serde_json::Value {
     serde_json::json!({
         "session_id": session_id,
@@ -70,6 +73,10 @@ pub fn build_gauge_params(session_id: &str, binding_id: &str, value: f64) -> ser
 /// The `replace` operation swaps an entire binding in-place, enabling live
 /// updates to channel types that `append`/`set_value` cannot modify
 /// (`Heatmap`, `Bar`, `Scatter3D`, `Distribution`, `Spectrum`).
+///
+/// # Errors
+///
+/// Returns `PushError::SerializationError` if the binding cannot be serialized to JSON.
 pub fn build_replace_params(
     session_id: &str,
     binding_id: &str,
@@ -91,6 +98,7 @@ pub fn build_replace_params(
 ///
 /// Includes `ui_config` for panel visibility, zoom, and theme control —
 /// used by clinical scenarios that override default petalTongue layout.
+#[must_use]
 pub fn build_render_with_config_params(
     session_id: &str,
     title: &str,

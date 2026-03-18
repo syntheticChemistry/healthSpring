@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp005 validation: Population PK Monte Carlo
 //!
 //! Cross-validates `healthspring_barracuda::pkpd::population_pk_cpu`

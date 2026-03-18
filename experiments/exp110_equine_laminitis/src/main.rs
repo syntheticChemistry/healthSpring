@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::nursery)]
 //! Exp110: Equine laminitis inflammatory cascade (CM-008)
 //!
 //! Validates hoof lamellae as Anderson lattice, inflammatory cytokine gradient,
