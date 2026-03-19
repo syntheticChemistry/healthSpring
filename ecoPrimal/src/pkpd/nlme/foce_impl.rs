@@ -9,6 +9,7 @@ use super::solver::{
     EstimationCtx, optimize_individual_eta, theta_gradient_step, total_objective_and_mse,
 };
 use super::{NlmeConfig, NlmeResult, StructuralModel, Subject};
+use crate::tolerances;
 
 /// FOCE: First-Order Conditional Estimation.
 ///
@@ -56,21 +57,21 @@ pub fn foce(
             let sum_sq: f64 = etas.iter().map(|e| e[dim] * e[dim]).sum();
             #[expect(clippy::cast_precision_loss, reason = "subject count fits f64")]
             let new_val = sum_sq / n_sub as f64;
-            *omega_val = new_val.max(1e-8);
+            *omega_val = new_val.max(tolerances::NLME_OMEGA_FLOOR);
         }
 
         // Update sigma
         if n_obs > 0 {
             #[expect(clippy::cast_precision_loss, reason = "observation count fits f64")]
             let new_sigma = sse / n_obs as f64;
-            sigma = new_sigma.max(1e-10);
+            sigma = new_sigma.max(tolerances::NLME_SIGMA_FLOOR);
         }
 
         #[expect(clippy::cast_precision_loss, reason = "iteration index fits f64")]
         let lr = 0.0001 / 0.01f64.mul_add(iter as f64, 1.0);
         theta_gradient_step(model, &mut theta, &etas, subjects, &omega, sigma, lr);
 
-        let rel_change = if prev_obj.is_finite() && prev_obj.abs() > 1e-15 {
+        let rel_change = if prev_obj.is_finite() && prev_obj.abs() > tolerances::DIVISION_GUARD {
             (prev_obj - obj).abs() / prev_obj.abs()
         } else {
             1.0

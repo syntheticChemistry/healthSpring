@@ -25,6 +25,8 @@
 //! | [`comparative`] | Species PK, canine IL-31/JAK1, feline MM PK, allometric | — |
 //! | [`gpu`] | GPU dispatch: `GpuOp`, `GpuContext`, fused pipeline | All shaders |
 //! | [`validation`] | Shared `ValidationHarness` (hotSpring pattern) | — |
+//! | [`simulation`] | Multi-scale causal chain: stress pathways → cells → tissue → population → ecosystem | — |
+//! | [`toxicology`] | Systemic burden, Anderson toxicity landscape, clearance regime | — |
 //! | [`tolerances`] | Centralized tolerance constants from `TOLERANCE_REGISTRY.md` | — |
 //! | [`provenance`] | Baseline provenance tracking (script, commit, date) | — |
 //! | [`qs`] | QS gene profiling: functional Anderson disorder | — |
@@ -58,7 +60,9 @@ pub mod provenance;
 pub mod qs;
 pub mod rng;
 pub mod safe_cast;
+pub mod simulation;
 pub mod tolerances;
+pub mod toxicology;
 pub mod uncertainty;
 pub mod validation;
 pub mod visualization;

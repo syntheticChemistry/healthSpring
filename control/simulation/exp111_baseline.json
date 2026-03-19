@@ -1,0 +1,75 @@
+{
+  "experiment": "exp111_causal_terrarium",
+  "pathways": [
+    {
+      "name": "HSP (heat shock proteins)",
+      "max_benefit": 0.12,
+      "k_half": 0.5,
+      "hill_n": 1.5
+    },
+    {
+      "name": "antioxidant (SOD/catalase)",
+      "max_benefit": 0.1,
+      "k_half": 1.0,
+      "hill_n": 2.0
+    },
+    {
+      "name": "DNA repair (p53/BRCA)",
+      "max_benefit": 0.08,
+      "k_half": 2.0,
+      "hill_n": 2.0
+    },
+    {
+      "name": "autophagy (mTOR/AMPK)",
+      "max_benefit": 0.15,
+      "k_half": 3.0,
+      "hill_n": 1.0
+    }
+  ],
+  "formulas": {
+    "pathway_activation": "max * D^n / (k^n + D^n)",
+    "damage": "D^n / (IC50^n + D^n)",
+    "mechanistic_cell_fitness": "baseline * product(1 + activation_i) * (1 - damage)",
+    "population_steady_state": "K_base * (fitness / baseline)"
+  },
+  "dose_zero": {
+    "fitness": 100.0,
+    "population_ss": 10000.0
+  },
+  "dose_three": {
+    "fitness": 137.06562693427244,
+    "pathway_activations": [
+      0.11235519714044702,
+      0.09,
+      0.05538461538461538,
+      0.075
+    ],
+    "damage_fraction": 0.0035870864886408927,
+    "population_ss": 13706.562693427244
+  },
+  "dose_eighty": {
+    "fitness": 42.77408570909126,
+    "pathway_activations": [
+      0.11994073657627824,
+      0.09998437744102484,
+      0.07995003123048094,
+      0.14457831325301204
+    ],
+    "damage_fraction": 0.7191011235955056,
+    "population_ss": 4277.408570909126
+  },
+  "params": {
+    "baseline": 100.0,
+    "damage_ic50": 50.0,
+    "damage_hill_n": 2.0,
+    "k_base": 10000.0
+  },
+  "_provenance": {
+    "date": "2026-03-19",
+    "script": "control/simulation/exp111_causal_terrarium.py",
+    "command": "control/simulation/exp111_causal_terrarium.py",
+    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
+    "python_version": "3.13.2",
+    "numpy_version": "2.1.3"
+  }
+}

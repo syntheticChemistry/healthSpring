@@ -57,6 +57,10 @@ FILES = [
     ("control/discovery/exp092_baseline.json", "python3 control/discovery/exp092_compound_library.py"),
     ("control/discovery/exp093_baseline.json", "python3 control/discovery/exp093_chembl_jak_panel.py"),
     ("control/discovery/exp094_baseline.json", "python3 control/discovery/exp094_rho_mrtf_fibrosis.py"),
+    ("control/discovery/exp097_baseline.json", "python3 control/discovery/exp097_affinity_landscape.py"),
+    ("control/toxicology/exp098_baseline.json", "python3 control/toxicology/exp098_toxicity_landscape.py"),
+    ("control/toxicology/exp099_baseline.json", "python3 control/toxicology/exp099_hormesis.py"),
+    ("control/simulation/exp111_baseline.json", "python3 control/simulation/exp111_causal_terrarium.py"),
     # Track 6: Comparative Medicine
     ("control/comparative/exp100_baseline.json", "python3 control/comparative/exp100_canine_il31.py"),
     ("control/comparative/exp101_baseline.json", "python3 control/comparative/exp101_canine_jak1.py"),

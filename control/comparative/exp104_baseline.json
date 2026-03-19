@@ -28,7 +28,7 @@
     "date": "2026-03-16",
     "script": "control/comparative/exp104_cross_species_pk.py",
     "command": "python3 control/comparative/exp104_cross_species_pk.py",
-    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python_version": "3.13.2",
     "numpy_version": "2.1.3"
   }

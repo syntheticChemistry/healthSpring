@@ -10,6 +10,8 @@
 //! - [`hrv_trt_response`]: HRV improvement from TRT
 //! - [`cardiac_risk_composite`]: Composite cardiac risk from HRV + T
 
+use crate::tolerances;
+
 // ═══════════════════════════════════════════════════════════════════════
 // TRT Outcome Trajectories (Exp033–035)
 // ═══════════════════════════════════════════════════════════════════════
@@ -20,7 +22,7 @@
 #[must_use]
 pub fn weight_trajectory(month: f64, delta_final: f64, tau: f64, total_months: f64) -> f64 {
     let norm = (total_months / tau).ln_1p();
-    if norm.abs() < 1e-15 {
+    if norm.abs() < tolerances::DIVISION_GUARD {
         return 0.0;
     }
     delta_final * (month / tau).ln_1p() / norm

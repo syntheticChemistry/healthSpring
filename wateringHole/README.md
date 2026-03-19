@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V38 — Deep Debt Audit Complete. 719 tests, 79 experiments, 79/79 ValidationHarness, 70+ named tolerances, 49 provenance records with DOI, typed IPC dispatch. 80 capabilities. clippy::nursery enforced workspace-wide.
-**Last Updated**: March 18, 2026
+**Status**: V39 — Toxicology, Simulation, Hormesis + Cross-Spring Integration. 809 tests, 83 experiments, 83/83 ValidationHarness, 70+ named tolerances, 53 provenance records with DOI, typed IPC dispatch. 85 capabilities. 3 new science domains (toxicology, simulation, affinity_landscape). Cross-spring hormesis framework. clippy::nursery enforced workspace-wide.
+**Last Updated**: March 19, 2026
 
 ---
 
@@ -22,8 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V38** | [V38 toadStool/barraCuda Evolution](handoffs/HEALTHSPRING_V38_TOADSTOOL_BARRACUDA_EVOLUTION_HANDOFF_MAR18_2026.md) | Mar 18 | Deep debt audit complete: 79/79 ValidationHarness, named tolerances, typed IPC dispatch, provenance DOI citations. Action items for barraCuda/toadStool. Supersedes V37. |
-| | *V1–V37 → `handoffs/archive/`* | | Fossil record |
+| **V39** | [V39 Toxicology/Simulation/Hormesis](handoffs/HEALTHSPRING_V39_TOXICOLOGY_SIMULATION_HORMESIS_HANDOFF_MAR19_2026.md) | Mar 19 | 3 new science domains, 5 new IPC capabilities, cross-spring hormesis framework. barraCuda absorption candidates for `bio::hormesis`, `bio::toxicology`, `bio::simulation`. Supersedes V38. |
+| | *V1–V38 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

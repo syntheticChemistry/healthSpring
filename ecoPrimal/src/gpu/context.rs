@@ -220,12 +220,19 @@ impl GpuContext {
         }
     }
 
-    /// Execute ALL operations in a single command encoder submission.
+    /// Execute ALL operations as a batch.
     ///
-    /// Upload all input buffers → N compute passes → one submit → readback all.
-    /// No CPU roundtrips between stages. This is the unidirectional pipeline
-    /// pattern: data flows to GPU once, stays there through all stages, and
-    /// returns once at the end.
+    /// When `barracuda-ops` is enabled, delegates each op to barraCuda's
+    /// canonical GPU implementations (sequential dispatch — loses single-encoder
+    /// fusion but gains canonical math and upstream maintenance).
+    ///
+    /// Without `barracuda-ops`, uses the local WGSL fused pipeline:
+    /// upload all input buffers → N compute passes → one submit → readback all.
+    /// No CPU roundtrips between stages (unidirectional pipeline pattern).
+    ///
+    /// Migration path: when barraCuda exposes `TensorSession`, the fused
+    /// pipeline will delegate to a single barraCuda session for both fusion
+    /// performance and canonical math.
     ///
     /// # Errors
     ///
@@ -235,6 +242,32 @@ impl GpuContext {
             return Ok(Vec::new());
         }
 
+        #[cfg(feature = "barracuda-ops")]
+        if let Some(bc) = &self.barracuda_device {
+            return self.execute_fused_via_barracuda(bc, ops);
+        }
+
+        self.execute_fused_local(ops).await
+    }
+
+    /// Fused batch via barraCuda — sequential dispatch through canonical ops.
+    ///
+    /// Each op uses barraCuda's validated GPU implementation. Until
+    /// `TensorSession` is available, this is sequential (one encoder per op)
+    /// rather than truly fused (one encoder for all ops).
+    #[cfg(feature = "barracuda-ops")]
+    fn execute_fused_via_barracuda(
+        &self,
+        bc: &std::sync::Arc<barracuda::device::WgpuDevice>,
+        ops: &[GpuOp],
+    ) -> Result<Vec<GpuResult>, GpuError> {
+        ops.iter()
+            .map(|op| Self::execute_via_barracuda(bc, op))
+            .collect()
+    }
+
+    /// Fused batch via local WGSL — single command encoder submission.
+    async fn execute_fused_local(&self, ops: &[GpuOp]) -> Result<Vec<GpuResult>, GpuError> {
         let prepared = self.prepare_all_ops(ops);
 
         self.submit_compute_passes(&prepared);

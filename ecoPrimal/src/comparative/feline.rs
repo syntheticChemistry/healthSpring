@@ -12,6 +12,8 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::tolerances;
+
 /// Feline methimazole PK parameters (Michaelis-Menten).
 ///
 /// Methimazole is a thionamide antithyroid drug. In cats, elimination is
@@ -79,7 +81,7 @@ pub fn methimazole_simulate(
     let dt_day = dt_hr / 24.0;
     for _ in 0..n_steps {
         let denom = params.vd * (params.km + c);
-        let dc = if denom > 1e-15 {
+        let dc = if denom > tolerances::DIVISION_GUARD {
             -params.vmax * c / denom * dt_day
         } else {
             0.0

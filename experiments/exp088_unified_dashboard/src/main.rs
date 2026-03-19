@@ -6,6 +6,7 @@
 //! Exp088: Unified dashboard — generates, validates, and optionally pushes
 //! all healthSpring `petalTongue` scenarios (original tracks + V16 + compute).
 
+use healthspring_barracuda::validation::{OrExit, ValidationHarness};
 use healthspring_barracuda::visualization::{
     DataChannel, HealthScenario, ScenarioEdge, ipc_push::PetalTonguePushClient, scenarios,
     scenarios::scenario_with_edges_json,
@@ -13,32 +14,15 @@ use healthspring_barracuda::visualization::{
 use std::fs;
 use std::path::Path;
 
-struct Tally {
-    checks: u32,
-    pass: u32,
-}
-
-impl Tally {
-    fn check(&mut self, name: &str, cond: bool) {
-        self.checks += 1;
-        if cond {
-            self.pass += 1;
-            println!("  [PASS] {name}");
-        } else {
-            println!("  [FAIL] {name}");
-        }
-    }
-}
-
 fn main() {
-    let mut t = Tally { checks: 0, pass: 0 };
+    let mut h = ValidationHarness::new("exp088_unified_dashboard");
 
     println!("=== Exp088: Unified Dashboard ===\n");
 
-    let tracks = build_and_validate_tracks(&mut t);
-    let (v16, v16_edges) = build_and_validate_v16(&mut t);
-    let (compute, compute_edges) = build_and_validate_compute(&mut t);
-    let (full, full_edges) = build_and_validate_full_study(&mut t);
+    let tracks = build_and_validate_tracks(&mut h);
+    let (v16, v16_edges) = build_and_validate_v16(&mut h);
+    let (compute, compute_edges) = build_and_validate_compute(&mut h);
+    let (full, full_edges) = build_and_validate_full_study(&mut h);
 
     let all_scenarios = build_scenario_list(
         &tracks,
@@ -49,22 +33,15 @@ fn main() {
         &full,
         &full_edges,
     );
-    validate_json_roundtrip(&mut t, &all_scenarios);
-    validate_channel_coverage(&mut t, &full);
+    validate_json_roundtrip(&mut h, &all_scenarios);
+    validate_channel_coverage(&mut h, &full);
     push_or_dump(&all_scenarios);
 
-    println!(
-        "\n=== Exp088 Result: {}/{} checks passed ===",
-        t.pass, t.checks
-    );
-    if t.pass != t.checks {
-        eprintln!("ERROR: some checks failed");
-        std::process::exit(1);
-    }
+    h.exit();
 }
 
 fn build_and_validate_tracks(
-    t: &mut Tally,
+    h: &mut ValidationHarness,
 ) -> Vec<(&'static str, HealthScenario, Vec<ScenarioEdge>)> {
     println!("─── Track Scenarios ───");
     #[expect(
@@ -81,22 +58,22 @@ fn build_and_validate_tracks(
 
     let mut tracks = Vec::new();
     for (name, expected, (scenario, edges)) in raw {
-        t.check(
+        h.check_bool(
             &format!("{name}: node count = {expected}"),
             scenario.ecosystem.primals.len() == expected,
         );
-        validate_scenario(t, name, &scenario, &edges);
+        validate_scenario(h, name, &scenario, &edges);
         tracks.push((name, scenario, edges));
     }
     tracks
 }
 
-fn build_and_validate_v16(t: &mut Tally) -> (HealthScenario, Vec<ScenarioEdge>) {
+fn build_and_validate_v16(h: &mut ValidationHarness) -> (HealthScenario, Vec<ScenarioEdge>) {
     println!("\n─── V16 Primitives ───");
     let (v16, v16_edges) = scenarios::v16_study();
-    t.check("v16: node count = 6", v16.ecosystem.primals.len() == 6);
-    t.check("v16: edge count = 5", v16_edges.len() == 5);
-    validate_scenario(t, "v16", &v16, &v16_edges);
+    h.check_bool("v16: node count = 6", v16.ecosystem.primals.len() == 6);
+    h.check_bool("v16: edge count = 5", v16_edges.len() == 5);
+    validate_scenario(h, "v16", &v16, &v16_edges);
 
     let v16_ids: Vec<&str> = v16
         .ecosystem
@@ -112,7 +89,7 @@ fn build_and_validate_v16(t: &mut Tally) -> (HealthScenario, Vec<ScenarioEdge>) 
         "eda_stress",
         "arrhythmia_classify",
     ] {
-        t.check(
+        h.check_bool(
             &format!("v16: has node {expected_id}"),
             v16_ids.contains(expected_id),
         );
@@ -120,47 +97,47 @@ fn build_and_validate_v16(t: &mut Tally) -> (HealthScenario, Vec<ScenarioEdge>) 
     (v16, v16_edges)
 }
 
-fn build_and_validate_compute(t: &mut Tally) -> (HealthScenario, Vec<ScenarioEdge>) {
+fn build_and_validate_compute(h: &mut ValidationHarness) -> (HealthScenario, Vec<ScenarioEdge>) {
     println!("\n─── Compute Pipeline ───");
     let (gpu_scaling, gpu_edges) = scenarios::gpu_scaling_study();
-    t.check(
+    h.check_bool(
         "gpu_scaling: node count = 1",
         gpu_scaling.ecosystem.primals.len() == 1,
     );
-    validate_scenario(t, "gpu_scaling", &gpu_scaling, &gpu_edges);
+    validate_scenario(h, "gpu_scaling", &gpu_scaling, &gpu_edges);
 
     let (v16_topo, topo_edges) = scenarios::v16_topology_study();
-    t.check(
+    h.check_bool(
         "v16_topology: node count = 3",
         v16_topo.ecosystem.primals.len() == 3,
     );
-    validate_scenario(t, "v16_topology", &v16_topo, &topo_edges);
+    validate_scenario(h, "v16_topology", &v16_topo, &topo_edges);
 
     let (v16_dispatch, dispatch_edges) = scenarios::v16_dispatch_study();
-    t.check(
+    h.check_bool(
         "v16_dispatch: node count = 6",
         v16_dispatch.ecosystem.primals.len() == 6,
     );
-    validate_scenario(t, "v16_dispatch", &v16_dispatch, &dispatch_edges);
+    validate_scenario(h, "v16_dispatch", &v16_dispatch, &dispatch_edges);
 
     let (compute, compute_edges) = scenarios::compute_pipeline_study();
-    t.check(
+    h.check_bool(
         "compute_pipeline: node count = 10",
         compute.ecosystem.primals.len() == 10,
     );
-    validate_scenario(t, "compute_pipeline", &compute, &compute_edges);
+    validate_scenario(h, "compute_pipeline", &compute, &compute_edges);
     (compute, compute_edges)
 }
 
-fn build_and_validate_full_study(t: &mut Tally) -> (HealthScenario, Vec<ScenarioEdge>) {
+fn build_and_validate_full_study(h: &mut ValidationHarness) -> (HealthScenario, Vec<ScenarioEdge>) {
     println!("\n─── Full Study (V19) ───");
     let (full, full_edges) = scenarios::full_study();
-    t.check(
+    h.check_bool(
         "full_study: node count = 34",
         full.ecosystem.primals.len() == 34,
     );
-    t.check("full_study: edge count = 38", full_edges.len() == 38);
-    validate_scenario(t, "full_study", &full, &full_edges);
+    h.check_bool("full_study: edge count = 38", full_edges.len() == 38);
+    validate_scenario(h, "full_study", &full, &full_edges);
 
     let full_ids: std::collections::HashSet<&str> = full
         .ecosystem
@@ -168,7 +145,7 @@ fn build_and_validate_full_study(t: &mut Tally) -> (HealthScenario, Vec<Scenario
         .iter()
         .map(|n| n.id.as_str())
         .collect();
-    t.check("full_study: all IDs unique", full_ids.len() == 34);
+    h.check_bool("full_study: all IDs unique", full_ids.len() == 34);
     (full, full_edges)
 }
 
@@ -191,14 +168,17 @@ fn build_scenario_list<'a>(
     v
 }
 
-fn validate_json_roundtrip(t: &mut Tally, all: &[(&str, &HealthScenario, &[ScenarioEdge])]) {
+fn validate_json_roundtrip(
+    h: &mut ValidationHarness,
+    all: &[(&str, &HealthScenario, &[ScenarioEdge])],
+) {
     println!("\n─── JSON Round-Trip ───");
     for (name, scenario, edges) in all {
         let json = scenario_with_edges_json(scenario, edges);
         let parsed: Result<serde_json::Value, _> = serde_json::from_str(&json);
-        t.check(&format!("{name}: JSON valid"), parsed.is_ok());
+        h.check_bool(&format!("{name}: JSON valid"), parsed.is_ok());
         if let Ok(val) = parsed {
-            t.check(
+            h.check_bool(
                 &format!("{name}: JSON has edges array"),
                 val["edges"].is_array(),
             );
@@ -206,7 +186,7 @@ fn validate_json_roundtrip(t: &mut Tally, all: &[(&str, &HealthScenario, &[Scena
     }
 }
 
-fn validate_channel_coverage(t: &mut Tally, full: &HealthScenario) {
+fn validate_channel_coverage(h: &mut ValidationHarness, full: &HealthScenario) {
     println!("\n─── Channel Type Coverage ───");
     let all_channels: Vec<&DataChannel> = full
         .ecosystem
@@ -216,31 +196,31 @@ fn validate_channel_coverage(t: &mut Tally, full: &HealthScenario) {
         .collect();
 
     let has = |pred: fn(&DataChannel) -> bool| all_channels.iter().any(|ch| pred(ch));
-    t.check(
+    h.check_bool(
         "full_study has TimeSeries",
         has(|ch| matches!(ch, DataChannel::TimeSeries { .. })),
     );
-    t.check(
+    h.check_bool(
         "full_study has Bar",
         has(|ch| matches!(ch, DataChannel::Bar { .. })),
     );
-    t.check(
+    h.check_bool(
         "full_study has Gauge",
         has(|ch| matches!(ch, DataChannel::Gauge { .. })),
     );
-    t.check(
+    h.check_bool(
         "full_study has Distribution",
         has(|ch| matches!(ch, DataChannel::Distribution { .. })),
     );
-    t.check(
+    h.check_bool(
         "full_study has Spectrum",
         has(|ch| matches!(ch, DataChannel::Spectrum { .. })),
     );
-    t.check(
+    h.check_bool(
         "full_study has Heatmap",
         has(|ch| matches!(ch, DataChannel::Heatmap { .. })),
     );
-    t.check(
+    h.check_bool(
         "full_study has Scatter3D",
         has(|ch| matches!(ch, DataChannel::Scatter3D { .. })),
     );
@@ -249,17 +229,11 @@ fn validate_channel_coverage(t: &mut Tally, full: &HealthScenario) {
 fn push_or_dump(all: &[(&str, &HealthScenario, &[ScenarioEdge])]) {
     println!("\n─── Output ───");
     let out = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/scenarios");
-    if fs::create_dir_all(&out).is_err() {
-        eprintln!("ERROR: create sandbox/scenarios/");
-        std::process::exit(1);
-    }
+    fs::create_dir_all(&out).or_exit("create sandbox/scenarios/");
 
     let write = |name: &str, json: &str| {
         let path = out.join(name);
-        if fs::write(&path, json).is_err() {
-            eprintln!("ERROR: write {}", path.display());
-            std::process::exit(1);
-        }
+        fs::write(&path, json).or_exit(&format!("write {}", path.display()));
         println!("  wrote {} ({} KB)", name, json.len() / 1024);
     };
 
@@ -302,7 +276,12 @@ fn push_or_dump(all: &[(&str, &HealthScenario, &[ScenarioEdge])]) {
     );
 }
 
-fn validate_scenario(t: &mut Tally, name: &str, scenario: &HealthScenario, edges: &[ScenarioEdge]) {
+fn validate_scenario(
+    h: &mut ValidationHarness,
+    name: &str,
+    scenario: &HealthScenario,
+    edges: &[ScenarioEdge],
+) {
     let node_ids: std::collections::HashSet<&str> = scenario
         .ecosystem
         .primals
@@ -310,24 +289,24 @@ fn validate_scenario(t: &mut Tally, name: &str, scenario: &HealthScenario, edges
         .map(|n| n.id.as_str())
         .collect();
 
-    t.check(
+    h.check_bool(
         &format!("{name}: no duplicate node IDs"),
         node_ids.len() == scenario.ecosystem.primals.len(),
     );
 
     for node in &scenario.ecosystem.primals {
-        t.check(
+        h.check_bool(
             &format!("{name}/{}: health ≤ 100", node.id),
             node.health <= 100,
         );
-        t.check(
+        h.check_bool(
             &format!("{name}/{}: has channels", node.id),
             !node.data_channels.is_empty(),
         );
     }
 
     for edge in edges {
-        t.check(
+        h.check_bool(
             &format!("{name}: edge {}->{} valid", edge.from, edge.to),
             node_ids.contains(edge.from.as_str()) && node_ids.contains(edge.to.as_str()),
         );

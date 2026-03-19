@@ -4,8 +4,8 @@
     "date": "2026-03-08",
     "script": "control/biosignal/exp023_fusion.py",
     "source": "Rust exp023_biosignal_fusion --write-baseline",
-    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
-    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python": "3.13.2 | packaged by Anaconda, Inc. | (main, Feb  6 2025, 18:56:02) [GCC 11.2.0]",
+    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/biosignal/exp023_fusion.py"
   },
   "_source": "healthSpring Exp023: Multi-Channel Biosignal Fusion",
@@ -32,17 +32,17 @@
   },
   "fusion": {
     "heart_rate_bpm": 73.49211258892669,
-    "hrv_rmssd_ms": 41.57397096415488,
+    "hrv_rmssd_ms": 46.080980785172684,
     "hrv_sdnn_ms": 26.81290252208839,
-    "overall_score": 51.068971438186935,
+    "overall_score": 51.06897143818785,
     "scr_rate_per_min": 8.0,
-    "spo2_percent": 96.63940117924724,
-    "stress_index": 0.4893102856181306
+    "spo2_percent": 96.63940117924751,
+    "stress_index": 0.48931028561812157
   },
   "ppg": {
     "duration_s": 5.0,
     "fs": 256.0,
-    "spo2": 96.63940117924724
+    "spo2": 96.63940117924751
   },
   "seed": 42
 }

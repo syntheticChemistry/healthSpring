@@ -9,6 +9,8 @@
 //! inhibition), and classification for compound screening data from ADDRC and
 //! similar HTS pipelines.
 
+use crate::tolerances;
+
 use serde::{Deserialize, Serialize};
 
 /// Hit classification from SSMD magnitude.
@@ -42,7 +44,7 @@ pub struct HitResult {
 #[must_use]
 pub fn z_prime_factor(pos_mean: f64, pos_std: f64, neg_mean: f64, neg_std: f64) -> f64 {
     let separation = (pos_mean - neg_mean).abs();
-    if separation < 1e-15 {
+    if separation < tolerances::DIVISION_GUARD {
         return f64::NEG_INFINITY;
     }
     1.0 - 3.0 * (pos_std + neg_std) / separation
@@ -62,7 +64,7 @@ pub fn z_prime_factor(pos_mean: f64, pos_std: f64, neg_mean: f64, neg_std: f64) 
 #[must_use]
 pub fn ssmd(sample_mean: f64, sample_std: f64, neg_mean: f64, neg_std: f64) -> f64 {
     let denom = sample_std.hypot(neg_std);
-    if denom < 1e-15 {
+    if denom < tolerances::DIVISION_GUARD {
         return 0.0;
     }
     (sample_mean - neg_mean) / denom
@@ -79,7 +81,7 @@ pub fn ssmd(sample_mean: f64, sample_std: f64, neg_mean: f64, neg_std: f64) -> f
 #[must_use]
 pub fn percent_inhibition(signal: f64, pos_mean: f64, neg_mean: f64) -> f64 {
     let range = neg_mean - pos_mean;
-    if range.abs() < 1e-15 {
+    if range.abs() < tolerances::DIVISION_GUARD {
         return 0.0;
     }
     100.0 * (neg_mean - signal) / range

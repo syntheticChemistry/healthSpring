@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** March 18, 2026
-**Status:** V38 — Deep Debt Completion Sprint. 719 tests, 79 experiments, 49 baselines with structured provenance registry, 113/113 cross-validation checks. V38 completes the deep debt audit — all 79 experiments use standardized `ValidationHarness`, all test tolerances are named constants, all provenance records have DOI citations. mul_add() FMA sweep (8 sites), centralized extract_rpc_result(), 18 proptest IPC fuzz tests, Python provenance registry (49 records), MCP tool definitions (23 tools for Squirrel AI), deny.toml 14-crate C-dep ban list, leverage guide published. 80 capabilities.
+**Last Updated:** March 19, 2026
+**Status:** V39 — Toxicology, Simulation, Hormesis + Cross-Spring Integration. 809 tests, 83 experiments, 53 baselines with structured provenance registry. 3 new science domains: toxicology (Anderson delocalization, hormesis, mithridatism), simulation (multi-scale causal chain), discovery::affinity_landscape (low-affinity binding, Gini breadth). 85 capabilities. Cross-spring hormesis framework. Computation as preprocessor paradigm.
 
 ---
 
@@ -18,6 +18,7 @@ Per-person translation of validated science into usable health applications. Met
 | 5 — NLME | FOCE/SAEM population PK, NCA, CWRES/VPC/GOF diagnostics | Exp075-076 | **Complete** (Tier 0+1) |
 | 6 — Comparative Medicine | Species-agnostic PK, cross-species Anderson, canine AD models | Exp100-106, 110 | **Complete** (V25) |
 | 7 — Drug Discovery | MATRIX scoring, ADDRC HTS, compound screening, iPSC validation | Exp090-096 | **Complete** (V25) |
+| 9 — Low-Affinity / Toxicology / Simulation | Low-affinity binding, Anderson toxicity, hormesis, causal terrarium | Exp097-099, 111 | **Complete** (V39) |
 
 ---
 
@@ -34,6 +35,7 @@ for onboarding that group.
 | 03 | [mok/](mok/) | Dr. Charles Mok | Testosterone PK, TRT outcomes, HRV cross-track (Track 4) | **Complete** | 96 | 86 |
 | 04 | [cdiff_colonization.md](cdiff_colonization.md) | — | Anderson localization → gut colonization, FMT (Track 2) | **Complete** | 36 | 48 |
 | 05 | [biosignal_sovereign.md](biosignal_sovereign.md) | — | Edge biosignal processing (Track 3) | **Complete** | 44 | 44 |
+| 06 | [low_affinity_hormesis.md](low_affinity_hormesis.md) | Gonzales, Lisabeth | Low-affinity binding, toxicology, hormesis, causal simulation (Track 9) | **Complete** | 53 | 83 |
 
 ### Per-Org Directory Contents
 

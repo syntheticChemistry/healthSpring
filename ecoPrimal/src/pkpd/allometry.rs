@@ -3,6 +3,8 @@
 
 use core::f64::consts::LN_2;
 
+use crate::tolerances;
+
 /// Lokivetmab canine reference constants.
 pub mod lokivetmab_canine {
     pub const BW_KG: f64 = 15.0;
@@ -38,7 +40,7 @@ pub fn mab_pk_sc(dose_mg: f64, vd_l: f64, half_life_days: f64, t_days: f64) -> f
     }
     let k_e = LN_2 / half_life_days;
     let k_a = LN_2 / 2.0;
-    if (k_a - k_e).abs() < 1e-12 {
+    if (k_a - k_e).abs() < tolerances::MACHINE_EPSILON_TIGHT {
         return 0.0;
     }
     let coeff = (dose_mg / vd_l) * k_a / (k_a - k_e);

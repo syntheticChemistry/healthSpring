@@ -6,23 +6,23 @@
   "duration_hr": 48.0,
   "dt": 0.01,
   "c0_mg_per_L": 20.0,
-  "auc_mg_hr_per_L": 4.9821657063325535,
-  "c_24hr_mg_per_L": 0.038583335299961115,
-  "c_48hr_mg_per_L": 0.00455512718037444,
+  "auc_mg_hr_per_L": 4.982165706332556,
+  "c_24hr_mg_per_L": 0.03858333529996112,
+  "c_48hr_mg_per_L": 0.004555127180374444,
   "tissue_concentrations_24hr": {
-    "liver": 0.09959410312052312,
-    "kidney": 0.0965508160286648,
-    "muscle": 0.032049683530977355,
-    "fat": 0.29500166367370134,
-    "rest": 0.03894431693937117
+    "liver": 0.09959410312052314,
+    "kidney": 0.09655081602866482,
+    "muscle": 0.03204968353097736,
+    "fat": 0.2950016636737014,
+    "rest": 0.03894431693937118
   },
   "cardiac_output_L_per_hr": 330.0,
   "n_tissues": 5,
   "_provenance": {
     "date": "2026-03-08",
-    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "python": "3.13.2 | packaged by Anaconda, Inc. | (main, Feb  6 2025, 18:56:02) [GCC 11.2.0]",
     "numpy": "2.1.3",
-    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/pkpd/exp006_pbpk_compartments.py",
     "script": "control/pkpd/exp006_pbpk_compartments.py"
   }

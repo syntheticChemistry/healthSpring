@@ -7,6 +7,7 @@
 //! percentiles, and simulates replicate datasets for prediction bands.
 
 use super::super::nlme::{NlmeResult, StructuralModel, Subject};
+use crate::tolerances;
 
 /// VPC result containing observed and simulated quantile bands.
 #[derive(Debug, Clone)]
@@ -111,7 +112,7 @@ fn bin_observations(subjects: &[Subject], n_bins: usize) -> (Vec<f64>, Vec<Vec<f
 
     let t_min = all_times.iter().copied().fold(f64::INFINITY, f64::min);
     let t_max = all_times.iter().copied().fold(f64::NEG_INFINITY, f64::max);
-    let range = (t_max - t_min).max(1e-10);
+    let range = (t_max - t_min).max(tolerances::MACHINE_EPSILON);
     #[expect(clippy::cast_precision_loss, reason = "bin count fits f64")]
     let bin_width = range / n_bins as f64;
 
@@ -119,7 +120,7 @@ fn bin_observations(subjects: &[Subject], n_bins: usize) -> (Vec<f64>, Vec<Vec<f
     let mut midpoints = Vec::with_capacity(n_bins);
     for bin_idx in 0..n_bins {
         #[expect(clippy::cast_precision_loss, reason = "bin index fits f64")]
-        let mid = t_min + bin_width * (bin_idx as f64 + 0.5);
+        let mid = bin_width.mul_add(bin_idx as f64 + 0.5, t_min);
         midpoints.push(mid);
     }
 

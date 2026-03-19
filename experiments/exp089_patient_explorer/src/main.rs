@@ -22,6 +22,7 @@ use healthspring_barracuda::diagnostic::{
 };
 use healthspring_barracuda::microbiome;
 use healthspring_barracuda::pkpd;
+use healthspring_barracuda::validation::{OrExit, ValidationHarness};
 use healthspring_barracuda::visualization::{
     HealthScenario, ScenarioEdge, annotate_population, assessment_to_scenario, scenarios,
     scenarios::scenario_with_edges_json, stream::StreamSession,
@@ -95,20 +96,7 @@ fn parse_args() -> PatientParams {
 
 fn main() {
     let params = parse_args();
-    let mut checks = 0u32;
-    let mut pass = 0u32;
-
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {{
-            checks += 1;
-            if $cond {
-                pass += 1;
-                println!("  [PASS] {}", $name);
-            } else {
-                println!("  [FAIL] {}", $name);
-            }
-        }};
-    }
+    let mut h = ValidationHarness::new("exp089_patient_explorer");
 
     println!("=== Exp089: Patient Explorer ===\n");
     println!(
@@ -131,91 +119,72 @@ fn main() {
     profile.gut_abundances = Some(synthetic_abundances(params.gut_diversity));
 
     let assessment = assess_patient(&profile);
-    check!(
+    h.check_bool(
         "diagnostic: composite risk computed",
-        assessment.composite_risk >= 0.0
+        assessment.composite_risk >= 0.0,
     );
-    check!("diagnostic: PK assessed", assessment.pk.oral_auc > 0.0);
+    h.check_bool("diagnostic: PK assessed", assessment.pk.oral_auc > 0.0);
 
     let pop = population_montecarlo(&profile, 200, 42);
-    check!("population: 200 patients", pop.n_patients == 200);
+    h.check_bool("population: 200 patients", pop.n_patients == 200);
 
     let diag_scenario = annotate_population(
         assessment_to_scenario(&assessment, &format!("Patient {:.0}y", params.age)),
         &pop,
     );
-    check!(
+    h.check_bool(
         "diagnostic scenario: has nodes",
-        !diag_scenario.ecosystem.primals.is_empty()
+        !diag_scenario.ecosystem.primals.is_empty(),
     );
 
     // ── V16 analysis ─────────────────────────────────────────────────
     println!("\n─── V16 Patient Analysis ───");
-    run_v16_analysis(&params, &mut checks, &mut pass);
+    run_v16_analysis(&params, &mut h);
 
     // ── V16 + diagnostic combined scenario ───────────────────────────
     println!("\n─── Combined Scenario ───");
     let (v16, v16_edges) = scenarios::v16_study();
-    check!("v16 scenario: 6 nodes", v16.ecosystem.primals.len() == 6);
+    h.check_bool("v16 scenario: 6 nodes", v16.ecosystem.primals.len() == 6);
 
     let (combined, combined_edges) = merge_patient_scenario(diag_scenario, v16, v16_edges);
-    check!(
+    h.check_bool(
         "combined: diagnostic + V16 nodes",
-        combined.ecosystem.primals.len() >= 6
+        combined.ecosystem.primals.len() >= 6,
     );
 
     // ── Output ───────────────────────────────────────────────────────
     println!("\n─── Output ───");
     let out = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/scenarios");
-    if fs::create_dir_all(&out).is_err() {
-        eprintln!("ERROR: create sandbox/scenarios/");
-        std::process::exit(1);
-    }
+    fs::create_dir_all(&out).or_exit("create sandbox/scenarios/");
 
     let json = scenario_with_edges_json(&combined, &combined_edges);
     let path = out.join("healthspring-patient-explorer.json");
-    if fs::write(&path, &json).is_err() {
-        eprintln!("ERROR: write scenario JSON");
-        std::process::exit(1);
-    }
+    fs::write(&path, &json).or_exit("write scenario JSON");
     println!("  wrote {} ({} KB)", path.display(), json.len() / 1024);
 
     // ── Streaming ────────────────────────────────────────────────────
     println!("\n─── Streaming ───");
-    attempt_streaming(&combined, &params, &mut checks, &mut pass);
+    attempt_streaming(&combined, &params, &mut h);
 
     // ── Summary ──────────────────────────────────────────────────────
-    println!("\n=== Exp089 Result: {pass}/{checks} checks passed ===");
-    std::process::exit(i32::from(pass != checks));
+    h.exit();
 }
 
-fn run_v16_analysis(params: &PatientParams, checks: &mut u32, pass: &mut u32) {
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {{
-            *checks += 1;
-            if $cond {
-                *pass += 1;
-                println!("  [PASS] {}", $name);
-            } else {
-                println!("  [FAIL] {}", $name);
-            }
-        }};
-    }
-
+fn run_v16_analysis(params: &PatientParams, h: &mut ValidationHarness) {
     let mm_params = &pkpd::PHENYTOIN_PARAMS;
     let (times, concs) = pkpd::mm_pk_simulate(mm_params, 300.0, 10.0, 0.01);
-    check!(
+    h.check_bool(
         "MM PK: simulation produced data",
-        !times.is_empty() && !concs.is_empty()
+        !times.is_empty() && !concs.is_empty(),
     );
     let mm_auc = pkpd::mm_auc_analytical(mm_params, 300.0);
-    check!("MM PK: AUC > 0", mm_auc > 0.0);
+    h.check_bool("MM PK: AUC > 0", mm_auc > 0.0);
     println!("    MM PK AUC at 300mg: {mm_auc:.1} mg·day/L");
 
     let scfa_params = &microbiome::SCFA_HEALTHY_PARAMS;
     let (acetate, propionate, butyrate) = microbiome::scfa_production(params.fiber_g, scfa_params);
     let total_scfa = acetate + propionate + butyrate;
-    check!("SCFA: total > 0", total_scfa > 0.0);
+    h.check_bool("SCFA: total > 0", total_scfa > 0.0);
     println!(
         "    SCFA at {:.0}g fiber: A={acetate:.1} P={propionate:.1} B={butyrate:.1} (total={total_scfa:.1})",
         params.fiber_g
@@ -223,7 +192,7 @@ fn run_v16_analysis(params: &PatientParams, checks: &mut u32, pass: &mut u32) {
 
     let trp = microbiome::tryptophan_availability(60.0, params.gut_diversity);
     let serotonin = microbiome::gut_serotonin_production(trp, params.gut_diversity, 0.15, 1.0);
-    check!("Serotonin: production > 0", serotonin > 0.0);
+    h.check_bool("Serotonin: production > 0", serotonin > 0.0);
     println!(
         "    Serotonin at H'={:.1}: trp={trp:.1} µmol/L, 5-HT={serotonin:.2} µmol/L",
         params.gut_diversity
@@ -231,9 +200,9 @@ fn run_v16_analysis(params: &PatientParams, checks: &mut u32, pass: &mut u32) {
 
     let abx_trajectory =
         microbiome::antibiotic_perturbation(params.gut_diversity, 0.7, 0.5, 0.08, 7.0, 30.0, 0.1);
-    check!(
+    h.check_bool(
         "Antibiotic: trajectory produced",
-        abx_trajectory.len() > 100
+        abx_trajectory.len() > 100,
     );
     let nadir = abx_trajectory
         .iter()
@@ -255,7 +224,7 @@ fn run_v16_analysis(params: &PatientParams, checks: &mut u32, pass: &mut u32) {
     };
     let scr_rate = scr_peaks.len() as f64 / 0.5;
     let stress_idx = biosignal::stress::compute_stress_index(scr_rate, mean_scl, 3.0);
-    check!("EDA: stress index computed", stress_idx >= 0.0);
+    h.check_bool("EDA: stress index computed", stress_idx >= 0.0);
     println!("    Stress index: {stress_idx:.1} (SCR rate={scr_rate:.1}/min, SCL={mean_scl:.1}µS)");
 
     let templates = vec![
@@ -274,9 +243,9 @@ fn run_v16_analysis(params: &PatientParams, checks: &mut u32, pass: &mut u32) {
     ];
     let test_beat = biosignal::generate_normal_template(41);
     let (cls, corr) = biosignal::classify_beat(&test_beat, &templates, 0.5);
-    check!(
+    h.check_bool(
         "Arrhythmia: classified as Normal",
-        cls == biosignal::BeatClass::Normal
+        cls == biosignal::BeatClass::Normal,
     );
     println!("    Beat classification: {cls} (r={corr:.3})");
 }
@@ -305,24 +274,7 @@ fn merge_patient_scenario(
     (combined, edges)
 }
 
-fn attempt_streaming(
-    scenario: &HealthScenario,
-    params: &PatientParams,
-    checks: &mut u32,
-    pass: &mut u32,
-) {
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {{
-            *checks += 1;
-            if $cond {
-                *pass += 1;
-                println!("  [PASS] {}", $name);
-            } else {
-                println!("  [FAIL] {}", $name);
-            }
-        }};
-    }
-
+fn attempt_streaming(scenario: &HealthScenario, params: &PatientParams, h: &mut ValidationHarness) {
     if let Ok(mut session) = StreamSession::discover("healthspring-patient-explorer") {
         println!("petalTongue found — streaming patient data\n");
         if session
@@ -342,10 +294,10 @@ fn attempt_streaming(
         let (a, p, b) = microbiome::scfa_production(params.fiber_g, scfa_params);
         let _ = session.push_hrv_update(a, p, b);
 
-        check!("streaming: session established", true);
+        h.check_bool("streaming: session established", true);
     } else {
         println!("petalTongue not running — streaming skipped (scenario written to disk)");
-        check!("streaming: fallback to disk", true);
+        h.check_bool("streaming: fallback to disk", true);
     }
 }
 

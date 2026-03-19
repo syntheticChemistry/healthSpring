@@ -1,0 +1,167 @@
+{
+  "experiment": "exp098_toxicity_landscape",
+  "strong_binder": {
+    "description": "Liver at occ=0.85 sens=1.0, rest at 0.01-0.02",
+    "tissues": [
+      {
+        "name": "liver",
+        "occupancy": 0.85,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "heart",
+        "occupancy": 0.02,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "kidney",
+        "occupancy": 0.01,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "lung",
+        "occupancy": 0.01,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "gut",
+        "occupancy": 0.02,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "brain",
+        "occupancy": 0.01,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "muscle",
+        "occupancy": 0.01,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "skin",
+        "occupancy": 0.02,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      }
+    ],
+    "systemic_burden": 0.95,
+    "excess_burden": 0.7999999999999999,
+    "tissue_excesses": [
+      0.7999999999999999,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "toxicity_ipr": 0.6408873719507985,
+    "localization_length_xi": 1.5603365642173566
+  },
+  "weak_binder": {
+    "description": "All tissues at occ=0.02-0.05",
+    "tissues": [
+      {
+        "name": "tissue_0",
+        "occupancy": 0.02,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "tissue_1",
+        "occupancy": 0.035,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "tissue_2",
+        "occupancy": 0.05,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "tissue_3",
+        "occupancy": 0.02,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "tissue_4",
+        "occupancy": 0.035,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "tissue_5",
+        "occupancy": 0.05,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "tissue_6",
+        "occupancy": 0.02,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "tissue_7",
+        "occupancy": 0.035,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "tissue_8",
+        "occupancy": 0.05,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      },
+      {
+        "name": "tissue_9",
+        "occupancy": 0.02,
+        "sensitivity": 1.0,
+        "repair_capacity": 0.05
+      }
+    ],
+    "systemic_burden": 0.335,
+    "excess_burden": 0.0,
+    "tissue_excesses": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "toxicity_ipr": 0.0018970160518613328,
+    "localization_length_xi": 527.1436680880007
+  },
+  "clearance_utilization": {
+    "value": 0.0029910269192422734,
+    "params": {
+      "C": 0.03,
+      "Km": 10.0
+    },
+    "formula": "C / (Km + C)"
+  },
+  "_provenance": {
+    "date": "2026-03-19",
+    "script": "control/toxicology/exp098_toxicity_landscape.py",
+    "command": "control/toxicology/exp098_toxicity_landscape.py",
+    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
+    "python_version": "3.13.2",
+    "numpy_version": "2.1.3"
+  }
+}

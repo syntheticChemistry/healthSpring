@@ -3,6 +3,8 @@
 
 use core::f64::consts::LN_2;
 
+use crate::tolerances;
+
 // ═══════════════════════════════════════════════════════════════════════
 // One-compartment PK (Exp002)
 // ═══════════════════════════════════════════════════════════════════════
@@ -29,7 +31,7 @@ pub fn pk_oral_one_compartment(
     k_e: f64,
     t_hr: f64,
 ) -> f64 {
-    if (k_a - k_e).abs() < 1e-12 || vd_l <= 0.0 {
+    if (k_a - k_e).abs() < tolerances::MACHINE_EPSILON_TIGHT || vd_l <= 0.0 {
         return 0.0;
     }
     let coeff = (f_bioavail * dose_mg * k_a) / (vd_l * (k_a - k_e));
@@ -39,7 +41,7 @@ pub fn pk_oral_one_compartment(
 /// Analytical Tmax for oral dosing: `Tmax = ln(k_a/k_e) / (k_a - k_e)`.
 #[must_use]
 pub fn oral_tmax(k_a: f64, k_e: f64) -> f64 {
-    if (k_a - k_e).abs() < 1e-12 || k_a <= 0.0 || k_e <= 0.0 {
+    if (k_a - k_e).abs() < tolerances::MACHINE_EPSILON_TIGHT || k_a <= 0.0 || k_e <= 0.0 {
         return 0.0;
     }
     (k_a / k_e).ln() / (k_a - k_e)
@@ -76,7 +78,7 @@ pub fn pk_two_compartment_iv(
         return 0.0;
     }
     let (alpha, beta) = micro_to_macro(k10, k12, k21);
-    if (alpha - beta).abs() < 1e-15 {
+    if (alpha - beta).abs() < tolerances::DIVISION_GUARD {
         let c0 = dose_mg / v1_l;
         return c0 * (-alpha * t_hr).exp();
     }
@@ -92,7 +94,7 @@ pub fn pk_two_compartment_iv(
 #[must_use]
 pub fn two_compartment_ab(c0: f64, alpha: f64, beta: f64, k21: f64) -> (f64, f64) {
     let denom = alpha - beta;
-    if denom.abs() < 1e-15 {
+    if denom.abs() < tolerances::DIVISION_GUARD {
         return (c0, 0.0);
     }
     let a = c0 * (alpha - k21) / denom;

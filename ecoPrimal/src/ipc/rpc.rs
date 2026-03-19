@@ -76,8 +76,8 @@ const READ_TIMEOUT_MS: u64 = 10_000;
 
 /// Send a JSON-RPC request with full error context.
 ///
-/// Use this when the caller needs to know *why* a request failed (logging,
-/// diagnostics, retry decisions). For fire-and-forget IPC, use [`send`].
+/// Uses the platform-agnostic transport layer — connects via Unix socket
+/// (Linux/macOS) or TCP (Windows/fallback) depending on the endpoint.
 ///
 /// # Errors
 ///
@@ -89,12 +89,12 @@ pub fn try_send(
     params: &serde_json::Value,
 ) -> Result<serde_json::Value, IpcError> {
     use std::io::{BufRead, BufReader, Write};
-    use std::os::unix::net::UnixStream;
     use std::time::Duration;
 
-    let mut stream = UnixStream::connect(socket_path).map_err(IpcError::Connect)?;
-    stream.set_read_timeout(Some(Duration::from_secs(10))).ok();
-    stream.set_write_timeout(Some(Duration::from_secs(10))).ok();
+    let mut stream = super::transport::connect_path(socket_path)?;
+    stream
+        .set_timeouts(Duration::from_secs(10))
+        .map_err(IpcError::Connect)?;
 
     let request = serde_json::json!({
         "jsonrpc": "2.0",
@@ -112,7 +112,7 @@ pub fn try_send(
         .map_err(|e| IpcError::Write(e.to_string()))?;
     stream.flush().map_err(|e| IpcError::Write(e.to_string()))?;
     stream
-        .shutdown(std::net::Shutdown::Write)
+        .shutdown_write()
         .map_err(|e| IpcError::Write(e.to_string()))?;
 
     let mut reader = BufReader::new(stream);

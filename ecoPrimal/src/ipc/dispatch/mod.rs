@@ -247,6 +247,31 @@ static REGISTRY: &[CapabilityEntry] = &[
         handler: handlers::clinical::dispatch_risk_annotate,
         domain: "clinical",
     },
+    CapabilityEntry {
+        method: "science.toxicology.biphasic_dose_response",
+        handler: handlers::toxicology::dispatch_biphasic_dose_response,
+        domain: "toxicology",
+    },
+    CapabilityEntry {
+        method: "science.toxicology.toxicity_landscape",
+        handler: handlers::toxicology::dispatch_toxicity_landscape,
+        domain: "toxicology",
+    },
+    CapabilityEntry {
+        method: "science.toxicology.hormetic_optimum",
+        handler: handlers::toxicology::dispatch_hormetic_optimum,
+        domain: "toxicology",
+    },
+    CapabilityEntry {
+        method: "science.simulation.mechanistic_fitness",
+        handler: handlers::simulation::dispatch_mechanistic_fitness,
+        domain: "simulation",
+    },
+    CapabilityEntry {
+        method: "science.simulation.ecosystem_simulate",
+        handler: handlers::simulation::dispatch_ecosystem_simulate,
+        domain: "simulation",
+    },
 ];
 
 /// Dispatch a science method. Returns `None` if the method is unknown.
@@ -315,7 +340,7 @@ mod tests {
     #[test]
     fn registry_lists_all_capabilities() {
         let caps = registered_capabilities();
-        assert!(caps.len() >= 46, "registry should have 46+ capabilities");
+        assert!(caps.len() >= 51, "registry should have 51+ capabilities");
         assert!(
             caps.iter()
                 .any(|(m, _)| *m == "science.pkpd.hill_dose_response")

@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 18, 2026
+**Date:** March 19, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V38 — Deep Debt Completion + Standardized Validation. 719 tests, 79 experiments, 49 Python baselines with structured provenance registry, 113/113 cross-validation checks (all 7 tracks). All 79 experiments standardized to ValidationHarness, typed IPC dispatch, enhanced provenance with DOI citations. V37: `mul_add()` FMA sweep (8 sites across PK/ODE/biosignal/QS — IEEE 754 fused multiply-add for accuracy), centralized `extract_rpc_result()` + `extract_rpc_result_owned()` (6 call sites migrated), `deny.toml` hardened with 14-crate C-dep ban list (ecoBin compliance from groundSpring V115), 18 new proptest IPC fuzz tests (extract/classify/capability round-trips), Python provenance registry (49 structured records with completeness test), MCP tool definitions (23 tools for Squirrel AI coordination), `mcp.tools.list` JSON-RPC method, leverage guide published. V36: Tier B GPU rewire, zero `#[allow()]`, `cargo-deny` in CI. Zero clippy, zero unsafe, zero `#[allow()]`. 80 capabilities.
+**Status:** V39 — Toxicology, Simulation, Hormesis + Cross-Spring Integration. 809 tests, 83 experiments, 53 Python baselines with structured provenance registry. 3 new science domains: toxicology (Anderson delocalization, hormesis, mithridatism), simulation (multi-scale causal chain: molecular → ecosystem), discovery::affinity_landscape (low-affinity binding, Gini breadth, coincidence detection selectivity). 5 new IPC capabilities (science.toxicology.*, science.simulation.*). Cross-spring hormesis framework spanning healthSpring → groundSpring → airSpring → wetSpring. Computation as preprocessor paradigm: 26× selectivity from weak binding as testable prediction. V38: Deep debt audit, 79/79 ValidationHarness, named tolerances, provenance DOI. Zero clippy, zero unsafe, zero `#[allow()]`. 85 capabilities.
 
 ---
 
@@ -21,11 +21,11 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Spring | Role | healthSpring relationship |
 |--------|------|--------------------------|
-| **wetSpring** | Life science validation (16S, LC-MS, immunology) | Gut microbiome analytics, Anderson colonization resistance, Exp037 cross-track |
+| **wetSpring** | Life science validation (16S, LC-MS, immunology) | Gut microbiome analytics, Anderson colonization resistance, joint low-affinity binding experiment, shared hormesis framework (`bio::hormesis` ↔ `toxicology`) |
 | **neuralSpring** | ML primitives, PK/PD surrogates | Hill dose-response, population PK, clinical prediction |
 | **hotSpring** | Plasma physics, lattice methods | Lattice tissue modeling, Anderson spectral theory |
-| **airSpring** | Agricultural IoT, evapotranspiration | CytokineBrain → clinical cytokine network visualization |
-| **groundSpring** | Uncertainty, spectral theory | Error propagation, confidence intervals for clinical tools |
+| **airSpring** | Agricultural IoT, evapotranspiration | Environmental chemical exposure, hygiene hypothesis, hormesis transition |
+| **groundSpring** | Uncertainty, spectral theory | Error propagation, pesticide hormesis, ecological dose-response |
 
 ---
 
@@ -33,16 +33,17 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V38** (Deep Debt Completion + Standardized Validation) |
-| **Total tests** | **719** (617+ lib + 18 proptest + 30 IPC fuzz + 7 doc + experiment bins) |
-| Experiments complete | 79 (Tracks 1–7, Tier 0+1+2+3) |
-| Experiments using ValidationHarness | **79/79** (all standardized) |
-| JSON-RPC capabilities | 80 (79 science + `mcp.tools.list` — 0 stubs in dispatch) |
+| Version | **V39** (Toxicology, Simulation, Hormesis + Cross-Spring Integration) |
+| **Total tests** | **809** (738 lib + 18 proptest + 30 IPC fuzz + 7 doc + experiment bins) |
+| Experiments complete | 83 (Tracks 1–9, Tier 0+1+2+3) |
+| Experiments using ValidationHarness | **83/83** (all standardized) |
+| JSON-RPC capabilities | 85 (84 science + `mcp.tools.list` — 0 stubs in dispatch) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
-| Python baselines | **49** with structured provenance registry (all 7 tracks) |
+| Python baselines | **53** with structured provenance registry (all 9 tracks) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
 | Comparative Medicine (Track 6) | **Complete** — 7 experiments (Exp100–106), canine + feline + cross-species |
 | Drug Discovery (Track 7) | **Complete** — 5 experiments (Exp090–094), MATRIX + HTS + compound + fibrosis |
+| Low-Affinity / Toxicology / Simulation (Track 9) | **Complete** — 4 experiments (Exp097–099, 111), Anderson delocalization + hormesis + causal chain |
 | GPU validation (Tier 2) | **Live** — 6 ops rewired to barraCuda (Tier A + B), fused pipeline, 42/42 parity checks |
 | CPU parity | Rust 84× faster than Python across V16 primitives |
 | biomeOS niche | **Live** — `UniBin`-compliant primal binary (`serve`/`version`/`capabilities` subcommands), SIGTERM/SIGINT handling |
@@ -56,6 +57,22 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | `cargo doc` | **0 warnings** |
 | Max file size | 800 lines (provenance.rs; all production files under 1000-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V39 Toxicology, Simulation, Hormesis + Cross-Spring Integration (from V38)
+
+V39 builds three new science domains: toxicology (Anderson delocalization of toxic burden, hormesis, mithridatism), simulation (multi-scale causal chain from molecular binding to ecosystem dynamics), and low-affinity binding landscape (computation as preprocessor for experiment design).
+
+| Change | Impact |
+|--------|--------|
+| **3 new Rust modules** | `toxicology.rs` (32 tests), `simulation.rs` (18 tests), `discovery/affinity_landscape.rs` (15 tests) |
+| **4 new experiments** | exp097 (affinity landscape), exp098 (toxicity landscape), exp099 (hormesis), exp111 (causal terrarium) |
+| **5 new IPC capabilities** | `science.toxicology.biphasic_dose_response`, `science.toxicology.toxicity_landscape`, `science.toxicology.hormetic_optimum`, `science.simulation.mechanistic_fitness`, `science.simulation.ecosystem_simulate` |
+| **4 new Python baselines** | `control/discovery/exp097_*`, `control/toxicology/exp098_*`, `control/toxicology/exp099_*`, `control/simulation/exp111_*` |
+| **Cross-spring hormesis** | Biphasic dose-response shared with wetSpring V130 `bio::hormesis`, groundSpring (pesticide), airSpring (environmental) |
+| **Computation as preprocessor** | 26× selectivity from weak binding → testable prediction for Gonzales/Lisabeth wet lab |
+| **809 tests** | Up from 719 (V38). Zero failures, zero clippy warnings (pedantic + nursery). |
 
 ---
 

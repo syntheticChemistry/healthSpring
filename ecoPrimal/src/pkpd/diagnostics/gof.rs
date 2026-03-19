@@ -6,6 +6,7 @@
 //! Individual predictions use estimated etas; population predictions use eta=0.
 
 use super::super::nlme::{NlmeResult, StructuralModel, Subject};
+use crate::tolerances;
 
 /// Goodness-of-fit diagnostic data.
 #[derive(Debug, Clone)]
@@ -31,7 +32,7 @@ pub struct GofResult {
 pub fn compute_gof(model: StructuralModel, subjects: &[Subject], result: &NlmeResult) -> GofResult {
     let n_eta = result.omega_diag.len();
     let eta_zero = vec![0.0; n_eta];
-    let sigma_sqrt = result.sigma.sqrt().max(1e-15);
+    let sigma_sqrt = result.sigma.sqrt().max(tolerances::DIVISION_GUARD);
 
     let mut observed = Vec::new();
     let mut individual_predicted = Vec::new();
@@ -80,7 +81,7 @@ fn r_squared(observed: &[f64], predicted: &[f64]) -> f64 {
         .zip(predicted.iter())
         .map(|(&o, &p)| (o - p).powi(2))
         .sum();
-    if ss_tot > 1e-15 {
+    if ss_tot > tolerances::DIVISION_GUARD {
         1.0 - ss_res / ss_tot
     } else {
         0.0

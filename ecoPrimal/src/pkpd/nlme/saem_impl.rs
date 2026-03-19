@@ -15,6 +15,7 @@ use super::solver::{
     predict_subject, subject_objective, theta_gradient_step, total_objective_and_mse,
 };
 use super::{NlmeConfig, NlmeResult, StructuralModel, Subject};
+use crate::tolerances;
 
 /// Mutable state carried through SAEM iterations.
 struct SaemState {
@@ -92,10 +93,10 @@ fn mstep(
     }
 
     for (dim, stat) in state.stats_eta_sq.iter().enumerate() {
-        state.omega[dim] = stat.max(1e-8);
+        state.omega[dim] = stat.max(tolerances::NLME_OMEGA_FLOOR);
     }
-    if state.stats_count > 1e-15 {
-        state.sigma = (state.stats_sigma / state.stats_count).max(1e-10);
+    if state.stats_count > tolerances::DIVISION_GUARD {
+        state.sigma = (state.stats_sigma / state.stats_count).max(tolerances::NLME_SIGMA_FLOOR);
     }
 }
 
@@ -154,7 +155,7 @@ pub fn saem(
         let (obj, _, _) =
             total_objective_and_mse(model, &theta, &st.etas, subjects, &st.omega, st.sigma);
 
-        let rel_change = if prev_obj.is_finite() && prev_obj.abs() > 1e-15 {
+        let rel_change = if prev_obj.is_finite() && prev_obj.abs() > tolerances::DIVISION_GUARD {
             (prev_obj - obj).abs() / prev_obj.abs()
         } else {
             1.0

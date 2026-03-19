@@ -8,11 +8,15 @@
 //! References:
 //! - Hill AV (1910) *J Physiol* 40:iv — dose-response equation
 //! - Changelian PS et al. (2003) *Science* 302:875 — tofacitinib JAK IC50s
+//!
+//! Uses [`crate::tolerances`] for all numerical guard constants.
 //! - Quintás-Cardama A et al. (2010) *Blood* 115:3109 — ruxolitinib IC50s
 //! - Fridman JS et al. (2010) *J Immunol* 184:5298 — baricitinib IC50s
 //! - Gonzales AJ et al. (2014) *JVPT* 37:317 — oclacitinib JAK1 selectivity
 
 use serde::{Deserialize, Serialize};
+
+use crate::tolerances;
 
 /// IC50 profile for a single compound across one target.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -90,7 +94,7 @@ pub fn estimate_ic50(concentrations: &[f64], responses: &[f64]) -> Ic50Estimate 
         let (c0, c1) = (conc_pair[0], conc_pair[1]);
         let (r0, r1) = (resp_pair[0], resp_pair[1]);
         if (r0 <= half_max && r1 >= half_max) || (r0 >= half_max && r1 <= half_max) {
-            let frac = if (r1 - r0).abs() < 1e-15 {
+            let frac = if (r1 - r0).abs() < tolerances::DIVISION_GUARD {
                 0.5
             } else {
                 (half_max - r0) / (r1 - r0)
@@ -168,7 +172,7 @@ fn compute_r_squared(
         })
         .sum();
 
-    if ss_tot < 1e-15 {
+    if ss_tot < tolerances::DIVISION_GUARD {
         return 0.0;
     }
     1.0 - ss_res / ss_tot

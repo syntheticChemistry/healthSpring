@@ -274,6 +274,46 @@ pub const FELINE_T4_RESPONSE: f64 = 0.01;
 /// Canine gut Anderson disorder — cross-species diversity.
 pub const CANINE_GUT_ANDERSON: f64 = 0.01;
 
+// ── NLME Algorithm Parameters ────────────────────────────────────────
+
+/// Central finite-difference step for gradient computation in NLME inner loop.
+pub const NLME_FINITE_DIFF_STEP: f64 = 1e-6;
+
+/// Theta gradient perturbation step (outer loop central differences).
+pub const NLME_THETA_PERTURBATION: f64 = 1e-5;
+
+/// Floor for omega (inter-individual variance) — prevents degenerate zero variance.
+pub const NLME_OMEGA_FLOOR: f64 = 1e-8;
+
+/// Floor for sigma (residual variance) — prevents degenerate zero residuals.
+pub const NLME_SIGMA_FLOOR: f64 = 1e-10;
+
+/// Gauss-Newton convergence threshold — stop when max step magnitude < this.
+pub const NLME_CONVERGENCE_STEP: f64 = 1e-8;
+
+/// Default convergence tolerance for NLME iteration relative change.
+pub const NLME_DEFAULT_TOL: f64 = 1e-6;
+
+// ── Toxicology Class ────────────────────────────────────────────────
+
+/// Clearance utilization threshold for linear regime safety (20%).
+pub const CLEARANCE_LINEAR_THRESHOLD: f64 = 0.20;
+
+/// Hormetic zone lower bound: toxic threshold / this = top of hormetic range.
+pub const HORMETIC_LOW_DIVISOR: f64 = 10.0;
+
+/// Hormetic zone upper bound: toxic threshold / this = bottom of hormetic range.
+pub const HORMETIC_HIGH_DIVISOR: f64 = 100.0;
+
+/// Default tissue repair capacity (fraction of binding load absorbable).
+pub const TISSUE_REPAIR_CAPACITY: f64 = 0.05;
+
+/// Toxicity IPR threshold: below this, toxicity is delocalized (manageable).
+pub const TOX_IPR_DELOCALIZED: f64 = 0.15;
+
+/// Toxicity IPR threshold: above this, toxicity is localized (dangerous).
+pub const TOX_IPR_LOCALIZED: f64 = 0.50;
+
 // ── Numerical Guard Constants ────────────────────────────────────────
 
 /// RMSE decomposition near-zero guard — prevents `0/0` in bias fraction.

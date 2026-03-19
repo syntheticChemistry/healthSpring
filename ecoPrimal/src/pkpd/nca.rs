@@ -13,6 +13,7 @@
 //! and Weiner, "Pharmacokinetic and Pharmacodynamic Data Analysis."
 
 use super::util::{auc_trapezoidal, find_cmax_tmax};
+use crate::tolerances;
 
 /// Complete NCA result for a single concentration-time profile.
 #[derive(Debug, Clone)]
@@ -122,7 +123,7 @@ fn log_linear_regression(times: &[f64], concentrations: &[f64]) -> TerminalFit {
     let sum_t_lnc: f64 = times.iter().zip(ln_c.iter()).map(|(&t, &lc)| t * lc).sum();
 
     let denom = nf.mul_add(sum_t2, -(sum_t * sum_t));
-    if denom.abs() < 1e-15 {
+    if denom.abs() < tolerances::DIVISION_GUARD {
         return TerminalFit {
             lambda_z: 0.0,
             r_squared: 0.0,
@@ -141,7 +142,7 @@ fn log_linear_regression(times: &[f64], concentrations: &[f64]) -> TerminalFit {
         .map(|(&t, &lc)| slope.mul_add(-t, lc - intercept).powi(2))
         .sum();
 
-    let r_squared = if ss_tot > 1e-15 {
+    let r_squared = if ss_tot > tolerances::DIVISION_GUARD {
         1.0 - ss_res / ss_tot
     } else {
         0.0

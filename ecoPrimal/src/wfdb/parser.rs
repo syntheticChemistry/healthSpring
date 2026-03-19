@@ -2,6 +2,7 @@
 //! WFDB format parsing: header (`.hea`) and binary signal data (`.dat`).
 
 use super::WfdbError;
+use crate::tolerances;
 
 /// Signal specification from a `.hea` header file.
 #[derive(Debug, Clone)]
@@ -216,7 +217,7 @@ pub fn decode_format_16(
 /// Convert raw ADC samples to physical units (mV) using gain and baseline.
 #[must_use]
 pub fn adc_to_physical(samples: &[i16], gain: f64, baseline: i32) -> Vec<f64> {
-    if gain.abs() < 1e-15 {
+    if gain.abs() < tolerances::DIVISION_GUARD {
         return vec![0.0; samples.len()];
     }
     samples
@@ -320,7 +321,11 @@ pub struct AdcToPhysicalIter<I> {
 impl<I: Iterator<Item = i16>> AdcToPhysicalIter<I> {
     /// Wrap an ADC sample iterator with physical conversion parameters.
     pub fn new(inner: I, gain: f64, baseline: i32) -> Self {
-        let gain_recip = if gain.abs() < 1e-15 { 0.0 } else { 1.0 / gain };
+        let gain_recip = if gain.abs() < tolerances::DIVISION_GUARD {
+            0.0
+        } else {
+            1.0 / gain
+        };
         Self {
             inner,
             gain_recip,

@@ -14,11 +14,17 @@
 //! the tissue lattice. Combined scoring reranks candidates in physically meaningful
 //! ways that pathway analysis alone cannot capture.
 
+pub mod affinity_landscape;
 pub mod compound;
 pub mod fibrosis;
 pub mod hts;
 pub mod matrix_score;
 
+pub use affinity_landscape::{
+    AffinityDistribution, analyze_affinity_distribution, binding_profile, colonization_resistance,
+    composite_binding_score, cross_reactivity_matrix, disorder_adhesion_profile,
+    fractional_occupancy, low_affinity_selectivity,
+};
 pub use compound::{
     CompoundProfile, CompoundScorecard, Ic50Estimate, TargetProfile, batch_ic50_sweep,
     estimate_ic50, rank_by_selectivity, selectivity_index,

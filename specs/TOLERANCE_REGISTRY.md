@@ -75,6 +75,14 @@
 | ecoPrimal/comparative/feline | Half-life increases with C | ordinal | Machine epsilon | Nonlinear PK hallmark. |
 | ecoPrimal/comparative/canine | Onset in [1, 12] hr | 1.0 hr | Clinical | Clamp range from Fleck 2021. |
 | ecoPrimal/comparative/canine | Lokivetmab duration | 1.0 day | Clinical | Duration from published dose-response. |
+| exp097 | Occupancy at IC50 → 0.5 | 1e-10 | Machine epsilon | Hill equation identity at C=IC50. |
+| exp097 | Composite binding score from occupancies | 1e-10 | Machine epsilon | 1 - Π(1-f_i) is algebraic. |
+| exp097 | Low-affinity selectivity ratio | 1e-10 | Machine epsilon | Ratio of composites; f64 division. |
+| exp098 | Systemic burden score | 1e-10 | Machine epsilon | Weighted sum of products; f64 arithmetic. |
+| exp098 | Toxicity IPR (single-tissue dominant) | 1e-10 | Machine epsilon | IPR of near-delta distribution. |
+| exp098 | Toxicity IPR (distributed) | 1e-10 | Machine epsilon | IPR of near-uniform distribution. |
+| exp099 | Biphasic at D=0 → baseline | 1e-10 | Machine epsilon | (1+0)×(1-0) = 1 exactly. |
+| exp111 | Mechanistic fitness at D=0 → baseline | 1e-10 | Machine epsilon | All pathway activations = 0, damage = 0. |
 
 ### Numerical Method Class (1e-6 to 0.01)
 
@@ -213,6 +221,10 @@
 | exp104 | 1e-10 (identity), 1e-6 (allometric roundtrip), 1e-12 (det) | Machine epsilon + numerical |
 | exp105 | 0.01 (gut Anderson), 1e-10 (Shannon analytical), 1e-12 (det) | Numerical + machine epsilon |
 | exp106 | 0.01 (MM PK, T4), 1e-10 (half-life, Css), 1e-12 (det) | Numerical + machine epsilon |
+| exp097 | 1e-10 (occupancy, composite, selectivity), 0.01 (Gini breadth) | Machine epsilon + numerical |
+| exp098 | 1e-10 (IPR, SBS), 0.01 (clearance utilization), 0.05 (delocalization) | Machine epsilon + numerical |
+| exp099 | 1e-10 (biphasic at D=0), 0.01 (hormetic optimum), 0.05 (mithridatism) | Machine epsilon + numerical |
+| exp111 | 1e-10 (baseline fitness), 0.05 (mechanistic curve shape), 0.10 (population) | Machine epsilon + population |
 
 ## Numerical Guard Constants (non-validation)
 
@@ -220,6 +232,12 @@
 |----------|-------|--------|-----------|
 | `DECOMPOSITION_GUARD` | 1e-30 | Uncertainty | Prevents `0/0` in RMSE decomposition bias fraction |
 | `BOX_MULLER_CLAMP` | 1e-30 | PRNG | Prevents `ln(0)` in Box-Muller normal sampling |
+| `CLEARANCE_LINEAR_THRESHOLD` | 0.20 | Toxicology | C/Km threshold for linear kinetics regime |
+| `HORMETIC_LOW_DIVISOR` | 5.0 | Toxicology | IC50/divisor defines lower bound of hormetic zone |
+| `HORMETIC_HIGH_DIVISOR` | 2.0 | Toxicology | IC50/divisor defines upper bound of hormetic zone |
+| `TISSUE_REPAIR_CAPACITY` | 0.10 | Toxicology | Default per-tissue repair capacity (10% of max occupancy) |
+| `TOX_IPR_DELOCALIZED` | 0.01 | Toxicology | IPR threshold below which toxicity is considered delocalized |
+| `TOX_IPR_LOCALIZED` | 0.25 | Toxicology | IPR threshold above which toxicity is considered localized |
 
 ## IPC Configuration Constants
 

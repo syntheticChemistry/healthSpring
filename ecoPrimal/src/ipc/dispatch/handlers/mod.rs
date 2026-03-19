@@ -9,6 +9,8 @@ pub(super) mod biosignal;
 pub(super) mod clinical;
 pub(super) mod microbiome;
 pub(super) mod pkpd;
+pub(super) mod simulation;
+pub(super) mod toxicology;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Param extraction helpers — used by all domain modules

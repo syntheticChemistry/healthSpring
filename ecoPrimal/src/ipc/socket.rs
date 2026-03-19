@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Unix socket discovery and path resolution for `biomeOS` niche deployment.
+//! Primal socket discovery and path resolution for `biomeOS` niche deployment.
 //!
 //! Follows XDG runtime conventions:
 //! 1. `HEALTHSPRING_SOCKET` environment override
@@ -244,15 +244,13 @@ pub fn extract_capability_strings(result: &serde_json::Value) -> Vec<&str> {
 fn probe_capability(socket_path: &std::path::Path, domain: &str) -> bool {
     use crate::tolerances::{IPC_PROBE_BUF, IPC_TIMEOUT_MS};
     use std::io::{Read, Write};
-    use std::os::unix::net::UnixStream;
     use std::time::Duration;
 
-    let Ok(mut stream) = UnixStream::connect(socket_path) else {
+    let Ok(mut stream) = super::transport::connect_path(socket_path) else {
         return false;
     };
     let timeout = Duration::from_millis(IPC_TIMEOUT_MS);
-    stream.set_read_timeout(Some(timeout)).ok();
-    stream.set_write_timeout(Some(timeout)).ok();
+    stream.set_timeouts(timeout).ok();
 
     let req = "{\"jsonrpc\":\"2.0\",\"method\":\"capability.list\",\"params\":{},\"id\":1}\n";
     if stream.write_all(req.as_bytes()).is_err() || stream.flush().is_err() {

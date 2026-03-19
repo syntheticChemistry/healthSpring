@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V37 — Cross-Ecosystem Absorption Sprint. 79 experiments, 706 Rust tests, 80 capabilities. 49 baselines with structured provenance registry. 18 proptest IPC fuzz tests. MCP tool definitions (23 tools).
-**Last Updated**: March 18, 2026
+**Status**: V39 — Toxicology, Simulation, Hormesis + Cross-Spring Integration. 83 experiments, 809 Rust tests, 85 capabilities. 53 baselines with structured provenance registry.
+**Last Updated**: March 19, 2026
 
 ---
 
@@ -149,6 +149,15 @@ Validation experiments documenting the four-tier pipeline (Python → Rust CPU �
 | 093 | ChEMBL JAK panel bioactivity | DD-004 | 0,1 | control | binary |
 | 094 | Rho/MRTF/SRF fibrosis pathway scoring (Neubig) | DD-005 | 0,1 | control | binary |
 | 095 | iPSC skin model readout (Gonzales) | DD-006 | 0,1 | control | binary |
+
+### Track 9: Low-Affinity Binding / Toxicology / Simulation (V39)
+
+| Exp | Name | Control | Tiers | Python | Rust Binary |
+|-----|------|---------|:-----:|:------:|:-----------:|
+| 097 | Low-affinity binding landscape (composite selectivity, Gini) | Hill 1910, Lorenz/Gini | 0,1 | control | 18 |
+| 098 | Toxicity landscape (Anderson IPR, clearance, delocalization) | Anderson 1958, Rowland & Tozer | 0,1 | control | 22 |
+| 099 | Hormesis (biphasic curve, mithridatism, caloric restriction, hygiene) | Calabrese & Baldwin 2003 | 0,1 | control | 18 |
+| 111 | Causal terrarium (mechanistic fitness, ecosystem reshaping) | Lotka-Volterra, HSP/SOD/p53/mTOR | 0,1 | control | 18 |
 
 ### Cross-Validation
 
@@ -300,8 +309,10 @@ control/
 - **083–089**: GPU V16 parity, benchmarks, toadStool dispatch, petalTongue V16
 - **090–094**: Track 7 (Drug Discovery / ADDRC)
 - **100–106**: Track 6 (Comparative Medicine / One Health)
+- **097–099**: Track 9 (Low-Affinity Binding / Toxicology / Hormesis)
 - **107–110**: V36 extensions (QS Anderson, real 16S, MIT-BIH, equine laminitis)
-- **111+**: Future extensions
+- **111**: Track 9 (Causal Terrarium — multi-scale simulation)
+- **112+**: Future extensions
 
 ---
 

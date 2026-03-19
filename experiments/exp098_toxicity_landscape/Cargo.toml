@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp098"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "exp098_toxicity_landscape"
+path = "src/main.rs"
+
+[dependencies]
+healthspring-barracuda = { path = "../../ecoPrimal" }

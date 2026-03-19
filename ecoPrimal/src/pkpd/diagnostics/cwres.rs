@@ -6,6 +6,7 @@
 //! `CWRES_ij = (y_ij - f(theta, eta_i, t_ij)) / sqrt(sigma)`.
 
 use super::super::nlme::{NlmeResult, StructuralModel, Subject};
+use crate::tolerances;
 
 /// Conditional Weighted Residuals for one subject.
 #[derive(Debug, Clone)]
@@ -27,7 +28,7 @@ pub fn compute_cwres(
     subjects: &[Subject],
     result: &NlmeResult,
 ) -> Vec<SubjectCwres> {
-    let sigma_sqrt = result.sigma.sqrt().max(1e-15);
+    let sigma_sqrt = result.sigma.sqrt().max(tolerances::DIVISION_GUARD);
 
     subjects
         .iter()

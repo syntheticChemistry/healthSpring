@@ -8,6 +8,7 @@
 //! - Finite-difference gradient descent on theta
 
 use super::{StructuralModel, Subject};
+use crate::tolerances;
 
 /// Estimation context passed through inner loops to reduce argument count.
 pub(super) struct EstimationCtx<'a> {
@@ -38,7 +39,7 @@ fn dpred_deta(
     subj: &Subject,
     n_eta: usize,
 ) -> Vec<Vec<f64>> {
-    let step = 1e-6;
+    let step = tolerances::NLME_FINITE_DIFF_STEP;
     let n_obs = subj.times.len();
     let mut grad = vec![vec![0.0; n_obs]; n_eta];
     let mut eta_pert = eta.to_vec();
@@ -79,7 +80,13 @@ pub(super) fn subject_objective(
     let eta_term: f64 = eta
         .iter()
         .zip(omega.iter())
-        .map(|(&ek, &ok)| if ok > 1e-15 { ek * ek / ok } else { 0.0 })
+        .map(|(&ek, &ok)| {
+            if ok > tolerances::DIVISION_GUARD {
+                ek * ek / ok
+            } else {
+                0.0
+            }
+        })
         .sum();
 
     resid_term + eta_term
@@ -110,7 +117,7 @@ pub(super) fn optimize_individual_eta(
             {
                 *rhs_val += gval * (obs - pr) / ctx.sigma;
             }
-            if ctx.omega[dim] > 1e-15 {
+            if ctx.omega[dim] > tolerances::DIVISION_GUARD {
                 *rhs_val -= eta[dim] / ctx.omega[dim];
             }
         }
@@ -121,7 +128,7 @@ pub(super) fn optimize_individual_eta(
                     hess[d1][d2] += g1 * g2 / ctx.sigma;
                 }
             }
-            hess[d1][d1] += if ctx.omega[d1] > 1e-15 {
+            hess[d1][d1] += if ctx.omega[d1] > tolerances::DIVISION_GUARD {
                 1.0 / ctx.omega[d1]
             } else {
                 0.0
@@ -133,7 +140,7 @@ pub(super) fn optimize_individual_eta(
         for (ek, &dk) in eta.iter_mut().zip(delta.iter()) {
             *ek += dk;
         }
-        if max_step < 1e-8 {
+        if max_step < tolerances::NLME_CONVERGENCE_STEP {
             break;
         }
     }
@@ -178,7 +185,7 @@ fn cholesky_solve(hmat: &[Vec<f64>], rhs: &[f64]) -> Vec<f64> {
     if !ok {
         return (0..dim)
             .map(|i| {
-                if hmat[i][i].abs() > 1e-15 {
+                if hmat[i][i].abs() > tolerances::DIVISION_GUARD {
                     rhs[i] / hmat[i][i]
                 } else {
                     0.0
@@ -243,7 +250,7 @@ pub(super) fn theta_gradient_step(
     sigma: f64,
     learning_rate: f64,
 ) {
-    let perturbation = 1e-5;
+    let perturbation = tolerances::NLME_THETA_PERTURBATION;
     let n_theta = theta.len();
     for dim in 0..n_theta {
         let orig = theta[dim];

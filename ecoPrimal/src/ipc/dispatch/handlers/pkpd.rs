@@ -4,6 +4,7 @@
 use serde_json::Value;
 
 use crate::pkpd;
+use crate::tolerances;
 
 use super::{f, fa, missing, sz_or};
 
@@ -201,7 +202,7 @@ pub fn dispatch_nlme_foce(params: &Value) -> Value {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
-        tol: f(params, "tol").unwrap_or(1e-6),
+        tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
     let result = pkpd::foce(
@@ -233,7 +234,7 @@ pub fn dispatch_nlme_saem(params: &Value) -> Value {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 300),
-        tol: f(params, "tol").unwrap_or(1e-6),
+        tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
     let result = pkpd::saem(
@@ -265,7 +266,7 @@ pub fn dispatch_cwres(params: &Value) -> Value {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
-        tol: f(params, "tol").unwrap_or(1e-6),
+        tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
     let result = pkpd::foce(
@@ -296,7 +297,7 @@ pub fn dispatch_vpc(params: &Value) -> Value {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
-        tol: f(params, "tol").unwrap_or(1e-6),
+        tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
     let result = pkpd::foce(
@@ -340,7 +341,7 @@ pub fn dispatch_gof(params: &Value) -> Value {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
-        tol: f(params, "tol").unwrap_or(1e-6),
+        tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
         seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
     };
     let result = pkpd::foce(

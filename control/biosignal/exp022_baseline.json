@@ -4,8 +4,8 @@
     "date": "2026-03-08",
     "script": "control/biosignal/exp022_ppg_spo2.py",
     "source": "Rust exp022_ppg_spo2 --write-baseline",
-    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
-    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "python": "3.13.2 | packaged by Anaconda, Inc. | (main, Feb  6 2025, 18:56:02) [GCC 11.2.0]",
+    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/biosignal/exp022_ppg_spo2.py"
   },
   "_source": "healthSpring Exp022: PPG SpO2 R-value Calibration",
@@ -16,16 +16,16 @@
     "r_1.0": 85.0
   },
   "synthetic_ppg": {
-    "ac_red": 0.010890083663770644,
+    "ac_red": 0.010890083663770422,
     "dc_red": 1.00235442995589,
     "duration_s": 5.0,
     "fs": 256.0,
     "heart_rate_bpm": 72,
     "n_samples": 1280,
-    "r_recovered_97": 0.5344239528301103,
+    "r_recovered_97": 0.5344239528300994,
     "seed": 42,
-    "spo2_recovered_90": 89.79786864056771,
-    "spo2_recovered_97": 96.63940117924724,
+    "spo2_recovered_90": 89.797868640568,
+    "spo2_recovered_97": 96.63940117924751,
     "spo2_target_90": 90.0,
     "spo2_target_97": 97.0
   }

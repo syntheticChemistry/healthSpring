@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: March 18, 2026
-**Status**: V37 — Cross-Ecosystem Absorption Sprint. 79 experiments, 706 tests + 173 validation checks + 113/113 cross-validation. `mul_add()` FMA sweep (8 sites). Centralized `extract_rpc_result()`. `deny.toml` 14-crate C-dep ban list. 18 proptest IPC fuzz tests. Structured provenance registry (49 records). MCP tool definitions (23 tools, `mcp.tools.list`). Leverage guide published. V36: All 6 GPU ops rewired (Tier A + B). V35: IPC resilience, sovereign dispatch.
+**Last Updated**: March 19, 2026
+**Status**: V38 — Low-Affinity Binding, Toxicology, Hormesis, Causal Simulation. 83 experiments, 724+ tests + 191+ validation checks. New science domains: `toxicology` (Anderson delocalization, hormesis, mithridatism), `simulation` (multi-scale causal chain), `discovery::affinity_landscape` (low-affinity binding, Gini breadth). 5 new IPC capabilities (toxicology + simulation). 4 new Python baselines with provenance (53 records). Cross-spring hormesis framework (healthSpring → groundSpring → airSpring). V37: Structured provenance registry, MCP tool definitions. V36: All 6 GPU ops rewired.
 
 ---
 
@@ -48,6 +48,18 @@ Species-specific model → Species-agnostic math → Cross-species parameter bri
 | `pkpd::nlme::saem_estimate` | SAEM E-step Monte Carlo | Batched sampling + sufficient stats | E-step is embarrassingly parallel |
 | `pkpd::diagnostics::vpc_simulate` | VPC Monte Carlo simulation | Embarrassingly parallel | 50+ simulations, each independent |
 
+### Tier B+ — Discovery / Toxicology / Simulation (V38)
+
+| Rust Module | Function | barraCuda Primitive | Notes |
+|------------|----------|-------------------|-------|
+| `discovery::affinity_landscape::composite_binding_score` | 1 - Π(1-f_i) | `FusedMapReduceF64` (complement→product) | Embarrassingly parallel over compound library |
+| `discovery::affinity_landscape::cross_reactivity_matrix` | NxM occupancy matrix | `batched_elementwise_f64.wgsl` | Element-wise Hill evaluation |
+| `toxicology::systemic_burden_score` | Σ(occ_i × sens_i) | `FusedMapReduceF64` (mul→sum) | Per-tissue reduction |
+| `toxicology::toxicity_ipr` | Σ(p_i^4) localization | `FusedMapReduceF64` (pow4→sum) | Anderson IPR, batch over compounds |
+| `toxicology::biphasic_dose_response` | Hormetic curve | `batched_elementwise_f64.wgsl` | Element-wise, dose sweep |
+| `simulation::mechanistic_cell_fitness` | Pathway competition | Batch per-pathway Hill | Compound of ops |
+| `simulation::ecosystem_simulate` | Lotka-Volterra ODE | ODE batch shader | Similar to PBPK pattern |
+
 ### Tier C — New Shader Required
 
 | Rust Module | Function | Shader Design | Blocking |
@@ -56,6 +68,39 @@ Species-specific model → Species-agnostic math → Cross-species parameter bri
 | `biosignal::fuse_channels` | Multi-modal ECG+PPG+EDA | toadStool pipeline (3-stage) | Pipeline execution on GPU |
 | `pkpd::pbpk_iv_simulate` | PBPK multi-compartment ODE | Euler/RK4 ODE shader | wetSpring ODE absorption status |
 | `endocrine::hrv_trt_response` | Exponential saturation | `batched_elementwise_f64.wgsl` | Trivial once shader exists |
+
+---
+
+## Track 9: Low-Affinity Binding / Toxicology / Simulation (V38)
+
+Computation as preprocessor — exploring low-affinity binding, toxicity landscapes,
+hormesis, and multi-scale causal simulation across the ecoPrimals stack.
+
+### New Modules
+
+| Rust Module | Function | Source | GPU Pattern |
+|-------------|----------|--------|-------------|
+| `discovery::affinity_landscape` | Low-affinity binding: composite score, Gini breadth, selectivity | Hill 1910, Lorenz/Gini | Embarrassingly parallel (Hill sweep) |
+| `toxicology` | Systemic burden, Anderson IPR, clearance regime, hormesis, mithridatism | Anderson 1958, Calabrese 2003 | Reduction + element-wise |
+| `simulation` | Stress pathways, mechanistic fitness, population dynamics, ecosystem | Lotka-Volterra, HSP/SOD/p53/mTOR | Batch ODE |
+
+### Cross-Spring Integration
+
+| Source Spring | Concept | healthSpring Module | Handoff |
+|--------------|---------|-------------------|---------|
+| wetSpring | Colonization resistance, probiotic adhesion | `discovery::affinity_landscape::colonization_resistance` | Joint exp097/wetSpring |
+| groundSpring | Pesticide hormesis, plant growth | `toxicology::ecological_hormesis` | Shared biphasic model |
+| airSpring | Environmental chemical exposure, hygiene hypothesis | `toxicology::immune_calibration` | Anderson delocalization |
+| All springs | Causal terrarium — multi-scale simulation | `simulation::causal_chain` | wateringHole coordination |
+
+### Experiments
+
+| Experiment | Domain | Checks | Description |
+|-----------|--------|--------|-------------|
+| exp097 | discovery | 18 | Low-affinity binding: composite targeting, selectivity, Gini, cross-reactivity |
+| exp098 | toxicology | 18 | Toxicity landscape: IPR, clearance, delocalization advantage |
+| exp099 | toxicology | 18 | Hormesis: biphasic curve, mithridatism, caloric restriction, hygiene |
+| exp111 | simulation | 18 | Causal terrarium: mechanistic fitness, ecosystem reshaping |
 
 ---
 
@@ -167,6 +212,13 @@ Exp040 validates CPU parity (15 contracts). Exp053 validates GPU parity (17 chec
 | `vpc_simulate` | `pkpd/diagnostics.rs` | `barraCuda::stats::diagnostics` | Ready — embarrassingly parallel |
 | `gof_compute` | `pkpd/diagnostics.rs` | `barraCuda::stats::diagnostics` | Ready |
 | `decode_format_212` | `wfdb.rs` | `barraCuda::signal::wfdb` | Ready — streaming parser |
+| `composite_binding_score` | `discovery/affinity_landscape.rs` | `barraCuda::bio::binding` | Ready — complement product |
+| `cross_reactivity_matrix` | `discovery/affinity_landscape.rs` | `barraCuda::bio::binding` | Ready — batched Hill sweep |
+| `systemic_burden_score` | `toxicology.rs` | `barraCuda::bio::toxicology` | Ready — weighted reduction |
+| `toxicity_ipr` | `toxicology.rs` | `barraCuda::bio::toxicology` | Ready — IPR reduction |
+| `biphasic_dose_response` | `toxicology.rs` | `barraCuda::bio::hormesis` | Ready — element-wise |
+| `mechanistic_cell_fitness` | `simulation.rs` | `barraCuda::bio::simulation` | Ready — compound of Hill ops |
+| `ecosystem_simulate` | `simulation.rs` | `barraCuda::bio::ecology` | Ready — ODE batch |
 
 ---
 

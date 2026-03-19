@@ -34,7 +34,7 @@
 //! **Pending architectural** (local to healthSpring until next absorption):
 //! - `GpuContext` fused pipeline → `barracuda::session::TensorSession`
 //! - `strip_f64_enable()` WGSL preprocessor — **legacy path**; sovereign dispatch
-//!   ([`sovereign`]) uses coralReef's native f64 lowering instead
+//!   (sovereign dispatch) uses coralReef's native f64 lowering instead
 //! - `shader_for_op()` mapping → barraCuda shader registry
 //!
 //! **Rewire plan** (Tier A → barraCuda GPU ops):

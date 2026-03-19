@@ -1,0 +1,73 @@
+{
+  "experiment": "exp099_hormesis",
+  "biphasic_dose_response": {
+    "formula": "baseline * (1 + s_max*D/(k_stim+D)) * (1 - D^n/(ic50^n + D^n))",
+    "at_D_zero": 100.0,
+    "params_zero": {
+      "baseline": 100.0
+    },
+    "at_D_one": 124.95001999200319,
+    "params_D1": {
+      "baseline": 100.0,
+      "s_max": 0.5,
+      "k_stim": 1.0,
+      "ic50": 50.0,
+      "n": 2.0
+    }
+  },
+  "hormetic_optimum": {
+    "peak_dose": 6.97,
+    "peak_value": 140.98676863518884,
+    "params": {
+      "baseline": 100.0,
+      "s_max": 0.5,
+      "k_stim": 1.0,
+      "ic50": 50.0,
+      "hill_n": 2.0,
+      "dose_max": 100.0,
+      "n_steps": 10000
+    }
+  },
+  "mithridatism": {
+    "formula": "IC50_adapted = IC50_naive * (1 + max_adapt * n / (k_adapt + n))",
+    "ic50_naive": 10.0,
+    "ic50_adapted": 43.33333333333334,
+    "params": {
+      "max_adapt": 5.0,
+      "k_adapt": 10.0,
+      "n_exposures": 20.0
+    }
+  },
+  "caloric_restriction": {
+    "ad_libitum": 80.0,
+    "mild_restriction_0_2": 91.57834757834758,
+    "severe_restriction_0_9": 32.17910447761193,
+    "params": {
+      "baseline": 80.0,
+      "longevity_gain": 0.3,
+      "k_autophagy": 0.15,
+      "starvation_ic50": 0.7,
+      "hill_n": 3.0
+    }
+  },
+  "ecological_hormesis": {
+    "no_pesticide": 1000.0,
+    "weak_pesticide_1": 1263.5078969243557,
+    "strong_pesticide_50": 192.55718675315813,
+    "params": {
+      "baseline": 1000.0,
+      "stress_gain": 0.4,
+      "k_stress": 0.5,
+      "lethal_ic50": 20.0,
+      "hill_n": 2.0
+    }
+  },
+  "_provenance": {
+    "date": "2026-03-19",
+    "script": "control/toxicology/exp099_hormesis.py",
+    "command": "control/toxicology/exp099_hormesis.py",
+    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
+    "python_version": "3.13.2",
+    "numpy_version": "2.1.3"
+  }
+}

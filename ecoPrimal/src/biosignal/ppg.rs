@@ -16,8 +16,7 @@ pub mod spo2_calibration {
     pub const SLOPE: f64 = 25.0;
 }
 
-/// Guard against division by near-zero DC or AC components.
-const DIVISION_GUARD: f64 = 1e-15;
+use crate::tolerances;
 
 /// PPG R-value: ratio of pulsatile-to-static components.
 ///
@@ -25,7 +24,9 @@ const DIVISION_GUARD: f64 = 1e-15;
 /// R ≈ 0.4–0.6 for normal oxygenation, R > 0.8 for hypoxia.
 #[must_use]
 pub fn ppg_r_value(ac_red: f64, dc_red: f64, ac_ir: f64, dc_ir: f64) -> f64 {
-    if dc_red.abs() < DIVISION_GUARD || dc_ir.abs() < DIVISION_GUARD || ac_ir.abs() < DIVISION_GUARD
+    if dc_red.abs() < tolerances::DIVISION_GUARD
+        || dc_ir.abs() < tolerances::DIVISION_GUARD
+        || ac_ir.abs() < tolerances::DIVISION_GUARD
     {
         return f64::NAN;
     }

@@ -33,9 +33,9 @@
   "nonneg_multi": true,
   "_provenance": {
     "date": "2026-03-08",
-    "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+    "python": "3.13.2 | packaged by Anaconda, Inc. | (main, Feb  6 2025, 18:56:02) [GCC 11.2.0]",
     "numpy": "2.1.3",
-    "git_commit": "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
+    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/pkpd/exp002_one_compartment_pk.py",
     "script": "control/pkpd/exp002_one_compartment_pk.py"
   }

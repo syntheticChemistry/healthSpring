@@ -81,6 +81,9 @@ members = [
     "experiments/exp094_rho_mrtf_fibrosis",
     "experiments/exp095_ipsc_skin_model",
     "experiments/exp096_niclosamide_delivery",
+    "experiments/exp097_affinity_landscape",
+    "experiments/exp098_toxicity_landscape",
+    "experiments/exp099_hormesis",
     "experiments/exp102_il31_pruritus_timecourse",
     "experiments/exp103_lokivetmab_duration",
     "experiments/exp104_cross_species_pk",
@@ -90,6 +93,7 @@ members = [
     "experiments/exp108_real_16s_anderson",
     "experiments/exp109_mitbih_arrhythmia",
     "experiments/exp110_equine_laminitis",
+    "experiments/exp111_causal_terrarium",
 ]
 
 [workspace.package]
