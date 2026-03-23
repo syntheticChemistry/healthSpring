@@ -15,11 +15,17 @@ use serde::{Deserialize, Serialize};
 /// A scored drug-disease pair with pathway, geometry, and disorder dimensions.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MatrixEntry {
+    /// Compound identifier.
     pub compound: String,
+    /// Disease or indication label.
     pub disease: String,
+    /// Pathway selectivity score in [0, 1].
     pub pathway_score: f64,
+    /// Tissue penetration / geometry factor in [0, 1].
     pub tissue_geometry: f64,
+    /// Microbiome disorder impact factor in [0, 2].
     pub disorder_factor: f64,
+    /// Product of pathway × geometry × disorder.
     pub combined_score: f64,
 }
 

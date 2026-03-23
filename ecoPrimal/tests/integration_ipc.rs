@@ -1,4 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![expect(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    reason = "integration tests use unwrap/expect for concise assertions"
+)]
 //! Integration tests for IPC infrastructure.
 //!
 //! Tests transport abstraction, socket discovery, capability extraction,
@@ -60,25 +65,25 @@ fn try_send_to_nonexistent_socket_returns_connect_error() {
 #[test]
 fn transport_parse_endpoint_unix() {
     let ep = transport::parse_endpoint("unix:///run/biomeos/test.sock");
-    assert!(matches!(ep, transport::Endpoint::Unix(_)));
+    assert!(matches!(ep, Ok(transport::Endpoint::Unix(_))));
 }
 
 #[test]
 fn transport_parse_endpoint_tcp() {
     let ep = transport::parse_endpoint("tcp://127.0.0.1:9090");
-    assert!(matches!(ep, transport::Endpoint::Tcp(_)));
+    assert!(matches!(ep, Ok(transport::Endpoint::Tcp(_))));
 }
 
 #[test]
 fn transport_parse_endpoint_path_infers_unix() {
     let ep = transport::parse_endpoint("/tmp/biomeos/healthspring-default.sock");
-    assert!(matches!(ep, transport::Endpoint::Unix(_)));
+    assert!(matches!(ep, Ok(transport::Endpoint::Unix(_))));
 }
 
 #[test]
 fn transport_parse_endpoint_host_port_infers_tcp() {
     let ep = transport::parse_endpoint("localhost:8080");
-    assert!(matches!(ep, transport::Endpoint::Tcp(_)));
+    assert!(matches!(ep, Ok(transport::Endpoint::Tcp(_))));
 }
 
 #[test]

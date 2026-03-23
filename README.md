@@ -5,7 +5,7 @@
 **Date:** March 22, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V41 — Deep Debt Resolution Sprint. 855 tests, 83 experiments, 53 Python baselines. barraCuda v0.3.7. Workspace lints consolidated (`[workspace.lints]` — `forbid(unsafe_code)`, `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`, `warn(missing_docs)`). Library `println!`/`eprintln!` evolved to `tracing`. Hardcoded primal names evolved to capability-based discovery with env-driven fallback. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. Proptest extended to numerical properties (Hill monotonicity, boundedness, EC ordering). Tolerance registry synced. CI validates all experiment binaries. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
+**Status:** V42 — Deep Debt Resolution Sprint. 863 tests, 83 experiments, 53 Python baselines. barraCuda v0.3.7. Workspace lints consolidated (`[workspace.lints]` — `forbid(unsafe_code)`, `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`, `warn(missing_docs)`). Library `println!`/`eprintln!` evolved to `tracing`. Hardcoded primal names evolved to capability-based discovery with env-driven fallback. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. Proptest extended to numerical properties (Hill monotonicity, boundedness, EC ordering). Tolerance registry synced. CI validates all experiment binaries. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
 
 ---
 
@@ -33,8 +33,8 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V41** (Deep Debt Resolution Sprint) |
-| **Total tests** | **855** (lib + proptest + IPC fuzz + doc + experiment bins) |
+| Version | **V42** (Deep Debt Resolution Sprint) |
+| **Total tests** | **863** (lib + proptest + IPC fuzz + doc + experiment bins) |
 | Experiments complete | 83 (Tracks 1–9, Tier 0+1+2+3) |
 | Experiments using ValidationHarness | **83/83** (all standardized) |
 | JSON-RPC capabilities | 59 (46 science + 13 infrastructure — `capability.list`, provenance, health probes, compute/data/model routing) |
@@ -626,7 +626,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 855 tests
+cargo test --workspace                  # 863 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

@@ -6,13 +6,21 @@ use super::WfdbError;
 /// Annotation beat type (subset of WFDB annotation codes).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BeatType {
+    /// Normal sinus beat (code 1).
     Normal,
+    /// Left bundle branch block beat (code 7).
     LeftBundleBranch,
+    /// Right bundle branch block beat (code 8).
     RightBundleBranch,
+    /// Atrial premature beat (code 5).
     AtrialPremature,
+    /// Ventricular premature beat (code 6).
     VentricularPremature,
+    /// Paced beat (code 11).
     PacedBeat,
+    /// Fusion of ventricular and normal beat (code 10).
     FusionVentricular,
+    /// Unrecognized or non-standard WFDB code.
     Unknown(u8),
 }
 

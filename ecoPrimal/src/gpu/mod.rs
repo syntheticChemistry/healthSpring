@@ -55,17 +55,67 @@
 use crate::microbiome;
 use crate::pkpd;
 
+/// Cached GPU availability probe — avoids Vulkan init races in parallel tests.
+///
+/// Absorbed from groundSpring V120 / neuralSpring V120 — `OnceLock` ensures
+/// GPU probing happens exactly once, even under `cargo test -j N`.
+#[cfg(feature = "gpu")]
+static GPU_AVAILABLE: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+
+/// Check whether a GPU adapter is available (cached after first probe).
+///
+/// Safe to call from any thread, any number of times. The first call
+/// performs the actual wgpu adapter request; subsequent calls return
+/// the cached result without touching the GPU driver.
+#[cfg(feature = "gpu")]
+#[must_use]
+pub fn gpu_available() -> bool {
+    *GPU_AVAILABLE.get_or_init(|| {
+        let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
+            backends: wgpu::Backends::all(),
+            ..wgpu::InstanceDescriptor::default()
+        });
+        // Block synchronously via a one-shot runtime rather than adding
+        // pollster as a non-dev dependency. Tokio is already gated on `gpu`.
+        tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .ok()
+            .and_then(|rt| {
+                rt.block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
+                    power_preference: wgpu::PowerPreference::HighPerformance,
+                    compatible_surface: None,
+                    force_fallback_adapter: false,
+                }))
+                .ok()
+            })
+            .is_some()
+    })
+}
+
+/// GPU probe stub when the `gpu` feature is disabled — always returns `false`.
+#[cfg(not(feature = "gpu"))]
+#[must_use]
+pub const fn gpu_available() -> bool {
+    false
+}
+
+/// barraCuda rewire hooks bridging local GPU ops to upstream implementations.
 #[cfg(feature = "barracuda-ops")]
 pub mod barracuda_rewire;
+/// Device, queues, and pipeline state for wgpu-backed execution.
 #[cfg(feature = "gpu")]
 pub mod context;
+/// GPU dispatch entry points and buffer wiring for [`GpuOp`].
 #[cfg(feature = "gpu")]
 pub mod dispatch;
 #[cfg(feature = "gpu")]
 mod fused;
+/// Sovereign f64 pipeline integration (coralReef-style lowering path).
 #[cfg(feature = "gpu")]
 pub mod sovereign;
 
+/// ODE system definitions used by codegen shaders (e.g. Michaelis–Menten).
 pub mod ode_systems;
 
 /// WGSL shader sources — compiled into the binary.
@@ -92,13 +142,19 @@ pub mod ode_systems;
 /// barraCuda's `Fp64Strategy` and coralReef's f64 lowering will replace
 /// these workarounds when the sovereign pipeline is complete.
 pub mod shaders {
+    /// WGSL for vectorized Hill dose–response (`GpuOp::HillSweep`).
     pub const HILL_DOSE_RESPONSE: &str =
         include_str!("../../shaders/health/hill_dose_response_f64.wgsl");
+    /// WGSL for parallel population PK AUC (`GpuOp::PopulationPkBatch`).
     pub const POPULATION_PK: &str = include_str!("../../shaders/health/population_pk_f64.wgsl");
+    /// WGSL for batch Shannon/Simpson diversity (`GpuOp::DiversityBatch`).
     pub const DIVERSITY: &str = include_str!("../../shaders/health/diversity_f64.wgsl");
+    /// WGSL for batched Michaelis–Menten PK integration (`GpuOp::MichaelisMentenBatch`).
     pub const MICHAELIS_MENTEN_BATCH: &str =
         include_str!("../../shaders/health/michaelis_menten_batch_f64.wgsl");
+    /// WGSL for fiber-wise SCFA production (`GpuOp::ScfaBatch`).
     pub const SCFA_BATCH: &str = include_str!("../../shaders/health/scfa_batch_f64.wgsl");
+    /// WGSL for template-based ECG beat classification (`GpuOp::BeatClassifyBatch`).
     pub const BEAT_CLASSIFY_BATCH: &str =
         include_str!("../../shaders/health/beat_classify_batch_f64.wgsl");
 }
@@ -108,38 +164,60 @@ pub mod shaders {
 pub enum GpuOp {
     /// Vectorized Hill dose-response: compute E(c) for many concentrations.
     HillSweep {
+        /// Maximum effect plateau (same units as the response axis).
         emax: f64,
+        /// Half-maximal concentration (Hill EC₅₀).
         ec50: f64,
+        /// Hill slope (cooperativity exponent).
         n: f64,
+        /// Concentration grid evaluated in parallel.
         concentrations: Vec<f64>,
     },
     /// Batch population PK: simulate N patients in parallel.
     PopulationPkBatch {
+        /// Virtual cohort size (parallel AUC outputs).
         n_patients: usize,
+        /// Dose per patient (mg) driving AUC scaling.
         dose_mg: f64,
+        /// Oral or depot bioavailability fraction (0–1).
         f_bioavail: f64,
+        /// PRNG seed for inter-patient variability.
         seed: u64,
     },
     /// Batch diversity indices for multiple communities.
-    DiversityBatch { communities: Vec<Vec<f64>> },
+    DiversityBatch {
+        /// One abundance vector per community (non-negative, summing to 1 is typical).
+        communities: Vec<Vec<f64>>,
+    },
     /// Batch Michaelis-Menten PK: parallel Euler ODE per patient.
     MichaelisMentenBatch {
+        /// Maximum elimination velocity scale (model-specific units).
         vmax: f64,
+        /// Michaelis constant for substrate/concentration scale.
         km: f64,
+        /// Volume of distribution (L).
         vd: f64,
+        /// Fixed ODE time step (same units as total simulated time).
         dt: f64,
+        /// Number of Euler steps per simulation.
         n_steps: u32,
+        /// Parallel patient count.
         n_patients: u32,
+        /// Base seed for deterministic per-patient parameter jitter.
         seed: u32,
     },
     /// Batch SCFA production: element-wise Michaelis-Menten per fiber input.
     ScfaBatch {
+        /// Shared microbiome parameters for all fiber rows.
         params: crate::microbiome::ScfaParams,
+        /// Fiber intake values (g/day or model units) per output row.
         fiber_inputs: Vec<f64>,
     },
     /// Batch beat classification: template correlation per beat window.
     BeatClassifyBatch {
+        /// One waveform window per beat to classify.
         beats: Vec<Vec<f64>>,
+        /// Reference templates (order matches `BeatClass` mapping in CPU path).
         templates: Vec<Vec<f64>>,
     },
 }
@@ -383,8 +461,10 @@ impl std::fmt::Display for GpuError {
 
 impl std::error::Error for GpuError {}
 
+/// wgpu-backed session wrapper (pipelines, buffers) when the `gpu` feature is on.
 #[cfg(feature = "gpu")]
 pub use context::GpuContext;
+/// Runs [`GpuOp`] on the GPU with the same semantics as [`execute_cpu`].
 #[cfg(feature = "gpu")]
 pub use dispatch::execute_gpu;
 

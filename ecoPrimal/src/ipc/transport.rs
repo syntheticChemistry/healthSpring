@@ -25,8 +25,10 @@ use super::error::IpcError;
 /// Wraps platform-specific transport (Unix socket or TCP) behind
 /// `Read + Write` so consumers are transport-agnostic.
 pub enum IpcStream {
+    /// Unix domain socket stream (POSIX hosts).
     #[cfg(unix)]
     Unix(std::os::unix::net::UnixStream),
+    /// TCP stream fallback (localhost or remote host:port).
     Tcp(TcpStream),
 }
 
@@ -97,8 +99,10 @@ impl IpcStream {
 /// Parsed endpoint descriptor.
 #[derive(Debug, Clone)]
 pub enum Endpoint {
+    /// Filesystem path to a Unix socket endpoint.
     #[cfg(unix)]
     Unix(std::path::PathBuf),
+    /// TCP `host:port` string (resolved at connect time).
     Tcp(String),
 }
 
@@ -109,16 +113,23 @@ pub enum Endpoint {
 /// - `tcp://host:port` → TCP connection
 /// - Path-like (contains `/` or `.sock`) → Unix socket
 /// - `host:port` → TCP
-#[must_use]
-pub fn parse_endpoint(raw: &str) -> Endpoint {
+///
+/// # Errors
+///
+/// Returns [`IpcError::Connect`] when a `unix://` endpoint is requested
+/// on a non-Unix platform.
+pub fn parse_endpoint(raw: &str) -> Result<Endpoint, IpcError> {
     if let Some(path) = raw.strip_prefix("unix://") {
         #[cfg(unix)]
-        return Endpoint::Unix(path.into());
+        return Ok(Endpoint::Unix(path.into()));
         #[cfg(not(unix))]
-        panic!("unix:// endpoints require a Unix platform");
+        return Err(IpcError::Connect(io::Error::new(
+            io::ErrorKind::Unsupported,
+            "unix:// endpoints require a Unix platform",
+        )));
     }
     if let Some(addr) = raw.strip_prefix("tcp://") {
-        return Endpoint::Tcp(addr.to_owned());
+        return Ok(Endpoint::Tcp(addr.to_owned()));
     }
     if raw.contains('/')
         || std::path::Path::new(raw)
@@ -126,11 +137,11 @@ pub fn parse_endpoint(raw: &str) -> Endpoint {
             .is_some_and(|ext| ext.eq_ignore_ascii_case("sock"))
     {
         #[cfg(unix)]
-        return Endpoint::Unix(raw.into());
+        return Ok(Endpoint::Unix(raw.into()));
         #[cfg(not(unix))]
-        return Endpoint::Tcp(raw.to_owned());
+        return Ok(Endpoint::Tcp(raw.to_owned()));
     }
-    Endpoint::Tcp(raw.to_owned())
+    Ok(Endpoint::Tcp(raw.to_owned()))
 }
 
 /// Connect to an endpoint, returning a transport-agnostic [`IpcStream`].
@@ -194,25 +205,27 @@ mod tests {
     #[test]
     fn parse_unix_prefix() {
         let ep = parse_endpoint("unix:///tmp/biomeos/healthspring.sock");
-        assert!(matches!(ep, Endpoint::Unix(p) if p.to_str().unwrap().contains("healthspring")));
+        assert!(
+            matches!(ep, Ok(Endpoint::Unix(p)) if p.to_str().is_some_and(|s| s.contains("healthspring")))
+        );
     }
 
     #[test]
     fn parse_tcp_prefix() {
         let ep = parse_endpoint("tcp://127.0.0.1:9090");
-        assert!(matches!(ep, Endpoint::Tcp(ref a) if a == "127.0.0.1:9090"));
+        assert!(matches!(ep, Ok(Endpoint::Tcp(ref a)) if a == "127.0.0.1:9090"));
     }
 
     #[test]
     fn parse_path_infers_unix() {
         let ep = parse_endpoint("/tmp/biomeos/healthspring-default.sock");
-        assert!(matches!(ep, Endpoint::Unix(_)));
+        assert!(matches!(ep, Ok(Endpoint::Unix(_))));
     }
 
     #[test]
     fn parse_host_port_infers_tcp() {
         let ep = parse_endpoint("localhost:8080");
-        assert!(matches!(ep, Endpoint::Tcp(_)));
+        assert!(matches!(ep, Ok(Endpoint::Tcp(_))));
     }
 
     #[test]

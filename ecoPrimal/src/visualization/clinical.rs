@@ -18,18 +18,26 @@ use crate::endocrine;
 /// TRT delivery protocol.
 #[derive(Debug, Clone, Copy)]
 pub enum TrtProtocol {
+    /// Intramuscular injection once weekly.
     ImWeekly,
+    /// Intramuscular injection every two weeks.
     ImBiweekly,
+    /// Subcutaneous testosterone pellets.
     Pellet,
 }
 
 /// A patient's clinical profile for TRT scenario generation.
 #[derive(Debug, Clone)]
 pub struct PatientTrtProfile {
+    /// Display name for the scenario.
     pub name: String,
+    /// Age in years.
     pub age: f64,
+    /// Body weight in pounds.
     pub weight_lb: f64,
+    /// Baseline total testosterone (ng/dL).
     pub baseline_t_ng_dl: f64,
+    /// Prescribed TRT delivery modality.
     pub protocol: TrtProtocol,
     /// Pielou evenness (0..1). `None` = not measured.
     pub gut_diversity: Option<f64>,
@@ -40,6 +48,7 @@ pub struct PatientTrtProfile {
 }
 
 impl PatientTrtProfile {
+    /// Build a profile with required demographics and protocol; optional biomarkers default to unset.
     #[must_use]
     pub fn new(
         name: &str,

@@ -194,34 +194,51 @@ pub fn dispatch_scenario(
 
 /// Description of a Nest for topology visualization.
 pub struct TopologyNest {
+    /// Device index within the parent node.
     pub device_id: u16,
+    /// Hardware substrate label (e.g. cpu, gpu, npu).
     pub substrate: String,
+    /// Human-readable device label for display.
     pub label: String,
+    /// Total device memory capacity in bytes.
     pub memory_total_bytes: u64,
+    /// Currently used memory in bytes.
     pub memory_used_bytes: u64,
+    /// Utilization as a percentage of capacity.
     pub utilization_pct: f64,
+    /// Whether the nest is available for dispatch.
     pub available: bool,
 }
 
 /// Description of a Node for topology visualization.
 pub struct TopologyNode {
+    /// Node index within the tower.
     pub node_id: u16,
+    /// `PCIe` generation label for intra-node links (e.g. `Gen4`).
     pub pcie_gen: String,
+    /// Nests (devices) attached to this node.
     pub nests: Vec<TopologyNest>,
 }
 
 /// Description of a transfer for topology visualization.
 pub struct TopologyTransfer {
+    /// Source nest or node id in scenario graph id space.
     pub src_id: String,
+    /// Destination nest or node id in scenario graph id space.
     pub dst_id: String,
+    /// Edge label (e.g. `PCIe` P2P bandwidth).
     pub label: String,
 }
 
 /// Description of a stage in a dispatch plan for visualization.
 pub struct DispatchStageInfo {
+    /// Stage name (e.g. pipeline step id).
     pub name: String,
+    /// Substrate this stage ran on (cpu, gpu, etc.).
     pub substrate: String,
+    /// Wall-clock time for the stage in microseconds.
     pub elapsed_us: f64,
+    /// Number of output elements produced by the stage.
     pub output_elements: usize,
 }
 

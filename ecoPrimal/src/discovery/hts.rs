@@ -16,18 +16,26 @@ use serde::{Deserialize, Serialize};
 /// Hit classification from SSMD magnitude.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum HitClass {
+    /// Strong effect (|SSMD| > 3).
     Strong,
+    /// Moderate effect (2 < |SSMD| ≤ 3).
     Moderate,
+    /// Weak effect (1 < |SSMD| ≤ 2).
     Weak,
+    /// No meaningful effect (|SSMD| ≤ 1).
     Inactive,
 }
 
 /// Result of hit classification for a single well/compound.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HitResult {
+    /// Well or compound index in the input slice.
     pub index: usize,
+    /// Percent inhibition vs plate controls.
     pub percent_inhibition: f64,
+    /// Strictly standardized mean difference vs negative control.
     pub ssmd_value: f64,
+    /// Discrete hit strength bucket from `classify_ssmd`.
     pub classification: HitClass,
 }
 

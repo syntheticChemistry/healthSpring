@@ -18,12 +18,22 @@
 /// Pattern source: biomeOS v2.46 / groundSpring V112.
 #[derive(Debug, Clone)]
 pub enum DispatchOutcome {
-    /// The RPC succeeded and returned a result.
+    /// The RPC succeeded and returned a result payload.
     Ok(serde_json::Value),
-    /// Protocol-level error (JSON-RPC spec codes -32700 to -32600).
-    ProtocolError { code: i64, message: String },
-    /// Application-level error (code >= -32000 or non-standard).
-    ApplicationError { code: i64, message: String },
+    /// JSON-RPC protocol-layer failure (parse, invalid request, method not found, etc.).
+    ProtocolError {
+        /// JSON-RPC error code.
+        code: i64,
+        /// Error message from the server.
+        message: String,
+    },
+    /// Application-layer failure after the request was accepted.
+    ApplicationError {
+        /// Application-specific error code.
+        code: i64,
+        /// Error message from the domain handler.
+        message: String,
+    },
 }
 
 const JSONRPC_PROTOCOL_ERROR_MIN: i64 = -32700;

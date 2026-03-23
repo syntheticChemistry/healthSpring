@@ -21,6 +21,7 @@ use serde::{Deserialize, Serialize};
 /// Fibrosis pathway components scored for drug targeting.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FibrosisPathwayScore {
+    /// Compound identifier being scored.
     pub compound: String,
     /// Rho `GTPase` inhibition (0 = none, 1 = complete).
     pub rho_inhibition: f64,
@@ -35,6 +36,7 @@ pub struct FibrosisPathwayScore {
 /// Anti-fibrotic compound profile.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AntiFibroticCompound {
+    /// Compound or catalog name.
     pub name: String,
     /// IC50 for Rho inhibition (µM).
     pub rho_ic50_um: f64,
@@ -55,6 +57,7 @@ pub fn ccg_1423() -> AntiFibroticCompound {
     }
 }
 
+/// CCG-203971: MRTF-biased follow-on inhibitor profile for pathway scoring.
 #[must_use]
 pub fn ccg_203971() -> AntiFibroticCompound {
     AntiFibroticCompound {

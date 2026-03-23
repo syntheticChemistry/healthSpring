@@ -24,12 +24,19 @@ pub mod stress_params {
 /// Fused health assessment from ECG + PPG + EDA channels.
 #[derive(Debug, Clone)]
 pub struct FusedHealthAssessment {
+    /// Heart rate from R-R intervals (bpm).
     pub heart_rate_bpm: f64,
+    /// SDNN HRV in ms.
     pub hrv_sdnn_ms: f64,
+    /// RMSSD HRV in ms.
     pub hrv_rmssd_ms: f64,
+    /// Peripheral oxygen saturation from PPG (%).
     pub spo2_percent: f64,
+    /// Skin conductance response rate (events/min).
     pub scr_rate_per_min: f64,
+    /// Combined normalized stress index in [0, 1].
     pub stress_index: f64,
+    /// Overall wellness score in [0, 100] (higher is healthier).
     pub overall_score: f64,
 }
 

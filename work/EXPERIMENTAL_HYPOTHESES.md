@@ -11,7 +11,7 @@ design and grant proposals.
 
 ## The Position
 
-You walk in with 855 tests, 83 experiments, 782 Gonzales-specific validation
+You walk in with 863 tests, 83 experiments, 782 Gonzales-specific validation
 checks across three springs, and a computational pipeline that replaces $210K of
 commercial software with sovereign Rust that runs on a laptop. The Gonzales
 interview established credibility. The Lisabeth conversation opened the door to

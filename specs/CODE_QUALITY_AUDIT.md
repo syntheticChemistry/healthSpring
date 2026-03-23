@@ -1,6 +1,19 @@
 # healthSpring Code Quality Audit Report
 
-**Date**: March 19, 2026 (pre-V39 snapshot — see V39 changelog in README.md for latest)  
+## V42 (March 23, 2026)
+
+| Metric | Value |
+|--------|-------|
+| Clippy errors | 0 |
+| Clippy warnings | 0 |
+| `cargo test` (workspace) | 863 passing |
+| `cargo deny` | clean |
+| `cargo doc` | 0 warnings |
+
+---
+
+## Historical snapshot (pre-V39, March 19, 2026)
+
 **Scope**: ecoPrimal/src/, metalForge/, toadstool/ (excluding archive/)
 
 ---

@@ -110,13 +110,21 @@ pub fn generate_synthetic_ppg(
 /// Result of synthetic PPG generation.
 #[derive(Debug, Clone)]
 pub struct SyntheticPpg {
+    /// Red wavelength PPG waveform samples.
     pub red: Vec<f64>,
+    /// Infrared wavelength PPG waveform samples.
     pub ir: Vec<f64>,
+    /// Sample rate (Hz).
     pub fs: f64,
+    /// DC component of the red channel (simple mean envelope).
     pub dc_red: f64,
+    /// DC component of the IR channel.
     pub dc_ir: f64,
+    /// AC amplitude of the red channel (max−min envelope).
     pub ac_red: f64,
+    /// AC amplitude of the IR channel.
     pub ac_ir: f64,
+    /// Target R-value used to build the synthetic AC ratio.
     pub r_target: f64,
 }
 

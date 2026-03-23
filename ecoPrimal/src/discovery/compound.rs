@@ -21,33 +21,46 @@ use crate::tolerances;
 /// IC50 profile for a single compound across one target.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CompoundProfile {
+    /// Compound identifier or name.
     pub name: String,
+    /// IC50 values (nM) aligned with `target_names`.
     pub ic50_nm: Vec<f64>,
+    /// Target labels aligned with `ic50_nm`.
     pub target_names: Vec<String>,
 }
 
 /// Target kinase profile.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TargetProfile {
+    /// Target name (e.g. kinase id).
     pub name: String,
+    /// Disease relevance weight in [0, 1] or similar scale.
     pub disease_relevance: f64,
 }
 
 /// IC50 estimate from Hill fit.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Ic50Estimate {
+    /// Estimated IC50 concentration (same units as input curve).
     pub ic50: f64,
+    /// Hill coefficient from the fit.
     pub hill_n: f64,
+    /// Estimated maximum response (Emax).
     pub emax: f64,
+    /// Coefficient of determination for the Hill fit.
     pub r_squared: f64,
 }
 
 /// Scorecard for a single compound across all targets.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CompoundScorecard {
+    /// Compound identifier.
     pub compound: String,
+    /// Per-target IC50 pairs (name, nM).
     pub ic50_by_target: Vec<(String, f64)>,
+    /// Selectivity index for the designated primary target.
     pub primary_selectivity: f64,
+    /// Composite rank score for ordering the panel.
     pub overall_rank_score: f64,
 }
 

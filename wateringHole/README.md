@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V41 — Deep Debt Resolution Sprint. 855 tests, 83 experiments, 83/83 ValidationHarness, 87+ named tolerances, 53 provenance records with DOI. 59 capabilities (46 science + 13 infra). 9 science tracks. barraCuda v0.3.7. Workspace-level `[lints]`. Library `tracing`. Env-driven discovery. ODE codegen wired. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
+**Status**: V42 — Deep Debt Resolution Sprint. 863 tests, 83 experiments, 83/83 ValidationHarness, 87+ named tolerances, 53 provenance records with DOI. 59 capabilities (46 science + 13 infra). 9 science tracks. barraCuda v0.3.7. Workspace-level `[lints]`. Library `tracing`. Env-driven discovery. ODE codegen wired. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
 **Last Updated**: March 23, 2026
 
 ---
@@ -22,9 +22,9 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V41** | [V41 Deep Debt Resolution](handoffs/HEALTHSPRING_V41_DEEP_DEBT_RESOLUTION_HANDOFF_MAR23_2026.md) | Mar 23 | Workspace lints, tracing, env-driven discovery, ODE codegen, proptest numerical. Supersedes V40. |
-| **V41** | [V41 toadStool/barraCuda Evolution](handoffs/HEALTHSPRING_V41_TOADSTOOL_BARRACUDA_EVOLUTION_HANDOFF_MAR23_2026.md) | Mar 23 | Full barraCuda consumption inventory, GPU promotion candidates, ODE codegen wiring, new primitive requests. Supersedes V40 toadStool handoff. |
-| | *V1–V40 → `handoffs/archive/`* | | Fossil record |
+| **V42** | [V42 Deep Debt Resolution](../../wateringHole/handoffs/HEALTHSPRING_V42_DEEP_DEBT_RESOLUTION_HANDOFF_MAR23_2026.md) | Mar 23 | 548 missing_docs → 0, clippy -D warnings, RUSTSEC fix, barraCuda API drift, ValidationSink, normalize_method, OnceLock GPU probe. 863 tests. Supersedes V41. |
+| **V42** | [V42 toadStool/barraCuda Absorption](../../wateringHole/handoffs/HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR23_2026.md) | Mar 23 | API drift fixes, ODE absorption candidates, new primitive requests, cross-spring science. Supersedes V41. |
+| | *V1–V41 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

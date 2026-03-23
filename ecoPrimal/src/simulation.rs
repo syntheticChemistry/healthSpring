@@ -491,7 +491,7 @@ mod tests {
     #[test]
     fn mechanistic_biphasic_shape() {
         let pathways = test_pathways();
-        let doses: Vec<f64> = (0..100).map(|i| i as f64).collect();
+        let doses: Vec<f64> = (0..100).map(f64::from).collect();
         let fitnesses: Vec<f64> = doses
             .iter()
             .map(|&d| mechanistic_cell_fitness(d, 100.0, &pathways, 50.0, 2.0))

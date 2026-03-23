@@ -6,8 +6,27 @@
 
 use super::error::IpcError;
 
+/// JSON-RPC 2.0 parse error code (`-32700`).
 pub const PARSE_ERROR: i64 = -32700;
+/// JSON-RPC 2.0 method not found code (`-32601`).
 pub const METHOD_NOT_FOUND: i64 = -32601;
+
+/// Normalize a JSON-RPC method name by stripping legacy primal prefixes.
+///
+/// The ecosystem semantic naming standard v2.1 uses bare `{domain}.{operation}`
+/// names. Legacy callers may still send `healthspring.science.pkpd.hill` or
+/// `barracuda.stats.mean` — this strips known prefixes for backward
+/// compatibility while keeping the canonical bare form.
+#[must_use]
+pub fn normalize_method(method: &str) -> &str {
+    const PREFIXES: &[&str] = &["healthspring.", "barracuda.", "biomeos."];
+    for prefix in PREFIXES {
+        if let Some(stripped) = method.strip_prefix(prefix) {
+            return stripped;
+        }
+    }
+    method
+}
 
 /// Backward-compatible alias for [`IpcError`].
 pub type SendError = IpcError;
@@ -223,5 +242,32 @@ mod tests {
             message: "method not found".into(),
         };
         assert!(err.is_method_not_found());
+    }
+
+    #[test]
+    fn normalize_strips_healthspring_prefix() {
+        assert_eq!(
+            normalize_method("healthspring.science.pkpd.hill"),
+            "science.pkpd.hill"
+        );
+    }
+
+    #[test]
+    fn normalize_strips_barracuda_prefix() {
+        assert_eq!(normalize_method("barracuda.stats.mean"), "stats.mean");
+    }
+
+    #[test]
+    fn normalize_strips_biomeos_prefix() {
+        assert_eq!(
+            normalize_method("biomeos.lifecycle.health"),
+            "lifecycle.health"
+        );
+    }
+
+    #[test]
+    fn normalize_preserves_bare_method() {
+        assert_eq!(normalize_method("capability.list"), "capability.list");
+        assert_eq!(normalize_method("science.pkpd.hill"), "science.pkpd.hill");
     }
 }

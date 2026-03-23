@@ -11,8 +11,11 @@ use crate::tolerances;
 /// Conditional Weighted Residuals for one subject.
 #[derive(Debug, Clone)]
 pub struct SubjectCwres {
+    /// Index of the subject in the NLME input list.
     pub subject_idx: usize,
+    /// Observation times (hours), aligned with `residuals`.
     pub times: Vec<f64>,
+    /// CWRES values at each time point.
     pub residuals: Vec<f64>,
 }
 

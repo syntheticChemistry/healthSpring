@@ -155,20 +155,30 @@ pub fn pan_tompkins(signal: &[f64], fs: f64) -> PanTompkinsResult {
 /// Result of the full Pan-Tompkins pipeline.
 #[derive(Debug, Clone)]
 pub struct PanTompkinsResult {
+    /// Bandpass-filtered signal.
     pub bandpass: Vec<f64>,
+    /// Five-point derivative output.
     pub derivative: Vec<f64>,
+    /// Squared derivative (energy).
     pub squared: Vec<f64>,
+    /// Moving-window integration of the squared signal.
     pub mwi: Vec<f64>,
+    /// Detected QRS peak sample indices.
     pub peaks: Vec<usize>,
 }
 
 /// QRS detection metrics.
 #[derive(Debug, Clone, Copy)]
 pub struct DetectionMetrics {
+    /// True positive detections vs reference.
     pub tp: usize,
+    /// False positive detections.
     pub fp: usize,
+    /// Missed reference peaks (false negatives).
     pub fn_count: usize,
+    /// Sensitivity (recall) vs reference.
     pub sensitivity: f64,
+    /// Positive predictive value (precision).
     pub ppv: f64,
 }
 

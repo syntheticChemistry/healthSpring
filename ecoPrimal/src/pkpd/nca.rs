@@ -18,19 +18,33 @@ use crate::tolerances;
 /// Complete NCA result for a single concentration-time profile.
 #[derive(Debug, Clone)]
 pub struct NcaResult {
+    /// Maximum observed concentration.
     pub cmax: f64,
+    /// Time of Cmax.
     pub tmax: f64,
+    /// AUC from first time to last observed time (trapezoidal).
     pub auc_last: f64,
+    /// AUC extrapolated to infinity (includes terminal tail when λz > 0).
     pub auc_inf: f64,
+    /// Percentage of AUC(0–∞) from extrapolation beyond last sample.
     pub auc_extrap_pct: f64,
+    /// Terminal elimination rate constant from log-linear regression.
     pub lambda_z: f64,
+    /// Terminal half-life (ln 2 / λz).
     pub half_life: f64,
+    /// AUMC to last observed time.
     pub aumc_last: f64,
+    /// AUMC extrapolated to infinity.
     pub aumc_inf: f64,
+    /// Mean residence time (AUMC / AUC).
     pub mrt: f64,
+    /// Observed clearance (dose / AUC(0–∞)).
     pub cl_obs: f64,
+    /// Observed steady-state volume (CL × MRT).
     pub vss_obs: f64,
+    /// Number of concentration points used in λz regression.
     pub n_terminal_points: usize,
+    /// Goodness of fit (R²) of the terminal log-linear phase.
     pub r_squared: f64,
 }
 

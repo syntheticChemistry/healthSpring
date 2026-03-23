@@ -10,8 +10,11 @@ use serde::{Deserialize, Serialize};
 /// Clinical attention level for biosignal monitoring.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AttentionState {
+    /// Within normal stress bounds.
     Healthy,
+    /// Elevated concern; monitor closely.
     Alert,
+    /// Immediate clinical attention warranted.
     Critical,
 }
 

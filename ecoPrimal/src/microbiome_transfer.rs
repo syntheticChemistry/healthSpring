@@ -11,12 +11,19 @@ use serde::{Deserialize, Serialize};
 /// Gut Anderson parameters for cross-spring consumption.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GutAndersonParams {
+    /// Host species label (e.g. human, canine).
     pub species: String,
+    /// Community phenotype (e.g. `healthy`, `dysbiotic_cdi`).
     pub community_type: String,
+    /// Shannon diversity index H'.
     pub shannon_index: f64,
+    /// Pielou evenness J = H' / ln(S).
     pub pielou_evenness: f64,
+    /// Anderson disorder parameter W derived from diversity.
     pub disorder_w: f64,
+    /// Localization length ξ in the Anderson sense.
     pub localization_length_xi: f64,
+    /// Colonization resistance score in [0, 1].
     pub colonization_resistance: f64,
 }
 

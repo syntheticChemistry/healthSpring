@@ -62,11 +62,17 @@ impl fmt::Display for ToleranceMode {
 /// A single validation check with result.
 #[derive(Debug)]
 pub struct Check {
+    /// Human-readable check name.
     pub label: String,
+    /// Whether the check succeeded.
     pub passed: bool,
+    /// Observed numeric value (or structural encoding for bool/exact).
     pub observed: f64,
+    /// Expected reference value (or bound for inequality modes).
     pub expected: f64,
+    /// Tolerance or bound parameter for the chosen mode.
     pub tolerance: f64,
+    /// How `tolerance` and `expected` are interpreted.
     pub mode: ToleranceMode,
 }
 
@@ -78,6 +84,70 @@ impl fmt::Display for Check {
             "[{tag}] {}: observed={:.10}, expected={:.10}, tol={} ({})",
             self.label, self.observed, self.expected, self.tolerance, self.mode,
         )
+    }
+}
+
+/// Output sink for validation results.
+///
+/// Absorbed from wetSpring V132 — allows composable validation output
+/// for CI (stdout), testing (silent/collecting), and streaming.
+pub trait ValidationSink {
+    /// Emit a single check result.
+    fn emit(&mut self, check: &Check);
+    /// Emit a summary line.
+    fn summary(&mut self, name: &str, passed: usize, failed: usize, total: usize);
+}
+
+/// Default sink: emits check lines via the `tracing` subscriber (typically stdout).
+pub struct TracingSink;
+
+impl ValidationSink for TracingSink {
+    fn emit(&mut self, check: &Check) {
+        if check.passed {
+            info!("{check}");
+        } else {
+            error!("{check}");
+        }
+    }
+
+    fn summary(&mut self, name: &str, passed: usize, failed: usize, total: usize) {
+        if failed > 0 {
+            error!(
+                experiment = %name, passed, failed, total,
+                "--- {name} summary: {passed}/{total} passed, {failed} failed ---",
+            );
+        } else {
+            info!(
+                experiment = %name, passed, total,
+                "--- {name} summary: {passed}/{total} passed, 0 failed ---",
+            );
+        }
+    }
+}
+
+/// Silent sink: discards all harness output (library/unit tests).
+pub struct SilentSink;
+
+impl ValidationSink for SilentSink {
+    fn emit(&mut self, _check: &Check) {}
+    fn summary(&mut self, _name: &str, _passed: usize, _failed: usize, _total: usize) {}
+}
+
+/// Collecting sink: records formatted checks and summaries for assertions.
+#[derive(Default)]
+pub struct CollectingSink {
+    /// All emitted checks.
+    pub collected: Vec<String>,
+}
+
+impl ValidationSink for CollectingSink {
+    fn emit(&mut self, check: &Check) {
+        self.collected.push(format!("{check}"));
+    }
+
+    fn summary(&mut self, name: &str, passed: usize, failed: usize, total: usize) {
+        self.collected
+            .push(format!("{name}: {passed}/{total} passed, {failed} failed"));
     }
 }
 
@@ -94,9 +164,11 @@ impl fmt::Display for Check {
 pub struct ValidationHarness {
     name: String,
     checks: Vec<Check>,
+    sink: Box<dyn ValidationSink>,
 }
 
 impl ValidationHarness {
+    /// Create a harness with the default tracing sink.
     #[must_use]
     pub fn new(name: &str) -> Self {
         init_validation_tracing();
@@ -104,6 +176,27 @@ impl ValidationHarness {
         Self {
             name: name.into(),
             checks: Vec::new(),
+            sink: Box::new(TracingSink),
+        }
+    }
+
+    /// Create a harness with a silent sink (no output).
+    #[must_use]
+    pub fn silent(name: &str) -> Self {
+        Self {
+            name: name.into(),
+            checks: Vec::new(),
+            sink: Box::new(SilentSink),
+        }
+    }
+
+    /// Create a harness with a custom sink.
+    #[must_use]
+    pub fn with_sink(name: &str, sink: Box<dyn ValidationSink>) -> Self {
+        Self {
+            name: name.into(),
+            checks: Vec::new(),
+            sink,
         }
     }
 
@@ -118,6 +211,18 @@ impl ValidationHarness {
             tol,
             ToleranceMode::Absolute,
         );
+    }
+
+    /// Smart tolerance check: uses relative if `|expected| ≥ 1e-15`, absolute otherwise.
+    ///
+    /// Absorbed from groundSpring V120 / ludoSpring V29 — auto-selects the
+    /// appropriate mode so callers don't need to reason about near-zero values.
+    pub fn check_abs_or_rel(&mut self, label: &str, observed: f64, expected: f64, tol: f64) {
+        if expected.abs() < MACHINE_EPSILON_STRICT {
+            self.check_abs(label, observed, expected, tol);
+        } else {
+            self.check_rel(label, observed, expected, tol);
+        }
     }
 
     /// Relative tolerance check: `|observed - expected| / |expected| ≤ tol`.
@@ -207,11 +312,7 @@ impl ValidationHarness {
             tolerance,
             mode,
         };
-        if check.passed {
-            info!("{check}");
-        } else {
-            error!("{check}");
-        }
+        self.sink.emit(&check);
         self.checks.push(check);
     }
 
@@ -228,24 +329,22 @@ impl ValidationHarness {
     }
 
     /// Log summary and exit process with 0 (all pass) or 1 (any fail).
-    pub fn exit(&self) -> ! {
+    pub fn exit(&mut self) -> ! {
         let total = self.checks.len();
         let passed = self.passed();
         let failed = self.failed();
-        if failed > 0 {
-            error!(
-                experiment = %self.name, passed, failed, total,
-                "--- {} summary: {passed}/{total} passed, {failed} failed ---",
-                self.name,
-            );
-        } else {
-            info!(
-                experiment = %self.name, passed, total,
-                "--- {} summary: {passed}/{total} passed, 0 failed ---",
-                self.name,
-            );
-        }
+        self.sink.summary(&self.name, passed, failed, total);
         std::process::exit(i32::from(failed > 0));
+    }
+
+    /// Exit with code 2 to indicate a skipped experiment.
+    ///
+    /// Absorbed from ludoSpring V29 — distinguishes "skip" (exit 2) from
+    /// "fail" (exit 1) in CI, useful for GPU-absent or conditional runs.
+    pub fn exit_skipped(reason: &str) -> ! {
+        init_validation_tracing();
+        info!(reason, "SKIP: {reason}");
+        std::process::exit(2)
     }
 
     /// Return whether all checks passed (for non-binary use).
@@ -489,6 +588,35 @@ mod tests {
     fn index_of_agreement_perfect() {
         let data = [1.0, 2.0, 3.0];
         assert!((index_of_agreement(&data, &data) - 1.0).abs() < tolerances::DIVISION_GUARD);
+    }
+
+    #[test]
+    fn abs_or_rel_near_zero_uses_abs() {
+        let mut h = ValidationHarness::silent("test");
+        h.check_abs_or_rel("near zero", 1e-16, 0.0, 1e-10);
+        assert!(h.all_passed());
+    }
+
+    #[test]
+    fn abs_or_rel_nonzero_uses_rel() {
+        let mut h = ValidationHarness::silent("test");
+        h.check_abs_or_rel("relative", 1.005, 1.0, 0.01);
+        assert!(h.all_passed());
+    }
+
+    #[test]
+    fn silent_harness_no_output() {
+        let mut h = ValidationHarness::silent("test");
+        h.check_abs("pass", 1.0, 1.0, 1e-10);
+        assert!(h.all_passed());
+    }
+
+    #[test]
+    fn collecting_sink() {
+        let sink = Box::new(CollectingSink::default());
+        let mut h = ValidationHarness::with_sink("test", sink);
+        h.check_abs("check1", 1.0, 1.0, 1e-10);
+        assert!(h.all_passed());
     }
 
     #[test]

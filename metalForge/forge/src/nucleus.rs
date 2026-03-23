@@ -113,7 +113,7 @@ pub enum PcieGeneration {
     Gen3,
     /// ~16 GT/s per lane — common for discrete GPUs since ~2017.
     Gen4,
-    /// ~32 GT/s per lane — high-end GPU and NVMe backplanes.
+    /// ~32 GT/s per lane — high-end GPU and `NVMe` backplanes.
     Gen5,
 }
 

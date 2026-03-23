@@ -21,11 +21,15 @@ pub struct PrimalState {
 }
 
 /// Dispatches a JSON-RPC request by method name.
+///
+/// Normalizes legacy prefixed method names (`healthspring.*`, `barracuda.*`)
+/// to bare `{domain}.{operation}` per semantic naming standard v2.1.
 pub fn dispatch_request(
     method: &str,
     params: &serde_json::Value,
     state: &PrimalState,
 ) -> serde_json::Value {
+    let method = rpc::normalize_method(method);
     match method {
         "lifecycle.health" | "health" | "health.check" | "lifecycle.status" => handle_health(state),
         "health.liveness" => handle_liveness(),
@@ -45,7 +49,9 @@ fn dispatch_extended(
 
     match method {
         "mcp.tools.list" => handle_mcp_tools_list(),
-        "capability.list" => crate::capabilities::handle_capability_list(),
+        "capability.list" | "capabilities.list" | "primal.capabilities" => {
+            crate::capabilities::handle_capability_list()
+        }
         "provenance.begin" => handle_provenance_begin(params),
         "provenance.record" => handle_provenance_record(params),
         "provenance.complete" => handle_provenance_complete(params),

@@ -64,6 +64,7 @@ pub(super) fn missing(name: &str) -> Value {
 }
 
 #[cfg(test)]
+#[expect(clippy::unwrap_used, reason = "test assertions use unwrap for clarity")]
 mod tests {
     use serde_json::json;
 

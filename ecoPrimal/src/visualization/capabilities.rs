@@ -54,7 +54,12 @@ pub enum CapabilityError {
     /// JSON serialization error.
     SerializationError(String),
     /// Songbird returned an error response.
-    RpcError { code: i64, message: String },
+    RpcError {
+        /// JSON-RPC or application error code.
+        code: i64,
+        /// Error message from Songbird.
+        message: String,
+    },
 }
 
 impl std::fmt::Display for CapabilityError {

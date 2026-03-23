@@ -23,8 +23,13 @@ pub enum PushError {
     ConnectionFailed(std::io::Error),
     /// JSON serialization error
     SerializationError(String),
-    /// RPC error response
-    RpcError { code: i64, message: String },
+    /// RPC error response from petalTongue.
+    RpcError {
+        /// JSON-RPC or application error code.
+        code: i64,
+        /// Error message from the peer.
+        message: String,
+    },
 }
 
 impl std::fmt::Display for PushError {

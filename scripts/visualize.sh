@@ -18,15 +18,18 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 PETALTONGUE_ROOT="${PETALTONGUE_ROOT:-$(cd "${PROJECT_ROOT}/../petalTongue" 2>/dev/null && pwd || cd "${PROJECT_ROOT}/../phase2/petalTongue" 2>/dev/null && pwd || cd "${PROJECT_ROOT}/../wateringHole/petaltongue" 2>/dev/null && pwd || true)}"
 
-MODE="${1:-web}"
-PORT="${2:-13377}"
 IPC=false
-
+ARGS=()
 for arg in "$@"; do
     if [[ "$arg" == "--ipc" ]]; then
         IPC=true
+    else
+        ARGS+=("$arg")
     fi
 done
+set -- "${ARGS[@]}"
+MODE="${1:-web}"
+PORT="${2:-13377}"
 
 info()  { echo -e "\033[1;36m[healthSpring]\033[0m $*"; }
 ok()    { echo -e "\033[1;32m  ✓\033[0m $*"; }

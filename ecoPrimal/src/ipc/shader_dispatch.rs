@@ -9,7 +9,9 @@ use super::socket;
 /// Error from shader dispatch operations.
 #[derive(Debug)]
 pub enum ShaderError {
+    /// No shader compiler primal was discovered.
     NoShaderPrimal,
+    /// RPC send failed (transport/codec).
     Send(rpc::SendError),
 }
 

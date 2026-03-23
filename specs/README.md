@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 23, 2026
-**Status**: V41 — Deep Debt Resolution Sprint. 855 tests, 83 experiments, 59 JSON-RPC capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
+**Status**: V42 — Deep debt resolution. 863 tests, 83 experiments, 59 JSON-RPC capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. Clippy pedantic+nursery+doc-markdown with `-D warnings`, zero unsafe, zero `#[allow]`.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -11,7 +11,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 848 |
+| Rust tests (workspace) | 863 |
 | Python control checks | 53 baselines, 113/113 cross-validation (all 9 tracks) |
 | Experiments | 73 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
@@ -52,8 +52,8 @@ Papers queued for reproduction and extension. Organized by track. See [PAPER_REV
 | V19 Full-Stack | GPU scaling + dispatch + NUCLEUS | 3 (Exp085-087) | 10 | 106 | — | **Complete** |
 | V20 Visualization | petalTongue V16 + patient explorer | 2 (Exp088-089) | — | 340 | — | **Complete** |
 | **Total (Tracks 1–5)** | | **61** | **379** | | **458** | **All green** |
-| 6 | Comparative Medicine (One Health) | — | — | — | — | **Queued** |
-| 7 | Drug Discovery (ADDRC / MATRIX) | — | — | — | — | **Queued** |
+| 6 | Comparative Medicine (One Health) | — | — | — | — | **Complete** |
+| 7 | Drug Discovery (ADDRC / MATRIX) | — | — | — | — | **Complete** |
 
 ---
 
@@ -149,7 +149,7 @@ See [BARRACUDA_REQUIREMENTS.md](BARRACUDA_REQUIREMENTS.md) for detailed primitiv
 | **groundSpring** | Error propagation, uncertainty quantification, spectral methods, tissue Anderson localization (Track 6 cross-tissue) |
 | **airSpring** | CytokineBrain visualization, sensor fusion patterns, immunological Anderson (Track 6 cross-species immune) |
 | **hotSpring** | Lattice methods (SU(3) → tissue lattice), Anderson spectral theory, BatchedEighGpu for 3D Anderson |
-| **barraCuda** | All GPU primitives (standalone math library, v0.3.3) |
+| **barraCuda** | All GPU primitives (standalone math library, v0.3.7) |
 | **toadStool** | Compute pipeline dispatch (CPU/GPU/NPU routing, streaming) |
 | **metalForge** | NUCLEUS topology, substrate capabilities, PCIe transfer planning |
 | **petalTongue** | Universal UI — 7 DataChannel types, streaming, interaction, domain theming |

@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![expect(
+    missing_docs,
+    reason = "criterion macros generate undocumented public items"
+)]
 //! Benchmarks comparing local healthSpring implementations vs upstream
 //! barraCuda canonical versions.
 //!

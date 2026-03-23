@@ -9,27 +9,40 @@ use thiserror::Error;
 /// Errors during IPC communication with other primals.
 #[derive(Debug, Error)]
 pub enum IpcError {
+    /// No socket path found for the requested primal.
     #[error("socket not found for primal: {0}")]
     SocketNotFound(String),
 
+    /// Low-level I/O failure while connecting.
     #[error("connection failed: {0}")]
     Connect(#[from] std::io::Error),
 
+    /// Failure while writing to the transport.
     #[error("write failed: {0}")]
     Write(String),
 
+    /// Failure while reading from the transport.
     #[error("read failed: {0}")]
     Read(String),
 
+    /// Operation exceeded the configured timeout (milliseconds).
     #[error("timeout after {0}ms")]
     Timeout(u64),
 
+    /// JSON encode/decode error on the wire.
     #[error("invalid JSON: {0}")]
     Codec(#[from] serde_json::Error),
 
+    /// JSON-RPC error object returned by the peer.
     #[error("RPC error {code}: {message}")]
-    RpcReject { code: i64, message: String },
+    RpcReject {
+        /// JSON-RPC error code.
+        code: i64,
+        /// Error message from the peer.
+        message: String,
+    },
 
+    /// Peer returned an empty payload where a body was required.
     #[error("empty response from primal")]
     EmptyResponse,
 }

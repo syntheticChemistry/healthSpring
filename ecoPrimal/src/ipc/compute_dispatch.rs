@@ -13,16 +13,22 @@ use super::socket;
 /// Result of a dispatch submission — contains the job ID for polling.
 #[derive(Debug, Clone)]
 pub struct DispatchHandle {
+    /// Opaque job identifier returned by `compute.dispatch.submit`.
     pub job_id: String,
+    /// Socket path of the compute primal handling this job.
     pub compute_socket: std::path::PathBuf,
 }
 
 /// Error from dispatch operations.
 #[derive(Debug)]
 pub enum DispatchError {
+    /// No compute primal was discovered on this host.
     NoComputePrimal,
+    /// RPC send failed (transport/codec).
     Send(rpc::SendError),
+    /// Response omitted `job_id`.
     MissingJobId,
+    /// Remote reported `error` for the job.
     JobFailed(String),
 }
 

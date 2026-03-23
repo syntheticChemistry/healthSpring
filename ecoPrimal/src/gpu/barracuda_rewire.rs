@@ -118,26 +118,11 @@ pub fn execute_diversity_barracuda(
 /// Returns [`GpuError::Dispatch`] if the GPU op creation or execution fails.
 pub fn execute_mm_batch_barracuda(
     device: &Arc<WgpuDevice>,
-    vmax: f64,
-    km: f64,
-    vd: f64,
-    dt: f64,
-    n_steps: u32,
-    n_patients: u32,
-    seed: u32,
+    config: &MmBatchConfig,
 ) -> Result<GpuResult, GpuError> {
-    let config = MmBatchConfig {
-        vmax,
-        km,
-        vd,
-        dt,
-        n_steps,
-        n_patients,
-        seed,
-    };
     let op = MichaelisMentenBatchGpu::new(Arc::clone(device));
     let results = op
-        .compute(&config)
+        .simulate(config)
         .map_err(|e| GpuError::Dispatch(format!("barraCuda MichaelisMentenBatchGpu: {e}")))?;
     Ok(GpuResult::MichaelisMentenBatch(results))
 }
@@ -152,9 +137,17 @@ pub fn execute_scfa_batch_barracuda(
     params: &crate::microbiome::ScfaParams,
     fiber_inputs: &[f64],
 ) -> Result<GpuResult, GpuError> {
+    let upstream_params = barracuda::health::microbiome::ScfaParams {
+        vmax_acetate: params.vmax_acetate,
+        km_acetate: params.km_acetate,
+        vmax_propionate: params.vmax_propionate,
+        km_propionate: params.km_propionate,
+        vmax_butyrate: params.vmax_butyrate,
+        km_butyrate: params.km_butyrate,
+    };
     let op = ScfaBatchGpu::new(Arc::clone(device));
     let flat = op
-        .compute(fiber_inputs, params)
+        .compute(fiber_inputs, &upstream_params)
         .map_err(|e| GpuError::Dispatch(format!("barraCuda ScfaBatchGpu: {e}")))?;
     let results: Vec<(f64, f64, f64)> = flat.chunks_exact(3).map(|c| (c[0], c[1], c[2])).collect();
     Ok(GpuResult::ScfaBatch(results))

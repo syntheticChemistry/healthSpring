@@ -15,6 +15,7 @@
 
 mod registry;
 
+/// All registered Python control scripts under `control/`, for completeness checks.
 pub use registry::PROVENANCE_REGISTRY;
 
 use serde::{Deserialize, Serialize};
@@ -47,19 +48,28 @@ pub struct ProvenanceRecord {
 /// Provenance for a Python-derived baseline value.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BaselineProvenance {
+    /// Calendar date string for the baseline generation run.
     pub date: String,
+    /// Path to the control script that produced the baseline.
     pub script: String,
+    /// Shell command used to reproduce the baseline output.
     pub command: String,
+    /// Repository revision recorded at baseline time.
     pub git_commit: String,
+    /// Python interpreter version line (e.g. `3.11.x`).
     pub python: String,
+    /// `NumPy` version string pinned for numerical parity.
     pub numpy: String,
 }
 
 /// Provenance for an analytically-derived expected value.
 #[derive(Debug, Clone)]
 pub struct AnalyticalProvenance {
+    /// Closed-form or symbolic expression being asserted in tests.
     pub formula: &'static str,
+    /// Textbook or paper citation backing the formula.
     pub reference: &'static str,
+    /// Optional DOI when the reference is formally citable.
     pub doi: Option<&'static str>,
 }
 
@@ -111,36 +121,42 @@ pub fn log_analytical(prov: &AnalyticalProvenance) {
 pub mod known {
     use super::AnalyticalProvenance;
 
+    /// Hill equation at half-saturation (reference PK/PD anchor).
     pub const HILL_AT_IC50: AnalyticalProvenance = AnalyticalProvenance {
         formula: "R = C^n / (IC50^n + C^n) at C=IC50 → 0.5",
         reference: "Hill 1910, J Physiol",
         doi: Some("10.1113/jphysiol.1910.sp001397"),
     };
 
+    /// Intravenous bolus initial concentration from dose and Vd.
     pub const IV_BOLUS_C0: AnalyticalProvenance = AnalyticalProvenance {
         formula: "C(0) = Dose / Vd",
         reference: "Rowland & Tozer, Clinical Pharmacokinetics",
         doi: None,
     };
 
+    /// Zero central concentration immediately after oral dosing (absorption lag).
     pub const ORAL_C0_ZERO: AnalyticalProvenance = AnalyticalProvenance {
         formula: "C(0) = 0 (oral absorption delay)",
         reference: "Bateman equation initial condition",
         doi: None,
     };
 
+    /// Shannon entropy for a discrete uniform abundance distribution.
     pub const SHANNON_UNIFORM: AnalyticalProvenance = AnalyticalProvenance {
         formula: "H' = ln(S) for uniform distribution",
         reference: "Shannon 1948, Bell System Technical Journal",
         doi: Some("10.1002/j.1538-7305.1948.tb01338.x"),
     };
 
+    /// Inverse participation ratio for a single occupied site (localization toy).
     pub const IPR_DELTA: AnalyticalProvenance = AnalyticalProvenance {
         formula: "IPR(δ) = 1 (single-site state)",
         reference: "Anderson 1958, Phys Rev",
         doi: Some("10.1103/PhysRev.109.1492"),
     };
 
+    /// Exponential age decline of total testosterone (longitudinal aging form).
     pub const TESTOSTERONE_DECLINE: AnalyticalProvenance = AnalyticalProvenance {
         formula: "T(age) = T0 · exp(-k · (age - onset))",
         reference: "Harman et al. 2001, JCEM",

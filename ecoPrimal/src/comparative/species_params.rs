@@ -18,16 +18,22 @@ use serde::{Deserialize, Serialize};
 /// Supported species for cross-species PK.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Species {
+    /// Human (default clinical scaling).
     Human,
+    /// Dog.
     Canine,
+    /// Cat.
     Feline,
+    /// Horse.
     Equine,
+    /// Mouse / rat surrogate.
     Murine,
 }
 
 /// PK parameters for a species.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SpeciesPkParams {
+    /// Species these parameters describe.
     pub species: Species,
     /// Typical body weight in kg.
     pub body_weight_kg: f64,

@@ -11,7 +11,9 @@ use super::socket;
 /// Error from lifecycle/orchestrator operations.
 #[derive(Debug)]
 pub enum LifecycleError {
+    /// Orchestrator socket not found in the standard discovery path.
     NoOrchestrator,
+    /// RPC send failed (transport/codec).
     Send(rpc::SendError),
 }
 

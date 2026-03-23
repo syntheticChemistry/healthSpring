@@ -101,8 +101,8 @@ impl GpuContext {
 
     /// Delegate all ops to barraCuda canonical GPU implementations.
     ///
-    /// Tier A (Hill, PopPK, Diversity) — absorbed and validated upstream.
-    /// Tier B (MM, SCFA, BeatClassify) — absorbed upstream, rewired here.
+    /// Tier A (Hill, `PopPK`, Diversity) — absorbed and validated upstream.
+    /// Tier B (MM, SCFA, `BeatClassify`) — absorbed upstream, rewired here.
     #[cfg(feature = "barracuda-ops")]
     fn execute_via_barracuda(
         bc: &std::sync::Arc<barracuda::device::WgpuDevice>,
@@ -139,16 +139,18 @@ impl GpuContext {
                 n_steps,
                 n_patients,
                 seed,
-            } => barracuda_rewire::execute_mm_batch_barracuda(
-                bc,
-                *vmax,
-                *km,
-                *vd,
-                *dt,
-                *n_steps,
-                *n_patients,
-                *seed,
-            ),
+            } => {
+                let config = barracuda::ops::health::michaelis_menten_batch::MmBatchConfig {
+                    vmax: *vmax,
+                    km: *km,
+                    vd: *vd,
+                    dt: *dt,
+                    n_steps: *n_steps,
+                    n_patients: *n_patients,
+                    seed: *seed,
+                };
+                barracuda_rewire::execute_mm_batch_barracuda(bc, &config)
+            }
             GpuOp::ScfaBatch {
                 params,
                 fiber_inputs,
@@ -244,7 +246,7 @@ impl GpuContext {
 
         #[cfg(feature = "barracuda-ops")]
         if let Some(bc) = &self.barracuda_device {
-            return self.execute_fused_via_barracuda(bc, ops);
+            return Self::execute_fused_via_barracuda(bc, ops);
         }
 
         self.execute_fused_local(ops).await
@@ -257,7 +259,6 @@ impl GpuContext {
     /// rather than truly fused (one encoder for all ops).
     #[cfg(feature = "barracuda-ops")]
     fn execute_fused_via_barracuda(
-        &self,
         bc: &std::sync::Arc<barracuda::device::WgpuDevice>,
         ops: &[GpuOp],
     ) -> Result<Vec<GpuResult>, GpuError> {

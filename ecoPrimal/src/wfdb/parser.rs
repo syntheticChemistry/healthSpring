@@ -349,6 +349,7 @@ impl<I: Iterator<Item = i16>> Iterator for AdcToPhysicalIter<I> {
 }
 
 #[cfg(test)]
+#[expect(clippy::unwrap_used, reason = "test assertions use unwrap for clarity")]
 mod tests {
     use super::*;
 

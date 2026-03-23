@@ -12,7 +12,9 @@ use crate::rng::normal_sample;
 /// Lognormal sampling parameters.
 #[derive(Debug, Clone, Copy)]
 pub struct LognormalParam {
+    /// Population median (typical value) on the original scale.
     pub typical: f64,
+    /// Coefficient of variation of the underlying lognormal distribution.
     pub cv: f64,
 }
 
@@ -30,27 +32,35 @@ impl LognormalParam {
 /// Population PK parameters for baricitinib-like oral dosing.
 pub mod pop_baricitinib {
     use super::LognormalParam;
+    /// Lognormal prior for clearance (typical + IIV).
     pub const CL: LognormalParam = LognormalParam {
         typical: 10.0,
         cv: 0.30,
     };
+    /// Lognormal prior for volume of distribution.
     pub const VD: LognormalParam = LognormalParam {
         typical: 80.0,
         cv: 0.25,
     };
+    /// Lognormal prior for absorption rate constant Ka.
     pub const KA: LognormalParam = LognormalParam {
         typical: 1.5,
         cv: 0.40,
     };
+    /// Oral bioavailability fraction F.
     pub const F_BIOAVAIL: f64 = 0.79;
+    /// Reference oral dose in mg.
     pub const DOSE_MG: f64 = 4.0;
 }
 
 /// Per-patient PK exposure metrics.
 #[derive(Debug, Clone, Copy)]
 pub struct PatientExposure {
+    /// Maximum concentration over the simulated schedule.
     pub cmax: f64,
+    /// Time of Cmax.
     pub tmax: f64,
+    /// AUC by trapezoidal rule over `times`.
     pub auc: f64,
 }
 

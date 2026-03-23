@@ -51,8 +51,11 @@ pub fn compute_ec_values(ic50: f64, hill_n: f64) -> EcValues {
 /// EC10 / EC50 / EC90 triplet.
 #[derive(Debug, Clone, Copy)]
 pub struct EcValues {
+    /// Concentration at 10% of maximal effect.
     pub ec10: f64,
+    /// Concentration at 50% of maximal effect (matches IC50 in standard Hill form).
     pub ec50: f64,
+    /// Concentration at 90% of maximal effect.
     pub ec90: f64,
 }
 
@@ -63,12 +66,17 @@ pub struct EcValues {
 /// Human JAK inhibitor drug profile.
 #[derive(Debug, Clone)]
 pub struct JakInhibitor {
+    /// Generic or trade name for reference.
     pub name: &'static str,
+    /// JAK1 IC50 in nanomolar units.
     pub ic50_jak1_nm: f64,
+    /// Hill coefficient used in dose–response evaluation.
     pub hill_n: f64,
+    /// Short selectivity summary string (kinase panel).
     pub selectivity: &'static str,
 }
 
+/// Baricitinib reference Hill/IC50 profile.
 pub const BARICITINIB: JakInhibitor = JakInhibitor {
     name: "baricitinib",
     ic50_jak1_nm: 5.9,
@@ -76,6 +84,7 @@ pub const BARICITINIB: JakInhibitor = JakInhibitor {
     selectivity: "JAK1/JAK2",
 };
 
+/// Upadacitinib reference Hill/IC50 profile.
 pub const UPADACITINIB: JakInhibitor = JakInhibitor {
     name: "upadacitinib",
     ic50_jak1_nm: 8.0,
@@ -83,6 +92,7 @@ pub const UPADACITINIB: JakInhibitor = JakInhibitor {
     selectivity: "JAK1",
 };
 
+/// Abrocitinib reference Hill/IC50 profile.
 pub const ABROCITINIB: JakInhibitor = JakInhibitor {
     name: "abrocitinib",
     ic50_jak1_nm: 29.0,
@@ -90,6 +100,7 @@ pub const ABROCITINIB: JakInhibitor = JakInhibitor {
     selectivity: "JAK1",
 };
 
+/// Oclacitinib reference Hill/IC50 profile (canine label context).
 pub const OCLACITINIB: JakInhibitor = JakInhibitor {
     name: "oclacitinib",
     ic50_jak1_nm: 10.0,
@@ -97,6 +108,7 @@ pub const OCLACITINIB: JakInhibitor = JakInhibitor {
     selectivity: "JAK1 (canine)",
 };
 
+/// All bundled JAK inhibitor reference profiles for tests and demos.
 pub const ALL_INHIBITORS: [&JakInhibitor; 4] =
     [&BARICITINIB, &UPADACITINIB, &ABROCITINIB, &OCLACITINIB];
 

@@ -10,8 +10,11 @@ use super::socket;
 /// Error from data dispatch operations.
 #[derive(Debug)]
 pub enum DataError {
+    /// No data primal socket was discovered.
     NoDataPrimal,
+    /// RPC send failed (transport/codec).
     Send(rpc::SendError),
+    /// Response body was missing or malformed for this operation.
     InvalidResponse(String),
 }
 

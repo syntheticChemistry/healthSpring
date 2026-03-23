@@ -1,6 +1,13 @@
 # healthSpring Codebase Completion Audit Report
 
-**Date:** 2026-03-19 (pre-V39 snapshot — see V39 changelog in README.md for latest)  
+## V42 (March 23, 2026)
+
+V42 deep debt resolution: all 548 missing_docs resolved; clippy pedantic+nursery+doc-markdown passes with `-D warnings`; RUSTSEC-2026-0049 resolved; 3 barraCuda API drift errors fixed; `transport.rs` panic evolved to `Result`; `ValidationSink` trait added; `normalize_method()` IPC; `OnceLock` GPU probe; 863 tests all passing.
+
+---
+
+## Historical snapshot (pre-V39, 2026-03-19)
+
 **Scope:** All Rust source files in `/home/strandgate/Development/ecoPrimals/healthSpring`
 
 ---

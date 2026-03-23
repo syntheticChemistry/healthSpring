@@ -65,16 +65,27 @@ pub fn hazard_ratio_model(t_level: f64, threshold: f64, hr_normalized: f64) -> f
 /// LDL, HDL, CRP, SBP, DBP baseline/endpoint from TRT registry data.
 /// References: Saad et al. 2011, 2016; Kapoor et al. 2006 (TRT cardiovascular).
 pub mod cv_params {
+    /// Registry mean LDL at TRT start (mg/dL).
     pub const LDL_BASELINE: f64 = 165.0;
+    /// LDL approached over the modeled horizon (mg/dL).
     pub const LDL_ENDPOINT: f64 = 130.0;
+    /// HDL at TRT start (mg/dL).
     pub const HDL_BASELINE: f64 = 38.0;
+    /// HDL approached over follow-up (mg/dL).
     pub const HDL_ENDPOINT: f64 = 55.0;
+    /// C-reactive protein at baseline (mg/L scale as in source tables).
     pub const CRP_BASELINE: f64 = 1.40;
+    /// CRP after response (mg/L).
     pub const CRP_ENDPOINT: f64 = 0.90;
+    /// Systolic BP at baseline (mmHg).
     pub const SBP_BASELINE: f64 = 135.0;
+    /// Systolic BP at endpoint (mmHg).
     pub const SBP_ENDPOINT: f64 = 123.0;
+    /// Diastolic BP at baseline (mmHg).
     pub const DBP_BASELINE: f64 = 82.0;
+    /// Diastolic BP at endpoint (mmHg).
     pub const DBP_ENDPOINT: f64 = 76.0;
+    /// Time constant for CV biomarker relaxation (months).
     pub const TAU_MONTHS: f64 = 12.0;
 }
 
@@ -83,12 +94,19 @@ pub mod cv_params {
 /// `HbA1c`, HOMA-IR, fasting glucose from TRT in hypogonadal diabetics.
 /// References: Saad et al. 2011, 2016.
 pub mod diabetes_params {
+    /// Mean `HbA1c` before TRT (%).
     pub const HBA1C_BASELINE: f64 = 7.60;
+    /// Expected absolute change in `HbA1c` over the modeled window (%).
     pub const HBA1C_DELTA: f64 = -0.37;
+    /// HOMA-IR at baseline (index units).
     pub const HOMA_BASELINE: f64 = 4.5;
+    /// HOMA-IR approached on TRT (index units).
     pub const HOMA_ENDPOINT: f64 = 3.2;
+    /// Fasting glucose at baseline (mg/dL).
     pub const FG_BASELINE: f64 = 140.0;
+    /// Fasting glucose at endpoint (mg/dL).
     pub const FG_ENDPOINT: f64 = 120.0;
+    /// Relaxation time for glycemic markers (months).
     pub const TAU_MONTHS: f64 = 3.0;
 }
 
@@ -97,10 +115,15 @@ pub mod diabetes_params {
 /// 5-year weight, waist, BMI change from TRT registry.
 /// References: Saad et al. 2011, 2016 (TRT weight/waist data).
 pub mod weight_params {
+    /// Five-year body-weight change from registry means (kg; negative = loss).
     pub const WEIGHT_LOSS_5YR_KG: f64 = -16.0;
+    /// Five-year waist circumference change (cm; negative = reduction).
     pub const WAIST_LOSS_5YR_CM: f64 = -12.0;
+    /// Five-year BMI change (kg/m²).
     pub const BMI_LOSS_5YR: f64 = -5.6;
+    /// Time constant for logarithmic weight trajectory (months).
     pub const TAU_MONTHS: f64 = 6.0;
+    /// Registry follow-up horizon used with `WEIGHT_LOSS_5YR_*` (months).
     pub const TOTAL_MONTHS: f64 = 60.0;
 }
 
@@ -157,8 +180,11 @@ pub fn gut_metabolic_response(xi: f64, xi_max: f64, base_response: f64) -> f64 {
 /// Anderson disorder scale, lattice size, base metabolic response.
 /// References: Saad et al. 2011, 2016 (weight/waist TRT outcomes).
 pub mod gut_axis_params {
+    /// Scale linking Pielou evenness to Anderson disorder strength.
     pub const DISORDER_SCALE: f64 = 5.0;
+    /// Effective chain length for localization-length scaling (arbitrary units).
     pub const LATTICE_SIZE: f64 = 100.0;
+    /// Reference weight response (kg) when localization matches `xi_max`.
     pub const BASE_RESPONSE_KG: f64 = -16.0;
 }
 

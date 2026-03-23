@@ -34,28 +34,38 @@ impl std::fmt::Display for BeatClass {
 /// Template for beat classification.
 #[derive(Debug, Clone)]
 pub struct BeatTemplate {
+    /// Label for this morphology template.
     pub class: BeatClass,
+    /// Normalized or raw waveform samples for matching.
     pub waveform: Vec<f64>,
 }
 
 /// Classification result for a single beat.
 #[derive(Debug, Clone)]
 pub struct BeatResult {
+    /// Sample index of the R-peak (or beat anchor).
     pub peak_index: usize,
+    /// Assigned beat class.
     pub class: BeatClass,
+    /// Best template correlation coefficient.
     pub correlation: f64,
 }
 
 /// Classification confusion matrix.
 #[derive(Debug, Clone, Default)]
 pub struct ConfusionMatrix {
+    /// True positives for the target class.
     pub true_positive: u32,
+    /// False positives for the target class.
     pub false_positive: u32,
+    /// True negatives for the target class.
     pub true_negative: u32,
+    /// False negatives for the target class.
     pub false_negative: u32,
 }
 
 impl ConfusionMatrix {
+    /// Sensitivity (recall) for the target class: TP / (TP + FN).
     #[must_use]
     pub fn sensitivity(&self) -> f64 {
         let denom = self.true_positive + self.false_negative;
@@ -65,6 +75,7 @@ impl ConfusionMatrix {
         f64::from(self.true_positive) / f64::from(denom)
     }
 
+    /// Specificity: TN / (TN + FP).
     #[must_use]
     pub fn specificity(&self) -> f64 {
         let denom = self.true_negative + self.false_positive;
@@ -74,6 +85,7 @@ impl ConfusionMatrix {
         f64::from(self.true_negative) / f64::from(denom)
     }
 
+    /// Positive predictive value: TP / (TP + FP).
     #[must_use]
     pub fn ppv(&self) -> f64 {
         let denom = self.true_positive + self.false_positive;

@@ -1,7 +1,7 @@
 # healthSpring baseCamp: Gonzales PK/PD → Human Therapeutics
 
 **Faculty**: Andrea J. Gonzales (MSU Pharmacology & Toxicology), Erika Lisabeth (ADDRC), Richard Neubig (Drug Discovery), Edmund Ellsworth (Medicinal Chemistry)
-**Status**: V41 — 83 experiments, 855 tests, 53 Python baselines with provenance. barraCuda v0.3.7 (6 GPU shaders live). Tracks 1–9 complete. Track 6 (Comparative Medicine): 7 experiments (Exp100–106) — canine IL-31, feline hyperthyroid, cross-species PK. Track 7 (Drug Discovery): 5 experiments (Exp090–094) — MATRIX scoring, HTS, compound library, fibrosis. Track 9 (Toxicology/Simulation): 4 experiments (Exp097–099, 111) — hormesis, causal terrarium, low-affinity binding. 26× selectivity from weak binding as testable Gonzales/Lisabeth prediction.
+**Status**: V42 — 83 experiments, 863 tests, 53 Python baselines with provenance. barraCuda v0.3.7 (6 GPU shaders live). Tracks 1–9 complete. Track 6 (Comparative Medicine): 7 experiments (Exp100–106) — canine IL-31, feline hyperthyroid, cross-species PK. Track 7 (Drug Discovery): 5 experiments (Exp090–094) — MATRIX scoring, HTS, compound library, fibrosis. Track 9 (Toxicology/Simulation): 4 experiments (Exp097–099, 111) — hormesis, causal terrarium, low-affinity binding. 26× selectivity from weak binding as testable Gonzales/Lisabeth prediction.
 **Parent**: gen3/baseCamp Paper 12 (Immunological Anderson), gen3/baseCamp Paper 13 (Sovereign Human Health Computing)
 
 ---

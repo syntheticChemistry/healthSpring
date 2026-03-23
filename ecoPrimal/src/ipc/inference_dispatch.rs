@@ -9,7 +9,9 @@ use super::socket;
 /// Error from inference dispatch operations.
 #[derive(Debug)]
 pub enum InferenceError {
+    /// No inference primal socket was discovered.
     NoInferencePrimal,
+    /// RPC send failed (transport/codec).
     Send(rpc::SendError),
 }
 

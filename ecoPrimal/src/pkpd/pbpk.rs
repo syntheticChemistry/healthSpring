@@ -8,18 +8,26 @@
 /// Tissue compartment parameters for PBPK.
 #[derive(Clone, Debug)]
 pub struct TissueCompartment {
+    /// Compartment name (e.g. liver, muscle).
     pub name: &'static str,
+    /// Tissue volume in liters.
     pub volume_l: f64,
+    /// Blood flow to the tissue (L/hr).
     pub blood_flow_l_per_hr: f64,
-    pub kp: f64,                 // tissue-plasma partition coefficient
+    /// Tissue–plasma partition coefficient Kp.
+    pub kp: f64, // tissue-plasma partition coefficient
+    /// Intrinsic hepatic/renal clearance assigned to this compartment (L/hr); zero if non-eliminating.
     pub clearance_l_per_hr: f64, // hepatic/renal clearance (0 for non-eliminating)
 }
 
 /// PBPK model state: concentration in each tissue.
 #[derive(Clone, Debug)]
 pub struct PbpkState {
+    /// Concentration in each tissue compartment (same order as model).
     pub concentrations: Vec<f64>,
+    /// Mixed venous blood concentration at end of integration.
     pub venous_conc: f64,
+    /// Simulation end time in hours.
     pub time_hr: f64,
 }
 
@@ -145,7 +153,9 @@ pub fn pbpk_iv_simulate(
 /// Per-tissue concentration profiles from a PBPK simulation.
 #[derive(Clone, Debug)]
 pub struct PbpkTissueProfiles {
+    /// Down-sampled time grid (hours).
     pub times: Vec<f64>,
+    /// Tissue names aligned with `profiles` rows.
     pub tissue_names: Vec<String>,
     /// `profiles[tissue_idx][time_idx]`
     pub profiles: Vec<Vec<f64>>,

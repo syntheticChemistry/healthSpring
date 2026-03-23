@@ -28,11 +28,17 @@ pub enum CanineIl31Treatment {
 /// JAK kinase IC50 panel for a compound.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct JakIc50Panel {
+    /// Drug or compound name.
     pub compound: String,
+    /// Species label for the assay (e.g. human, canine).
     pub species: String,
+    /// IC50 for JAK1 (nM).
     pub jak1_nm: f64,
+    /// IC50 for JAK2 (nM).
     pub jak2_nm: f64,
+    /// IC50 for JAK3 (nM).
     pub jak3_nm: f64,
+    /// IC50 for TYK2 (nM).
     pub tyk2_nm: f64,
 }
 

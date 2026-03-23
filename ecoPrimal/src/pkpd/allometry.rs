@@ -7,16 +7,23 @@ use crate::tolerances;
 
 /// Lokivetmab canine reference constants.
 pub mod lokivetmab_canine {
+    /// Reference dog body weight (kg).
     pub const BW_KG: f64 = 15.0;
+    /// Published terminal half-life at reference dose (days).
     pub const HALF_LIFE_DAYS: f64 = 14.0;
+    /// Volume of distribution per kg (L/kg).
     pub const VD_L_KG: f64 = 0.07;
+    /// Clearance in mL/day/kg.
     pub const CL_ML_DAY_KG: f64 = 3.5;
 }
 
 /// Standard allometric exponents for mAb PK.
 pub mod allometric_exp {
+    /// Clearance scales with body weight^0.75.
     pub const CLEARANCE: f64 = 0.75;
+    /// Volume scales linearly with body weight.
     pub const VOLUME: f64 = 1.0;
+    /// Half-life scales with body weight^0.25 (derived from CL/V).
     pub const HALF_LIFE: f64 = 0.25;
 }
 

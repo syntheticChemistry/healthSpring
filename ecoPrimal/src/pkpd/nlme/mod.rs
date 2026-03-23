@@ -131,13 +131,21 @@ pub fn iv_one_compartment_model(theta: &[f64], eta: &[f64], dose: f64, time: f64
 
 /// Configuration for synthetic population generation.
 pub struct SyntheticPopConfig<'a> {
+    /// Structural PK model mapping (theta, eta, dose, time) → concentration.
     pub model: StructuralModel,
+    /// Population fixed effects (typical theta vector).
     pub theta: &'a [f64],
+    /// Diagonal BSV variances (omega) for sampling etas.
     pub omega: &'a [f64],
+    /// Residual error standard deviation on observations.
     pub sigma: f64,
+    /// Number of virtual subjects to simulate.
     pub n_subjects: usize,
+    /// Sampling times (hours) shared by all subjects.
     pub times: &'a [f64],
+    /// Administered dose per subject (consistent model units).
     pub dose: f64,
+    /// PRNG seed for reproducible synthetic data.
     pub seed: u64,
 }
 

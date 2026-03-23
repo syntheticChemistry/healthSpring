@@ -29,10 +29,10 @@
 
 use super::{GpuOp, GpuResult};
 
-/// Attempt sovereign GPU dispatch via CoralReefDevice.
+/// Attempt sovereign GPU dispatch via `CoralReefDevice`.
 ///
 /// Returns `None` if the sovereign path should not be tried (feature disabled,
-/// coralReef not discoverable, or CoralReefDevice unavailable). Returns
+/// coralReef not discoverable, or `CoralReefDevice` unavailable). Returns
 /// `Some(Ok(result))` on success, `Some(Err(e))` when sovereign was attempted
 /// but failed (e.g. cache miss, toadStool unreachable).
 ///
@@ -40,16 +40,14 @@ use super::{GpuOp, GpuResult};
 /// `Some(Err(_))`.
 #[cfg(feature = "gpu")]
 #[cfg(feature = "sovereign-dispatch")]
+#[must_use]
 pub fn try_sovereign_dispatch(op: &GpuOp) -> Option<Result<GpuResult, super::GpuError>> {
     use crate::ipc::socket::discover_shader_compiler;
 
-    if discover_shader_compiler().is_none() {
-        return None;
-    }
+    discover_shader_compiler()?;
 
-    let device = match barracuda::device::CoralReefDevice::with_auto_device() {
-        Ok(d) => d,
-        Err(_) => return None,
+    let Ok(device) = barracuda::device::CoralReefDevice::with_auto_device() else {
+        return None;
     };
 
     if !device.has_compiler() || !device.has_dispatch() {
@@ -77,6 +75,10 @@ pub const fn try_sovereign_dispatch(_op: &GpuOp) -> Option<Result<GpuResult, sup
 }
 
 #[cfg(all(feature = "gpu", feature = "sovereign-dispatch"))]
+#[expect(
+    clippy::cast_possible_truncation,
+    reason = "concentration count fits u32 for GPU dispatch workgroups"
+)]
 fn dispatch_via_sovereign(
     device: &barracuda::device::CoralReefDevice,
     op: &GpuOp,
@@ -94,9 +96,6 @@ fn dispatch_via_sovereign(
             n,
             concentrations,
         } => {
-            let n_concs = concentrations.len() as u32;
-            let byte_size = u64::from(n_concs) * 8;
-
             #[repr(C)]
             #[derive(Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
             struct HillParams {
@@ -106,6 +105,9 @@ fn dispatch_via_sovereign(
                 n_concs: u32,
                 _pad: u32,
             }
+
+            let n_concs = concentrations.len() as u32;
+            let byte_size = u64::from(n_concs) * 8;
             let params = HillParams {
                 emax: *emax,
                 ec50: *ec50,
@@ -152,6 +154,7 @@ fn dispatch_via_sovereign(
                 workgroups,
                 f64_shader: true,
                 df64_shader: false,
+                hardware_hint: barracuda::device::backend::HardwareHint::Compute,
             };
 
             device

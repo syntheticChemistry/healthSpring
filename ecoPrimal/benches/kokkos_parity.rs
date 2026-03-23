@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![expect(
+    missing_docs,
+    reason = "criterion macros generate undocumented public items"
+)]
 //! Kokkos-equivalent benchmarks for healthSpring workloads.
 //!
 //! These benchmarks measure CPU performance of patterns commonly benchmarked

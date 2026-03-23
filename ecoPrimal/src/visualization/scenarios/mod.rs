@@ -6,6 +6,7 @@
 //! render them directly.
 
 mod biosignal;
+/// GPU/compute pipeline and dispatch scenario builders for petalTongue.
 pub mod compute;
 mod endocrine;
 mod microbiome;
