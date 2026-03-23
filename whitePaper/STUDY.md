@@ -1,7 +1,7 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.9 (V35 — Protocol Evolution + Centralized Cast Algebra)
-**Date**: March 17, 2026
+**Version**: 0.10 (V41 — Deep Debt Resolution Sprint)
+**Date**: March 23, 2026
 
 ---
 

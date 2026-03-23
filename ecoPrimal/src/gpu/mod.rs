@@ -301,6 +301,25 @@ fn wang_hash_uniform(seed: u32) -> f64 {
     f64::from(s) / f64::from(u32::MAX)
 }
 
+/// Returns the barraCuda codegen'd WGSL shader for ODE-based ops.
+///
+/// For `MichaelisMentenBatch`, this produces a generic RK4 shader via
+/// `BatchedOdeRK4::<MichaelisMentenOde>::generate_shader()` — replacing
+/// the handwritten Euler ODE in `michaelis_menten_batch_f64.wgsl`.
+///
+/// Returns `None` for ops without an `OdeSystem` implementation.
+#[must_use]
+pub fn codegen_shader_for_op(op: &GpuOp) -> Option<String> {
+    use barracuda::numerical::BatchedOdeRK4;
+
+    match op {
+        GpuOp::MichaelisMentenBatch { .. } => {
+            Some(BatchedOdeRK4::<ode_systems::MichaelisMentenOde>::generate_shader())
+        }
+        _ => None,
+    }
+}
+
 /// Shader descriptor: maps a `GpuOp` to its WGSL shader source.
 #[must_use]
 pub const fn shader_for_op(op: &GpuOp) -> &'static str {
@@ -512,6 +531,44 @@ mod tests {
         assert!(shaders::MICHAELIS_MENTEN_BATCH.contains("michaelis_menten"));
         assert!(shaders::SCFA_BATCH.contains("scfa"));
         assert!(shaders::BEAT_CLASSIFY_BATCH.contains("beat_classify"));
+    }
+
+    #[test]
+    fn mm_batch_codegen_shader_valid() {
+        let op = GpuOp::MichaelisMentenBatch {
+            vmax: 500.0,
+            km: 5.0,
+            vd: 50.0,
+            dt: 0.01,
+            n_steps: 2000,
+            n_patients: 64,
+            seed: 42,
+        };
+        let shader = codegen_shader_for_op(&op);
+        assert!(shader.is_some(), "MM batch should produce codegen shader");
+        let wgsl = shader.unwrap_or_default();
+        assert!(
+            wgsl.contains("fn deriv"),
+            "codegen shader must embed OdeSystem derivative"
+        );
+        assert!(
+            wgsl.contains("vmax") || wgsl.contains("params"),
+            "codegen shader should contain Michaelis-Menten parameter references"
+        );
+    }
+
+    #[test]
+    fn codegen_returns_none_for_non_ode_ops() {
+        let op = GpuOp::HillSweep {
+            emax: 100.0,
+            ec50: 10.0,
+            n: 1.0,
+            concentrations: vec![1.0],
+        };
+        assert!(
+            codegen_shader_for_op(&op).is_none(),
+            "Hill sweep has no ODE codegen"
+        );
     }
 
     #[test]

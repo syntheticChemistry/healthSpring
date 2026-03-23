@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#![forbid(unsafe_code)]
-#![deny(clippy::all)]
-#![deny(clippy::pedantic)]
-#![deny(clippy::nursery)]
+//
+// Lint policy: workspace-level [lints] in root Cargo.toml.
+// forbid(unsafe_code), deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used}).
 
 //! metalForge — heterogeneous compute dispatch for healthSpring.
 //!
@@ -33,8 +32,11 @@
 //!     └── Network IPC (cross-node via biomeOS)
 //! ```
 
+/// Stage→Nest assignment and transfer planning for pipeline execution.
 pub mod dispatch;
+/// NUCLEUS topology (`Tower` → `Node` → `Nest`) for heterogeneous scheduling.
 pub mod nucleus;
+/// Inter-`Nest` transfer path selection (`PCIe` P2P, host-staged, or IPC).
 pub mod transfer;
 
 /// Available compute substrates for healthSpring workloads.
@@ -56,23 +58,50 @@ pub enum Substrate {
 #[derive(Debug, Clone, Copy)]
 pub enum Workload {
     /// Embarrassingly parallel — no inter-element dependencies (GPU ideal).
-    PopulationPk { n_patients: u32 },
+    PopulationPk {
+        /// Virtual cohort size used for GPU offload thresholding.
+        n_patients: u32,
+    },
     /// Element-wise sweep — independent per element (GPU ideal).
-    DoseResponse { n_concentrations: u32 },
+    DoseResponse {
+        /// Number of concentration points in the Hill or dose–response sweep.
+        n_concentrations: u32,
+    },
     /// Fused map-reduce over a collection (GPU possible above threshold).
-    DiversityIndex { n_samples: u32 },
+    DiversityIndex {
+        /// Sample count feeding diversity or reduce-style GPU routing.
+        n_samples: u32,
+    },
     /// Streaming time-series pipeline (NPU ideal, latency-critical).
-    BiosignalDetect { sample_rate_hz: u32 },
+    BiosignalDetect {
+        /// Input sampling rate (Hz) for streaming/NPU affinity.
+        sample_rate_hz: u32,
+    },
     /// Multi-channel biosignal fusion (CPU or NPU).
-    BiosignalFusion { channels: u32 },
+    BiosignalFusion {
+        /// Parallel physiological channels (e.g. ECG, PPG) to fuse.
+        channels: u32,
+    },
     /// Endocrine PK computation (CPU-only, analytical).
-    EndocrinePk { n_timepoints: u32 },
+    EndocrinePk {
+        /// Time grid resolution for analytical PK integration.
+        n_timepoints: u32,
+    },
     /// Batch Michaelis-Menten PK ODE per patient (GPU ideal).
-    MichaelisMentenBatch { n_patients: u32 },
+    MichaelisMentenBatch {
+        /// Parallel ODE trajectories (patients) in the batch.
+        n_patients: u32,
+    },
     /// Batch SCFA metabolic production per fiber input (GPU ideal).
-    ScfaBatch { n_elements: u32 },
+    ScfaBatch {
+        /// Fiber inputs or production sites in the microbiome batch.
+        n_elements: u32,
+    },
     /// Batch beat template-matching classification (GPU ideal).
-    BeatClassifyBatch { n_beats: u32 },
+    BeatClassifyBatch {
+        /// Beats classified per batch for GPU dispatch sizing.
+        n_beats: u32,
+    },
     /// Small analytical computation — CPU always.
     Analytical,
 }
@@ -133,10 +162,13 @@ pub enum PrecisionRouting {
 /// Discovered GPU capabilities.
 #[derive(Debug, Clone)]
 pub struct GpuInfo {
+    /// Reported adapter or device name from the graphics runtime.
     pub name: String,
+    /// Whether `SHADER_F64` (native double) is available for WGSL.
     pub fp64_native: bool,
     /// Whether f64 shared-memory reductions are reliable on this GPU.
     pub f64_shared_mem_reliable: bool,
+    /// `wgpu` limit: max compute workgroups per dimension for dispatch sizing.
     pub max_workgroups: u32,
     /// Routing advice for f64 workloads on this GPU.
     pub precision: PrecisionRouting,
@@ -145,15 +177,20 @@ pub struct GpuInfo {
 /// Discovered NPU capabilities.
 #[derive(Debug, Clone)]
 pub struct NpuInfo {
+    /// Enumerated neuromorphic device label (e.g. Akida SKU).
     pub name: String,
+    /// Peak sustained inference rate for latency/capacity estimates.
     pub max_inference_rate_hz: u32,
 }
 
 /// Discovered compute capabilities at runtime.
 #[derive(Debug, Default)]
 pub struct Capabilities {
+    /// CPU execution is always treated as available for fallback paths.
     pub cpu: bool,
+    /// GPU probe result when the `gpu` feature is enabled and an adapter exists.
     pub gpu: Option<GpuInfo>,
+    /// NPU probe result when a neuromorphic device is integrated (`npu` path).
     pub npu: Option<NpuInfo>,
 }
 
@@ -163,8 +200,11 @@ pub struct Capabilities {
 /// Callers (or biomeOS) can tune these based on profiled hardware.
 #[derive(Debug, Clone)]
 pub struct DispatchThresholds {
+    /// Minimum cohort/parallel element count before `PopulationPk`-style work uses GPU.
     pub parallel_gpu_min: u32,
+    /// Minimum sweep length before dose–response / element-wise work uses GPU.
     pub sweep_gpu_min: u32,
+    /// Minimum collection size before map–reduce / diversity-style work uses GPU.
     pub reduce_gpu_min: u32,
 }
 

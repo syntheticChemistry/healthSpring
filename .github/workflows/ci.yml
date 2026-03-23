@@ -56,16 +56,16 @@ jobs:
       run: |
         set -e
         for toml in experiments/exp*/Cargo.toml; do
-          bin=$(grep 'name = "exp' "$toml" 2>/dev/null | head -1 | sed 's/.*"\(.*\)".*/\1/')
-          if [ -n "$bin" ]; then
-            echo "=== $bin ==="
-            cargo run --release --bin "$bin"
-            echo
-          fi
+          while IFS= read -r bin; do
+            if [ -n "$bin" ]; then
+              echo "=== $bin ==="
+              cargo run --release --bin "$bin"
+              echo
+            fi
+          done < <(grep 'name = "exp' "$toml" 2>/dev/null | sed 's/.*"\(.*\)".*/\1/')
         done
     - name: Python cross-validation
-      run: |
-        python3 control/pkpd/cross_validate.py
+      run: python3 control/pkpd/cross_validate.py
 
   test-gpu:
     runs-on: ubuntu-latest

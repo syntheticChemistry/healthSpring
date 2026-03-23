@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** March 17, 2026
-**Status:** V35 — IPC Resilience + Sovereign Dispatch. 73 experiments, 613 tests, 79 wired JSON-RPC capabilities, 30/30 papers complete (Tracks 1–7). Structured tracing, health probes, resilient provenance trio IPC. 42 baselines with provenance. 113/113 cross-validation checks (all 7 tracks). Zero duplicate math, zero unsafe, zero clippy warnings workspace-wide.
+**Date:** March 23, 2026
+**Status:** V41 — Deep Debt Resolution Sprint. 83 experiments, 855 tests, 59 JSON-RPC capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. Workspace-level `[lints]`. Library `tracing`. Env-driven discovery. ODE codegen wired. Proptest numerical properties. Zero clippy, zero unsafe, zero `#[allow]`.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---

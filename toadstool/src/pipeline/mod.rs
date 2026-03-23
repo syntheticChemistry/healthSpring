@@ -26,6 +26,7 @@ use healthspring_forge::Substrate;
 /// Data flows forward through stages; no stage reads output of a later stage.
 #[derive(Debug)]
 pub struct Pipeline {
+    /// Display name for logs, provenance, and UI (not used in semantics).
     pub name: String,
     stages: Vec<Stage>,
 }
@@ -33,8 +34,11 @@ pub struct Pipeline {
 /// Result of executing a pipeline.
 #[derive(Debug)]
 pub struct PipelineResult {
+    /// One entry per completed stage in the order results were produced.
     pub stage_results: Vec<StageResult>,
+    /// Sum of reported per-stage `elapsed_us` values (not wall time for fused GPU batches).
     pub total_time_us: f64,
+    /// False if any stage failed or GPU fallback reported failure.
     pub success: bool,
 }
 
@@ -48,7 +52,7 @@ impl Pipeline {
         }
     }
 
-    /// Add a stage to the pipeline.
+    /// Append a stage; execution order matches insertion order unless GPU fusion batches later stages.
     pub fn add_stage(&mut self, stage: Stage) {
         self.stages.push(stage);
     }

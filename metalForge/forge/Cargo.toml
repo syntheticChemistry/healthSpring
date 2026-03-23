@@ -8,6 +8,9 @@ rust-version.workspace = true
 license.workspace = true
 description = "metalForge dispatch validation for healthSpring"
 
+[lints]
+workspace = true
+
 [features]
 default = []
 gpu = ["dep:wgpu", "dep:pollster"]

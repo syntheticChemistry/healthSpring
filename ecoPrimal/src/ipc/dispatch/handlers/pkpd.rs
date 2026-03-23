@@ -207,7 +207,10 @@ pub fn dispatch_nlme_foce(params: &Value) -> Value {
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
+        seed: params
+            .get("seed")
+            .and_then(Value::as_u64)
+            .unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::foce(
         pkpd::oral_one_compartment_model,
@@ -239,7 +242,10 @@ pub fn dispatch_nlme_saem(params: &Value) -> Value {
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 300),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
+        seed: params
+            .get("seed")
+            .and_then(Value::as_u64)
+            .unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::saem(
         pkpd::oral_one_compartment_model,
@@ -271,7 +277,10 @@ pub fn dispatch_cwres(params: &Value) -> Value {
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
+        seed: params
+            .get("seed")
+            .and_then(Value::as_u64)
+            .unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::foce(
         pkpd::oral_one_compartment_model,
@@ -302,7 +311,10 @@ pub fn dispatch_vpc(params: &Value) -> Value {
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
+        seed: params
+            .get("seed")
+            .and_then(Value::as_u64)
+            .unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::foce(
         pkpd::oral_one_compartment_model,
@@ -346,7 +358,10 @@ pub fn dispatch_gof(params: &Value) -> Value {
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
+        seed: params
+            .get("seed")
+            .and_then(Value::as_u64)
+            .unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::foce(
         pkpd::oral_one_compartment_model,

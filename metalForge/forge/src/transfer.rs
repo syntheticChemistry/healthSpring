@@ -31,10 +31,15 @@ pub enum TransferMethod {
 /// Planned data transfer between two Nests.
 #[derive(Debug, Clone)]
 pub struct TransferPlan {
+    /// Producer nest for this handoff.
     pub src: NestId,
+    /// Consumer nest for the next pipeline stage.
     pub dst: NestId,
+    /// `PCIe` P2P, host round-trip, IPC, or no-op when `src == dst`.
     pub method: TransferMethod,
+    /// Effective throughput used for `estimated_time_us` (conservative where unknown).
     pub estimated_bandwidth_gbps: f64,
+    /// Payload size attributed to this edge (stage output bytes).
     pub bytes: u64,
 }
 

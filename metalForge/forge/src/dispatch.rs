@@ -25,18 +25,26 @@ use crate::{Capabilities, Substrate, Workload, select_substrate};
 /// A single stage assignment within a dispatch plan.
 #[derive(Debug, Clone)]
 pub struct StageAssignment {
+    /// Caller’s pipeline index for this workload in the planned sequence.
     pub stage_index: usize,
+    /// metalForge workload class used for substrate selection.
     pub workload: Workload,
+    /// CPU, GPU, or NPU chosen for this stage.
     pub substrate: Substrate,
+    /// NUCLEUS device slot that will execute the stage.
     pub nest_id: NestId,
+    /// Data path from the previous `Nest` when the assignment changes devices.
     pub transfer: Option<TransferPlan>,
 }
 
 /// Complete dispatch plan for a pipeline across heterogeneous hardware.
 #[derive(Debug)]
 pub struct DispatchPlan {
+    /// Per-stage substrate and optional inter-device transfer metadata.
     pub assignments: Vec<StageAssignment>,
+    /// Sum of `output_bytes` across stage boundaries that required transfers.
     pub total_transfer_bytes: u64,
+    /// How many times consecutive stages used different `Nest`s.
     pub n_substrate_transitions: usize,
 }
 
@@ -131,6 +139,10 @@ fn find_nest(node: Option<&Node>, substrate: Substrate) -> NestId {
 }
 
 #[cfg(test)]
+#[expect(
+    clippy::unwrap_used,
+    reason = "test assertions on known-populated Option"
+)]
 mod tests {
     use super::*;
     use crate::nucleus::{DeviceStatus, Nest, Node, NodeId, PcieGeneration};

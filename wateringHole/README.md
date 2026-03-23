@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V40 — Cross-Ecosystem Absorption Sprint. 848 tests, 83 experiments, 83/83 ValidationHarness, 87+ named tolerances, 53 provenance records with DOI, typed IPC dispatch. 85 capabilities. 9 science tracks. barraCuda v0.3.7. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
-**Last Updated**: March 19, 2026
+**Status**: V41 — Deep Debt Resolution Sprint. 855 tests, 83 experiments, 83/83 ValidationHarness, 87+ named tolerances, 53 provenance records with DOI. 59 capabilities (46 science + 13 infra). 9 science tracks. barraCuda v0.3.7. Workspace-level `[lints]`. Library `tracing`. Env-driven discovery. ODE codegen wired. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
+**Last Updated**: March 23, 2026
 
 ---
 
@@ -22,8 +22,9 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V39** | [V39 Toxicology/Simulation/Hormesis](handoffs/HEALTHSPRING_V39_TOXICOLOGY_SIMULATION_HORMESIS_HANDOFF_MAR19_2026.md) | Mar 19 | 3 new science domains, 5 new IPC capabilities, cross-spring hormesis framework. barraCuda absorption candidates for `bio::hormesis`, `bio::toxicology`, `bio::simulation`. Supersedes V38. |
-| | *V1–V38 → `handoffs/archive/`* | | Fossil record |
+| **V41** | [V41 Deep Debt Resolution](handoffs/HEALTHSPRING_V41_DEEP_DEBT_RESOLUTION_HANDOFF_MAR23_2026.md) | Mar 23 | Workspace lints, tracing, env-driven discovery, ODE codegen, proptest numerical. Supersedes V40. |
+| **V41** | [V41 toadStool/barraCuda Evolution](handoffs/HEALTHSPRING_V41_TOADSTOOL_BARRACUDA_EVOLUTION_HANDOFF_MAR23_2026.md) | Mar 23 | Full barraCuda consumption inventory, GPU promotion candidates, ODE codegen wiring, new primitive requests. Supersedes V40 toadStool handoff. |
+| | *V1–V40 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 

@@ -12,6 +12,9 @@ repository = "https://github.com/syntheticChemistry/healthSpring"
 keywords = ["pharmacokinetics", "microbiome", "biosignal", "gpu", "wgsl"]
 categories = ["science", "command-line-utilities"]
 
+[lints]
+workspace = true
+
 [features]
 default = []
 gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck"]

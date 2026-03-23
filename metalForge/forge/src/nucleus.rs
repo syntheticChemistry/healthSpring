@@ -34,17 +34,24 @@ use crate::Substrate;
 /// and can execute one workload kernel at a time.
 #[derive(Debug, Clone)]
 pub struct Nest {
+    /// Stable address of this device within the cluster topology.
     pub id: NestId,
+    /// CPU, GPU, or NPU capability of this schedulable unit.
     pub substrate: Substrate,
+    /// Device-local memory budget for allocator / residency checks.
     pub memory_bytes: u64,
+    /// Whether the nest can accept new work right now.
     pub status: DeviceStatus,
 }
 
 /// Unique identifier for a Nest within the Tower topology.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct NestId {
+    /// Cluster id when multiple towers form a federation.
     pub tower: u16,
+    /// Machine index within the tower (shared `PCIe` domain).
     pub node: u16,
+    /// Device slot on that node (CPU socket index, GPU id, NPU id, …).
     pub device: u16,
 }
 
@@ -60,22 +67,29 @@ impl std::fmt::Display for NestId {
 /// peer-to-peer DMA transfers without CPU involvement.
 #[derive(Debug, Clone)]
 pub struct Node {
+    /// Address of this host within the tower.
     pub id: NodeId,
+    /// Heterogeneous devices attached to this machine’s interconnect.
     pub nests: Vec<Nest>,
+    /// Link generation used to estimate same-node P2P bandwidth.
     pub pcie_gen: PcieGeneration,
 }
 
 /// Unique identifier for a Node within the Tower.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct NodeId {
+    /// Cluster id shared with `NestId::tower`.
     pub tower: u16,
+    /// Host index within the tower.
     pub node: u16,
 }
 
 /// Tower — a cluster of Nodes connected via network fabric.
 #[derive(Debug, Clone)]
 pub struct Tower {
+    /// Identifier for this cluster in multi-tower federation scenarios.
     pub id: u16,
+    /// Network-connected hosts, each with local nests.
     pub nodes: Vec<Node>,
 }
 
@@ -95,8 +109,11 @@ pub enum DeviceStatus {
 /// `PCIe` generation determines peer-to-peer transfer bandwidth.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PcieGeneration {
+    /// ~8 GT/s per lane — legacy workstations and small GPUs.
     Gen3,
+    /// ~16 GT/s per lane — common for discrete GPUs since ~2017.
     Gen4,
+    /// ~32 GT/s per lane — high-end GPU and NVMe backplanes.
     Gen5,
 }
 

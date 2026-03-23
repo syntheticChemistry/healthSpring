@@ -120,7 +120,10 @@ mod tests {
         let p = json!({"concentration": 10.0, "ic50": 10.0, "hill_n": 2.0, "e_max": 1.0});
         let r = pkpd::dispatch_hill(&p);
         let response = r["response"].as_f64().unwrap();
-        assert!((response - 0.5).abs() < 0.01, "at IC50, response ≈ 0.5: {response}");
+        assert!(
+            (response - 0.5).abs() < 0.01,
+            "at IC50, response ≈ 0.5: {response}"
+        );
     }
 
     #[test]
@@ -159,7 +162,10 @@ mod tests {
         let p = json!({"param_animal": 10.0, "bw_animal": 70.0, "bw_human": 70.0});
         let r = pkpd::dispatch_allometric(&p);
         let scaled = r["scaled_param"].as_f64().unwrap();
-        assert!((scaled - 10.0).abs() < 0.01, "same weight → identity: {scaled}");
+        assert!(
+            (scaled - 10.0).abs() < 0.01,
+            "same weight → identity: {scaled}"
+        );
     }
 
     #[test]

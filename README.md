@@ -5,7 +5,7 @@
 **Date:** March 22, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V40 — Cross-Ecosystem Absorption Sprint. 848 tests, 83 experiments, 53 Python baselines. barraCuda v0.3.7. Module conflict resolved (`toxicology/` refactor). 17 magic numbers extracted to named constants. `provenance.rs` smart-refactored (850→201+164 lines). Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`. 39 new tests covering previously untested IPC dispatch handlers, MCP tool definitions, WFDB parser, NLME solver. Cross-ecosystem review of all 7 springs, 10+ primals, 49 handoffs.
+**Status:** V41 — Deep Debt Resolution Sprint. 855 tests, 83 experiments, 53 Python baselines. barraCuda v0.3.7. Workspace lints consolidated (`[workspace.lints]` — `forbid(unsafe_code)`, `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`, `warn(missing_docs)`). Library `println!`/`eprintln!` evolved to `tracing`. Hardcoded primal names evolved to capability-based discovery with env-driven fallback. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. Proptest extended to numerical properties (Hill monotonicity, boundedness, EC ordering). Tolerance registry synced. CI validates all experiment binaries. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
 
 ---
 
@@ -33,11 +33,11 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V40** (Cross-Ecosystem Absorption Sprint) |
-| **Total tests** | **848** (lib + proptest + IPC fuzz + doc + experiment bins) |
+| Version | **V41** (Deep Debt Resolution Sprint) |
+| **Total tests** | **855** (lib + proptest + IPC fuzz + doc + experiment bins) |
 | Experiments complete | 83 (Tracks 1–9, Tier 0+1+2+3) |
 | Experiments using ValidationHarness | **83/83** (all standardized) |
-| JSON-RPC capabilities | 85 (84 science + `mcp.tools.list` — 0 stubs in dispatch) |
+| JSON-RPC capabilities | 59 (46 science + 13 infrastructure — `capability.list`, provenance, health probes, compute/data/model routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **53** with structured provenance registry (all 9 tracks) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
@@ -49,10 +49,10 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | biomeOS niche | **Live** — `UniBin`-compliant primal binary (`serve`/`version`/`capabilities` subcommands), SIGTERM/SIGINT handling |
 | NLME population PK | FOCE + SAEM estimation, NCA metrics, CWRES/VPC/GOF diagnostics |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Ellsworth (Med Chem), Mok (Allure Medical) |
-| Unsafe blocks | **0** (`#![forbid(unsafe_code)]`) |
+| Unsafe blocks | **0** (`forbid(unsafe_code)` in `[workspace.lints]`) |
 | `#[allow()]` in production | **0** (all migrated to `#[expect()]` with reasons) |
 | TODO/FIXME in production | **0** |
-| Clippy | **0 warnings** (`#![deny(clippy::pedantic, clippy::nursery)]`) |
+| Clippy | **0 warnings** (workspace `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`) |
 | `cargo fmt` | **0 diffs** |
 | `cargo doc` | **0 warnings** |
 | Max file size | 732 lines (visualization/scenarios/tests.rs; all production files under 750-line limit) |
@@ -72,7 +72,7 @@ V40 reviews all 7 springs, 10+ primals, and 49 handoffs for absorption opportuni
 | **provenance/ refactor** | 850→201+164 lines (types vs data), public API unchanged |
 | **39 new tests** | Handler dispatch (22), MCP tools (5), WFDB parser (9), NLME solver (4) |
 | **Zero `#[allow]`** | Last `allow(unused_variables)` → `#[expect(reason)]` |
-| **848 tests** | Up from 809. Zero failures, zero clippy (pedantic + nursery). |
+| **855 tests** | Up from 848. Zero failures. Workspace-level `[lints]` consolidation. |
 
 ---
 
@@ -626,7 +626,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 719 tests
+cargo test --workspace                  # 855 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

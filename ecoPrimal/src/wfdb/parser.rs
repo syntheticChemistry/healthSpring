@@ -410,7 +410,11 @@ mod tests {
     fn adc_to_physical_with_baseline() {
         let samples = vec![1024];
         let result = adc_to_physical(&samples, 200.0, 1024);
-        assert!(result[0].abs() < 1e-10, "baseline should zero out: {}", result[0]);
+        assert!(
+            result[0].abs() < 1e-10,
+            "baseline should zero out: {}",
+            result[0]
+        );
     }
 
     #[test]

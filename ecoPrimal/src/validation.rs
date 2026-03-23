@@ -9,8 +9,28 @@
 //! with a single, auditable pattern linked to `TOLERANCE_REGISTRY.md`.
 
 use core::fmt;
+use std::sync::Once;
+
+use tracing::{error, info};
 
 use crate::tolerances::MACHINE_EPSILON_STRICT;
+
+static TRACING_INIT: Once = Once::new();
+
+/// Initialize a minimal tracing subscriber for validation binary output.
+///
+/// Called automatically by [`ValidationHarness::new`]. Safe to call multiple
+/// times — only the first invocation installs a subscriber.
+fn init_validation_tracing() {
+    TRACING_INIT.call_once(|| {
+        tracing_subscriber::fmt()
+            .with_max_level(tracing::Level::INFO)
+            .without_time()
+            .with_target(false)
+            .with_level(false)
+            .init();
+    });
+}
 
 /// How a tolerance bound is interpreted.
 #[derive(Debug, Clone, Copy)]
@@ -79,7 +99,8 @@ pub struct ValidationHarness {
 impl ValidationHarness {
     #[must_use]
     pub fn new(name: &str) -> Self {
-        println!("=== {name} ===");
+        init_validation_tracing();
+        info!(experiment = %name, "=== {name} ===");
         Self {
             name: name.into(),
             checks: Vec::new(),
@@ -186,7 +207,11 @@ impl ValidationHarness {
             tolerance,
             mode,
         };
-        println!("{check}");
+        if check.passed {
+            info!("{check}");
+        } else {
+            error!("{check}");
+        }
         self.checks.push(check);
     }
 
@@ -202,15 +227,24 @@ impl ValidationHarness {
         self.checks.iter().filter(|c| !c.passed).count()
     }
 
-    /// Print summary and exit process with 0 (all pass) or 1 (any fail).
+    /// Log summary and exit process with 0 (all pass) or 1 (any fail).
     pub fn exit(&self) -> ! {
         let total = self.checks.len();
         let passed = self.passed();
         let failed = self.failed();
-        println!(
-            "\n--- {} summary: {passed}/{total} passed, {failed} failed ---",
-            self.name,
-        );
+        if failed > 0 {
+            error!(
+                experiment = %self.name, passed, failed, total,
+                "--- {} summary: {passed}/{total} passed, {failed} failed ---",
+                self.name,
+            );
+        } else {
+            info!(
+                experiment = %self.name, passed, total,
+                "--- {} summary: {passed}/{total} passed, 0 failed ---",
+                self.name,
+            );
+        }
         std::process::exit(i32::from(failed > 0));
     }
 
@@ -243,7 +277,7 @@ impl<T, E: std::fmt::Display> OrExit<T> for Result<T, E> {
         match self {
             Ok(v) => v,
             Err(e) => {
-                eprintln!("FATAL: {context}: {e}");
+                error!(context = %context, error = %e, "FATAL: {context}: {e}");
                 std::process::exit(1)
             }
         }
@@ -253,7 +287,7 @@ impl<T, E: std::fmt::Display> OrExit<T> for Result<T, E> {
 impl<T> OrExit<T> for Option<T> {
     fn or_exit(self, context: &str) -> T {
         self.unwrap_or_else(|| {
-            eprintln!("FATAL: {context}");
+            error!(context = %context, "FATAL: {context}");
             std::process::exit(1)
         })
     }

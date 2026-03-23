@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: March 22, 2026
-**Status**: V40 — Cross-Ecosystem Absorption Sprint. 848 tests, 83 experiments, 85 JSON-RPC capabilities, 53 Python baselines. barraCuda v0.3.7. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
+**Last Updated**: March 23, 2026
+**Status**: V41 — Deep Debt Resolution Sprint. 855 tests, 83 experiments, 59 JSON-RPC capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---

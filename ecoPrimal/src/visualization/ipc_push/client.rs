@@ -21,8 +21,11 @@ const RPC_RESPONSE_BUF: usize = 65_536;
 /// Capability domain used for visualization primal discovery.
 const VISUALIZATION_CAPABILITY: &str = "visualization";
 
-/// Default socket name prefix for filesystem scanning fallback.
-const DEFAULT_VIZ_PREFIX: &str = "petaltongue";
+/// Env-driven or conventional socket-name prefix for filesystem scanning.
+/// Only used when capability-based discovery (`visualization.*`) fails.
+fn viz_socket_prefix() -> String {
+    std::env::var("BIOMEOS_VIZ_PREFIX").unwrap_or_else(|_| "petaltongue".into())
+}
 
 /// Client for pushing visualization data to the visualization primal.
 ///
@@ -66,7 +69,8 @@ impl PetalTonguePushClient {
                     for entry in entries.flatten() {
                         let name = entry.file_name();
                         let name = name.to_string_lossy();
-                        if name.starts_with(DEFAULT_VIZ_PREFIX) && name.ends_with(".sock") {
+                        let prefix = viz_socket_prefix();
+                        if name.starts_with(&*prefix) && name.ends_with(".sock") {
                             return Ok(Self {
                                 socket_path: entry.path(),
                             });
@@ -75,7 +79,7 @@ impl PetalTonguePushClient {
                 }
             }
 
-            let legacy_dir = runtime.join(DEFAULT_VIZ_PREFIX);
+            let legacy_dir = runtime.join(viz_socket_prefix());
             if legacy_dir.is_dir() {
                 if let Ok(entries) = std::fs::read_dir(&legacy_dir) {
                     for entry in entries.flatten() {

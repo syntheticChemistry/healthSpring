@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: March 22, 2026
-**Status**: V40 — Cross-Ecosystem Absorption Sprint. 83 experiments, 848 tests.
+**Last Updated**: March 23, 2026
+**Status**: V41 — Deep Debt Resolution Sprint. 83 experiments, 855 tests.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3). **All 83 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
 

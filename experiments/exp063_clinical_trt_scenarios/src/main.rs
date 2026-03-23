@@ -17,7 +17,6 @@ use healthspring_barracuda::visualization::clinical::{
 
 #[expect(
     clippy::too_many_lines,
-    clippy::collapsible_if,
     reason = "validation binary — patient archetype TRT scenario checks"
 )]
 fn main() {

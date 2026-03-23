@@ -1,5 +1,8 @@
 # healthSpring GPU Evolution Readiness & barraCuda Dependency Audit
 
+> **SUPERSEDED** by [`GPU_EVOLUTION_AUDIT_MAR19_2026.md`](GPU_EVOLUTION_AUDIT_MAR19_2026.md).
+> Retained as fossil record.
+
 **Date**: March 16, 2026  
 **Scope**: ecoPrimal GPU integration, WGSL shaders, barraCuda dependency health, metalForge Tier 3 dispatch
 

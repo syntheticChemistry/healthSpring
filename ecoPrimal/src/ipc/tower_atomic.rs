@@ -40,10 +40,14 @@ use super::socket;
 const CRYPTO_CAPABILITY: &str = "crypto";
 const DISCOVERY_CAPABILITY: &str = "net.discovery";
 
-/// Default socket name prefixes, overridable via environment.
-/// These are only used as filesystem hints, not as identity assertions.
-const DEFAULT_CRYPTO_PREFIX: &str = "beardog";
-const DEFAULT_DISCOVERY_PREFIX: &str = "songbird";
+/// Env-driven or conventional socket-name prefixes for filesystem scan.
+/// Only used when capability-based discovery has not yet bootstrapped.
+fn crypto_socket_prefix() -> String {
+    std::env::var("BIOMEOS_CRYPTO_PREFIX").unwrap_or_else(|_| "beardog".into())
+}
+fn discovery_socket_prefix() -> String {
+    std::env::var("BIOMEOS_DISCOVERY_PREFIX").unwrap_or_else(|_| "songbird".into())
+}
 
 /// Tower Atomic handle — crypto + discovery primals on the local machine.
 ///
@@ -67,9 +71,9 @@ impl TowerAtomic {
     pub fn discover() -> Option<Self> {
         let socket_dir = socket::resolve_socket_dir();
 
-        let crypto = discover_primal_in(&socket_dir, DEFAULT_CRYPTO_PREFIX)
+        let crypto = discover_primal_in(&socket_dir, &crypto_socket_prefix())
             .or_else(|| socket::discover_by_capability_public(CRYPTO_CAPABILITY))?;
-        let discovery = discover_primal_in(&socket_dir, DEFAULT_DISCOVERY_PREFIX)
+        let discovery = discover_primal_in(&socket_dir, &discovery_socket_prefix())
             .or_else(|| socket::discover_by_capability_public(DISCOVERY_CAPABILITY))?;
 
         Some(Self {
@@ -234,7 +238,7 @@ mod tests {
     fn discover_primal_in_nonexistent_dir() {
         let result = discover_primal_in(
             std::path::Path::new("/tmp/nonexistent_biomeos_test_dir"),
-            DEFAULT_CRYPTO_PREFIX,
+            &crypto_socket_prefix(),
         );
         assert!(result.is_none());
     }

@@ -74,21 +74,37 @@ pub fn load_provenance(json_str: &str) -> Option<BaselineProvenance> {
     serde_json::from_value(prov.clone()).ok()
 }
 
-/// Log provenance to stdout (for validation binary output).
+/// Emit provenance as a structured tracing event.
+///
+/// Validation binaries should initialize a `tracing_subscriber` that writes
+/// to stdout so these events remain visible in CI logs.
 pub fn log_provenance(prov: &BaselineProvenance) {
-    println!(
-        "  provenance: script={}, commit={}, date={}, python={}, numpy={}",
-        prov.script, prov.git_commit, prov.date, prov.python, prov.numpy,
+    tracing::info!(
+        script = %prov.script,
+        commit = %prov.git_commit,
+        date = %prov.date,
+        python = %prov.python,
+        numpy = %prov.numpy,
+        "baseline provenance",
     );
 }
 
-/// Log analytical provenance to stdout.
+/// Emit analytical provenance as a structured tracing event.
 pub fn log_analytical(prov: &AnalyticalProvenance) {
-    print!("  analytical: {} — {}", prov.formula, prov.reference);
     if let Some(doi) = prov.doi {
-        print!(" (doi:{doi})");
+        tracing::info!(
+            formula = %prov.formula,
+            reference = %prov.reference,
+            doi = %doi,
+            "analytical provenance",
+        );
+    } else {
+        tracing::info!(
+            formula = %prov.formula,
+            reference = %prov.reference,
+            "analytical provenance",
+        );
     }
-    println!();
 }
 
 /// Well-known analytical provenances for healthSpring experiments.

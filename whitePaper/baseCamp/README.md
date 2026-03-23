@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** March 19, 2026
-**Status:** V40 — Cross-Ecosystem Absorption Sprint. 848 tests, 83 experiments, 53 baselines with structured provenance registry. barraCuda v0.3.7. 9 science tracks, 85 capabilities. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
+**Last Updated:** March 23, 2026
+**Status:** V41 — Deep Debt Resolution Sprint. 855 tests, 83 experiments, 53 baselines with structured provenance registry. barraCuda v0.3.7. 9 science tracks, 59 JSON-RPC capabilities (46 science + 13 infra). Workspace-level `[lints]` (forbid unsafe, deny pedantic+nursery+unwrap+expect, warn missing_docs). Library `println!` evolved to `tracing`. Hardcoded primal names evolved to capability-based discovery. ODE codegen wired to GPU dispatch. Proptest extended to numerical properties. Zero clippy, zero unsafe, zero `#[allow]`.
 
 ---
 
@@ -99,12 +99,12 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | GPU Scaling Bench (Exp085) | — | 10 | 47 | 57 |
 | toadStool V16 Dispatch (Exp086) | — | — | 24 | 24 |
 | Mixed NUCLEUS V16 (Exp087) | — | — | 35 | 35 |
-| **Lib unit tests** | — | — | **567+** | 567+ |
+| **Lib unit tests** | — | — | **764+** | 764+ |
 | **metalForge tests** | — | — | **33** | 33 |
 | **toadStool tests** | — | — | **30** | 30 |
-| **Doc-tests** | — | — | **4** | 4 |
+| **Doc-tests** | — | — | **7** | 7 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **617** (tests) | **2,700+** |
+| **Total** | **688** | **287+** (Tier 0) | **855** (tests) | **2,900+** |
 
 ---
 

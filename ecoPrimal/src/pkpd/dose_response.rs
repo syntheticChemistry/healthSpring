@@ -193,3 +193,75 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+mod proptest_numerical {
+    use super::*;
+    use proptest::prelude::*;
+
+    proptest! {
+        /// Hill response is always in [0, e_max] for valid inputs.
+        #[test]
+        fn hill_response_bounded(
+            c in 1e-6_f64..1e6,
+            ic50 in 1e-3_f64..1e5,
+            n in 0.1_f64..10.0,
+            e_max in 0.1_f64..1000.0,
+        ) {
+            let r = hill_dose_response(c, ic50, n, e_max);
+            prop_assert!(r >= 0.0, "response negative: {r}");
+            prop_assert!(r <= e_max + 1e-10, "response {r} > e_max {e_max}");
+        }
+
+        /// Hill at C = IC50 is always E_max/2 (analytical identity).
+        #[test]
+        fn hill_at_ic50_identity(
+            ic50 in 1e-3_f64..1e5,
+            n in 0.1_f64..10.0,
+            e_max in 0.1_f64..1000.0,
+        ) {
+            let r = hill_dose_response(ic50, ic50, n, e_max);
+            let expected = e_max / 2.0;
+            prop_assert!(
+                (r - expected).abs() < 1e-8 * e_max.max(1.0),
+                "Hill at IC50: got {r}, expected {expected}"
+            );
+        }
+
+        /// Hill is monotonically non-decreasing for increasing concentration.
+        #[test]
+        fn hill_monotonic(
+            ic50 in 1e-3_f64..1e5,
+            n in 0.5_f64..5.0,
+            c1 in 1e-6_f64..1e5,
+            delta in 0.0_f64..1e4,
+        ) {
+            let c2 = c1 + delta;
+            let r1 = hill_dose_response(c1, ic50, n, 1.0);
+            let r2 = hill_dose_response(c2, ic50, n, 1.0);
+            prop_assert!(r2 >= r1 - 1e-12, "not monotonic: r({c1})={r1} > r({c2})={r2}");
+        }
+
+        /// EC values are always ordered: EC10 < EC50 < EC90.
+        #[test]
+        fn ec_values_always_ordered(
+            ic50 in 1e-3_f64..1e5,
+            n in 0.1_f64..10.0,
+        ) {
+            let ec = compute_ec_values(ic50, n);
+            prop_assert!(ec.ec10 < ec.ec50, "EC10 {0} >= EC50 {1}", ec.ec10, ec.ec50);
+            prop_assert!(ec.ec50 < ec.ec90, "EC50 {0} >= EC90 {1}", ec.ec50, ec.ec90);
+        }
+
+        /// Hill with zero concentration returns zero.
+        #[test]
+        fn hill_zero_at_zero(
+            ic50 in 1e-3_f64..1e5,
+            n in 0.1_f64..10.0,
+            e_max in 0.1_f64..1000.0,
+        ) {
+            let r = hill_dose_response(0.0, ic50, n, e_max);
+            prop_assert!((r).abs() < 1e-15, "Hill(0) should be 0, got {r}");
+        }
+    }
+}

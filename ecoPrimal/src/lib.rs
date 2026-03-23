@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#![forbid(unsafe_code)]
-#![deny(clippy::all)]
-#![deny(clippy::pedantic)]
-#![deny(clippy::nursery)]
-#![deny(clippy::unwrap_used)]
-#![deny(clippy::expect_used)]
+//
+// Lint policy: workspace-level [lints] in root Cargo.toml.
+// forbid(unsafe_code), deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used}).
 
 //! healthSpring barraCuda — health science compute library.
 //!

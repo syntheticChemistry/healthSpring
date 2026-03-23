@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#![forbid(unsafe_code)]
-#![deny(clippy::all)]
-#![deny(clippy::pedantic)]
-#![deny(clippy::nursery)]
+//
+// Lint policy: workspace-level [lints] in root Cargo.toml.
+// forbid(unsafe_code), deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used}).
 
 //! toadStool — sovereign compute dispatch for healthSpring.
 //!
@@ -25,5 +24,7 @@
 //! - **toadStool**: Manages the pipeline lifecycle (this crate)
 //! - **coralReef**: Compiles `WGSL` → native GPU binary (external)
 
+/// Multi-stage execution, metalForge routing, and optional GPU fusion.
 pub mod pipeline;
+/// Single-stage operations, CPU execution, and barraCuda `GpuOp` mapping.
 pub mod stage;

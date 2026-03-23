@@ -27,10 +27,10 @@
 
 | Dependency | Version | Source |
 |------------|---------|--------|
-| `barracuda` | 0.3.5 | Path `../../barraCuda/crates/barracuda` |
-| `barracuda-core` | 0.3.5 | Path `../../barraCuda/crates/barracuda-core` |
+| `barracuda` | 0.3.7 | Path `../../barraCuda/crates/barracuda` |
+| `barracuda-core` | 0.3.7 | Path `../../barraCuda/crates/barracuda-core` |
 
-**Cargo.toml**: Path dependency, no version constraint. Comment: *"Validated against barraCuda rev a60819c3 (2026-03-14)"*.
+**Cargo.toml**: Path dependency, no version constraint. Comment: *"Validated against barraCuda rev c04d848 (v0.3.7, 2026-03-22)"*.
 
 **Recommendation**: Pin barraCuda version (git rev or crate version) in Cargo.toml for reproducible CI.
 
@@ -65,10 +65,10 @@
 | Path | Tier A | Tier B | Notes |
 |------|--------|--------|-------|
 | `GpuContext::execute()` | ✅ barraCuda | ✅ barraCuda | When `barracuda-ops` + `barracuda_device` available |
-| `GpuContext::execute_fused()` | ❌ Local WGSL | ❌ Local WGSL | **Never** uses barraCuda; always `fused::prepare_*` |
+| `GpuContext::execute_fused()` | ✅ Sequential barraCuda | ✅ Sequential barraCuda | When `barracuda-ops` + device available; falls back to local WGSL single-encoder. Note: barraCuda path is N sequential dispatches, not true encoder fusion. |
 | `dispatch::execute_gpu()` | ✅ barraCuda | ❌ Local WGSL | Tier A only; Tier B falls through to local path |
 
-**Critical gap**: The fused pipeline (single encoder, upload once → N passes → readback once) **never** benefits from barraCuda. All 6 ops use local WGSL in `execute_fused()`.
+**Updated (V40)**: When `barracuda-ops` is enabled and `barracuda_device` is available, `execute_fused()` dispatches through `execute_fused_via_barracuda()` — but this is **N sequential** barraCuda op dispatches, not true single-encoder fusion. The local WGSL path via `execute_fused_local()` remains the only **true** single-encoder fused pipeline. `TensorSession` is the planned path to get both barraCuda ownership and encoder fusion.
 
 ---
 
@@ -288,4 +288,4 @@
 | Local reimplementations | FFT (biosignal), cholesky_solve (nlme, intentional), normalized_correlation (biosignal) |
 | metalForge workloads | 8 GPU-related |
 | barraCuda path dep | `../../barraCuda/crates/*` |
-| barraCuda version (Cargo.lock) | 0.3.5 |
+| barraCuda version (Cargo.lock) | 0.3.7 |

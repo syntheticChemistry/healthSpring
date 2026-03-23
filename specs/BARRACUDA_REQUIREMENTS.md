@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: March 22, 2026
-**Status**: V40 — Cross-Ecosystem Absorption Sprint. Tier 2+3 GPU live. barraCuda v0.3.7 pinned. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Tier A rewired (Hill, PopPK, Diversity). Tier B absorption candidates documented (MM batch, SCFA batch, Beat classify). See V35 handoff.
+**Last Updated**: March 23, 2026
+**Status**: V41 — Deep Debt Resolution Sprint. Tier 2+3 GPU live. barraCuda v0.3.7 pinned. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. 3 `OdeSystem` impls (MM, OralOneCompartment, TwoCompartment). Tier A+B all 6 ops live. Workspace lints, tracing. See V41 toadStool/barraCuda handoff.
 
 ---
 

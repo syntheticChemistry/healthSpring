@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V39 — Toxicology, Simulation, Hormesis + Cross-Spring Integration. 83 experiments, 809 Rust tests, 85 capabilities. 53 baselines with structured provenance registry.
-**Last Updated**: March 19, 2026
+**Status**: V41 — Deep Debt Resolution Sprint. 83 experiments, 855 Rust tests, 59 JSON-RPC capabilities (46 science + 13 infra). 53 baselines with structured provenance registry. Workspace-level `[lints]`. Library `tracing`. Capability-based discovery. ODE codegen wired.
+**Last Updated**: March 23, 2026
 
 ---
 

@@ -413,7 +413,11 @@ mod tests {
     #[test]
     fn tool_definitions_not_empty() {
         let tools = tool_definitions();
-        assert!(tools.len() > 10, "expected >10 MCP tools, got {}", tools.len());
+        assert!(
+            tools.len() > 10,
+            "expected >10 MCP tools, got {}",
+            tools.len()
+        );
     }
 
     #[test]

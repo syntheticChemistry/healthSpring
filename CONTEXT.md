@@ -33,15 +33,16 @@ capabilities over Unix sockets for biomeOS graph composition.
   - `healthspring-barracuda` — core science library
   - `healthspring-forge` — metalForge hardware dispatch
   - `healthspring-toadstool` — pipeline orchestration
-- **IPC**: JSON-RPC 2.0 over Unix domain sockets, 85 capabilities (84 science + `mcp.tools.list`)
+- **IPC**: JSON-RPC 2.0 over Unix domain sockets, 59 capabilities (46 science + 13 infrastructure)
 - **License**: AGPL-3.0-or-later (scyBorg trio)
-- **Tests**: 848 (lib + proptest + IPC fuzz + doc + experiment bins)
+- **Tests**: 855 (lib + proptest + IPC fuzz + doc + experiment bins)
 - **Coverage**: ~81% line (lib), 90% target
-- **Clippy**: 0 warnings (pedantic + nursery)
-- **Unsafe code**: 0 (`#![forbid(unsafe_code)]`)
-- **MSRV**: 1.87
+- **Clippy**: 0 warnings (pedantic + nursery), workspace-level `[lints]`
+- **Unsafe code**: 0 (`forbid(unsafe_code)` in workspace lints)
+- **MSRV**: 1.87 (Edition 2024)
 - **Crates**: 86 workspace members (3 lib + 83 experiments)
 - **GPU**: 6 WGSL shaders via barraCuda v0.3.7 (Hill, PopPK, Diversity, MM, SCFA, Beat)
+- **Tracing**: library code uses `tracing` (no `println!` in lib)
 
 ## Key Capabilities (JSON-RPC)
 

@@ -233,11 +233,11 @@
 | `DECOMPOSITION_GUARD` | 1e-30 | Uncertainty | Prevents `0/0` in RMSE decomposition bias fraction |
 | `BOX_MULLER_CLAMP` | 1e-30 | PRNG | Prevents `ln(0)` in Box-Muller normal sampling |
 | `CLEARANCE_LINEAR_THRESHOLD` | 0.20 | Toxicology | C/Km threshold for linear kinetics regime |
-| `HORMETIC_LOW_DIVISOR` | 5.0 | Toxicology | IC50/divisor defines lower bound of hormetic zone |
-| `HORMETIC_HIGH_DIVISOR` | 2.0 | Toxicology | IC50/divisor defines upper bound of hormetic zone |
-| `TISSUE_REPAIR_CAPACITY` | 0.10 | Toxicology | Default per-tissue repair capacity (10% of max occupancy) |
-| `TOX_IPR_DELOCALIZED` | 0.01 | Toxicology | IPR threshold below which toxicity is considered delocalized |
-| `TOX_IPR_LOCALIZED` | 0.25 | Toxicology | IPR threshold above which toxicity is considered localized |
+| `HORMETIC_LOW_DIVISOR` | 10.0 | Toxicology | IC50/divisor defines top of hormetic range; wider zone for conservative safety margin |
+| `HORMETIC_HIGH_DIVISOR` | 100.0 | Toxicology | IC50/divisor defines bottom of hormetic range; captures sub-therapeutic benefit window |
+| `TISSUE_REPAIR_CAPACITY` | 0.05 | Toxicology | Default per-tissue repair capacity (5% of binding load absorbable); conservative for high-affinity compounds |
+| `TOX_IPR_DELOCALIZED` | 0.15 | Toxicology | IPR below this = delocalized (manageable); avoids false negatives in multi-tissue scenarios |
+| `TOX_IPR_LOCALIZED` | 0.50 | Toxicology | IPR above this = localized (dangerous); half-dominance = clear localization signal |
 
 ## IPC Configuration Constants
 
