@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use super::{f, missing};
 use crate::simulation;
+use crate::tolerances;
 
 pub fn dispatch_mechanistic_fitness(params: &Value) -> Value {
     let (Some(dose), Some(baseline), Some(damage_ic50), Some(damage_hill_n)) = (
@@ -41,8 +42,8 @@ pub fn dispatch_ecosystem_simulate(params: &Value) -> Value {
     ) else {
         return missing("dose, baseline, damage_hill_n, t_end");
     };
-    let competition = f(params, "competition").unwrap_or(0.7);
-    let dt = f(params, "dt").unwrap_or(0.1);
+    let competition = f(params, "competition").unwrap_or(tolerances::DEFAULT_COMPETITION_COEFF);
+    let dt = f(params, "dt").unwrap_or(tolerances::DEFAULT_ECOSYSTEM_DT);
 
     let mut species = vec![
         simulation::Species {

@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 19, 2026
+**Date:** March 22, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V39 — Toxicology, Simulation, Hormesis + Cross-Spring Integration. 809 tests, 83 experiments, 53 Python baselines with structured provenance registry. 3 new science domains: toxicology (Anderson delocalization, hormesis, mithridatism), simulation (multi-scale causal chain: molecular → ecosystem), discovery::affinity_landscape (low-affinity binding, Gini breadth, coincidence detection selectivity). 5 new IPC capabilities (science.toxicology.*, science.simulation.*). Cross-spring hormesis framework spanning healthSpring → groundSpring → airSpring → wetSpring. Computation as preprocessor paradigm: 26× selectivity from weak binding as testable prediction. V38: Deep debt audit, 79/79 ValidationHarness, named tolerances, provenance DOI. Zero clippy, zero unsafe, zero `#[allow()]`. 85 capabilities.
+**Status:** V40 — Cross-Ecosystem Absorption Sprint. 848 tests, 83 experiments, 53 Python baselines. barraCuda v0.3.7. Module conflict resolved (`toxicology/` refactor). 17 magic numbers extracted to named constants. `provenance.rs` smart-refactored (850→201+164 lines). Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`. 39 new tests covering previously untested IPC dispatch handlers, MCP tool definitions, WFDB parser, NLME solver. Cross-ecosystem review of all 7 springs, 10+ primals, 49 handoffs.
 
 ---
 
@@ -33,8 +33,8 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V39** (Toxicology, Simulation, Hormesis + Cross-Spring Integration) |
-| **Total tests** | **809** (738 lib + 18 proptest + 30 IPC fuzz + 7 doc + experiment bins) |
+| Version | **V40** (Cross-Ecosystem Absorption Sprint) |
+| **Total tests** | **848** (lib + proptest + IPC fuzz + doc + experiment bins) |
 | Experiments complete | 83 (Tracks 1–9, Tier 0+1+2+3) |
 | Experiments using ValidationHarness | **83/83** (all standardized) |
 | JSON-RPC capabilities | 85 (84 science + `mcp.tools.list` — 0 stubs in dispatch) |
@@ -55,8 +55,24 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Clippy | **0 warnings** (`#![deny(clippy::pedantic, clippy::nursery)]`) |
 | `cargo fmt` | **0 diffs** |
 | `cargo doc` | **0 warnings** |
-| Max file size | 800 lines (provenance.rs; all production files under 1000-line limit) |
+| Max file size | 732 lines (visualization/scenarios/tests.rs; all production files under 750-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V40 Cross-Ecosystem Absorption Sprint (from V39)
+
+V40 reviews all 7 springs, 10+ primals, and 49 handoffs for absorption opportunities. Bumps barraCuda to v0.3.7. Resolves toxicology module conflict. Extracts 17 magic numbers to named constants. Smart-refactors provenance.rs (850→201+164 lines). Adds 39 new tests covering IPC dispatch handlers, MCP, WFDB, NLME solver.
+
+| Change | Impact |
+|--------|--------|
+| **barraCuda v0.3.7** | Unlocks `KimuraGpu`, `JackknifeGpu`, `DeviceClass`, hydrology Monte Carlo |
+| **Module conflict resolved** | Deleted stale `toxicology.rs` (1060 lines), module directory is canonical |
+| **17 magic numbers → constants** | FOCE/SAEM tuning, tissue cap, ecosystem defaults, VPC defaults |
+| **provenance/ refactor** | 850→201+164 lines (types vs data), public API unchanged |
+| **39 new tests** | Handler dispatch (22), MCP tools (5), WFDB parser (9), NLME solver (4) |
+| **Zero `#[allow]`** | Last `allow(unused_variables)` → `#[expect(reason)]` |
+| **848 tests** | Up from 809. Zero failures, zero clippy (pedantic + nursery). |
 
 ---
 
@@ -66,7 +82,7 @@ V39 builds three new science domains: toxicology (Anderson delocalization of tox
 
 | Change | Impact |
 |--------|--------|
-| **3 new Rust modules** | `toxicology.rs` (32 tests), `simulation.rs` (18 tests), `discovery/affinity_landscape.rs` (15 tests) |
+| **3 new Rust modules** | `toxicology/` (32 tests), `simulation.rs` (18 tests), `discovery/affinity_landscape.rs` (15 tests) |
 | **4 new experiments** | exp097 (affinity landscape), exp098 (toxicity landscape), exp099 (hormesis), exp111 (causal terrarium) |
 | **5 new IPC capabilities** | `science.toxicology.biphasic_dose_response`, `science.toxicology.toxicity_landscape`, `science.toxicology.hormetic_optimum`, `science.simulation.mechanistic_fitness`, `science.simulation.ecosystem_simulate` |
 | **4 new Python baselines** | `control/discovery/exp097_*`, `control/toxicology/exp098_*`, `control/toxicology/exp099_*`, `control/simulation/exp111_*` |

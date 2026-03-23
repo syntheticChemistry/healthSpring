@@ -8,6 +8,10 @@ use crate::tolerances;
 
 use super::{f, fa, missing, sz_or};
 
+const NLME_DEFAULT_THETA: [f64; 3] = [2.3, 4.4, 0.4];
+const NLME_DEFAULT_OMEGA: [f64; 3] = [0.04, 0.04, 0.09];
+const NLME_DEFAULT_SEED: u64 = 42;
+
 fn parse_nlme_subjects(params: &Value) -> Option<Vec<pkpd::Subject>> {
     let arr = params.get("subjects")?.as_array()?;
     let mut subjects = Vec::with_capacity(arr.len());
@@ -195,15 +199,15 @@ pub fn dispatch_nlme_foce(params: &Value) -> Value {
     let Some(subjects) = parse_nlme_subjects(params) else {
         return missing("subjects (array of {dose, times, observations})");
     };
-    let theta = fa(params, "theta").unwrap_or_else(|| vec![2.3, 4.4, 0.4]);
-    let omega = fa(params, "omega").unwrap_or_else(|| vec![0.04, 0.04, 0.09]);
-    let sigma = f(params, "sigma").unwrap_or(0.01);
+    let theta = fa(params, "theta").unwrap_or_else(|| NLME_DEFAULT_THETA.to_vec());
+    let omega = fa(params, "omega").unwrap_or_else(|| NLME_DEFAULT_OMEGA.to_vec());
+    let sigma = f(params, "sigma").unwrap_or(tolerances::VPC_DEFAULT_SIGMA);
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
+        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::foce(
         pkpd::oral_one_compartment_model,
@@ -227,15 +231,15 @@ pub fn dispatch_nlme_saem(params: &Value) -> Value {
     let Some(subjects) = parse_nlme_subjects(params) else {
         return missing("subjects (array of {dose, times, observations})");
     };
-    let theta = fa(params, "theta").unwrap_or_else(|| vec![2.3, 4.4, 0.4]);
-    let omega = fa(params, "omega").unwrap_or_else(|| vec![0.04, 0.04, 0.09]);
-    let sigma = f(params, "sigma").unwrap_or(0.01);
+    let theta = fa(params, "theta").unwrap_or_else(|| NLME_DEFAULT_THETA.to_vec());
+    let omega = fa(params, "omega").unwrap_or_else(|| NLME_DEFAULT_OMEGA.to_vec());
+    let sigma = f(params, "sigma").unwrap_or(tolerances::VPC_DEFAULT_SIGMA);
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 300),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
+        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::saem(
         pkpd::oral_one_compartment_model,
@@ -259,15 +263,15 @@ pub fn dispatch_cwres(params: &Value) -> Value {
     let Some(subjects) = parse_nlme_subjects(params) else {
         return missing("subjects (array of {dose, times, observations})");
     };
-    let theta = fa(params, "theta").unwrap_or_else(|| vec![2.3, 4.4, 0.4]);
-    let omega = fa(params, "omega").unwrap_or_else(|| vec![0.04, 0.04, 0.09]);
-    let sigma = f(params, "sigma").unwrap_or(0.01);
+    let theta = fa(params, "theta").unwrap_or_else(|| NLME_DEFAULT_THETA.to_vec());
+    let omega = fa(params, "omega").unwrap_or_else(|| NLME_DEFAULT_OMEGA.to_vec());
+    let sigma = f(params, "sigma").unwrap_or(tolerances::VPC_DEFAULT_SIGMA);
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
+        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::foce(
         pkpd::oral_one_compartment_model,
@@ -290,15 +294,15 @@ pub fn dispatch_vpc(params: &Value) -> Value {
     let Some(subjects) = parse_nlme_subjects(params) else {
         return missing("subjects (array of {dose, times, observations})");
     };
-    let theta = fa(params, "theta").unwrap_or_else(|| vec![2.3, 4.4, 0.4]);
-    let omega = fa(params, "omega").unwrap_or_else(|| vec![0.04, 0.04, 0.09]);
-    let sigma = f(params, "sigma").unwrap_or(0.01);
+    let theta = fa(params, "theta").unwrap_or_else(|| NLME_DEFAULT_THETA.to_vec());
+    let omega = fa(params, "omega").unwrap_or_else(|| NLME_DEFAULT_OMEGA.to_vec());
+    let sigma = f(params, "sigma").unwrap_or(tolerances::VPC_DEFAULT_SIGMA);
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
+        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::foce(
         pkpd::oral_one_compartment_model,
@@ -334,15 +338,15 @@ pub fn dispatch_gof(params: &Value) -> Value {
     let Some(subjects) = parse_nlme_subjects(params) else {
         return missing("subjects (array of {dose, times, observations})");
     };
-    let theta = fa(params, "theta").unwrap_or_else(|| vec![2.3, 4.4, 0.4]);
-    let omega = fa(params, "omega").unwrap_or_else(|| vec![0.04, 0.04, 0.09]);
-    let sigma = f(params, "sigma").unwrap_or(0.01);
+    let theta = fa(params, "theta").unwrap_or_else(|| NLME_DEFAULT_THETA.to_vec());
+    let omega = fa(params, "omega").unwrap_or_else(|| NLME_DEFAULT_OMEGA.to_vec());
+    let sigma = f(params, "sigma").unwrap_or(tolerances::VPC_DEFAULT_SIGMA);
     let config = pkpd::NlmeConfig {
         n_theta: theta.len(),
         n_eta: omega.len(),
         max_iter: sz_or(params, "max_iter", 200),
         tol: f(params, "tol").unwrap_or(tolerances::NLME_DEFAULT_TOL),
-        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(42),
+        seed: params.get("seed").and_then(Value::as_u64).unwrap_or(NLME_DEFAULT_SEED),
     };
     let result = pkpd::foce(
         pkpd::oral_one_compartment_model,

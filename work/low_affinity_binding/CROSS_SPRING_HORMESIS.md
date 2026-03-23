@@ -159,13 +159,13 @@ curve is one curve. Every spring lives on it.
 
 | Component | Location | Tests |
 |-----------|----------|-------|
-| `biphasic_dose_response` | `toxicology.rs` | 4 tests |
-| `hormetic_optimum` | `toxicology.rs` | 1 test |
-| `mithridatism_adaptation` / `_fitness` | `toxicology.rs` | 4 tests |
-| `immune_calibration` | `toxicology.rs` | 1 test |
-| `caloric_restriction_fitness` | `toxicology.rs` | 1 test |
-| `ecological_hormesis` | `toxicology.rs` | 1 test |
-| `hormesis_localization` | `toxicology.rs` | 2 tests |
+| `biphasic_dose_response` | `toxicology/mod.rs` | 4 tests |
+| `hormetic_optimum` | `toxicology/mod.rs` | 1 test |
+| `mithridatism_adaptation` / `_fitness` | `toxicology/mod.rs` | 4 tests |
+| `immune_calibration` | `toxicology/mod.rs` | 1 test |
+| `caloric_restriction_fitness` | `toxicology/mod.rs` | 1 test |
+| `ecological_hormesis` | `toxicology/mod.rs` | 1 test |
+| `hormesis_localization` | `toxicology/mod.rs` | 2 tests |
 | exp099 validation binary | `experiments/exp099_hormesis/` | 27/27 pass |
 
 ## Future Work

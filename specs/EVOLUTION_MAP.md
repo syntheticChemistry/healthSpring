@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: March 19, 2026
-**Status**: V38 — Low-Affinity Binding, Toxicology, Hormesis, Causal Simulation. 83 experiments, 724+ tests + 191+ validation checks. New science domains: `toxicology` (Anderson delocalization, hormesis, mithridatism), `simulation` (multi-scale causal chain), `discovery::affinity_landscape` (low-affinity binding, Gini breadth). 5 new IPC capabilities (toxicology + simulation). 4 new Python baselines with provenance (53 records). Cross-spring hormesis framework (healthSpring → groundSpring → airSpring). V37: Structured provenance registry, MCP tool definitions. V36: All 6 GPU ops rewired.
+**Last Updated**: March 22, 2026
+**Status**: V40 — Cross-Ecosystem Absorption Sprint. 83 experiments, 848 tests, 85 capabilities, 53 Python baselines. barraCuda v0.3.7. Module conflict resolved (toxicology/ refactor). 17 magic numbers → named constants. provenance/ smart-refactored. 39 new tests (handler dispatch, MCP, WFDB, NLME solver). V39: Toxicology, simulation, low-affinity binding, cross-spring hormesis. V38: Deep debt. V37: Provenance registry, MCP tools. V36: All 6 GPU ops rewired.
 
 ---
 
@@ -214,9 +214,9 @@ Exp040 validates CPU parity (15 contracts). Exp053 validates GPU parity (17 chec
 | `decode_format_212` | `wfdb.rs` | `barraCuda::signal::wfdb` | Ready — streaming parser |
 | `composite_binding_score` | `discovery/affinity_landscape.rs` | `barraCuda::bio::binding` | Ready — complement product |
 | `cross_reactivity_matrix` | `discovery/affinity_landscape.rs` | `barraCuda::bio::binding` | Ready — batched Hill sweep |
-| `systemic_burden_score` | `toxicology.rs` | `barraCuda::bio::toxicology` | Ready — weighted reduction |
-| `toxicity_ipr` | `toxicology.rs` | `barraCuda::bio::toxicology` | Ready — IPR reduction |
-| `biphasic_dose_response` | `toxicology.rs` | `barraCuda::bio::hormesis` | Ready — element-wise |
+| `systemic_burden_score` | `toxicology/mod.rs` | `barraCuda::bio::toxicology` | Ready — weighted reduction |
+| `toxicity_ipr` | `toxicology/mod.rs` | `barraCuda::bio::toxicology` | Ready — IPR reduction |
+| `biphasic_dose_response` | `toxicology/mod.rs` | `barraCuda::bio::hormesis` | Ready — element-wise |
 | `mechanistic_cell_fitness` | `simulation.rs` | `barraCuda::bio::simulation` | Ready — compound of Hill ops |
 | `ecosystem_simulate` | `simulation.rs` | `barraCuda::bio::ecology` | Ready — ODE batch |
 

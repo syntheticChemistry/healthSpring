@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Experimental Hypotheses — Ready for Wet Lab Validation and Grant Writing
 
-**Date:** March 19, 2026
+**Date:** March 22, 2026
 **Faculty:** Gonzales (Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Ellsworth (Med Chem)
 **Status:** Computational evidence complete. Every hypothesis below has Rust code,
 Python baselines, and validation experiments backing it. Ready for experimental

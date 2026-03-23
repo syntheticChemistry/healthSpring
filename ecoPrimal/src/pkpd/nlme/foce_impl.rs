@@ -68,7 +68,7 @@ pub fn foce(
         }
 
         #[expect(clippy::cast_precision_loss, reason = "iteration index fits f64")]
-        let lr = 0.0001 / 0.01f64.mul_add(iter as f64, 1.0);
+        let lr = tolerances::FOCE_LR_BASE / tolerances::FOCE_LR_DECAY.mul_add(iter as f64, 1.0);
         theta_gradient_step(model, &mut theta, &etas, subjects, &omega, sigma, lr);
 
         let rel_change = if prev_obj.is_finite() && prev_obj.abs() > tolerances::DIVISION_GUARD {

@@ -401,7 +401,7 @@ pub fn causal_chain(dose: f64, params: &CausalChainParams<'_>) -> CausalChainOut
         cell_fitness
     } else {
         let excess = tissue_burden.mul_add(1.0, -params.tissue_repair).max(0.0);
-        cell_fitness * (1.0 - excess.min(0.5))
+        cell_fitness * (1.0 - excess.min(tolerances::TISSUE_EXCESS_CAP))
     };
 
     let pop_ss =

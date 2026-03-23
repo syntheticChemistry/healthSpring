@@ -274,3 +274,77 @@ pub(super) fn theta_gradient_step(
         theta[dim] -= step;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn test_model(theta: &[f64], _eta: &[f64], _dose: f64, t: f64) -> f64 {
+        let cl = theta[0];
+        let vd = theta[1];
+        let ke = cl / vd;
+        100.0 / vd * (-ke * t).exp()
+    }
+
+    fn test_subjects() -> Vec<super::super::Subject> {
+        vec![super::super::Subject {
+            times: vec![0.0, 1.0, 2.0, 4.0, 8.0],
+            observations: vec![10.0, 7.0, 5.0, 2.5, 0.6],
+            dose: 100.0,
+        }]
+    }
+
+    #[test]
+    fn predict_subject_returns_correct_length() {
+        let theta = vec![2.0, 10.0];
+        let eta = vec![0.0, 0.0];
+        let subj = &test_subjects()[0];
+        let pred = predict_subject(test_model, &theta, &eta, subj);
+        assert_eq!(pred.len(), subj.times.len());
+    }
+
+    #[test]
+    fn subject_objective_finite() {
+        let theta = vec![2.0, 10.0];
+        let eta = vec![0.0, 0.0];
+        let omega = vec![0.1, 0.1];
+        let subj = &test_subjects()[0];
+        let obj = subject_objective(test_model, &theta, &eta, subj, &omega, 0.01);
+        assert!(obj.is_finite(), "objective should be finite: {obj}");
+    }
+
+    #[test]
+    fn optimize_eta_reduces_objective() {
+        let theta = vec![2.0, 10.0];
+        let eta_init = vec![0.0, 0.0];
+        let omega = vec![0.1, 0.1];
+        let subj = &test_subjects()[0];
+        let ctx = EstimationCtx {
+            model: test_model,
+            theta: &theta,
+            omega: &omega,
+            sigma: 0.01,
+            n_eta: 2,
+        };
+        let obj_before = subject_objective(test_model, &theta, &eta_init, subj, &omega, 0.01);
+        let eta_opt = optimize_individual_eta(&ctx, &eta_init, subj);
+        let obj_after = subject_objective(test_model, &theta, &eta_opt, subj, &omega, 0.01);
+        assert!(
+            obj_after <= obj_before + 1e-6,
+            "optimization should not increase objective: {obj_before} → {obj_after}"
+        );
+    }
+
+    #[test]
+    fn total_objective_finite() {
+        let theta = vec![2.0, 10.0];
+        let etas = vec![vec![0.0, 0.0]];
+        let subjects = test_subjects();
+        let omega = vec![0.1, 0.1];
+        let (obj, sse, n_obs) =
+            total_objective_and_mse(test_model, &theta, &etas, &subjects, &omega, 0.01);
+        assert!(obj.is_finite());
+        assert!(sse >= 0.0);
+        assert_eq!(n_obs, 5);
+    }
+}

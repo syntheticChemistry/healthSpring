@@ -294,6 +294,46 @@ pub const NLME_CONVERGENCE_STEP: f64 = 1e-8;
 /// Default convergence tolerance for NLME iteration relative change.
 pub const NLME_DEFAULT_TOL: f64 = 1e-6;
 
+/// FOCE learning rate base — `lr = base / (decay * iter + 1)`.
+pub const FOCE_LR_BASE: f64 = 0.0001;
+
+/// FOCE learning rate decay per iteration.
+pub const FOCE_LR_DECAY: f64 = 0.01;
+
+/// SAEM Metropolis-Hastings proposal scale — fraction of omega standard deviation.
+pub const SAEM_MH_PROPOSAL_SCALE: f64 = 0.3;
+
+/// SAEM minimum proposal standard deviation.
+pub const SAEM_MH_MIN_SD: f64 = 0.01;
+
+/// SAEM Robbins-Monro burn-in fraction — iterations before step-size decay begins.
+pub const SAEM_BURNIN_FRACTION: f64 = 0.5;
+
+/// SAEM initial sigma estimate.
+pub const SAEM_INITIAL_SIGMA: f64 = 0.01;
+
+/// SAEM initial omega diagonal.
+pub const SAEM_INITIAL_OMEGA: f64 = 0.1;
+
+// ── Simulation Default Parameters ────────────────────────────────────
+
+/// Default tissue damage excess cap (prevents > 50% organism penalty).
+pub const TISSUE_EXCESS_CAP: f64 = 0.5;
+
+/// Default ecosystem simulation competition coefficient.
+pub const DEFAULT_COMPETITION_COEFF: f64 = 0.7;
+
+/// Default ecosystem simulation time step.
+pub const DEFAULT_ECOSYSTEM_DT: f64 = 0.1;
+
+// ── RPC Handler Default Parameters ───────────────────────────────────
+
+/// Default VPC sigma when caller omits it.
+pub const VPC_DEFAULT_SIGMA: f64 = 0.01;
+
+/// Default VPC time grid step.
+pub const VPC_DEFAULT_DT: f64 = 0.1;
+
 // ── Toxicology Class ────────────────────────────────────────────────
 
 /// Clearance utilization threshold for linear regime safety (20%).

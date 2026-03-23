@@ -347,3 +347,78 @@ impl<I: Iterator<Item = i16>> Iterator for AdcToPhysicalIter<I> {
         self.inner.size_hint()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const SAMPLE_HEADER: &str = "\
+100 2 360 650000
+100.dat 212 200 1024 11 1024 0 0 MLII
+100.dat 212 200 1024 11 1024 0 0 V5";
+
+    #[test]
+    fn parse_header_basic() {
+        let hdr = parse_header(SAMPLE_HEADER).unwrap();
+        assert_eq!(hdr.record_name, "100");
+        assert_eq!(hdr.n_signals, 2);
+        assert!((hdr.sampling_frequency - 360.0).abs() < 1e-10);
+        assert_eq!(hdr.n_samples, Some(650_000));
+        assert_eq!(hdr.signals.len(), 2);
+        assert_eq!(hdr.signals[0].format, 212);
+        assert_eq!(hdr.signals[0].description, "MLII");
+        assert_eq!(hdr.signals[1].description, "V5");
+    }
+
+    #[test]
+    fn parse_header_ignores_comments() {
+        let with_comments = format!("# This is a comment\n{SAMPLE_HEADER}");
+        let hdr = parse_header(&with_comments).unwrap();
+        assert_eq!(hdr.n_signals, 2);
+    }
+
+    #[test]
+    fn parse_header_empty_fails() {
+        assert!(parse_header("").is_err());
+    }
+
+    #[test]
+    fn decode_format_16_basic() {
+        let data: Vec<u8> = vec![0x00, 0x04, 0xFF, 0xFF];
+        let decoded = decode_format_16(&data, 2, 1).unwrap();
+        assert_eq!(decoded.len(), 1);
+        assert_eq!(decoded[0].len(), 2);
+        assert_eq!(decoded[0][0], 0x0400);
+    }
+
+    #[test]
+    fn adc_to_physical_zero_gain() {
+        let samples = vec![100, 200, 300];
+        let result = adc_to_physical(&samples, 0.0, 0);
+        assert!(result.iter().all(|v| *v == 0.0));
+    }
+
+    #[test]
+    fn adc_to_physical_identity() {
+        let samples = vec![1024, 2048];
+        let result = adc_to_physical(&samples, 1.0, 0);
+        assert!((result[0] - 1024.0).abs() < 1e-10);
+        assert!((result[1] - 2048.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn adc_to_physical_with_baseline() {
+        let samples = vec![1024];
+        let result = adc_to_physical(&samples, 200.0, 1024);
+        assert!(result[0].abs() < 1e-10, "baseline should zero out: {}", result[0]);
+    }
+
+    #[test]
+    fn adc_to_physical_iterator() {
+        let samples = vec![1024, 2048];
+        let iter = AdcToPhysicalIter::new(samples.into_iter(), 200.0, 1024);
+        let result: Vec<f64> = iter.collect();
+        assert_eq!(result.len(), 2);
+        assert!(result[0].abs() < 1e-10);
+    }
+}

@@ -92,7 +92,7 @@ Every exploration has:
 1. **Rust modules** — the actual science code (`ecoPrimal/src/`)
 2. **Validation experiments** — binary pass/fail checks (`experiments/`)
 3. **Python baselines** — control scripts with provenance (`control/`)
-4. **Provenance records** — traceable to git commit, date, command (`provenance.rs`)
+4. **Provenance records** — traceable to git commit, date, command (`provenance/registry.rs`)
 5. **IPC capabilities** — discoverable via JSON-RPC for niche integration
 
 ## Adding a New Exploration
@@ -101,7 +101,7 @@ Every exploration has:
 2. Build Rust module in `ecoPrimal/src/`
 3. Create validation experiment in `experiments/`
 4. Write Python baseline in `control/`
-5. Add provenance record to `provenance.rs`
+5. Add provenance record to `provenance/registry.rs`
 6. Wire IPC handlers in `ipc/dispatch/handlers/`
 7. Update `specs/EVOLUTION_MAP.md` with GPU tier assessment
 8. Update `specs/TOLERANCE_REGISTRY.md` with tolerance entries

@@ -10,7 +10,7 @@
 
 | Metric | Value |
 |--------|-------|
-| **barraCuda version** | v0.3.5 (path dep `../../barraCuda/crates/*`, Cargo.lock) |
+| **barraCuda version** | v0.3.7 (path dep `../../barraCuda/crates/*`, Cargo.lock) |
 | **GPU ops** | 6 (Hill, PopPK, Diversity, MM, SCFA, BeatClassify) |
 | **Tier A (direct rewire)** | 3 — Hill, PopPK, Diversity |
 | **Tier B (absorbed, rewired)** | 3 — MM, SCFA, BeatClassify |

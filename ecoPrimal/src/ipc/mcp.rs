@@ -405,3 +405,64 @@ pub fn tool_definitions_json() -> Value {
         .collect();
     json!({ "tools": tools })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tool_definitions_not_empty() {
+        let tools = tool_definitions();
+        assert!(tools.len() > 10, "expected >10 MCP tools, got {}", tools.len());
+    }
+
+    #[test]
+    fn all_tools_have_semantic_names() {
+        for tool in tool_definitions() {
+            assert!(
+                tool.name.contains('.'),
+                "tool name should be semantic (domain.operation): {}",
+                tool.name
+            );
+        }
+    }
+
+    #[test]
+    fn all_schemas_are_valid_json_objects() {
+        for tool in tool_definitions() {
+            let schema = (tool.input_schema)();
+            assert_eq!(
+                schema["type"], "object",
+                "tool {} schema should be an object",
+                tool.name
+            );
+            assert!(
+                schema.get("properties").is_some(),
+                "tool {} schema should have properties",
+                tool.name
+            );
+        }
+    }
+
+    #[test]
+    fn tool_definitions_json_has_tools_array() {
+        let j = tool_definitions_json();
+        let arr = j["tools"].as_array().unwrap();
+        assert!(!arr.is_empty());
+        for tool in arr {
+            assert!(tool["name"].is_string());
+            assert!(tool["description"].is_string());
+            assert!(tool["inputSchema"].is_object());
+        }
+    }
+
+    #[test]
+    fn no_duplicate_tool_names() {
+        let tools = tool_definitions();
+        let mut names: Vec<&str> = tools.iter().map(|t| t.name).collect();
+        names.sort_unstable();
+        let before = names.len();
+        names.dedup();
+        assert_eq!(before, names.len(), "duplicate MCP tool names detected");
+    }
+}

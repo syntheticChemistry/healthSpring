@@ -235,7 +235,11 @@ pub fn fetch_tiered(
     nestgate_socket: Option<&std::path::Path>,
     db: &str,
     id: &str,
-    #[cfg_attr(not(feature = "nestgate"), allow(unused_variables))] api_key: &str,
+    #[cfg_attr(
+        not(feature = "nestgate"),
+        expect(unused_variables, reason = "api_key only used by nestgate HTTP tier")
+    )]
+    api_key: &str,
 ) -> Result<String, DataError> {
     // Tier 1: biomeOS capability.call
     if let Some(socket) = biomeos_socket {

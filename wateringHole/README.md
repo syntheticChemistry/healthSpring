@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V39 — Toxicology, Simulation, Hormesis + Cross-Spring Integration. 809 tests, 83 experiments, 83/83 ValidationHarness, 70+ named tolerances, 53 provenance records with DOI, typed IPC dispatch. 85 capabilities. 3 new science domains (toxicology, simulation, affinity_landscape). Cross-spring hormesis framework. clippy::nursery enforced workspace-wide.
+**Status**: V40 — Cross-Ecosystem Absorption Sprint. 848 tests, 83 experiments, 83/83 ValidationHarness, 87+ named tolerances, 53 provenance records with DOI, typed IPC dispatch. 85 capabilities. 9 science tracks. barraCuda v0.3.7. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
 **Last Updated**: March 19, 2026
 
 ---
@@ -35,7 +35,7 @@ Superseded handoffs in `handoffs/archive/` — preserved as fossil record.
 
 | From | What | Version | Status |
 |------|------|---------|--------|
-| **barraCuda** | Core math, PK/PD ops, diversity, LCG PRNG, eigensolver, `Fp64Strategy`, V16 GPU ops (MM batch, SCFA batch, Beat classify) | v0.3.5 (`a60819c`) | **Live** — Tier 2+3 GPU via 6 WGSL shaders + `GpuContext` + `execute_fused`. Tier A rewire ready (Hill, PopPK, Diversity → upstream ops). |
+| **barraCuda** | Core math, PK/PD ops, diversity, LCG PRNG, eigensolver, `Fp64Strategy`, V16 GPU ops (MM batch, SCFA batch, Beat classify) | v0.3.7 (`c04d848`) | **Live** — Tier 2+3 GPU via 6 WGSL shaders + `GpuContext` + `execute_fused`. All 6 ops rewired (Hill, PopPK, Diversity, MM, SCFA, Beat). |
 | **toadStool** | Compute pipeline dispatch (CPU/GPU/NPU routing, streaming, callbacks) | S142+ | **Live** — V16 StageOps dispatched via `execute_cpu`, `execute_streaming`, `execute_auto`. |
 | **metalForge** | NUCLEUS topology, substrate capabilities, PCIe P2P transfer planning, `plan_dispatch` | local | **Live** — 9 Workload variants, mixed Tower/Node/Nest dispatch, PCIe Gen4 P2P (31.5 GB/s). |
 | **wetSpring** | 16S pipeline, Anderson lattice, Gonzales immunology, OrExit pattern | V123 | Validated (1,703 tests, 376 experiments) |

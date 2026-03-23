@@ -8,7 +8,7 @@ rust-version.workspace = true
 authors = ["ecoPrimals"]
 license.workspace = true
 description = "Human health pipelines — PK/PD modeling, microbiome analytics, biosignal processing — Rust + GPU via barraCuda"
-repository = "https://github.com/ecoPrimals/healthSpring"
+repository = "https://github.com/syntheticChemistry/healthSpring"
 keywords = ["pharmacokinetics", "microbiome", "biosignal", "gpu", "wgsl"]
 categories = ["science", "command-line-utilities"]
 
@@ -26,7 +26,7 @@ nestgate = ["dep:ureq"]
 npu = []
 
 [dependencies]
-# Validated against barraCuda rev a60819c3 (2026-03-14).
+# Validated against barraCuda rev c04d848 (v0.3.7, 2026-03-22).
 # Path dep for local development; CI should pin to this rev.
 # barracuda-core is required for barraCuda's internal feature resolution.
 barracuda-core = { path = "../../barraCuda/crates/barracuda-core", default-features = false }

@@ -43,8 +43,9 @@ fn estep(
         for dim in 0..n_eta {
             let (z_val, new_st) = normal_sample(state.rng);
             state.rng = new_st;
-            let step_sd = state.omega[dim].sqrt().max(0.01) * 0.3;
-            proposal[dim] = eta[dim] + step_sd * z_val;
+            let step_sd = state.omega[dim].sqrt().max(tolerances::SAEM_MH_MIN_SD)
+                * tolerances::SAEM_MH_PROPOSAL_SCALE;
+            proposal[dim] = step_sd.mul_add(z_val, eta[dim]);
         }
 
         let proposal_obj =
@@ -148,7 +149,7 @@ pub fn saem(
                 subjects,
                 &st.omega,
                 st.sigma,
-                gamma * 0.0001,
+                gamma * tolerances::FOCE_LR_BASE,
             );
         }
 

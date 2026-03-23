@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 19, 2026
-**Status:** V39 — Toxicology, Simulation, Hormesis + Cross-Spring Integration. 809 tests, 83 experiments, 53 baselines with structured provenance registry. 3 new science domains: toxicology (Anderson delocalization, hormesis, mithridatism), simulation (multi-scale causal chain), discovery::affinity_landscape (low-affinity binding, Gini breadth). 85 capabilities. Cross-spring hormesis framework. Computation as preprocessor paradigm.
+**Status:** V40 — Cross-Ecosystem Absorption Sprint. 848 tests, 83 experiments, 53 baselines with structured provenance registry. barraCuda v0.3.7. 9 science tracks, 85 capabilities. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
 
 ---
 

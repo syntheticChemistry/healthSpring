@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # Cost, Access, and Methods — Gonzales Lab Comparative Pharmacology
 
-**Last Updated**: March 14, 2026
+**Last Updated**: March 22, 2026
 **Audience**: Gonzales lab members, ADDRC collaborators, veterinary pharmacologists
 entering the healthSpring ecosystem.
 
