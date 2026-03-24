@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: March 24, 2026
-**Status**: V42 — Deep debt resolution. 877 tests, 83 experiments, 59 JSON-RPC capabilities (46 science + 13 infra), 54 Python baselines. barraCuda v0.3.7. Clippy pedantic+nursery+doc-markdown with `-D warnings`, zero unsafe, zero `#[allow]`.
+**Status**: V43 — Cross-Spring Absorption. 888 tests, 83 experiments, 59 JSON-RPC capabilities (46 science + 13 infra), 54 Python baselines. Self-knowledge compliance; simulation/validation refactoring. barraCuda v0.3.7. Clippy pedantic+nursery+doc-markdown with `-D warnings`, zero unsafe, zero `#[allow]`.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -11,7 +11,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 877 |
+| Rust tests (workspace) | 888 |
 | Python control checks | 54 baselines, 113/113 cross-validation (all 9 tracks) |
 | Experiments | 73 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |

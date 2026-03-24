@@ -2,7 +2,7 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: March 24, 2026
-**Status**: V42 — Comprehensive Audit & Deep Debt Resolution. Tier 2+3 GPU live. barraCuda v0.3.7 (CI-gated pin, rev `c04d848`). GPU dispatch extracted into 6 named CPU helpers + 3 GPU path functions. `execute_cpu` no longer carries `#[expect(too_many_lines)]`. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. 3 `OdeSystem` impls (MM, OralOneCompartment, TwoCompartment). **All six GPU ops** LIVE for both `GpuContext` and `gpu::dispatch` paths. Absorption handoff at `wateringHole/handoffs/HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR24_2026.md`.
+**Status**: V43 — Cross-Spring Absorption. Tier 2+3 GPU live. barraCuda v0.3.7 (CI-gated pin, rev `c04d848`). GPU dispatch extracted into 6 named CPU helpers + 3 GPU path functions. `execute_cpu` no longer carries `#[expect(too_many_lines)]`. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. 3 `OdeSystem` impls (MM, OralOneCompartment, TwoCompartment). **All six GPU ops** LIVE for both `GpuContext` and `gpu::dispatch` paths. Self-knowledge compliance; simulation/validation refactoring. Absorption handoff at `wateringHole/handoffs/HEALTHSPRING_V43_CROSS_SPRING_ABSORPTION_HANDOFF_MAR24_2026.md` (V42 toadStool/barraCuda absorption remains in `HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR24_2026.md`).
 
 ---
 

@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V42 — Comprehensive Audit & Deep Debt Resolution. 877 tests, 83 experiments, 83/83 ValidationHarness, 87+ named tolerances, 54 provenance records with verified check counts + DOI baseline sources. 59 capabilities (46 science + 13 infra). 9 science tracks. barraCuda v0.3.7 (CI-gated). Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in production library code.
+**Status**: V43 — Cross-Spring Absorption. 888 tests, 83 experiments, 83/83 ValidationHarness, 87+ named tolerances, 54 provenance records with verified check counts + DOI baseline sources. 59 capabilities (46 science + 13 infra). 9 science tracks. Self-knowledge compliance; simulation/validation refactoring. barraCuda v0.3.7 (CI-gated). Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in production library code.
 **Last Updated**: March 24, 2026
 
 ---
@@ -22,9 +22,11 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
+| **V43** | [Cross-Spring Absorption](handoffs/HEALTHSPRING_V43_CROSS_SPRING_ABSORPTION_HANDOFF_MAR24_2026.md) | Mar 24 | Cross-spring absorption, self-knowledge compliance, simulation/validation refactoring; 888 tests. |
+| **V43** | [Primal & Spring Evolution](handoffs/HEALTHSPRING_V43_PRIMAL_SPRING_EVOLUTION_HANDOFF_MAR24_2026.md) | Mar 24 | Cast module absorption request, upstream contract tolerances, 7-primal discovery, patterns for all teams. |
 | **V42** | [Comprehensive Audit](handoffs/HEALTHSPRING_V42_COMPREHENSIVE_AUDIT_HANDOFF_MAR24_2026.md) | Mar 24 | Full-stack audit + 13 remediation actions. Supersedes all prior V42 handoffs. |
 | **V42** | [toadStool/barraCuda Absorption](handoffs/HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR24_2026.md) | Mar 24 | 6 shader absorption requests, TensorSession P0, ODE codegen registry, sovereign dispatch roadmap. |
-| | *V1–V41 → `handoffs/archive/`* | | Fossil record |
+| | *V1–V42 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive
 
