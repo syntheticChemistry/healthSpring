@@ -207,10 +207,26 @@ fn main() {
     let energy_ventricular: f64 = pvc.iter().map(|x| x * x).sum();
     let energy_atrial: f64 = pac.iter().map(|x| x * x).sum();
     let energy_bbb: f64 = bbb.iter().map(|x| x * x).sum();
-    h.check_bool("Normal beat has energy", energy_normal > 0.1);
-    h.check_bool("PVC beat has energy", energy_ventricular > 0.1);
-    h.check_bool("PAC beat has energy", energy_atrial > 0.1);
-    h.check_bool("BBB beat has energy", energy_bbb > 0.1);
+    h.check_lower(
+        "Normal beat has energy",
+        energy_normal,
+        tolerances::BEAT_ENERGY_FLOOR,
+    );
+    h.check_lower(
+        "PVC beat has energy",
+        energy_ventricular,
+        tolerances::BEAT_ENERGY_FLOOR,
+    );
+    h.check_lower(
+        "PAC beat has energy",
+        energy_atrial,
+        tolerances::BEAT_ENERGY_FLOOR,
+    );
+    h.check_lower(
+        "BBB beat has energy",
+        energy_bbb,
+        tolerances::BEAT_ENERGY_FLOOR,
+    );
 
     // === Check 5-8: Self-correlation = 1.0 ===
     h.check_abs(
@@ -260,7 +276,7 @@ fn main() {
         ncc_normal_pvc < ncc_normal_atrial,
     );
     // PVC and BBB are both wide QRS but different morphology
-    h.check_bool("PVC ≠ BBB", ncc_pvc_bbb < 0.95);
+    h.check_upper("PVC ≠ BBB", ncc_pvc_bbb, tolerances::NCC_DISCRIMINATION);
     // All cross-correlations < 1.0
     h.check_bool(
         "All cross < 1.0",
@@ -314,9 +330,15 @@ fn main() {
         #[expect(clippy::cast_precision_loss, reason = "peaks count small")]
         let mean_rr: f64 = rr_intervals.iter().sum::<f64>() / rr_intervals.len() as f64;
         let hr = 60.0 / mean_rr;
-        h.check_bool(
-            "Heart rate in physiological range (40-200 bpm)",
-            hr > 40.0 && hr < 200.0,
+        h.check_lower(
+            "Heart rate above physiological minimum",
+            hr,
+            tolerances::HR_PHYSIO_LOW_BPM,
+        );
+        h.check_upper(
+            "Heart rate below physiological maximum",
+            hr,
+            tolerances::HR_PHYSIO_HIGH_BPM,
         );
         println!("  Mean RR: {mean_rr:.3}s, HR: {hr:.1} bpm");
     } else {

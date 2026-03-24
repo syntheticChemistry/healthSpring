@@ -4,6 +4,8 @@
 
 V42 deep debt resolution: all 548 missing_docs resolved; clippy pedantic+nursery+doc-markdown passes with `-D warnings`; RUSTSEC-2026-0049 resolved; 3 barraCuda API drift errors fixed; `transport.rs` panic evolved to `Result`; `ValidationSink` trait added; `normalize_method()` IPC; `OnceLock` GPU probe; 863 tests all passing.
 
+**V42 — Sections 6–8 findings closed:** The items recorded under **§6 Hardcoded tolerance values**, **§7 tolerances.rs completeness** (no change required beyond registry sync), and **§8 provenance.rs** in the historical audit snapshot below are **resolved** in code: `ecoPrimal/src/biosignal/ppg.rs` uses `tolerances::DIVISION_GUARD` (no duplicate local constant); PROVENANCE_REGISTRY entries for Python baselines populate `git_commit`, `run_date`, and `exact_command` where applicable; `experiments/exp050_diagnostic_pipeline` uses `tolerances::ENDOCRINE_TESTOSTERONE_PASSTHROUGH` instead of an inline `0.1` tolerance. The subsections are retained for traceability.
+
 ---
 
 ## Historical snapshot (pre-V39, 2026-03-19)
@@ -100,17 +102,19 @@ V42 deep debt resolution: all 548 missing_docs resolved; clippy pedantic+nursery
 
 ## 6. Hardcoded Tolerance Values (Should Use tolerances.rs)
 
+**Status (V42):** Addressed — exp050 uses `ENDOCRINE_TESTOSTERONE_PASSTHROUGH`; `ppg.rs` uses `tolerances::DIVISION_GUARD`. Remaining library inline literals below are algorithm defaults or optional future centralization (unchanged from historical audit).
+
 ### In Experiment Binaries
 
 | File | Line | Value | Suggested Constant |
 |------|------|-------|--------------------|
-| `experiments/exp050_diagnostic_pipeline/src/main.rs` | 82 | `0.1` | Add `ENDOCRINE_TESTOSTERONE_MATCH` or use `LOGNORMAL_MEAN` (0.01) if appropriate |
+| `experiments/exp050_diagnostic_pipeline/src/main.rs` | 82 | ~~`0.1`~~ → `tolerances::ENDOCRINE_TESTOSTERONE_PASSTHROUGH` | **Resolved (V42)** |
 
 ### In Library Code (Non-Test)
 
 | File | Line | Value | Notes |
 |------|------|-------|-------|
-| `ecoPrimal/src/biosignal/ppg.rs` | 20 | `const DIVISION_GUARD: f64 = 1e-15` | Duplicate of `tolerances::DIVISION_GUARD` — should use `tolerances::DIVISION_GUARD` |
+| `ecoPrimal/src/biosignal/ppg.rs` | 20 | ~~local `DIVISION_GUARD`~~ → `tolerances::DIVISION_GUARD` | **Resolved (V42)** — uses shared constant |
 | `ecoPrimal/src/pkpd/nlme/mod.rs` | 69, 111, 190, 249, 355 | `1e-6`, `1e-12`, `1e-4`, `1e-6` | Solver/algorithm internals — consider named constants |
 | `ecoPrimal/src/pkpd/nca.rs` | 125, 144 | `1e-15` | Could use `tolerances::DIVISION_GUARD` or `MACHINE_EPSILON_STRICT` |
 | `ecoPrimal/src/pkpd/allometry.rs` | 41 | `1e-12` | Could use `tolerances::MACHINE_EPSILON_TIGHT` |
@@ -130,6 +134,8 @@ V42 deep debt resolution: all 548 missing_docs resolved; clippy pedantic+nursery
 
 ## 7. tolerances.rs — Completeness
 
+**Status (V42):** No open audit gap — all tolerances are named and documented (included in the §6–§8 V42 resolution note for cross-reference only).
+
 **Status:** All tolerances are named and documented.
 
 - **Machine Epsilon Class:** MACHINE_EPSILON, MACHINE_EPSILON_TIGHT, MACHINE_EPSILON_STRICT, ANDERSON_IDENTITY, TWO_COMPARTMENT_IDENTITY, DIVERSITY_CROSS_VALIDATE
@@ -145,9 +151,11 @@ All constants have doc comments. `TOLERANCE_REGISTRY.md` provides experiment-lev
 
 ## 8. provenance.rs — Baseline Provenance
 
-### PROVENANCE_REGISTRY — Entries with Empty Provenance
+**Status (V42):** Registry fields **`git_commit`**, **`run_date`**, and **`exact_command`** are populated for Python-controlled baselines per the provenance update workflow. The table below is a **historical** snapshot of the pre-V39 gap.
 
-Many entries have empty `git_commit`, `run_date`, `exact_command`:
+### PROVENANCE_REGISTRY — Entries with Empty Provenance (historical)
+
+Many entries had empty `git_commit`, `run_date`, `exact_command` at the time of the original audit:
 
 | Experiment | script | git_commit | run_date | exact_command |
 |------------|--------|------------|----------|---------------|
@@ -167,7 +175,7 @@ Many entries have empty `git_commit`, `run_date`, `exact_command`:
 - exp100–exp106 (comparative): filled
 - exp090–exp094 (discovery): filled
 
-**Recommendation:** Populate `git_commit`, `run_date`, `exact_command` for all Python baseline scripts that generate baseline JSON files.
+**Recommendation (superseded in V42):** Populate `git_commit`, `run_date`, `exact_command` for all Python baseline scripts that generate baseline JSON files. **Done** — see V42 note at top of this report.
 
 ---
 
@@ -236,20 +244,20 @@ Many entries have empty `git_commit`, `run_date`, `exact_command`:
 |------------|-------------------|-------------------|----------|
 | exp001 | ✓ | MACHINE_EPSILON, MACHINE_EPSILON_STRICT, HILL_SATURATION_100X | ✓ |
 | exp020 | ✓ | MACHINE_EPSILON_TIGHT, QRS_PEAK_MATCH_MS, QRS_SENSITIVITY, HR_DETECTION_BPM, SDNN_UPPER_MS | ✓ |
-| exp050 | ✓ | HILL_AT_EC50, DETERMINISM | ✓ (hardcoded 0.1 on L82) |
+| exp050 | ✓ | HILL_AT_EC50, DETERMINISM, ENDOCRINE_TESTOSTERONE_PASSTHROUGH | ✓ |
 | exp090 | ✓ | DETERMINISM, DISORDER_IMPACT, MATRIX_COMBINED, MATRIX_PATHWAY, TISSUE_GEOMETRY | ✓ |
 
 ### Experiments Using ValidationHarness
 
-62 experiment binaries use `ValidationHarness` (per grep). Experiments without ValidationHarness are typically dashboards, benchmarks, or UI tools (e.g. exp088_unified_dashboard, exp065_live_dashboard, exp064_ipc_push, exp089_patient_explorer, exp056_study_scenarios, exp060, exp055, exp054, exp066, exp068, exp084, exp085).
+**83/83** workspace experiment binaries use `ValidationHarness` (V42). Integration demos **exp064**, **exp065**, and **exp088** use the harness with integration/dashboard-oriented checks (not numeric Tier 0 cross-validation). Older greps that reported “62” or listed benchmarks as non-harness are **obsolete**.
 
 ---
 
 ## Summary of Action Items
 
-1. **Provenance:** Populate `git_commit`, `run_date`, `exact_command` for PROVENANCE_REGISTRY entries with empty provenance.
-2. **Hardcoded tolerance:** Replace `0.1` in exp050 L82 with a named constant (e.g. `ENDOCRINE_TESTOSTERONE_MATCH`).
-3. **Duplicate constant:** Use `tolerances::DIVISION_GUARD` in `ecoPrimal/src/biosignal/ppg.rs` instead of local `DIVISION_GUARD`.
+1. ~~**Provenance:** Populate `git_commit`, `run_date`, `exact_command` for PROVENANCE_REGISTRY entries with empty provenance.~~ **Resolved (V42)** — see §8.
+2. ~~**Hardcoded tolerance:** Replace `0.1` in exp050 L82 with a named constant (e.g. `ENDOCRINE_TESTOSTERONE_MATCH`).~~ **Resolved (V42)** — `ENDOCRINE_TESTOSTERONE_PASSTHROUGH`.
+3. ~~**Duplicate constant:** Use `tolerances::DIVISION_GUARD` in `ecoPrimal/src/biosignal/ppg.rs` instead of local `DIVISION_GUARD`.~~ **Resolved (V42)** — see §6.
 4. **panic! in production:** Consider replacing `panic!` in `pkpd/nonlinear.rs` L160 and `microbiome/mod.rs` L484 with `Option`/`Result` handling.
 5. **unwrap/expect in production:** Audit and replace with `OrExit` or proper error handling in: wfdb, pbpk, visualization (capabilities, mod, nodes, scenarios, stream, clinical), gpu/ode_systems, microbiome_transfer, metalForge.
 6. **Hardcoded tolerances in library:** Migrate inline `1e-15`, `1e-12`, `1e-10` etc. to `tolerances` constants where they represent validation thresholds.

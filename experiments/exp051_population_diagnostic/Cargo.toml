@@ -13,3 +13,6 @@ path = "src/main.rs"
 
 [dependencies]
 healthspring-barracuda = { path = "../../ecoPrimal" }
+
+[lints]
+workspace = true

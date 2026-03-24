@@ -364,7 +364,7 @@ All gates orchestrated via biomeOS. D4 cross-track Monte Carlo, Anderson 3D, rea
 ```
 Phase 1 (Now, Eastgate only):
   - Synthetic data, published parameters
-  - All existing 73 experiments (Tracks 1–7)
+  - All existing 83 experiments (Tracks 1–9)
   - FRONT-LOAD: MATRIX + Anderson scoring (DD-001) for ADDRC meeting
   - FRONT-LOAD: ADDRC 8K compound IC50 sweep (DD-003) — GPU Hill shader ready
   - FRONT-LOAD: Lisabeth Brucella screen analysis (DD-002)

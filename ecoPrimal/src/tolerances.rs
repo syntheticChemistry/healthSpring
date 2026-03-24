@@ -133,6 +133,9 @@ pub const PIPELINE_STAGE: f64 = 1e-10;
 /// Hill response at `EC50`: exactly `E_max/2` (analytical identity).
 pub const HILL_AT_EC50: f64 = 1.0;
 
+/// Endocrine testosterone passthrough — input value echoed ±0.1 ng/dL.
+pub const ENDOCRINE_TESTOSTERONE_PASSTHROUGH: f64 = 0.1;
+
 /// Deterministic rerun parity — bit-identical assessment.
 pub const DETERMINISM: f64 = 1e-12;
 
@@ -353,6 +356,26 @@ pub const TOX_IPR_DELOCALIZED: f64 = 0.15;
 
 /// Toxicity IPR threshold: above this, toxicity is localized (dangerous).
 pub const TOX_IPR_LOCALIZED: f64 = 0.50;
+
+// ── Classification Bound Constants ────────────────────────────────────
+
+/// Tissue geometry near-saturation lower bound — large ξ → geometry → 1.0.
+pub const TISSUE_GEOMETRY_SATURATION: f64 = 0.99;
+
+/// Tissue geometry near-zero upper bound — small ξ → geometry → 0.0.
+pub const TISSUE_GEOMETRY_ZERO: f64 = 0.02;
+
+/// Normalized cross-correlation discrimination threshold — PVC vs BBB.
+pub const NCC_DISCRIMINATION: f64 = 0.95;
+
+/// Minimum energy threshold for nonzero beat template validity.
+pub const BEAT_ENERGY_FLOOR: f64 = 0.1;
+
+/// Heart rate physiological lower bound (bpm).
+pub const HR_PHYSIO_LOW_BPM: f64 = 40.0;
+
+/// Heart rate physiological upper bound (bpm).
+pub const HR_PHYSIO_HIGH_BPM: f64 = 200.0;
 
 // ── Numerical Guard Constants ────────────────────────────────────────
 

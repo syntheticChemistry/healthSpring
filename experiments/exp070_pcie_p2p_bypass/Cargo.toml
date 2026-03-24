@@ -15,3 +15,6 @@ healthspring-forge = { path = "../../metalForge/forge" }
 [[bin]]
 name = "exp070_pcie_p2p_bypass"
 path = "src/main.rs"
+
+[lints]
+workspace = true

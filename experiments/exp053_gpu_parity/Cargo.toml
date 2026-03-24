@@ -15,3 +15,6 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 [[bin]]
 name = "exp053_gpu_parity"
 path = "src/main.rs"
+
+[lints]
+workspace = true

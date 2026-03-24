@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # biomeOS NUCLEUS Local Integration Plan
 
-**Last Updated**: March 17, 2026
-**Status**: V35 — Protocol Evolution + Centralized Cast Algebra. `UniBin`-compliant `healthspring_primal` binary. Dual-format capability parsing, zero-panic validation, compute_dispatch client, barracuda::health delegation, deny.toml. Capability-based primal discovery. Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
+**Last Updated**: March 23, 2026
+**Status**: V42 — Deep Debt Resolution. 863 tests, 83 experiments, 59 JSON-RPC capabilities (46 science + 13 infra), ValidationHarness 83/83. `UniBin`-compliant `healthspring_primal` binary. barraCuda v0.3.7; 6 GPU ops (3 Tier A + 3 Tier B). Dual-format capability parsing, zero-panic validation, compute_dispatch client, `barracuda::health` delegation, deny.toml. Capability-based primal discovery. Niche deploy graph ready. Three-tier data fetch (biomeOS → NestGate → local) implemented. Next: activate Nest Atomic locally.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

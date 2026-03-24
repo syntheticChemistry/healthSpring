@@ -15,3 +15,6 @@ healthspring-forge = { path = "../../metalForge/forge" }
 [[bin]]
 name = "exp087_mixed_nucleus_v16"
 path = "src/main.rs"
+
+[lints]
+workspace = true

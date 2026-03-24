@@ -24,6 +24,7 @@ The wateringHole is where springs coordinate. Handoff documents record:
 |---------|------|------|-------|
 | **V42** | [V42 Deep Debt Resolution](../../wateringHole/handoffs/HEALTHSPRING_V42_DEEP_DEBT_RESOLUTION_HANDOFF_MAR23_2026.md) | Mar 23 | 548 missing_docs → 0, clippy -D warnings, RUSTSEC fix, barraCuda API drift, ValidationSink, normalize_method, OnceLock GPU probe. 863 tests. Supersedes V41. |
 | **V42** | [V42 toadStool/barraCuda Absorption](../../wateringHole/handoffs/HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR23_2026.md) | Mar 23 | API drift fixes, ODE absorption candidates, new primitive requests, cross-spring science. Supersedes V41. |
+| **V42** | [V42 Deep Debt Absorption Request](../../wateringHole/handoffs/HEALTHSPRING_V42_DEEP_DEBT_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR23_2026.md) | Mar 23 | TensorSession P0, validation metrics for upstream, ODE codegen registry, tolerance pattern, sovereign dispatch expansion. |
 | | *V1–V41 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive

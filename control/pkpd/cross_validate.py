@@ -23,18 +23,19 @@ import sys
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONTROL_DIR = os.path.dirname(SCRIPT_DIR)
 
-# Per-check tolerances from specs/TOLERANCE_REGISTRY.md
-# Machine epsilon (1e-10 to 1e-15): analytical identities, f64 arithmetic
-# Numerical (1e-6 to 0.01): trapezoidal AUC, discrete grid methods
-# Population (0.05 to 0.15): Monte Carlo, parameter recovery
-TOL_MACHINE = 1e-10
-TOL_MACHINE_LOOSE = 1e-8
-TOL_NUMERICAL = 1e-6
-TOL_AUC = 0.02  # 1% relative for typical AUC; oral diff ~0.01
-TOL_AUC_IV = 1.0  # 1% of ~100 for IV AUC numerical vs analytical (registry 0.01)
-TOL_TMAX = 0.1
-TOL_POPULATION = 0.05
-TOL_SHANNON = 1e-6  # exp010: 1e-8; exp040 cross-impl allows 1e-6
+# Import centralized tolerances — single source of truth from control/tolerances.py
+# which mirrors ecoPrimal/src/tolerances.rs exactly.
+sys.path.insert(0, CONTROL_DIR)
+import tolerances as tol_registry  # noqa: E402
+
+TOL_MACHINE = tol_registry.MACHINE_EPSILON
+TOL_MACHINE_LOOSE = tol_registry.DIVERSITY_CROSS_VALIDATE
+TOL_NUMERICAL = tol_registry.HALF_LIFE_POINT
+TOL_AUC = tol_registry.LEVEL_SPACING_RATIO
+TOL_AUC_IV = 1.0  # 1% of ~100 for IV AUC numerical vs analytical
+TOL_TMAX = tol_registry.TMAX_NUMERICAL
+TOL_POPULATION = tol_registry.LOGNORMAL_RECOVERY
+TOL_SHANNON = tol_registry.HALF_LIFE_POINT
 
 
 def load_baseline(name, subdir=None):

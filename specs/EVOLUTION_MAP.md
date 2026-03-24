@@ -179,13 +179,18 @@ wetSpring QS gene profiling   → microbial drug targets
 
 `GpuContext` holds persistent `wgpu::Device`/`Queue`. `execute_fused()` dispatches multiple ops in a single encoder submission.
 
+**V42:** Six GPU ops are **LIVE** on both `GpuContext` and the `dispatch::execute_gpu` path (Tier A original three + V16 batch trio).
+
 | GpuOp Variant | CPU Fallback | WGSL Shader | Status |
 |--------------|-------------|-------------|--------|
 | `HillSweep` | `pkpd::hill_dose_response` loop | `hill_dose_response_f64.wgsl` | **LIVE** — 17/17 parity, crossover at 100K |
 | `PopulationPkBatch` | `pkpd::population_pk_cpu` | `population_pk_f64.wgsl` | **LIVE** — u32 xorshift32 PRNG, crossover at 5M |
 | `DiversityBatch` | `microbiome::shannon_index` loop | `diversity_f64.wgsl` | **LIVE** — workgroup reduction |
+| `MichaelisMentenBatch` | `pkpd::mm_pk_simulate` / batch integration | `michaelis_menten_batch_f64.wgsl` | **LIVE** — V16 MM batch PK (Exp083/085/086/087) |
+| `ScfaBatch` | `microbiome::scfa_production` | `scfa_batch_f64.wgsl` | **LIVE** — V16 SCFA Michaelis–Menten batch |
+| `BeatClassifyBatch` | `biosignal::classification` | `beat_classify_batch_f64.wgsl` | **LIVE** — V16 template correlation beat classes |
 
-Exp040 validates CPU parity (15 contracts). Exp053 validates GPU parity (17 checks). Exp054 validates fused pipeline (11 checks). Exp055 validates scaling to 10M elements.
+Exp040 validates CPU parity (15 contracts). Exp053 validates GPU parity (17 checks). Exp054 validates fused pipeline (11 checks). Exp055 validates scaling to 10M elements. Exp083 validates V16 shader parity vs CPU (`execute_cpu`).
 
 ---
 

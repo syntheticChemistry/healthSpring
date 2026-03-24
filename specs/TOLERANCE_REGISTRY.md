@@ -8,6 +8,8 @@
 - **Population/statistical class** (0.05 to 0.15): Used for Monte Carlo and population models where finite sample size introduces sampling error. Tolerance reflects √(1/N) convergence.
 - **Clinical plausibility class** (0.25 to 0.60): Used for qualitative checks (front-loaded > 55%, CV > 15%) based on published literature ranges.
 
+**Workspace experiments:** 83 (all workspace members accounted for in the summary below; integration/dashboard demos are listed with a non-numeric class).
+
 ## Registry
 
 ### Machine Epsilon Class (1e-10 to 1e-15)
@@ -153,6 +155,10 @@
 | exp060 | CPU vs GPU pipeline parity | 1e-4 | GPU f32 transcendental | Same as exp053 Hill parity. |
 | exp062 | Zero transfer bytes | 1e-15 | Machine epsilon | Same-substrate transfers should have zero overhead. |
 | exp006 | Mass conservation | 0.25 | Numerical | PBPK mass balance: sum of tissue masses vs dose; Euler discretization. |
+| exp083 | MM batch GPU vs CPU | 1e-4 rel | GPU f32 transcendental | V16 michaelis_menten_batch_f64.wgsl; same rationale as exp053 Hill/PopPK shaders. |
+| exp083 | SCFA batch vs scalar API | CPU_PARITY | GPU/CPU parity | Batch row matches microbiome::scfa_production within shared CPU parity constant (scfa_batch_f64.wgsl). |
+| exp083 | Beat classify self-correlation | > 0.99 | Machine epsilon | Template self-match on CPU path (beat_classify_batch_f64.wgsl). |
+| exp085 | V16 batch determinism / scaling | structural | GPU numerical | exp085: multi-scale MM/SCFA/Beat runs, fused pipeline memory bounds. |
 
 ### CPU Parity Class (1e-10)
 
@@ -163,6 +169,9 @@
 | exp067 | Diversity CPU parity | 1e-10 | Machine epsilon | Shannon/Simpson CPU fallback vs library; identical codepath. |
 | exp069 | ExpDecay pipeline stage | 1e-10 | Machine epsilon | `y = exp(-0.01 * x)` pipeline transform; f64 transcendental at small argument. |
 | exp069 | Dispatch plan substrate consistency | 1e-10 | Machine epsilon | metalForge substrate selection must be deterministic for given workload. |
+| exp084 | V16 bench (mm_c0, classify templates) | MACHINE_EPSILON | Machine epsilon | CPU timing benchmark; analytical identities match Tier 1 primitives. |
+| exp086 | toadStool V16 pipeline / streaming | MACHINE_EPSILON, exact counts | Machine epsilon + dispatch | Stage maps to GpuOp; streaming callback count exact. |
+| exp087 | NUCLEUS dispatch / PCIe estimates | PCIE_BANDWIDTH, exact assignments | Structural + numerical | Mixed-substrate plan_dispatch validation. |
 
 ### NLME / Pipeline Class (V15)
 
@@ -225,6 +234,20 @@
 | exp098 | 1e-10 (IPR, SBS), 0.01 (clearance utilization), 0.05 (delocalization) | Machine epsilon + numerical |
 | exp099 | 1e-10 (biphasic at D=0), 0.01 (hormetic optimum), 0.05 (mithridatism) | Machine epsilon + numerical |
 | exp111 | 1e-10 (baseline fitness), 0.05 (mechanistic curve shape), 0.10 (population) | Machine epsilon + population |
+
+### Experiments added in V42 registry sync (previously omitted rows)
+
+| Experiment | Key Tolerances | Primary Class |
+|-----------|----------------|---------------|
+| exp064 | — | N/A — integration/dashboard demo |
+| exp065 | — | N/A — integration/dashboard demo |
+| exp083 | 1e-4 GPU rel, `CPU_PARITY`, determinism, structural shader checks | GPU parity + machine epsilon |
+| exp084 | `MACHINE_EPSILON`, classify corr, timing > 0 (bench) | Benchmark + machine epsilon |
+| exp085 | Deterministic MM/SCFA/Beat batches, memory bounds, fused counts | GPU scaling + structural |
+| exp086 | `MACHINE_EPSILON`, exact stage/callback counts | Dispatch + machine epsilon |
+| exp087 | `PCIE_BANDWIDTH`, exact dispatch assignments | Structural + numerical |
+| exp088 | — | N/A — integration/dashboard demo |
+| exp110 | `MACHINE_EPSILON`, `ANDERSON_IDENTITY`, `DETERMINISM` (Hill, MM PK, allometric) | Machine epsilon (comparative medicine) |
 
 ## Numerical Guard Constants (non-validation)
 

@@ -16,3 +16,6 @@ healthspring-toadstool = { path = "../../toadstool" }
 [[bin]]
 name = "exp069_toadstool_dispatch_matrix"
 path = "src/main.rs"
+
+[lints]
+workspace = true

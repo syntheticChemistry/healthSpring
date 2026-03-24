@@ -80,7 +80,7 @@ fn main() {
         "endocrine_testosterone_matches_input",
         result.endocrine.predicted_testosterone,
         450.0,
-        0.1,
+        tolerances::ENDOCRINE_TESTOSTERONE_PASSTHROUGH,
     );
     h.check_bool(
         "endocrine_hrv_improved_on_trt",

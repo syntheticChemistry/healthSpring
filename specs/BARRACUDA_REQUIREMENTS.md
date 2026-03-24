@@ -2,13 +2,15 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: March 23, 2026
-**Status**: V41 — Deep Debt Resolution Sprint. Tier 2+3 GPU live. barraCuda v0.3.7 pinned. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. 3 `OdeSystem` impls (MM, OralOneCompartment, TwoCompartment). Tier A+B all 6 ops live. Workspace lints, tracing. See V41 toadStool/barraCuda handoff.
+**Status**: V42 — Deep Debt Resolution Sprint. Tier 2+3 GPU live. barraCuda v0.3.7 pinned. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. 3 `OdeSystem` impls (MM, OralOneCompartment, TwoCompartment). **All six GPU ops** — Hill (`HillSweep`), PopPK (`PopulationPkBatch`), Diversity (`DiversityBatch`), Michaelis–Menten batch (`MichaelisMentenBatch`), SCFA batch (`ScfaBatch`), beat classification (`BeatClassifyBatch`) — are **LIVE** for both **`GpuContext`** and the **`gpu::dispatch`** execution paths (no split: same `GpuOp` routing everywhere). Workspace lints, tracing. See toadStool/barraCuda handoffs.
 
 ---
 
 ## Overview
 
 healthSpring consumes primitives from the standalone `barraCuda` library (vendor-agnostic GPU math, f64-canonical WGSL shaders). This document tracks which primitives are available, which need to be written locally (Write phase), which have been validated locally and are ready for absorption (Absorb phase), and which have been absorbed upstream (Lean phase).
+
+**V42 GPU surface:** The six LIVE ops above are validated by Exp053 (Tier A trio), Exp083 (V16 trio parity), and dispatch/scaling experiments Exp054–Exp060, Exp085–Exp087.
 
 ---
 
@@ -35,6 +37,9 @@ These primitives have been validated in healthSpring and are ready for the barra
 | PK/PD | `hill_dose_response` | Vectorized Hill dose-response | `hill_dose_response_f64.wgsl` | **GPU LIVE** — Exp053, crossover at 100K |
 | PK/PD | `population_pk_cpu` | Monte Carlo virtual patient generation | `population_pk_f64.wgsl` | **GPU LIVE** — Exp053, crossover at 5M |
 | Microbiome | `shannon_index` + `simpson_index` | Parallel diversity computation | `diversity_f64.wgsl` | **GPU LIVE** — Exp053, workgroup reduction |
+| PK/PD | `GpuOp::MichaelisMentenBatch` / MM PK batch | Batch nonlinear PK (MM) | `michaelis_menten_batch_f64.wgsl` | **GPU LIVE** — Exp083/085/086/087; `GpuContext` + `dispatch::execute_gpu` |
+| Microbiome | `GpuOp::ScfaBatch` | Batch SCFA production (MM kinetics) | `scfa_batch_f64.wgsl` | **GPU LIVE** — same as above |
+| Biosignal | `GpuOp::BeatClassifyBatch` | Template correlation beat classification | `beat_classify_batch_f64.wgsl` | **GPU LIVE** — same as above |
 | PK/PD | `pk_iv_bolus`, `pk_oral_one_compartment`, `pk_two_compartment_iv` | Compartment PK models | CPU only | **VALIDATED** — Exp001-003, 39 lib tests |
 | PK/PD | `pbpk_iv_simulate`, `pbpk_iv_tissue_profiles` | PBPK multi-compartment ODE with tissue profiles | CPU only | **VALIDATED** — Exp006, 13 checks + lib tests |
 | PK/PD | `allometric_scale`, `mab_pk_sc` | mAb cross-species scaling | CPU only | **VALIDATED** — Exp004, 7 checks |

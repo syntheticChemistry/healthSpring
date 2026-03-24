@@ -2,7 +2,7 @@
 # healthSpring White Paper
 
 **Date:** March 23, 2026
-**Status:** V41 — Deep Debt Resolution Sprint. 83 experiments, 855 tests, 59 JSON-RPC capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. Workspace-level `[lints]`. Library `tracing`. Env-driven discovery. ODE codegen wired. Proptest numerical properties. Zero clippy, zero unsafe, zero `#[allow]`.
+**Status:** V42 — Deep Debt Resolution Sprint. 83 experiments, 863 tests, 59 JSON-RPC capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. Workspace-level `[lints]`. Library `tracing`. Env-driven discovery. ODE codegen wired. Proptest numerical properties. Zero clippy, zero unsafe, zero `#[allow]`.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -43,7 +43,7 @@ without establishing causality.
 
 | Order | Document | What you'll learn |
 |:-----:|----------|------------------|
-| 4 | [baseCamp/README.md](baseCamp/README.md) | All 73 experiments, validation counts, per-track status |
+| 4 | [baseCamp/README.md](baseCamp/README.md) | All 83 experiments, validation counts, per-track status |
 | 5 | [baseCamp/gonzales/README.md](baseCamp/gonzales/README.md) | PK/PD sub-thesis: Gonzales canine → human → drug discovery pipeline |
 | 6 | [baseCamp/EXTENSION_PLAN.md](baseCamp/EXTENSION_PLAN.md) | Where we're going: Tracks 6–7, datasets, QS gene profiling, living systems |
 
@@ -234,8 +234,8 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 
 | Metric | Value |
 |--------|-------|
-| Experiments | 73 complete (Tracks 1–7), 15 queued |
-| Rust tests | 613 (567+ lib + 33 forge + 30 toadStool + 5 doc) |
+| Experiments | 83 complete (Tracks 1–9), 15 queued |
+| Rust tests | 863 (lib + proptest + IPC fuzz + doc + experiment bins) |
 | Python checks | 194 cross-validation |
 | Paper queue | 30/30 complete, 15 new queued |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |

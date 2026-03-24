@@ -16,3 +16,6 @@ healthspring-forge = { path = "../../metalForge/forge" }
 [[bin]]
 name = "exp086_toadstool_v16_dispatch"
 path = "src/main.rs"
+
+[lints]
+workspace = true

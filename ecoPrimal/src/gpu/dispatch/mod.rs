@@ -1,4 +1,21 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+//! GPU dispatch entry points — stateless single-op execution.
+//!
+//! ## Dispatch Path Semantics (three paths, intentionally different)
+//!
+//! | Path | Entry | Tier A | Tier B | Fusion |
+//! |------|-------|--------|--------|--------|
+//! | **`execute_gpu`** (this module) | Stateless async | barraCuda ops | Local WGSL | No |
+//! | **`GpuContext::execute`** (`context.rs`) | Session-based | barraCuda ops | barraCuda ops | Sequential |
+//! | **`execute_fused_local`** (`fused.rs`) | Single-encoder | Local WGSL | Local WGSL | True fusion |
+//!
+//! **Why the split**: `execute_gpu` is the CI and experiment dispatch path —
+//! it uses barraCuda for Tier A (validated upstream ops) and local WGSL for
+//! Tier B (health-domain ops not yet in barraCuda's default dispatch).
+//! `GpuContext` wraps a persistent device and uses barraCuda for all 6 ops.
+//! The fused path uses local WGSL for all ops because single-encoder fusion
+//! cannot mix barraCuda encoders with local ones. When barraCuda ships
+//! `TensorSession`, all three paths converge to upstream.
 
 pub(crate) mod batch_ops;
 pub(crate) mod common;

@@ -2,7 +2,7 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 22, 2026
+**Date:** March 23, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
 **Status:** V42 — Deep Debt Resolution Sprint. 863 tests, 83 experiments, 53 Python baselines. barraCuda v0.3.7. Workspace lints consolidated (`[workspace.lints]` — `forbid(unsafe_code)`, `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`, `warn(missing_docs)`). Library `println!`/`eprintln!` evolved to `tracing`. Hardcoded primal names evolved to capability-based discovery with env-driven fallback. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. Proptest extended to numerical properties (Hill monotonicity, boundedness, EC ordering). Tolerance registry synced. CI validates all experiment binaries. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
@@ -36,7 +36,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Version | **V42** (Deep Debt Resolution Sprint) |
 | **Total tests** | **863** (lib + proptest + IPC fuzz + doc + experiment bins) |
 | Experiments complete | 83 (Tracks 1–9, Tier 0+1+2+3) |
-| Experiments using ValidationHarness | **83/83** (all standardized) |
+| Experiments using ValidationHarness | **83/83** experiments use ValidationHarness (includes 2 integration demos upgraded from custom check patterns in V42) |
 | JSON-RPC capabilities | 59 (46 science + 13 infrastructure — `capability.list`, provenance, health probes, compute/data/model routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **53** with structured provenance registry (all 9 tracks) |
@@ -496,7 +496,7 @@ Tier 2: Rust GPU (barraCuda WGSL shaders, math parity with CPU)
 Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 ```
 
-**Current state**: Tier 0+1 complete for 42 experiments (paper queue 30/30 Tracks 1–5, 10/10 Tracks 6–7). **Tier 2 live**: 6 WGSL shaders (3 original + 3 V16), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **V25**: Track 6+7 complete — 12 new experiments (Exp090–094, Exp100–106), 173 validation checks, discovery/ and comparative/ modules. **V20**: petalTongue V16 visualization — 34-node full study with 6 V16 nodes, unified dashboard (326 checks), patient explorer with streaming. **V18**: CPU parity — Rust 84× faster than Python across V16 primitives.
+**Current state**: Tier 0+1 validation complete for **83** experiments (ValidationHarness **83/83**; paper queue and per-track coverage as in Current Metrics above). **Tier 2 live**: 6 WGSL shaders (3 Tier A + 3 Tier B), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **V25**: Track 6+7 complete — 12 experiments in that wave (Exp090–094, Exp100–106), 173 validation checks, discovery/ and comparative/ modules. **V20**: petalTongue V16 visualization — 34-node full study with 6 V16 nodes, unified dashboard (326 checks), patient explorer with streaming. **V18**: CPU parity — Rust 84× faster than Python across V16 primitives.
 
 ---
 
@@ -506,7 +506,7 @@ Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 healthSpring/
 ├── ecoPrimal/           # Rust library — PK/PD, microbiome, biosignal, endocrine
 │   └── src/
-│       ├── lib.rs       # 289 tests, #![forbid(unsafe_code)]
+│       ├── lib.rs       # #![forbid(unsafe_code)]
 │       ├── pkpd/        # Track 1: Hill, 1/2-compartment, allometric, pop PK, PBPK, NLME (FOCE/SAEM), NCA, diagnostics
 │       ├── microbiome/   # Track 2: diversity indices, Anderson, clinical models
 │       │   ├── mod.rs       # Shannon, Simpson, Pielou, Chao1, communities
@@ -562,7 +562,7 @@ healthSpring/
 │   ├── discovery/       # exp090–094
 │   ├── comparative/     # exp100–106
 │   └── scripts/         # Benchmark scripts + timing JSON results
-├── experiments/         # 79 validation binaries
+├── experiments/         # 83 validation binaries
 │   ├── exp001–exp006/   # Track 1: PK/PD
 │   ├── exp010–exp013/   # Track 2: Microbiome
 │   ├── exp020–exp023/   # Track 3: Biosignal
@@ -617,7 +617,7 @@ healthSpring/
 ├── wateringHole/        # Cross-spring handoffs
 │   └── handoffs/        # → barraCuda, toadStool, petalTongue
 ├── scripts/             # Dashboard, visualization, sync scripts
-├── Cargo.toml           # Workspace (85 members)
+├── Cargo.toml           # Workspace (86 members)
 └── README.md            # This file
 ```
 

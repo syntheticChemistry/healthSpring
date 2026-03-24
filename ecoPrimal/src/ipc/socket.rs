@@ -41,11 +41,14 @@ pub fn resolve_bind_path() -> PathBuf {
     dir.join(format!("{PRIMAL_NAME}-{family}.sock"))
 }
 
+/// Default orchestrator socket filename (biomeOS convention).
+const DEFAULT_ORCHESTRATOR_SOCKET: &str = "biomeOS.sock";
+
 /// Discover the orchestrator socket.
 #[must_use]
 pub fn orchestrator_socket() -> PathBuf {
-    let name =
-        std::env::var("BIOMEOS_ORCHESTRATOR_SOCKET").unwrap_or_else(|_| "biomeOS.sock".to_owned());
+    let name = std::env::var("BIOMEOS_ORCHESTRATOR_SOCKET")
+        .unwrap_or_else(|_| DEFAULT_ORCHESTRATOR_SOCKET.to_owned());
     resolve_socket_dir().join(name)
 }
 

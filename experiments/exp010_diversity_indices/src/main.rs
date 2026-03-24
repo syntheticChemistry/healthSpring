@@ -143,9 +143,6 @@ fn main() {
     if let Some(prov) = provenance::load_provenance(baseline_str) {
         provenance::log_provenance(&prov);
     }
-    if let Some(prov) = provenance::load_provenance(baseline_str) {
-        provenance::log_provenance(&prov);
-    }
     let baseline: serde_json::Value = match serde_json::from_str(baseline_str) {
         Ok(b) => b,
         Err(e) => {

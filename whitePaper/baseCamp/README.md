@@ -270,7 +270,7 @@ healthSpring evolved from experiment binaries into a biomeOS niche in V22:
 
 | Component | File | Purpose |
 |-----------|------|---------|
-| Primal binary | `ecoPrimal/src/bin/healthspring_primal.rs` | 57+ capabilities via JSON-RPC 2.0 over Unix socket |
+| Primal binary | `ecoPrimal/src/bin/healthspring_primal.rs` | 59 capabilities via JSON-RPC 2.0 over Unix socket |
 | IPC dispatch | `ecoPrimal/src/ipc/dispatch.rs` | Method→science function routing for 6 domains |
 | Niche manifest | `graphs/healthspring_niche.toml` | Declares the niche: primals + workflow graphs |
 | Patient assessment | `graphs/healthspring_patient_assessment.toml` | ConditionalDag: 4 parallel science tracks → composite |

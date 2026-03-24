@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Paper Review Queue
 
-**Last Updated**: March 18, 2026
-**Status**: V37 — Cross-Ecosystem Absorption Sprint. 79 experiments complete (Tracks 1–7 + extensions), 706 tests, 45/45 papers complete. mul_add() FMA sweep, centralized extract_rpc_result(), 18 proptest IPC fuzz tests, structured provenance registry (49 records), MCP tool definitions (23 tools), deny.toml 14-crate C-dep ban, leverage guide. 80 capabilities.
+**Last Updated**: March 23, 2026
+**Status**: V42 — Deep Debt Resolution Sprint. 83 experiments complete (Tracks 1–9), 863 tests, 45/45 papers complete. 53 provenance records, 23 MCP tools, deny.toml, 59 capabilities (46 science + 13 infra). barraCuda v0.3.7, 6 GPU ops.
 
 ---
 

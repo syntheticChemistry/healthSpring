@@ -17,3 +17,6 @@ serde_json = "1"
 [[bin]]
 name = "exp085_gpu_vs_cpu_v16_bench"
 path = "src/main.rs"
+
+[lints]
+workspace = true

@@ -17,3 +17,6 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 [[bin]]
 name = "exp054_gpu_pipeline"
 path = "src/main.rs"
+
+[lints]
+workspace = true

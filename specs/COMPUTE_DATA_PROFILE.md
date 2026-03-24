@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring: Compute & Data Hunger Profile
 
-**Last Updated**: March 10, 2026
+**Last Updated**: March 23, 2026
 
 ---
 
@@ -166,7 +166,7 @@ healthSpring spans five domains with dramatically different compute/data profile
 |------------------------|---------------|
 | All Tier 0 Python controls | Population Monte Carlo > 10K patients |
 | All Tier 1 Rust CPU | Anderson L > 500 eigensolve |
-| All 73 experiments (Exp001-106) | NCBI bulk data (50+ GB) |
+| All 83 experiments (Exp001-111) | NCBI bulk data (50+ GB) |
 | Basic population PK (1K) | Cross-track Monte Carlo (D4) |
 | QS gene matrix construction (NCBI Gene API) | Real 16S HMP pipeline (50GB) |
 | MIT-BIH full dataset (100MB) | PhysioNet MIMIC-III (50GB subset) |

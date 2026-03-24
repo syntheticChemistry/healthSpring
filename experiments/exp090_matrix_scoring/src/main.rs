@@ -12,6 +12,7 @@ use healthspring_barracuda::discovery::{
 use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
 use healthspring_barracuda::tolerances::{
     DETERMINISM, DISORDER_IMPACT, MATRIX_COMBINED, MATRIX_PATHWAY, TISSUE_GEOMETRY,
+    TISSUE_GEOMETRY_SATURATION, TISSUE_GEOMETRY_ZERO,
 };
 use healthspring_barracuda::validation::ValidationHarness;
 
@@ -56,12 +57,12 @@ fn validate_tissue_geometry(h: &mut ValidationHarness) {
     h.check_lower(
         "tissue: large xi → near 1",
         tissue_geometry_factor(100.0, 1.0),
-        0.99,
+        TISSUE_GEOMETRY_SATURATION,
     );
     h.check_upper(
         "tissue: small xi → near 0",
         tissue_geometry_factor(0.01, 1.0),
-        0.02,
+        TISSUE_GEOMETRY_ZERO,
     );
     h.check_abs(
         "tissue: zero thickness → 0",

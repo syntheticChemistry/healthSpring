@@ -14,3 +14,6 @@ healthspring-barracuda = { path = "../../ecoPrimal" }
 [[bin]]
 name = "exp067_gpu_parity_extended"
 path = "src/main.rs"
+
+[lints]
+workspace = true

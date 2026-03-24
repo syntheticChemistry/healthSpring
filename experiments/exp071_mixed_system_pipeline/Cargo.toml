@@ -16,3 +16,6 @@ healthspring-forge = { path = "../../metalForge/forge" }
 [[bin]]
 name = "exp071_mixed_system_pipeline"
 path = "src/main.rs"
+
+[lints]
+workspace = true

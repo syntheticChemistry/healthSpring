@@ -27,7 +27,7 @@ e. **A niche deploy graph** — TOML: startup order for all primals
 
 How healthSpring did it:
 
-- **`ecoPrimal/src/bin/healthspring_primal.rs`**: 55 capabilities, XDG socket, biomeOS registration + heartbeat  
+- **`ecoPrimal/src/bin/healthspring_primal.rs`**: 59 capabilities, XDG socket, biomeOS registration + heartbeat  
 - **`ecoPrimal/src/ipc/dispatch.rs`**: Maps method strings to science functions, extracts JSON params  
 - **`graphs/healthspring_niche.toml`**: Manifest with 5 workflow graphs  
 - **`graphs/healthspring_patient_assessment.toml`**: ConditionalDag — 4 parallel science tracks  

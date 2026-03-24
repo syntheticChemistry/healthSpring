@@ -16,3 +16,6 @@ path = "src/dump_scenario.rs"
 
 [dependencies]
 healthspring-barracuda = { path = "../../ecoPrimal" }
+
+[lints]
+workspace = true

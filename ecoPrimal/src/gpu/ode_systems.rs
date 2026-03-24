@@ -6,9 +6,16 @@
 //! - A CPU derivative for validation and small batches
 //! - Metadata (`system_name`, `N_VARS`, `N_PARAMS`)
 //!
-//! These replace the hand-rolled WGSL shaders in `dispatch/` with the
-//! generic `BatchedOdeRK4::generate_shader()` path, aligning healthSpring
-//! with the ecosystem ODE codegen pattern from wetSpring.
+//! These supersede the hand-rolled `michaelis_menten_batch_f64.wgsl` with
+//! the generic `BatchedOdeRK4::generate_shader()` codegen path, aligning
+//! healthSpring with the ecosystem ODE codegen pattern from wetSpring.
+//!
+//! ## Migration status
+//!
+//! The handwritten `shaders/health/michaelis_menten_batch_f64.wgsl` remains
+//! for the local WGSL dispatch path (`dispatch/batch_ops.rs`, `fused.rs`).
+//! Once `TensorSession` absorbs the fused pipeline, the handwritten shader
+//! can be removed and all MM GPU work flows through codegen.
 
 use barracuda::numerical::OdeSystem;
 

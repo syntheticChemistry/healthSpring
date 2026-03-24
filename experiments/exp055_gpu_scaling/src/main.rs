@@ -353,14 +353,20 @@ async fn main() {
         println!("│  Diversity crossover: CPU faster at all tested sizes          │");
     }
 
-    let peak_hill = hill_results
+    let Some(peak_hill) = hill_results
         .iter()
         .max_by(|a, b| a.speedup.total_cmp(&b.speedup))
-        .expect("hill_results is non-empty by construction");
-    let peak_pk = pk_results
+    else {
+        eprintln!("FATAL: hill_results empty");
+        std::process::exit(1);
+    };
+    let Some(peak_pk) = pk_results
         .iter()
         .max_by(|a, b| a.speedup.total_cmp(&b.speedup))
-        .expect("pk_results is non-empty by construction");
+    else {
+        eprintln!("FATAL: pk_results empty");
+        std::process::exit(1);
+    };
 
     println!("│                                                                │");
     println!(

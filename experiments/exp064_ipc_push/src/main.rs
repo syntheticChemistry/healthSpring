@@ -9,58 +9,43 @@
 //! pushes data via visualization.render. Falls back to writing JSON file
 //! if petalTongue is not available.
 
+use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_barracuda::visualization::ipc_push::{PetalTonguePushClient, PushError};
 use healthspring_barracuda::visualization::scenarios;
 use std::fs;
 use std::path::Path;
 
 fn main() {
-    let mut checks = 0;
-    let mut pass = 0;
+    let mut h = ValidationHarness::new("exp064_ipc_push");
 
-    macro_rules! check {
-        ($name:expr, $cond:expr) => {{
-            checks += 1;
-            if $cond {
-                pass += 1;
-                println!("  [PASS] {}", $name);
-            } else {
-                println!("  [FAIL] {}", $name);
-            }
-        }};
-    }
-
-    println!("\n=== Exp064: IPC Push to petalTongue ===\n");
-
-    // Build scenario
     let (scenario, edges) = scenarios::pkpd_study();
     let json = scenarios::scenario_with_edges_json(&scenario, &edges);
 
-    check!("pkpd scenario built", scenario.ecosystem.primals.len() == 6);
-    check!("pkpd has edges", edges.len() == 5);
-    check!(
+    h.check_exact(
+        "pkpd scenario primal count",
+        scenario.ecosystem.primals.len() as u64,
+        6,
+    );
+    h.check_exact("pkpd edge count", edges.len() as u64, 5);
+    h.check_bool(
         "JSON valid",
-        serde_json::from_str::<serde_json::Value>(&json).is_ok()
+        serde_json::from_str::<serde_json::Value>(&json).is_ok(),
     );
 
-    // Try IPC push
     match PetalTonguePushClient::discover() {
         Ok(client) => {
             let session_id = "healthspring-exp064-pkpd";
             match client.push_render(session_id, &scenario.name, &scenario) {
                 Ok(()) => {
-                    check!("IPC push succeeded", true);
-                    println!("  Pushed to petalTongue session '{session_id}'");
+                    h.check_bool("IPC push succeeded", true);
                 }
                 Err(e) => {
-                    checks += 1;
-                    println!("  [FAIL] IPC push failed: {e}");
+                    h.check_bool(&format!("IPC push failed: {e}"), false);
                 }
             }
         }
         Err(PushError::NotFound(_)) => {
-            check!("petalTongue not found (expected when not running)", true);
-            println!("  petalTongue not running — falling back to file write");
+            h.check_bool("petalTongue not found (expected when not running)", true);
 
             let out = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../sandbox/scenarios");
             if fs::create_dir_all(&out).is_err() {
@@ -72,16 +57,13 @@ fn main() {
                 eprintln!("ERROR: write scenario JSON");
                 std::process::exit(1);
             }
-            println!("  wrote {} ({} KB)", path.display(), json.len() / 1024);
 
-            check!("fallback file written", path.exists());
+            h.check_bool("fallback file written", path.exists());
         }
         Err(e) => {
-            check!(&format!("discovery/push error: {e}"), false);
+            h.check_bool(&format!("discovery/push error: {e}"), false);
         }
     }
 
-    println!("\n====================================");
-    println!("Exp064 IPC Push: {pass}/{checks} checks passed");
-    std::process::exit(i32::from(pass != checks));
+    h.exit();
 }
