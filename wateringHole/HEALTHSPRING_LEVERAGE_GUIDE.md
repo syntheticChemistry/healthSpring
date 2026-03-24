@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Leverage Guide — Standalone, Trio, and Full Niche
 
-**Date**: March 23, 2026
+**Date**: March 24, 2026
 **Primal**: healthSpring V42 (`healthspring-barracuda` 0.1.0)
 **Audience**: All springs, all primals, biomeOS integrators
 **Status**: Active
@@ -12,7 +12,7 @@
 
 This document describes how healthSpring can be leveraged — alone and in composition with other primals — by springs and ecosystem consumers. Each primal in the ecosystem produces an equivalent guide. Together, these guides form a combinatorial recipe book for emergent behaviors.
 
-healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. 863 tests, 83 experiments, 59 capabilities (46 science + 13 infra). barraCuda v0.3.7.
+healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. 877 tests, 83 experiments, 59 capabilities (46 science + 13 infra). barraCuda v0.3.7.
 
 **Philosophy**: Health science is sovereign. Hill dose-response, Shannon diversity, Pan-Tompkins QRS — these are universal primitives. healthSpring owns the biology; other primals own the hardware, the network, the storage, the identity. Discover at runtime, compose at will.
 
@@ -202,13 +202,13 @@ Top capabilities by domain (46 science + 13 infra):
 
 ## 7. Evolution Status
 
-| Metric | V36 |
+| Metric | V42 |
 |--------|-----|
-| Tests | 617 |
-| Experiments | 79 |
-| Python baselines | 42 |
+| Tests | 877 |
+| Experiments | 83 |
+| Python baselines | 54 |
 | Cross-validation | 113/113 |
-| Capabilities | 79 |
+| Capabilities | 59 |
 | GPU ops (barraCuda) | 6/6 |
 | Unsafe blocks | 0 |
 | `#[allow()]` | 0 |

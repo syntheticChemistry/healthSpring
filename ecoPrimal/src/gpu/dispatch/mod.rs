@@ -35,66 +35,39 @@ pub(crate) use pop_pk::{PkParams, execute_pop_pk_gpu};
 
 use super::{GpuError, GpuOp, GpuResult};
 
-/// Execute a GPU operation on live hardware.
-///
-/// Tries sovereign dispatch (coralReef + toadStool) first when available,
-/// then barraCuda upstream ops, then local wgpu path.
-///
-/// # Errors
-///
-/// Returns [`GpuError::NoDevice`] if no adapter/device is available,
-/// [`GpuError::Dispatch`] on shader compilation failure, or
-/// [`GpuError::Readback`] on buffer map failure.
-#[expect(clippy::too_many_lines, reason = "dispatch match over GpuOp variants")]
-pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
-    // ── Sovereign path (coralReef compile + toadStool dispatch) ─────
-    #[cfg(feature = "sovereign-dispatch")]
-    if let Some(result) = super::sovereign::try_sovereign_dispatch(op) {
-        return result;
-    }
-
-    // ── Tier A: barraCuda upstream ops (when feature-gated) ─────────
-    #[cfg(feature = "barracuda-ops")]
-    {
-        use super::barracuda_rewire;
-        let bc_device = barracuda_rewire::create_barracuda_device().await?;
-        match op {
-            GpuOp::HillSweep {
-                emax,
-                ec50,
-                n,
-                concentrations,
-            } => {
-                return barracuda_rewire::execute_hill_barracuda(
-                    &bc_device,
-                    *emax,
-                    *ec50,
-                    *n,
-                    concentrations,
-                );
-            }
-            GpuOp::PopulationPkBatch {
-                n_patients,
-                dose_mg,
-                f_bioavail,
-                seed,
-            } => {
-                return barracuda_rewire::execute_pop_pk_barracuda(
-                    &bc_device,
-                    *n_patients,
-                    *dose_mg,
-                    *f_bioavail,
-                    *seed,
-                );
-            }
-            GpuOp::DiversityBatch { communities } => {
-                return barracuda_rewire::execute_diversity_barracuda(&bc_device, communities);
-            }
-            _ => {} // Tier B ops fall through to local WGSL path below
+#[cfg(feature = "barracuda-ops")]
+async fn try_barracuda_tier_a(op: &GpuOp) -> Result<Option<GpuResult>, GpuError> {
+    use super::barracuda_rewire;
+    let bc_device = barracuda_rewire::create_barracuda_device().await?;
+    match op {
+        GpuOp::HillSweep {
+            emax,
+            ec50,
+            n,
+            concentrations,
+        } => barracuda_rewire::execute_hill_barracuda(&bc_device, *emax, *ec50, *n, concentrations)
+            .map(Some),
+        GpuOp::PopulationPkBatch {
+            n_patients,
+            dose_mg,
+            f_bioavail,
+            seed,
+        } => barracuda_rewire::execute_pop_pk_barracuda(
+            &bc_device,
+            *n_patients,
+            *dose_mg,
+            *f_bioavail,
+            *seed,
+        )
+        .map(Some),
+        GpuOp::DiversityBatch { communities } => {
+            barracuda_rewire::execute_diversity_barracuda(&bc_device, communities).map(Some)
         }
+        _ => Ok(None),
     }
+}
 
-    // ── Local WGSL path (Tier A fallback + all Tier B ops) ──────────
+async fn request_wgpu_device() -> Result<(wgpu::Device, wgpu::Queue), GpuError> {
     let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
         backends: wgpu::Backends::all(),
         ..wgpu::InstanceDescriptor::default()
@@ -114,7 +87,7 @@ pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
         required_features |= wgpu::Features::SHADER_F64;
     }
 
-    let (device, queue) = adapter
+    adapter
         .request_device(&wgpu::DeviceDescriptor {
             label: Some("healthSpring GPU"),
             required_features,
@@ -124,23 +97,29 @@ pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
             trace: wgpu::Trace::default(),
         })
         .await
-        .map_err(|e| GpuError::NoDevice(format!("{e}")))?;
+        .map_err(|e| GpuError::NoDevice(format!("{e}")))
+}
 
+async fn execute_gpu_local_wgsl(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    op: &GpuOp,
+) -> Result<GpuResult, GpuError> {
     match op {
         GpuOp::HillSweep {
             emax,
             ec50,
             n,
             concentrations,
-        } => execute_hill_gpu(&device, &queue, *emax, *ec50, *n, concentrations).await,
+        } => execute_hill_gpu(device, queue, *emax, *ec50, *n, concentrations).await,
         GpuOp::PopulationPkBatch {
             n_patients,
             dose_mg,
             f_bioavail,
             seed,
-        } => execute_pop_pk_gpu(&device, &queue, *n_patients, *dose_mg, *f_bioavail, *seed).await,
+        } => execute_pop_pk_gpu(device, queue, *n_patients, *dose_mg, *f_bioavail, *seed).await,
         GpuOp::DiversityBatch { communities } => {
-            execute_diversity_gpu(&device, &queue, communities).await
+            execute_diversity_gpu(device, queue, communities).await
         }
         GpuOp::MichaelisMentenBatch {
             vmax,
@@ -161,16 +140,44 @@ pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
                 base_seed: *seed,
                 _pad: 0,
             };
-            execute_mm_gpu(&device, &queue, &mm_params).await
+            execute_mm_gpu(device, queue, &mm_params).await
         }
         GpuOp::ScfaBatch {
             params,
             fiber_inputs,
-        } => execute_scfa_gpu(&device, &queue, params, fiber_inputs).await,
+        } => execute_scfa_gpu(device, queue, params, fiber_inputs).await,
         GpuOp::BeatClassifyBatch { beats, templates } => {
-            execute_beat_classify_gpu(&device, &queue, beats, templates).await
+            execute_beat_classify_gpu(device, queue, beats, templates).await
         }
     }
+}
+
+/// Execute a GPU operation on live hardware.
+///
+/// Tries sovereign dispatch (coralReef + toadStool) first when available,
+/// then barraCuda upstream ops, then local wgpu path.
+///
+/// # Errors
+///
+/// Returns [`GpuError::NoDevice`] if no adapter/device is available,
+/// [`GpuError::Dispatch`] on shader compilation failure, or
+/// [`GpuError::Readback`] on buffer map failure.
+pub async fn execute_gpu(op: &GpuOp) -> Result<GpuResult, GpuError> {
+    // ── Sovereign path (coralReef compile + toadStool dispatch) ─────
+    #[cfg(feature = "sovereign-dispatch")]
+    if let Some(result) = super::sovereign::try_sovereign_dispatch(op) {
+        return result;
+    }
+
+    // ── Tier A: barraCuda upstream ops (when feature-gated) ─────────
+    #[cfg(feature = "barracuda-ops")]
+    if let Some(result) = try_barracuda_tier_a(op).await? {
+        return Ok(result);
+    }
+
+    // ── Local WGSL path (Tier A fallback + all Tier B ops) ──────────
+    let (device, queue) = request_wgpu_device().await?;
+    execute_gpu_local_wgsl(&device, &queue, op).await
 }
 
 #[cfg(test)]

@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V41 — Deep Debt Resolution Sprint. 83 experiments, 855 Rust tests, 59 JSON-RPC capabilities (46 science + 13 infra). 53 baselines with structured provenance registry. Workspace-level `[lints]`. Library `tracing`. Capability-based discovery. ODE codegen wired.
-**Last Updated**: March 23, 2026
+**Status**: V42 — Comprehensive Audit & Deep Debt Resolution. 83 experiments, 877 Rust tests, 59 JSON-RPC capabilities (46 science + 13 infra). 54 baselines with verified check counts and DOI baseline sources. metalForge smart-refactored. GPU dispatch extracted. Determinism tests. WFDB round-trip integration. biomeOS graph/niche IPC.
+**Last Updated**: March 24, 2026
 
 ---
 

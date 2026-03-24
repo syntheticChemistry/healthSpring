@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring vs. Every Cure MATRIX — Comparative Analysis
 
-**Last Updated**: March 17, 2026
-**Status**: V42 — Deep Debt Resolution (current; replaces V35 status line). 863 tests, 83 experiments, 59 capabilities. Onboarding document for researchers whose work we have ingested and evolved —
+**Last Updated**: March 24, 2026
+**Status**: V42 — Deep Debt Resolution (current; replaces V35 status line). 877 tests, 83 experiments, 59 capabilities. Onboarding document for researchers whose work we have ingested and evolved —
 particularly Fajgenbaum (MATRIX), Lisabeth (ADDRC HTS), and collaborators entering the
 healthSpring ecosystem.
 **Audience**: Drug discovery researchers, pharmacologists, computational biologists, and anyone
@@ -297,5 +297,5 @@ Anderson tissue lattice modeling can.
 2. **Understand the validation chain**: [METHODOLOGY.md](../METHODOLOGY.md)
 3. **See your papers reproduced**: wetSpring Exp157/158 (Fajgenbaum), neuralSpring nS-601–605 (Gonzales)
 4. **See the extension**: healthSpring Exp001–006 (human PK/PD), Track 7 (drug discovery)
-5. **Run it yourself**: `cargo test --workspace` (863 tests, zero unsafe code)
+5. **Run it yourself**: `cargo test --workspace` (877 tests, zero unsafe code)
 6. **Explore the specs**: [PAPER_REVIEW_QUEUE.md](../../specs/PAPER_REVIEW_QUEUE.md) for Track 7 paper queue

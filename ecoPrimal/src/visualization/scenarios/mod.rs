@@ -272,25 +272,37 @@ pub fn full_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     (s, all_edges)
 }
 
-/// Serialize a scenario + edges to pretty JSON.
+/// Serialize a scenario + edges to pretty JSON (fallible).
 ///
 /// Edges are merged into the scenario's `edges` field for a single clean JSON output.
-/// All types implement `Serialize` with no dynamic content, so serialization
-/// is infallible — the `expect` cannot fire.
 ///
-/// # Panics
+/// # Errors
 ///
-/// Cannot panic. `serde_json::to_string_pretty` only fails for recursive
-/// structures or custom serializers that fail; `HealthScenario` has neither.
-#[must_use]
-pub fn scenario_with_edges_json(scenario: &HealthScenario, edges: &[ScenarioEdge]) -> String {
+/// Returns `serde_json::Error` if serialization fails. In practice this cannot
+/// occur for `HealthScenario` (only standard types with derived `Serialize`),
+/// but propagating the `Result` is more honest than panicking.
+pub fn try_scenario_with_edges_json(
+    scenario: &HealthScenario,
+    edges: &[ScenarioEdge],
+) -> Result<String, serde_json::Error> {
     let mut merged = scenario.clone();
     merged.edges.extend_from_slice(edges);
-    #[expect(
-        clippy::expect_used,
-        reason = "Serialize impls on fixed structs cannot fail"
-    )]
-    serde_json::to_string_pretty(&merged).expect("serialization cannot fail")
+    serde_json::to_string_pretty(&merged)
+}
+
+/// Serialize a scenario + edges to pretty JSON (infallible convenience).
+///
+/// Delegates to [`try_scenario_with_edges_json`]. On the unreachable error
+/// path, logs and returns `"{}"`.
+#[must_use]
+pub fn scenario_with_edges_json(scenario: &HealthScenario, edges: &[ScenarioEdge]) -> String {
+    match try_scenario_with_edges_json(scenario, edges) {
+        Ok(json) => json,
+        Err(e) => {
+            tracing::error!(error = %e, "scenario serialization failed unexpectedly");
+            String::from("{}")
+        }
+    }
 }
 
 #[cfg(test)]

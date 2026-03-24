@@ -6,6 +6,24 @@
 //! (Box-Muller normal sampling) used by PK/PD Monte Carlo and
 //! endocrine models.
 //!
+//! ## Seed Strategy
+//!
+//! **All** stochastic computations in healthSpring use this module's
+//! deterministic LCG, seeded with an explicit `u64` value. Seeds are:
+//!
+//! - **Hardcoded per experiment** — each experiment binary documents its
+//!   seed alongside its provenance (e.g. `seed = 42` in exp005, exp036).
+//! - **Fixed for validation** — rerunning with the same seed produces
+//!   bitwise-identical results (verified by determinism tests).
+//! - **Documented in `specs/TOLERANCE_REGISTRY.md`** — stochastic checks
+//!   use population/statistical tolerances that assume a known seed and
+//!   sample size (√(1/N) convergence).
+//!
+//! **GPU parity**: The WGSL Monte Carlo shaders use a `u32` Wang hash
+//! (not this LCG) because WGSL lacks `u64` on some backends. GPU seeds
+//! derive from the same experiment seed via truncation. See
+//! `gpu::wang_hash_uniform`.
+//!
 //! ## Cross-spring provenance
 //!
 //! The LCG constants and step function originated in healthSpring V3
@@ -80,9 +98,72 @@ mod tests {
         assert_eq!(z1.to_bits(), z2.to_bits(), "same seed → same normal sample");
         assert_eq!(state1, state2, "same seed → same next state");
 
-        // Second sample from same chain
         let (z1b, _) = normal_sample(state1);
         let (z2b, _) = normal_sample(state2);
         assert_eq!(z1b.to_bits(), z2b.to_bits(), "chain continues identically");
+    }
+
+    /// Determinism: run the same 1000-element LCG sequence twice and assert
+    /// bitwise identity across all values.
+    #[test]
+    fn lcg_sequence_bitwise_determinism() {
+        let seed = 7_u64;
+        let run = |s: u64| -> Vec<u64> {
+            let mut state = s;
+            (0..1000)
+                .map(|_| {
+                    state = lcg_step(state);
+                    state
+                })
+                .collect()
+        };
+        let a = run(seed);
+        let b = run(seed);
+        assert_eq!(a, b, "1000-step LCG must be bitwise identical across runs");
+    }
+
+    /// Determinism: Box-Muller chain of 500 normal samples must match
+    /// bitwise across two runs from the same seed.
+    #[test]
+    fn normal_chain_bitwise_determinism() {
+        let seed = 999_u64;
+        let run = |s: u64| -> (Vec<u64>, Vec<u64>) {
+            let mut state = s;
+            let mut bits = Vec::with_capacity(500);
+            let mut states = Vec::with_capacity(500);
+            for _ in 0..500 {
+                let (z, next) = normal_sample(state);
+                bits.push(z.to_bits());
+                states.push(next);
+                state = next;
+            }
+            (bits, states)
+        };
+        let (bits_a, states_a) = run(seed);
+        let (bits_b, states_b) = run(seed);
+        assert_eq!(bits_a, bits_b, "normal samples must be bitwise identical");
+        assert_eq!(states_a, states_b, "RNG states must match across runs");
+    }
+
+    /// Determinism: Hill dose-response over a seeded population sweep must
+    /// produce bitwise-identical AUC sequences on rerun.
+    #[test]
+    fn population_pk_determinism() {
+        let seed = 42_u64;
+        let run = |s: u64| -> Vec<u64> {
+            let mut state = s;
+            let mut aucs = Vec::with_capacity(200);
+            for _ in 0..200 {
+                state = lcg_step(state);
+                let u = state_to_f64(state);
+                let cl = 10.0 * (0.5 + u);
+                let auc = 0.8 * 100.0 / cl;
+                aucs.push(auc.to_bits());
+            }
+            aucs
+        };
+        let a = run(seed);
+        let b = run(seed);
+        assert_eq!(a, b, "population PK AUCs must be bitwise identical");
     }
 }

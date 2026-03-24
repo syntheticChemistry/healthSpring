@@ -428,9 +428,13 @@ fn build_wfdb_ecg_node(s: &mut HealthScenario) {
         encoded.push(b2);
     }
 
-    #[expect(clippy::expect_used, reason = "deterministic round-trip decode")]
-    let decoded =
-        wfdb::decode_format_212(&encoded, n_samples, 2).expect("round-trip decode should succeed");
+    let decoded = match wfdb::decode_format_212(&encoded, n_samples, 2) {
+        Ok(d) => d,
+        Err(e) => {
+            tracing::warn!(error = %e, "WFDB Format 212 round-trip decode failed — skipping node");
+            return;
+        }
+    };
 
     let gain = 200.0;
     let baseline = 0;

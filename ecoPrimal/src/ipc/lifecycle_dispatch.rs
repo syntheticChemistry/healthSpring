@@ -101,6 +101,87 @@ pub fn deregister(name: &str) -> Result<serde_json::Value, LifecycleError> {
     .map_err(LifecycleError::Send)
 }
 
+// ── Graph operations (biomeOS pipeline coordination) ─────────────────
+
+/// Deploy a pipeline graph to the orchestrator.
+///
+/// Uses the graph definitions from `graphs/*.toml` to describe the
+/// pipeline topology. biomeOS resolves stage → primal mapping at
+/// deploy time via capability discovery.
+///
+/// # Errors
+///
+/// Returns [`LifecycleError`] if the orchestrator is unreachable or
+/// rejects the graph definition.
+pub fn graph_deploy(
+    graph_name: &str,
+    graph_definition: &serde_json::Value,
+) -> Result<serde_json::Value, LifecycleError> {
+    let orch = resolve_orchestrator()?;
+    rpc::try_send(
+        &orch,
+        "graph.deploy",
+        &serde_json::json!({
+            "name": graph_name,
+            "definition": graph_definition,
+        }),
+    )
+    .map_err(LifecycleError::Send)
+}
+
+/// Query the status of a deployed graph.
+///
+/// # Errors
+///
+/// Returns [`LifecycleError`] if the orchestrator is unreachable.
+pub fn graph_status(graph_name: &str) -> Result<serde_json::Value, LifecycleError> {
+    let orch = resolve_orchestrator()?;
+    rpc::try_send(
+        &orch,
+        "graph.status",
+        &serde_json::json!({ "name": graph_name }),
+    )
+    .map_err(LifecycleError::Send)
+}
+
+/// Tear down a deployed graph.
+///
+/// # Errors
+///
+/// Returns [`LifecycleError`] if the orchestrator is unreachable.
+pub fn graph_teardown(graph_name: &str) -> Result<serde_json::Value, LifecycleError> {
+    let orch = resolve_orchestrator()?;
+    rpc::try_send(
+        &orch,
+        "graph.teardown",
+        &serde_json::json!({ "name": graph_name }),
+    )
+    .map_err(LifecycleError::Send)
+}
+
+/// List available niches from the orchestrator.
+///
+/// Returns the set of niche definitions known to biomeOS. healthSpring
+/// registers as the `health` niche.
+///
+/// # Errors
+///
+/// Returns [`LifecycleError`] if the orchestrator is unreachable.
+pub fn niche_list() -> Result<serde_json::Value, LifecycleError> {
+    let orch = resolve_orchestrator()?;
+    rpc::try_send(&orch, "niche.list", &serde_json::json!({})).map_err(LifecycleError::Send)
+}
+
+/// Query which primals are currently registered with the orchestrator.
+///
+/// # Errors
+///
+/// Returns [`LifecycleError`] if the orchestrator is unreachable.
+pub fn primal_list() -> Result<serde_json::Value, LifecycleError> {
+    let orch = resolve_orchestrator()?;
+    rpc::try_send(&orch, "lifecycle.list", &serde_json::json!({})).map_err(LifecycleError::Send)
+}
+
 fn resolve_orchestrator() -> Result<std::path::PathBuf, LifecycleError> {
     let orch_path = socket::orchestrator_socket();
     if orch_path.exists() {
@@ -134,5 +215,29 @@ mod tests {
     fn lifecycle_error_display() {
         let err = LifecycleError::NoOrchestrator;
         assert_eq!(err.to_string(), "no orchestrator socket found");
+    }
+
+    #[test]
+    fn graph_deploy_fails_without_orchestrator() {
+        let result = graph_deploy("test_graph", &serde_json::json!({"stages": []}));
+        assert!(matches!(result, Err(LifecycleError::NoOrchestrator)));
+    }
+
+    #[test]
+    fn graph_status_fails_without_orchestrator() {
+        let result = graph_status("test_graph");
+        assert!(matches!(result, Err(LifecycleError::NoOrchestrator)));
+    }
+
+    #[test]
+    fn niche_list_fails_without_orchestrator() {
+        let result = niche_list();
+        assert!(matches!(result, Err(LifecycleError::NoOrchestrator)));
+    }
+
+    #[test]
+    fn primal_list_fails_without_orchestrator() {
+        let result = primal_list();
+        assert!(matches!(result, Err(LifecycleError::NoOrchestrator)));
     }
 }

@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** March 23, 2026
-**Status:** V42 — Deep Debt Resolution Complete. 863 tests, 83 experiments, 53 baselines with structured provenance registry. barraCuda v0.3.7. 9 science tracks, 59 JSON-RPC capabilities (46 science + 13 infra). Workspace-level `[lints]` (forbid unsafe, deny pedantic+nursery+unwrap+expect, warn missing_docs). Library `println!` evolved to `tracing`. Hardcoded primal names evolved to capability-based discovery. ODE codegen wired to GPU dispatch. Proptest extended to numerical properties. Zero clippy (pedantic+nursery+doc-markdown, -D warnings), zero unsafe, zero `#[allow]`, zero missing_docs.
+**Last Updated:** March 24, 2026
+**Status:** V42 — Comprehensive Audit & Deep Debt Resolution. 877 tests, 83 experiments, 54 baselines with verified check counts and DOI baseline sources. barraCuda v0.3.7 (CI-gated pin). metalForge smart-refactored (4 modules). GPU dispatch extracted into named helpers. Determinism tests (bitwise rerun-identical). WFDB round-trip integration. biomeOS graph/niche IPC. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in library code.
 
 ---
 

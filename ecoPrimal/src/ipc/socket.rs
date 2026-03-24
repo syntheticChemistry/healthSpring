@@ -13,6 +13,11 @@ use crate::PRIMAL_NAME;
 use crate::ipc::rpc;
 
 /// Return the biomeOS socket directory, with XDG fallback.
+///
+/// Resolution order:
+/// 1. `BIOMEOS_SOCKET_DIR` environment variable (explicit override)
+/// 2. `$XDG_RUNTIME_DIR/biomeos` (XDG standard)
+/// 3. `/tmp/biomeos` (last-resort fallback — logged as warning)
 #[must_use]
 pub fn resolve_socket_dir() -> PathBuf {
     if let Ok(dir) = std::env::var("BIOMEOS_SOCKET_DIR") {
@@ -21,6 +26,10 @@ pub fn resolve_socket_dir() -> PathBuf {
     if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
         return PathBuf::from(runtime).join("biomeos");
     }
+    tracing::warn!(
+        "neither BIOMEOS_SOCKET_DIR nor XDG_RUNTIME_DIR set — \
+         falling back to /tmp/biomeos; set BIOMEOS_SOCKET_DIR for sovereign deployments"
+    );
     PathBuf::from("/tmp/biomeos")
 }
 

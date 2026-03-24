@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V42 — Deep Debt Resolution Sprint. 863 tests, 83 experiments, 83/83 ValidationHarness, 87+ named tolerances, 53 provenance records with DOI. 59 capabilities (46 science + 13 infra). 9 science tracks. barraCuda v0.3.7. Workspace-level `[lints]`. Library `tracing`. Env-driven discovery. ODE codegen wired. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
-**Last Updated**: March 23, 2026
+**Status**: V42 — Comprehensive Audit & Deep Debt Resolution. 877 tests, 83 experiments, 83/83 ValidationHarness, 87+ named tolerances, 54 provenance records with verified check counts + DOI baseline sources. 59 capabilities (46 science + 13 infra). 9 science tracks. barraCuda v0.3.7 (CI-gated). Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in production library code.
+**Last Updated**: March 24, 2026
 
 ---
 
@@ -22,9 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V42** | [V42 Deep Debt Resolution](../../wateringHole/handoffs/HEALTHSPRING_V42_DEEP_DEBT_RESOLUTION_HANDOFF_MAR23_2026.md) | Mar 23 | 548 missing_docs → 0, clippy -D warnings, RUSTSEC fix, barraCuda API drift, ValidationSink, normalize_method, OnceLock GPU probe. 863 tests. Supersedes V41. |
-| **V42** | [V42 toadStool/barraCuda Absorption](../../wateringHole/handoffs/HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR23_2026.md) | Mar 23 | API drift fixes, ODE absorption candidates, new primitive requests, cross-spring science. Supersedes V41. |
-| **V42** | [V42 Deep Debt Absorption Request](../../wateringHole/handoffs/HEALTHSPRING_V42_DEEP_DEBT_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR23_2026.md) | Mar 23 | TensorSession P0, validation metrics for upstream, ODE codegen registry, tolerance pattern, sovereign dispatch expansion. |
+| **V42** | [Comprehensive Audit](handoffs/HEALTHSPRING_V42_COMPREHENSIVE_AUDIT_HANDOFF_MAR24_2026.md) | Mar 24 | Full-stack audit + 13 remediation actions. Supersedes all prior V42 handoffs. |
+| **V42** | [toadStool/barraCuda Absorption](handoffs/HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR24_2026.md) | Mar 24 | 6 shader absorption requests, TensorSession P0, ODE codegen registry, sovereign dispatch roadmap. |
 | | *V1–V41 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive

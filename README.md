@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** March 23, 2026
+**Date:** March 24, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V42 — Deep Debt Resolution Sprint. 863 tests, 83 experiments, 53 Python baselines. barraCuda v0.3.7. Workspace lints consolidated (`[workspace.lints]` — `forbid(unsafe_code)`, `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`, `warn(missing_docs)`). Library `println!`/`eprintln!` evolved to `tracing`. Hardcoded primal names evolved to capability-based discovery with env-driven fallback. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. Proptest extended to numerical properties (Hill monotonicity, boundedness, EC ordering). Tolerance registry synced. CI validates all experiment binaries. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
+**Status:** V42 — Comprehensive Audit & Deep Debt Resolution. 877 tests, 83 experiments, 54 Python baselines with verified check counts and DOI-sourced baseline citations. barraCuda v0.3.7 (CI-gated pin). metalForge smart-refactored (4 modules). GPU dispatch extracted into named helpers. 3 bitwise determinism tests. WFDB round-trip integration test. biomeOS graph/niche IPC client. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in production library code. `rustfmt.toml` pinned to edition 2024.
 
 ---
 
@@ -33,13 +33,13 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V42** (Deep Debt Resolution Sprint) |
-| **Total tests** | **863** (lib + proptest + IPC fuzz + doc + experiment bins) |
+| Version | **V42** (Comprehensive Audit & Deep Debt Resolution) |
+| **Total tests** | **877** (lib + proptest + IPC fuzz + doc + integration + experiment bins) |
 | Experiments complete | 83 (Tracks 1–9, Tier 0+1+2+3) |
 | Experiments using ValidationHarness | **83/83** experiments use ValidationHarness (includes 2 integration demos upgraded from custom check patterns in V42) |
 | JSON-RPC capabilities | 59 (46 science + 13 infrastructure — `capability.list`, provenance, health probes, compute/data/model routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
-| Python baselines | **53** with structured provenance registry (all 9 tracks) |
+| Python baselines | **54** with structured provenance registry (all 9 tracks, verified check counts + DOI baseline sources) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
 | Comparative Medicine (Track 6) | **Complete** — 7 experiments (Exp100–106), canine + feline + cross-species |
 | Drug Discovery (Track 7) | **Complete** — 5 experiments (Exp090–094), MATRIX + HTS + compound + fibrosis |
@@ -50,7 +50,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | NLME population PK | FOCE + SAEM estimation, NCA metrics, CWRES/VPC/GOF diagnostics |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Ellsworth (Med Chem), Mok (Allure Medical) |
 | Unsafe blocks | **0** (`forbid(unsafe_code)` in `[workspace.lints]`) |
-| `#[allow()]` in production | **0** (all migrated to `#[expect()]` with reasons) |
+| `#[allow()]` in production | **0** (all migrated to `#[expect()]` with reasons; zero `#[expect(clippy::expect_used)]` in library code) |
 | TODO/FIXME in production | **0** |
 | Clippy | **0 warnings** (workspace `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`) |
 | `cargo fmt` | **0 diffs** |

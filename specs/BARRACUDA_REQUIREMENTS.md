@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: March 23, 2026
-**Status**: V42 — Deep Debt Resolution Sprint. Tier 2+3 GPU live. barraCuda v0.3.7 pinned. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. 3 `OdeSystem` impls (MM, OralOneCompartment, TwoCompartment). **All six GPU ops** — Hill (`HillSweep`), PopPK (`PopulationPkBatch`), Diversity (`DiversityBatch`), Michaelis–Menten batch (`MichaelisMentenBatch`), SCFA batch (`ScfaBatch`), beat classification (`BeatClassifyBatch`) — are **LIVE** for both **`GpuContext`** and the **`gpu::dispatch`** execution paths (no split: same `GpuOp` routing everywhere). Workspace lints, tracing. See toadStool/barraCuda handoffs.
+**Last Updated**: March 24, 2026
+**Status**: V42 — Comprehensive Audit & Deep Debt Resolution. Tier 2+3 GPU live. barraCuda v0.3.7 (CI-gated pin, rev `c04d848`). GPU dispatch extracted into 6 named CPU helpers + 3 GPU path functions. `execute_cpu` no longer carries `#[expect(too_many_lines)]`. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. 3 `OdeSystem` impls (MM, OralOneCompartment, TwoCompartment). **All six GPU ops** LIVE for both `GpuContext` and `gpu::dispatch` paths. Absorption handoff at `wateringHole/handoffs/HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR24_2026.md`.
 
 ---
 

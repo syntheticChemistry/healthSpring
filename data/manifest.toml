@@ -10,8 +10,12 @@
 # Size estimates are approximate pre-download values.
 
 [meta]
-last_updated = "2026-03-14"
+last_updated = "2026-03-24"
 maintainer = "ecoPrimals"
+# To populate sha256 checksums after download, run:
+#   python3 -c "import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())" <file>
+# For directories, use:
+#   find <dir> -type f | sort | xargs cat | sha256sum
 
 # ---------------------------------------------------------------------------
 # Track 2: Microbiome — QS Gene Profiling

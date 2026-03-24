@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # Sub-Thesis: QS Gene Profiling — Functional Anderson Disorder
 
-**Last Updated**: March 17, 2026
-**Status**: V35 — 59 genera, 6 QS families, effective disorder validated (12 unit tests)
+**Last Updated**: March 24, 2026
+**Status**: V42 — 59 genera, 6 QS families, effective disorder validated (12 unit tests); healthSpring 877 tests, 54 baselines
 **Tracks**: 2 (Microbiome), 6 (Comparative Medicine), 7 (Drug Discovery)
 **Cross-Paper**: Paper 01 (Anderson-QS), Paper 16 (Anaerobic-Aerobic QS)
 

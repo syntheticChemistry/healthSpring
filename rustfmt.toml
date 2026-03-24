@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# healthSpring rustfmt configuration — pinned to Edition 2024 formatting.
+# Explicit config prevents drift if toolchain defaults change.
+
+edition = "2024"
