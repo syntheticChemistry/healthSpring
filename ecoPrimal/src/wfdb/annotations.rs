@@ -109,3 +109,120 @@ pub fn parse_annotations(data: &[u8]) -> Result<Vec<Annotation>, WfdbError> {
 
     Ok(annotations)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn beat_type_known_codes() {
+        assert_eq!(BeatType::from_code(1), BeatType::Normal);
+        assert_eq!(BeatType::from_code(5), BeatType::AtrialPremature);
+        assert_eq!(BeatType::from_code(6), BeatType::VentricularPremature);
+        assert_eq!(BeatType::from_code(7), BeatType::LeftBundleBranch);
+        assert_eq!(BeatType::from_code(8), BeatType::RightBundleBranch);
+        assert_eq!(BeatType::from_code(10), BeatType::FusionVentricular);
+        assert_eq!(BeatType::from_code(11), BeatType::PacedBeat);
+    }
+
+    #[test]
+    fn beat_type_unknown_code() {
+        assert_eq!(BeatType::from_code(0), BeatType::Unknown(0));
+        assert_eq!(BeatType::from_code(99), BeatType::Unknown(99));
+    }
+
+    #[test]
+    fn parse_empty_data() {
+        let data: &[u8] = &[];
+        let anns = parse_annotations(data).expect("empty data is valid");
+        assert!(anns.is_empty());
+    }
+
+    #[test]
+    fn parse_single_byte_insufficient() {
+        let data: &[u8] = &[0x01];
+        let anns = parse_annotations(data).expect("single byte terminates cleanly");
+        assert!(anns.is_empty());
+    }
+
+    #[test]
+    fn parse_terminator() {
+        let data: &[u8] = &[0x00, 0x00];
+        let anns = parse_annotations(data).expect("terminator is valid");
+        assert!(anns.is_empty());
+    }
+
+    #[test]
+    fn parse_single_normal_beat() {
+        // delta=100 (low byte), type=1 (Normal), delta_high=0
+        // b1 = (1 << 2) | 0 = 4
+        let data: &[u8] = &[100, 0x04, 0x00, 0x00];
+        let anns = parse_annotations(data).expect("single beat");
+        assert_eq!(anns.len(), 1);
+        assert_eq!(anns[0].sample, 100);
+        assert_eq!(anns[0].beat_type, BeatType::Normal);
+    }
+
+    #[test]
+    fn parse_multiple_beats_accumulates_delta() {
+        // Beat 1: delta=50, type=1 (Normal)  → sample=50
+        // Beat 2: delta=30, type=6 (VPB)     → sample=80
+        let data: &[u8] = &[
+            50, 0x04, // Normal at delta=50
+            30, 0x18, // VPB (6<<2=24=0x18) at delta=30
+            0x00, 0x00, // terminator
+        ];
+        let anns = parse_annotations(data).expect("two beats");
+        assert_eq!(anns.len(), 2);
+        assert_eq!(anns[0].sample, 50);
+        assert_eq!(anns[0].beat_type, BeatType::Normal);
+        assert_eq!(anns[1].sample, 80);
+        assert_eq!(anns[1].beat_type, BeatType::VentricularPremature);
+    }
+
+    #[test]
+    fn parse_aux_annotation_skipped() {
+        // AUX type = 63, delta = 4 (aux_len = 4 bytes)
+        // b1 = (63 << 2) | 0 = 252
+        let data: &[u8] = &[
+            4, 252, // AUX with 4 bytes of aux data
+            b'(', b'N', b')', 0, // 4 bytes of aux data (padded)
+            50, 0x04, // Normal beat at delta=50
+            0x00, 0x00, // terminator
+        ];
+        let anns = parse_annotations(data).expect("AUX skipped");
+        assert_eq!(anns.len(), 1);
+        assert_eq!(anns[0].sample, 50);
+    }
+
+    #[test]
+    fn parse_truncated_aux_returns_error() {
+        // AUX type = 63, delta = 10 (aux_len = 10 bytes, but data is too short)
+        let data: &[u8] = &[10, 252, 0x01, 0x02];
+        let result = parse_annotations(data);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn parse_skip_annotation() {
+        // SKIP type = 59 (59 << 2 = 236)
+        // delta in next 4 bytes: skip_lo=1000, skip_hi=0 → jump 1000 samples
+        let data: &[u8] = &[
+            0, 236, // SKIP, delta=0
+            0xE8, 0x03, 0x00, 0x00, // skip_lo=1000, skip_hi=0
+            50, 0x04, // Normal beat at delta=50
+            0x00, 0x00, // terminator
+        ];
+        let anns = parse_annotations(data).expect("SKIP processed");
+        assert_eq!(anns.len(), 1);
+        assert_eq!(anns[0].sample, 1050, "1000 (SKIP) + 50 (delta)");
+    }
+
+    #[test]
+    fn parse_truncated_skip_returns_error() {
+        // SKIP type = 59 but not enough bytes for the 4-byte skip value
+        let data: &[u8] = &[0, 236, 0x01, 0x02];
+        let result = parse_annotations(data);
+        assert!(result.is_err());
+    }
+}

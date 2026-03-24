@@ -16,6 +16,7 @@
 //! 4. Spring connectivity: every layer maps to a spring
 
 use healthspring_barracuda::simulation;
+use healthspring_barracuda::tolerances;
 use healthspring_barracuda::validation::ValidationHarness;
 
 fn main() {
@@ -88,7 +89,7 @@ fn study_1_mechanistic_derivation(h: &mut ValidationHarness) {
         "dose=0 → exact baseline (no pathways active)",
         f_zero,
         baseline,
-        1e-10,
+        tolerances::MACHINE_EPSILON,
     );
     h.check_lower("low dose: repair > damage → hormesis", f_low, baseline);
     h.check_upper("high dose: damage > repair → toxicity", f_high, baseline);

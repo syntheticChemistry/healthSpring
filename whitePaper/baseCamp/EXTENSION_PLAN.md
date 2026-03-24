@@ -2,7 +2,7 @@
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
 **Last Updated**: March 23, 2026
-**Status**: V42 — Deep Debt Resolution Sprint. 83 experiments, 863 tests, 53 Python baselines. barraCuda v0.3.7. 59 capabilities (46 science + 13 infra).
+**Status**: V44 — Deep Debt Resolution Sprint. 83 experiments, 928 tests, 53 Python baselines. barraCuda v0.3.7. 59 capabilities (46 science + 13 infra).
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and

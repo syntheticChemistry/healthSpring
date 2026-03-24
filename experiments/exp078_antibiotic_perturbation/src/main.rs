@@ -12,6 +12,7 @@
 //! Reference: Dethlefsen & Relman 2011, PNAS 108: 4554-4561.
 
 use healthspring_barracuda::microbiome;
+use healthspring_barracuda::tolerances;
 use healthspring_barracuda::validation::ValidationHarness;
 
 fn main() {
@@ -42,7 +43,12 @@ fn main() {
     // Check 1: Starts at baseline
     println!("\n--- Check 1: Starts at baseline H0 ---");
     let h_start = trajectory[0].1;
-    h.check_abs(&format!("H'(0) = {h_start:.4} ≈ {h0}"), h_start, h0, 0.01);
+    h.check_abs(
+        &format!("H'(0) = {h_start:.4} ≈ {h0}"),
+        h_start,
+        h0,
+        tolerances::TEST_ASSERTION_LOOSE,
+    );
 
     // Check 2: Declines during treatment
     println!("\n--- Check 2: Decline during treatment ---");
@@ -113,7 +119,9 @@ fn main() {
         .filter(|(t, _)| *t <= 5.0)
         .map(|&(_, h)| h)
         .collect();
-    let mono_decline = early_treatment.windows(2).all(|w| w[1] <= w[0] + 1e-10);
+    let mono_decline = early_treatment
+        .windows(2)
+        .all(|w| w[1] <= w[0] + tolerances::MACHINE_EPSILON);
     h.check_bool("monotone decline first 5 days", mono_decline);
 
     // Check 10: Recovery monotone after nadir
@@ -123,7 +131,9 @@ fn main() {
         .filter(|(t, _)| *t >= 10.0)
         .map(|&(_, h)| h)
         .collect();
-    let mono_recovery = recovery_phase.windows(2).all(|w| w[1] >= w[0] - 1e-10);
+    let mono_recovery = recovery_phase
+        .windows(2)
+        .all(|w| w[1] >= w[0] - tolerances::MACHINE_EPSILON);
     h.check_bool("monotone recovery after day 10", mono_recovery);
 
     h.exit();

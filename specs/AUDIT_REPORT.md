@@ -2,7 +2,7 @@
 
 ## V42 (March 23, 2026)
 
-V42 deep debt resolution: all 548 missing_docs resolved; clippy pedantic+nursery+doc-markdown passes with `-D warnings`; RUSTSEC-2026-0049 resolved; 3 barraCuda API drift errors fixed; `transport.rs` panic evolved to `Result`; `ValidationSink` trait added; `normalize_method()` IPC; `OnceLock` GPU probe; 863 tests all passing.
+V42 deep debt resolution: all 548 missing_docs resolved; clippy pedantic+nursery+doc-markdown passes with `-D warnings`; RUSTSEC-2026-0049 resolved; 3 barraCuda API drift errors fixed; `transport.rs` panic evolved to `Result`; `ValidationSink` trait added; `normalize_method()` IPC; `OnceLock` GPU probe; 928 tests all passing.
 
 **V42 — Sections 6–8 findings closed:** The items recorded under **§6 Hardcoded tolerance values**, **§7 tolerances.rs completeness** (no change required beyond registry sync), and **§8 provenance.rs** in the historical audit snapshot below are **resolved** in code: `ecoPrimal/src/biosignal/ppg.rs` uses `tolerances::DIVISION_GUARD` (no duplicate local constant); PROVENANCE_REGISTRY entries for Python baselines populate `git_commit`, `run_date`, and `exact_command` where applicable; `experiments/exp050_diagnostic_pipeline` uses `tolerances::ENDOCRINE_TESTOSTERONE_PASSTHROUGH` instead of an inline `0.1` tolerance. The subsections are retained for traceability.
 

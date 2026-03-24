@@ -3,8 +3,62 @@
 //!
 //! This is the data layer — one entry per Python baseline script.
 //! See [`super::ProvenanceRecord`] for the record type.
+//!
+//! **Rationale for single-file layout**: This file is a static data table
+//! (no logic, no control flow). Splitting 54 entries across 10 track files
+//! adds indirection without reducing complexity. The track-aware accessors
+//! below provide the ergonomics of per-track modules without the overhead.
 
 use super::ProvenanceRecord;
+
+/// Well-known track identifiers used in the registry.
+pub mod tracks {
+    /// PK/PD (pharmacokinetics/pharmacodynamics).
+    pub const PKPD: &str = "pkpd";
+    /// Microbiome (diversity, SCFA, beta-diversity).
+    pub const MICROBIOME: &str = "microbiome";
+    /// Biosignal (ECG, HRV, beat classification).
+    pub const BIOSIGNAL: &str = "biosignal";
+    /// Endocrine (hormones, diurnal rhythms, HPA axis).
+    pub const ENDOCRINE: &str = "endocrine";
+    /// Comparative (cross-species PK, allometry).
+    pub const COMPARATIVE: &str = "comparative";
+    /// Discovery (localization, spectral, material).
+    pub const DISCOVERY: &str = "discovery";
+    /// Validation (cross-validate harness).
+    pub const VALIDATION: &str = "validation";
+    /// Scripts (utility scripts).
+    pub const SCRIPTS: &str = "scripts";
+    /// Toxicology (dose-response, hormesis).
+    pub const TOXICOLOGY: &str = "toxicology";
+    /// Simulation (mechanistic models).
+    pub const SIMULATION: &str = "simulation";
+}
+
+/// Iterate over records belonging to a specific track.
+pub fn records_for_track(track: &str) -> impl Iterator<Item = &'static ProvenanceRecord> {
+    PROVENANCE_REGISTRY.iter().filter(move |r| r.track == track)
+}
+
+/// Look up a single record by experiment id (e.g. `"exp001"`).
+#[must_use]
+pub fn record_for_experiment(experiment: &str) -> Option<&'static ProvenanceRecord> {
+    PROVENANCE_REGISTRY
+        .iter()
+        .find(|r| r.experiment == experiment)
+}
+
+/// Distinct track names present in the registry.
+#[must_use]
+pub fn distinct_tracks() -> Vec<&'static str> {
+    let mut seen = Vec::new();
+    for r in PROVENANCE_REGISTRY {
+        if !seen.contains(&r.track) {
+            seen.push(r.track);
+        }
+    }
+    seen
+}
 
 /// Registry of all Python control scripts in `control/`.
 ///

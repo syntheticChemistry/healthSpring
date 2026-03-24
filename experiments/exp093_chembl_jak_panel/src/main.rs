@@ -13,7 +13,9 @@ use healthspring_barracuda::discovery::{
 };
 use healthspring_barracuda::pkpd::hill_dose_response;
 use healthspring_barracuda::provenance::{AnalyticalProvenance, log_analytical};
-use healthspring_barracuda::tolerances::{DETERMINISM, HILL_AT_EC50, JAK1_SELECTIVITY};
+use healthspring_barracuda::tolerances::{
+    DETERMINISM, HILL_AT_EC50, JAK1_SELECTIVITY, MACHINE_EPSILON_TIGHT,
+};
 use healthspring_barracuda::validation::ValidationHarness;
 
 const HILL_PROV: AnalyticalProvenance = AnalyticalProvenance {
@@ -39,7 +41,7 @@ fn validate_hill_properties(h: &mut ValidationHarness, ic50s: &[f64]) {
         let mut prev = 0.0;
         let monotonic = concs.iter().all(|&c| {
             let r = hill_dose_response(c, ic50, 1.0, 1.0);
-            let ok = r >= prev - 1e-12;
+            let ok = r >= prev - MACHINE_EPSILON_TIGHT;
             prev = r;
             ok
         });
@@ -49,7 +51,7 @@ fn validate_hill_properties(h: &mut ValidationHarness, ic50s: &[f64]) {
     let all_nonneg = concs.iter().all(|&c| {
         ic50s
             .iter()
-            .all(|&ic50| hill_dose_response(c, ic50, 1.0, 1.0) >= -1e-12)
+            .all(|&ic50| hill_dose_response(c, ic50, 1.0, 1.0) >= -MACHINE_EPSILON_TIGHT)
     });
     h.check_bool("Hill: all responses non-negative", all_nonneg);
 }

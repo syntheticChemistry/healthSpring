@@ -53,6 +53,7 @@ pub mod ipc;
 pub mod microbiome;
 pub mod microbiome_transfer;
 pub mod pkpd;
+pub mod primal_names;
 pub mod provenance;
 pub mod qs;
 pub mod rng;

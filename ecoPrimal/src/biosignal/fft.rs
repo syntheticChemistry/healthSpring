@@ -1,11 +1,22 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Real FFT — radix-2 Cooley-Tukey with zero-pad to power-of-two.
 //!
-//! Pure Rust, no external dependency. Replaces the previous O(n²) DFT with
-//! O(n log n) for biosignal processing (ECG bandpass, HRV power spectrum).
+//! Pure Rust, no external dependency. O(n log n) for biosignal processing
+//! (ECG bandpass, HRV power spectrum).
 //!
 //! Non-power-of-two inputs are zero-padded; output is trimmed back to the
 //! original length in `irfft`.
+//!
+//! ## barraCuda absorption status
+//!
+//! barraCuda provides GPU FFT via `barracuda::ops::fft::{Fft1D, Rfft, Ifft1D}`
+//! (requires `Tensor` + `WgpuDevice` — GPU-only). barraCuda's `spectral`
+//! module is physics (Schrödinger operators), not Fourier transforms.
+//!
+//! This CPU FFT is the correct implementation for the non-GPU biosignal
+//! pipeline. **Absorption path**: when barraCuda exposes a CPU FFT API
+//! (or when biosignal processing moves to GPU dispatch), this module
+//! delegates upstream.
 
 use core::f64::consts::PI;
 

@@ -6,7 +6,7 @@
 |--------|-------|
 | Clippy errors | 0 |
 | Clippy warnings | 0 |
-| `cargo test` (workspace) | 863 passing |
+| `cargo test` (workspace) | 928 passing |
 | `cargo deny` | clean |
 | `cargo doc` | 0 warnings |
 

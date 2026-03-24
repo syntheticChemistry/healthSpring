@@ -1,6 +1,6 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.11 (V42 — Deep Debt Resolution)
+**Version**: 0.11 (V44 — Deep Debt Resolution)
 **Date**: March 23, 2026
 
 ---
@@ -181,7 +181,7 @@ analysis pipeline, and integration of QS gene profiling for microbial drug targe
 
 ## 3. What We Have Learned
 
-Six months of validation across 83 experiments, 863 tests, and 45 reproduced papers
+Six months of validation across 83 experiments, 928 tests, and 45 reproduced papers
 have produced several key insights:
 
 ### 3.1 Species-agnostic mathematics works

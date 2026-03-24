@@ -68,9 +68,9 @@ pub fn execute_pop_pk_barracuda(
     let config = PopulationPkConfig {
         dose_mg,
         f_bioavail,
-        base_cl: 10.0,
-        cl_low: 0.5,
-        cl_high: 1.5,
+        base_cl: crate::tolerances::POP_PK_BASE_CL,
+        cl_low: crate::tolerances::POP_PK_CL_LOW,
+        cl_high: crate::tolerances::POP_PK_CL_HIGH,
     };
     let pk_op = PopulationPkF64::new(Arc::clone(device), config)
         .map_err(|e| GpuError::Dispatch(format!("barraCuda PopulationPkF64: {e}")))?;

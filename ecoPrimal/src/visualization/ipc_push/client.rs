@@ -14,6 +14,7 @@ use super::protocol::{
 };
 use super::{DataChannel, PushError, PushResult};
 use crate::ipc::socket;
+use crate::primal_names;
 use crate::visualization::types::HealthScenario;
 
 const RPC_RESPONSE_BUF: usize = 65_536;
@@ -24,7 +25,8 @@ const VISUALIZATION_CAPABILITY: &str = "visualization";
 /// Env-driven or conventional socket-name prefix for filesystem scanning.
 /// Only used when capability-based discovery (`visualization.*`) fails.
 fn viz_socket_prefix() -> String {
-    std::env::var("BIOMEOS_VIZ_PREFIX").unwrap_or_else(|_| "petaltongue".into())
+    std::env::var(primal_names::prefix_env_var("VIZ"))
+        .unwrap_or_else(|_| primal_names::PETALTONGUE.into())
 }
 
 /// Client for pushing visualization data to the visualization primal.

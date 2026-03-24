@@ -2,7 +2,7 @@
 # healthSpring White Paper
 
 **Date:** March 23, 2026
-**Status:** V42 — Deep Debt Resolution Sprint. 83 experiments, 863 tests, 59 JSON-RPC capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. Workspace-level `[lints]`. Library `tracing`. Env-driven discovery. ODE codegen wired. Proptest numerical properties. Zero clippy, zero unsafe, zero `#[allow]`.
+**Status:** V44 — Deep Debt Resolution Sprint. 83 experiments, 928 tests, 59 JSON-RPC capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. Workspace-level `[lints]`. Library `tracing`. Env-driven discovery. ODE codegen wired. Proptest numerical properties. Zero clippy, zero unsafe, zero `#[allow]`.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -235,7 +235,7 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 | Metric | Value |
 |--------|-------|
 | Experiments | 83 complete (Tracks 1–9), 15 queued |
-| Rust tests | 863 (lib + proptest + IPC fuzz + doc + experiment bins) |
+| Rust tests | 928 (lib + proptest + IPC fuzz + doc + experiment bins) |
 | Python checks | 194 cross-validation |
 | Paper queue | 30/30 complete, 15 new queued |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |

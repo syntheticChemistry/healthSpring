@@ -13,12 +13,23 @@
 //!
 //! 1. The fused pipeline's value proposition is single-encoder multi-op
 //!    dispatch (upload once → N compute passes → readback once).
-//! 2. barraCuda's `TensorSession` API is the intended evolution path for fused
-//!    dispatch.
-//! 3. Mixing barraCuda ops (which create their own encoders) with local WGSL
+//! 2. Mixing barraCuda ops (which create their own encoders) with local WGSL
 //!    in a single encoder would break the unidirectional pattern.
-//! 4. Evolution path: when barraCuda's `TensorSession` is mature, the fused
-//!    pipeline will migrate to it entirely.
+//!
+//! ## `TensorSession` relationship (evaluated 2026-03-24)
+//!
+//! `barracuda::session::TensorSession` provides fused execution for
+//! **dependent** operation chains (matmul → relu → softmax) via a graph
+//! of `SessionTensor` objects. healthSpring's fused pipeline dispatches
+//! **independent** parallel ops (Hill, `PopPK`, Diversity in one encoder).
+//!
+//! These patterns are complementary:
+//! - Independent parallel batch → local fused pipeline (this module)
+//! - Dependent operation chain → `TensorSession` (future integration)
+//!
+//! When healthSpring builds dependent multi-op pipelines (e.g., a
+//! PK → concentration → diversity chain with data flowing between ops),
+//! `TensorSession` becomes the correct abstraction.
 
 use super::dispatch::{
     BeatClassifyParams, DivParams, HillParams, MmParams, PkParams, ScfaGpuParams, WG_SIZE,

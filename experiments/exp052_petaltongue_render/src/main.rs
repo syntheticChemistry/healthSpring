@@ -17,6 +17,7 @@
 use healthspring_barracuda::diagnostic::{
     PatientProfile, Sex, assess_patient, population_montecarlo,
 };
+use healthspring_barracuda::tolerances;
 use healthspring_barracuda::validation::{OrExit, ValidationHarness};
 use healthspring_barracuda::visualization::{
     annotate_population, assessment_to_scenario, full_scenario_json, scenario_to_json,
@@ -47,13 +48,13 @@ fn main() {
         "pk_curve_starts_at_zero",
         assessment.pk.curve_times_hr[0],
         0.0,
-        1e-15,
+        tolerances::MACHINE_EPSILON_STRICT,
     );
     h.check_abs(
         "pk_curve_ends_at_24h",
         assessment.pk.curve_times_hr[100],
         24.0,
-        0.01,
+        tolerances::TEST_ASSERTION_LOOSE,
     );
     h.check_exact(
         "pk_hill_50_points",
@@ -76,7 +77,7 @@ fn main() {
         "microbiome_abundances_sum_near_1",
         assessment.microbiome.abundances.iter().sum::<f64>(),
         1.0,
-        0.01,
+        tolerances::TEST_ASSERTION_LOOSE,
     );
 
     // --- Biosignal enriched ---

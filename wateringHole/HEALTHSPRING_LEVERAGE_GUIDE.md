@@ -2,7 +2,7 @@
 # healthSpring Leverage Guide — Standalone, Trio, and Full Niche
 
 **Date**: March 24, 2026
-**Primal**: healthSpring V43 (`healthspring-barracuda` 0.1.0)
+**Primal**: healthSpring V44 (`healthspring-barracuda` 0.1.0)
 **Audience**: All springs, all primals, biomeOS integrators
 **Status**: Active
 
@@ -12,7 +12,7 @@
 
 This document describes how healthSpring can be leveraged — alone and in composition with other primals — by springs and ecosystem consumers. Each primal in the ecosystem produces an equivalent guide. Together, these guides form a combinatorial recipe book for emergent behaviors.
 
-healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. 888 tests, 83 experiments, 59 capabilities (46 science + 13 infra). Cross-spring absorption; self-knowledge compliance; simulation/validation refactoring. barraCuda v0.3.7.
+healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. 928 tests, 83 experiments, 59 capabilities (46 science + 13 infra). Cross-spring absorption; self-knowledge compliance; simulation/validation refactoring. barraCuda v0.3.7.
 
 **Philosophy**: Health science is sovereign. Hill dose-response, Shannon diversity, Pan-Tompkins QRS — these are universal primitives. healthSpring owns the biology; other primals own the hardware, the network, the storage, the identity. Discover at runtime, compose at will.
 
@@ -202,9 +202,9 @@ Top capabilities by domain (46 science + 13 infra):
 
 ## 7. Evolution Status
 
-| Metric | V43 |
+| Metric | V44 |
 |--------|-----|
-| Tests | 888 |
+| Tests | 928 |
 | Experiments | 83 |
 | Python baselines | 54 |
 | Cross-validation | 113/113 |

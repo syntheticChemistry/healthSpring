@@ -318,6 +318,21 @@ pub const SAEM_INITIAL_SIGMA: f64 = 0.01;
 /// SAEM initial omega diagonal.
 pub const SAEM_INITIAL_OMEGA: f64 = 0.1;
 
+// ── Population PK Model Parameters ───────────────────────────────────
+//
+// Defaults for barraCuda `PopulationPkConfig` — used in GPU rewire and CPU
+// Monte Carlo.  Values from control/pkpd/exp005_population_pk.py (commit
+// c04d848, 2026-03-22): `CL_base = 10 L/h`, `CL_low = 0.5`, `CL_high = 1.5`.
+
+/// Population PK base clearance (L/h) — typical adult oral one-compartment.
+pub const POP_PK_BASE_CL: f64 = 10.0;
+
+/// Population PK clearance low multiplier — inter-individual lower bound.
+pub const POP_PK_CL_LOW: f64 = 0.5;
+
+/// Population PK clearance high multiplier — inter-individual upper bound.
+pub const POP_PK_CL_HIGH: f64 = 1.5;
+
 // ── Simulation Default Parameters ────────────────────────────────────
 
 /// Default tissue damage excess cap (prevents > 50% organism penalty).

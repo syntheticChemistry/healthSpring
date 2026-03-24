@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** March 24, 2026
-**Status:** V43 — Cross-Spring Absorption. 888 tests, 83 experiments, 54 baselines with verified check counts and DOI baseline sources. Self-knowledge compliance; simulation/validation refactoring. barraCuda v0.3.7 (CI-gated pin). metalForge smart-refactored (4 modules). GPU dispatch extracted into named helpers. Determinism tests (bitwise rerun-identical). WFDB round-trip integration. biomeOS graph/niche IPC. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in library code.
+**Status:** V44 — Deep Debt Resolution & Modern Idiomatic Evolution. 928 tests, 83 experiments, 54 baselines with verified check counts and DOI baseline sources. `primal_names` module centralizes all primal string literals. `PopulationPkConfig` defaults named with provenance. `gpu/mod.rs` smart-refactored (696→413). Provenance registry enhanced with track query accessors. toadStool coverage: 51 tests. WFDB annotation coverage: 11 tests. Tolerance migration across 8 experiment files. barraCuda v0.3.7 (CI-gated pin). Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in library code.
 
 ---
 
@@ -104,7 +104,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **7** | 7 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **888** (tests) | **2,900+** |
+| **Total** | **688** | **287+** (Tier 0) | **928** (tests) | **2,900+** |
 
 ---
 

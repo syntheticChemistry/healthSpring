@@ -39,14 +39,24 @@ fn main() {
     let (ac_ir_97, dc_ir_97) = biosignal::ppg_extract_ac_dc(&ppg_97.ir);
     let r_97 = biosignal::ppg_r_value(ac_red_97, dc_red_97, ac_ir_97, dc_ir_97);
     let spo2_97 = biosignal::spo2_from_r(r_97);
-    h.check_abs("SpO2 97% roundtrip", spo2_97, 97.0, 5.0);
+    h.check_abs(
+        "SpO2 97% roundtrip",
+        spo2_97,
+        97.0,
+        tolerances::SPO2_CLINICAL_TOLERANCE,
+    );
 
     let ppg_90 = biosignal::generate_synthetic_ppg(FS, 5.0, 72.0, 90.0, 42);
     let (ac_red_90, dc_red_90) = biosignal::ppg_extract_ac_dc(&ppg_90.red);
     let (ac_ir_90, dc_ir_90) = biosignal::ppg_extract_ac_dc(&ppg_90.ir);
     let r_90 = biosignal::ppg_r_value(ac_red_90, dc_red_90, ac_ir_90, dc_ir_90);
     let spo2_90 = biosignal::spo2_from_r(r_90);
-    h.check_abs("SpO2 90% roundtrip", spo2_90, 90.0, 5.0);
+    h.check_abs(
+        "SpO2 90% roundtrip",
+        spo2_90,
+        90.0,
+        tolerances::SPO2_CLINICAL_TOLERANCE,
+    );
 
     let (ac_red, dc_red) = biosignal::ppg_extract_ac_dc(&ppg_97.red);
     h.check_bool("AC/DC extraction", ac_red > 0.0 && dc_red > 0.0);

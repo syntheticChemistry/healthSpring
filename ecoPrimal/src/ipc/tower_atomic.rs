@@ -33,6 +33,7 @@ use std::path::PathBuf;
 
 use super::error::IpcError;
 use super::socket;
+use crate::primal_names;
 
 /// Capability domains used for Tower Atomic primal discovery.
 /// These are the semantic capabilities, not primal names — any primal
@@ -43,10 +44,12 @@ const DISCOVERY_CAPABILITY: &str = "net.discovery";
 /// Env-driven or conventional socket-name prefixes for filesystem scan.
 /// Only used when capability-based discovery has not yet bootstrapped.
 fn crypto_socket_prefix() -> String {
-    std::env::var("BIOMEOS_CRYPTO_PREFIX").unwrap_or_else(|_| "beardog".into())
+    std::env::var(primal_names::prefix_env_var("CRYPTO"))
+        .unwrap_or_else(|_| primal_names::BEARDOG.into())
 }
 fn discovery_socket_prefix() -> String {
-    std::env::var("BIOMEOS_DISCOVERY_PREFIX").unwrap_or_else(|_| "songbird".into())
+    std::env::var(primal_names::prefix_env_var("DISCOVERY"))
+        .unwrap_or_else(|_| primal_names::SONGBIRD.into())
 }
 
 /// Tower Atomic handle — crypto + discovery primals on the local machine.

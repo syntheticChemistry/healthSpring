@@ -5,7 +5,7 @@
 **Date:** March 24, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V43 — Cross-Spring Absorption & Self-Knowledge Compliance. 888 tests, 83 experiments, 54 Python baselines. Cast module expanded (groundSpring V122 pattern: 14 named conversions). Self-knowledge compliance: zero cross-primal name leaks in production error strings. Upstream contract tolerances. Extended 7-primal discovery (ephemeral, permanence, attribution). simulation.rs smart-refactored (4 modules: stress, population, ecosystem, causal_chain). validation.rs smart-refactored (5 modules: check, sink, harness, or_exit, metrics). Inline tolerances centralized to `tolerances.rs`. Zero clippy, zero unsafe, zero `#[allow]`, zero `#[expect]` in production. `rustfmt.toml` pinned edition 2024.
+**Status:** V44 — Deep Debt Resolution & Modern Idiomatic Evolution. 928 tests, 83 experiments, 54 Python baselines. `primal_names` module centralizes all primal string literals with capability helpers. `PopulationPkConfig` defaults named with Python provenance. `gpu/mod.rs` smart-refactored (696→413 lines; extracted `types.rs` + `cpu_fallback.rs`). Provenance registry enhanced with track constants and query accessors. toadStool coverage expanded (51 tests, 31 new). WFDB annotations coverage added (11 tests). Tolerance migration across 8 experiment files. `TensorSession` evaluated and documented. FFT absorption path documented. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in production.
 
 ---
 
@@ -33,8 +33,8 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V42** (Comprehensive Audit & Deep Debt Resolution) |
-| **Total tests** | **877** (lib + proptest + IPC fuzz + doc + integration + experiment bins) |
+| Version | **V44** (Deep Debt Resolution & Modern Idiomatic Evolution) |
+| **Total tests** | **928** (lib + proptest + IPC fuzz + doc + integration + experiment bins) |
 | Experiments complete | 83 (Tracks 1–9, Tier 0+1+2+3) |
 | Experiments using ValidationHarness | **83/83** experiments use ValidationHarness (includes 2 integration demos upgraded from custom check patterns in V42) |
 | JSON-RPC capabilities | 59 (46 science + 13 infrastructure — `capability.list`, provenance, health probes, compute/data/model routing) |
@@ -57,6 +57,26 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | `cargo doc` | **0 warnings** |
 | Max file size | 732 lines (visualization/scenarios/tests.rs; all production files under 750-line limit) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V44 Deep Debt Resolution & Modern Idiomatic Evolution (from V43)
+
+V44 executes on a comprehensive audit: centralizing primal names, evolving hardcoded values to capability-based patterns, smart-refactoring large modules, expanding test coverage, and migrating inline tolerances across experiment binaries.
+
+| Change | Impact |
+|--------|--------|
+| **`primal_names` module** | Centralized all primal string literals (`BEARDOG`, `SONGBIRD`, `PETALTONGUE`, `BIOMEOS`) with `socket_env_var()` / `prefix_env_var()` helpers. Zero hardcoded primal names in production. |
+| **`PopulationPkConfig` provenance** | `10.0` / `0.5` / `1.5` defaults → `tolerances::POP_PK_BASE_CL` / `POP_PK_CL_LOW` / `POP_PK_CL_HIGH` with documented Python source. |
+| **`gpu/mod.rs` smart refactor** | 696→413 lines. Extracted `gpu/types.rs` (105 LOC: `GpuOp`, `GpuResult`, `GpuError`) and `gpu/cpu_fallback.rs` (175 LOC: all CPU reference implementations). |
+| **Provenance registry enhanced** | `tracks` module with const identifiers, `records_for_track()`, `record_for_experiment()`, `distinct_tracks()` accessors. Data stays consolidated (smart refactor for data tables). |
+| **toadStool coverage: 51 tests** | 31 new tests covering Michaelis-Menten batch, SCFA batch, beat classification, biosignal fusion, AUC, Bray-Curtis, variance, GPU mappability. |
+| **WFDB annotations coverage** | 11 new tests for `parse_annotations()` and `BeatType` decoding (empty, terminators, multi-beat, AUX/SKIP, truncation). |
+| **Tolerance migration (8 experiments)** | exp022/052/062/067/077/078/093/111: inline literals → `tolerances::*` constants. |
+| **FFT absorption documented** | `barraCuda` FFT is GPU-only; local CPU FFT justified for non-GPU biosignal pipelines. |
+| **`TensorSession` evaluated** | Complementary pattern (dependent chains vs independent parallel ops). Integration deferred until dependent multi-op pipelines needed. |
+| **`wang_hash_uniform` scoped** | Visibility tightened to private in `cpu_fallback` — internal WGSL parity helper, not a public API. |
+| **928 tests** | Up from 888 (V43). Zero failures, zero clippy warnings (pedantic+nursery), zero fmt diffs, zero doc warnings. |
 
 ---
 
@@ -626,7 +646,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 863 tests
+cargo test --workspace                  # 928 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

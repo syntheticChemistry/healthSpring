@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: March 23, 2026
-**Status**: V42 — Deep Debt Resolution Sprint. 83 experiments, 863 tests, 59 capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. V41: Workspace lints, tracing, env-driven discovery, ODE codegen, proptest numerical. V40: Module conflict resolved, 17 magic numbers → constants, provenance/ refactored. V39: Toxicology, simulation, hormesis. V38: Deep debt. V36: All 6 GPU ops rewired.
+**Status**: V44 — Deep Debt Resolution Sprint. 83 experiments, 928 tests, 59 capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. V41: Workspace lints, tracing, env-driven discovery, ODE codegen, proptest numerical. V40: Module conflict resolved, 17 magic numbers → constants, provenance/ refactored. V39: Toxicology, simulation, hormesis. V38: Deep debt. V36: All 6 GPU ops rewired.
 
 ---
 

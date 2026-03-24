@@ -10,7 +10,7 @@
 //! validates `TransferMethod` selection and bandwidth calculations across
 //! `PCIe` Gen3/4/5 topologies.
 
-use healthspring_barracuda::tolerances::PCIE_BANDWIDTH;
+use healthspring_barracuda::tolerances::{MACHINE_EPSILON_STRICT, PCIE_BANDWIDTH};
 use healthspring_barracuda::validation::ValidationHarness;
 use healthspring_forge::Substrate;
 use healthspring_forge::nucleus::{DeviceStatus, Nest, NestId, Node, NodeId, PcieGeneration};
@@ -225,7 +225,7 @@ fn main() {
         "0 bytes -> 0 time",
         zero_plan.estimated_time_us(),
         0.0,
-        1e-15,
+        MACHINE_EPSILON_STRICT,
     );
 
     let same_plan = plan_transfer(CPU, CPU, 1_000_000, Some(&node_gen4));
@@ -237,7 +237,7 @@ fn main() {
         "same device -> 0 time",
         same_plan.estimated_time_us(),
         0.0,
-        1e-15,
+        MACHINE_EPSILON_STRICT,
     );
 
     // -----------------------------------------------------------------------

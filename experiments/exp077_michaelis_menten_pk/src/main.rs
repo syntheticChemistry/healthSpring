@@ -12,7 +12,8 @@
 
 use healthspring_barracuda::pkpd;
 use healthspring_barracuda::tolerances::{
-    ANDERSON_IDENTITY, EXPONENTIAL_RESIDUAL, MACHINE_EPSILON,
+    ANDERSON_IDENTITY, EXPONENTIAL_RESIDUAL, MACHINE_EPSILON, TEST_ASSERTION_2_PERCENT,
+    WASHOUT_HALF_LIFE,
 };
 use healthspring_barracuda::validation::ValidationHarness;
 
@@ -42,7 +43,12 @@ fn main() {
 
     // Check 4: At low C, approaches first-order
     let ratio_low = pkpd::mm_nonlinearity_ratio(params, 10.0, 20.0);
-    h.check_abs("Nonlinearity ratio at low dose ≈ 1.0", ratio_low, 1.0, 0.15);
+    h.check_abs(
+        "Nonlinearity ratio at low dose ≈ 1.0",
+        ratio_low,
+        1.0,
+        WASHOUT_HALF_LIFE,
+    );
 
     // Check 5: At high C, supralinear AUC
     let ratio_high = pkpd::mm_nonlinearity_ratio(params, 200.0, 400.0);
@@ -72,7 +78,11 @@ fn main() {
     let num_auc = pkpd::mm_auc(&concs_long, 0.0001);
     let anal_auc = pkpd::mm_auc_analytical(params, 300.0);
     let rel_err = (num_auc - anal_auc).abs() / anal_auc;
-    h.check_upper("AUC numerical vs analytical rel_err", rel_err, 0.02);
+    h.check_upper(
+        "AUC numerical vs analytical rel_err",
+        rel_err,
+        TEST_ASSERTION_2_PERCENT,
+    );
 
     // Check 10: AUC(2D)/AUC(D) > 2 (supralinear)
     let auc_200 = pkpd::mm_auc_analytical(params, 200.0);

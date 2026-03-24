@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: March 23, 2026
-**Status**: V42 — Deep Debt Resolution Sprint. 83 experiments complete (Tracks 1–9), 863 tests, 45/45 papers complete. 53 provenance records, 23 MCP tools, deny.toml, 59 capabilities (46 science + 13 infra). barraCuda v0.3.7, 6 GPU ops.
+**Status**: V44 — Deep Debt Resolution Sprint. 83 experiments complete (Tracks 1–9), 928 tests, 45/45 papers complete. 53 provenance records, 23 MCP tools, deny.toml, 59 capabilities (46 science + 13 infra). barraCuda v0.3.7, 6 GPU ops.
 
 ---
 

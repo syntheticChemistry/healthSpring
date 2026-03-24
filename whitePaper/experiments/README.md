@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V43 — Cross-Spring Absorption. 83 experiments, 888 Rust tests, 59 JSON-RPC capabilities (46 science + 13 infra). 54 baselines with verified check counts and DOI baseline sources. Self-knowledge compliance; simulation/validation refactoring. metalForge smart-refactored. GPU dispatch extracted. Determinism tests. WFDB round-trip integration. biomeOS graph/niche IPC.
+**Status**: V44 — Deep Debt Resolution & Modern Idiomatic Evolution. 83 experiments, 928 Rust tests, 59 JSON-RPC capabilities (46 science + 13 infra). 54 baselines with verified check counts and DOI baseline sources. `primal_names` module centralized. `gpu/mod.rs` smart-refactored (696→413). Tolerance migration across 8 experiments. toadStool 51 tests. WFDB annotations 11 tests.
 **Last Updated**: March 24, 2026
 
 ---

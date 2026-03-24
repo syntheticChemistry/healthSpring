@@ -13,7 +13,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-PETALTONGUE_ROOT="${PETALTONGUE_ROOT:-$(cd "${PROJECT_ROOT}/../petalTongue" 2>/dev/null && pwd || cd "${PROJECT_ROOT}/../phase2/petalTongue" 2>/dev/null && pwd || cd "${PROJECT_ROOT}/../wateringHole/petaltongue" 2>/dev/null && pwd || true)}"
+PETALTONGUE_ROOT="${PETALTONGUE_ROOT:-$(cd "${PROJECT_ROOT}/../petalTongue" 2>/dev/null && pwd || true)}"
 
 info()  { echo -e "\033[1;36m[sync]\033[0m $*"; }
 ok()    { echo -e "\033[1;32m  ✓\033[0m $*"; }

@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: March 24, 2026
-**Status**: V43 — Cross-Spring Absorption. 83 experiments, 888 tests. Self-knowledge compliance; simulation/validation refactoring.
+**Status**: V44 — Deep Debt Resolution & Modern Idiomatic Evolution. 83 experiments, 928 tests. Tolerance migration across 8 experiments. toadStool coverage expanded (51 tests). WFDB annotations coverage (11 tests).
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3). **All 83 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
 

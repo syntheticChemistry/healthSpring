@@ -34,26 +34,32 @@
 //! **Pending architectural** (local to healthSpring until next absorption):
 //! - `GpuContext` fused pipeline → `barracuda::session::TensorSession`
 //! - `strip_f64_enable()` WGSL preprocessor — **legacy path**; sovereign dispatch
-//!   (sovereign dispatch) uses coralReef's native f64 lowering instead
+//!   uses coralReef's native f64 lowering instead
 //! - `shader_for_op()` mapping → barraCuda shader registry
-//!
-//! **Rewire plan** (Tier A → barraCuda GPU ops):
-//!
-//! When `gpu` feature is active and `barracuda::WgpuDevice` is available:
-//!
-//! 1. `HillSweep` → `barracuda::ops::HillFunctionF64::dose_response()`
-//! 2. `PopulationPkBatch` → `barracuda::ops::PopulationPkF64::new()`
-//! 3. `DiversityBatch` → `barracuda::ops::bio::DiversityFusionGpu::new()`
-//!
-//! CPU fallback in `execute_cpu()` remains the reference implementation.
-//!
-//! **Precision evolution**: metalForge now has `PrecisionRouting` (mirroring
-//! toadStool S128 `PrecisionRoutingAdvice`). GPU context should use this to
-//! select f64/DF64/f32 shader variants. coralReef Phase 10 provides full
-//! f64 transcendental support via DFMA polynomial lowering.
 
-use crate::microbiome;
-use crate::pkpd;
+mod cpu_fallback;
+mod types;
+
+pub use cpu_fallback::execute_cpu;
+pub use types::{GpuError, GpuOp, GpuResult};
+
+/// barraCuda rewire hooks bridging local GPU ops to upstream implementations.
+#[cfg(feature = "barracuda-ops")]
+pub mod barracuda_rewire;
+/// Device, queues, and pipeline state for wgpu-backed execution.
+#[cfg(feature = "gpu")]
+pub mod context;
+/// GPU dispatch entry points and buffer wiring for [`GpuOp`].
+#[cfg(feature = "gpu")]
+pub mod dispatch;
+#[cfg(feature = "gpu")]
+mod fused;
+/// Sovereign f64 pipeline integration (coralReef-style lowering path).
+#[cfg(feature = "gpu")]
+pub mod sovereign;
+
+/// ODE system definitions used by codegen shaders (e.g. Michaelis–Menten).
+pub mod ode_systems;
 
 /// Cached GPU availability probe — avoids Vulkan init races in parallel tests.
 ///
@@ -75,8 +81,6 @@ pub fn gpu_available() -> bool {
             backends: wgpu::Backends::all(),
             ..wgpu::InstanceDescriptor::default()
         });
-        // Block synchronously via a one-shot runtime rather than adding
-        // pollster as a non-dev dependency. Tokio is already gated on `gpu`.
         tokio::runtime::Builder::new_current_thread()
             .enable_all()
             .build()
@@ -99,24 +103,6 @@ pub fn gpu_available() -> bool {
 pub const fn gpu_available() -> bool {
     false
 }
-
-/// barraCuda rewire hooks bridging local GPU ops to upstream implementations.
-#[cfg(feature = "barracuda-ops")]
-pub mod barracuda_rewire;
-/// Device, queues, and pipeline state for wgpu-backed execution.
-#[cfg(feature = "gpu")]
-pub mod context;
-/// GPU dispatch entry points and buffer wiring for [`GpuOp`].
-#[cfg(feature = "gpu")]
-pub mod dispatch;
-#[cfg(feature = "gpu")]
-mod fused;
-/// Sovereign f64 pipeline integration (coralReef-style lowering path).
-#[cfg(feature = "gpu")]
-pub mod sovereign;
-
-/// ODE system definitions used by codegen shaders (e.g. Michaelis–Menten).
-pub mod ode_systems;
 
 /// WGSL shader sources — compiled into the binary.
 ///
@@ -157,248 +143,6 @@ pub mod shaders {
     /// WGSL for template-based ECG beat classification (`GpuOp::BeatClassifyBatch`).
     pub const BEAT_CLASSIFY_BATCH: &str =
         include_str!("../../shaders/health/beat_classify_batch_f64.wgsl");
-}
-
-/// A GPU-dispatchable operation with input/output buffers.
-#[derive(Debug, Clone)]
-pub enum GpuOp {
-    /// Vectorized Hill dose-response: compute E(c) for many concentrations.
-    HillSweep {
-        /// Maximum effect plateau (same units as the response axis).
-        emax: f64,
-        /// Half-maximal concentration (Hill EC₅₀).
-        ec50: f64,
-        /// Hill slope (cooperativity exponent).
-        n: f64,
-        /// Concentration grid evaluated in parallel.
-        concentrations: Vec<f64>,
-    },
-    /// Batch population PK: simulate N patients in parallel.
-    PopulationPkBatch {
-        /// Virtual cohort size (parallel AUC outputs).
-        n_patients: usize,
-        /// Dose per patient (mg) driving AUC scaling.
-        dose_mg: f64,
-        /// Oral or depot bioavailability fraction (0–1).
-        f_bioavail: f64,
-        /// PRNG seed for inter-patient variability.
-        seed: u64,
-    },
-    /// Batch diversity indices for multiple communities.
-    DiversityBatch {
-        /// One abundance vector per community (non-negative, summing to 1 is typical).
-        communities: Vec<Vec<f64>>,
-    },
-    /// Batch Michaelis-Menten PK: parallel Euler ODE per patient.
-    MichaelisMentenBatch {
-        /// Maximum elimination velocity scale (model-specific units).
-        vmax: f64,
-        /// Michaelis constant for substrate/concentration scale.
-        km: f64,
-        /// Volume of distribution (L).
-        vd: f64,
-        /// Fixed ODE time step (same units as total simulated time).
-        dt: f64,
-        /// Number of Euler steps per simulation.
-        n_steps: u32,
-        /// Parallel patient count.
-        n_patients: u32,
-        /// Base seed for deterministic per-patient parameter jitter.
-        seed: u32,
-    },
-    /// Batch SCFA production: element-wise Michaelis-Menten per fiber input.
-    ScfaBatch {
-        /// Shared microbiome parameters for all fiber rows.
-        params: crate::microbiome::ScfaParams,
-        /// Fiber intake values (g/day or model units) per output row.
-        fiber_inputs: Vec<f64>,
-    },
-    /// Batch beat classification: template correlation per beat window.
-    BeatClassifyBatch {
-        /// One waveform window per beat to classify.
-        beats: Vec<Vec<f64>>,
-        /// Reference templates (order matches `BeatClass` mapping in CPU path).
-        templates: Vec<Vec<f64>>,
-    },
-}
-
-/// Result of a GPU operation.
-#[derive(Debug, Clone)]
-pub enum GpuResult {
-    /// Hill sweep results: one E value per concentration.
-    HillSweep(Vec<f64>),
-    /// Population PK results: AUC per patient.
-    PopulationPkBatch(Vec<f64>),
-    /// Diversity results: (shannon, simpson) per community.
-    DiversityBatch(Vec<(f64, f64)>),
-    /// Michaelis-Menten batch: AUC per patient.
-    MichaelisMentenBatch(Vec<f64>),
-    /// SCFA batch: (acetate, propionate, butyrate) per fiber input.
-    ScfaBatch(Vec<(f64, f64, f64)>),
-    /// Beat classify batch: (`template_index`, correlation) per beat.
-    BeatClassifyBatch(Vec<(u32, f64)>),
-}
-
-fn execute_cpu_hill_sweep(emax: f64, ec50: f64, n: f64, concentrations: &[f64]) -> GpuResult {
-    let results: Vec<f64> = concentrations
-        .iter()
-        .map(|&c| pkpd::hill_dose_response(c, ec50, n, emax))
-        .collect();
-    GpuResult::HillSweep(results)
-}
-
-#[expect(
-    clippy::cast_precision_loss,
-    reason = "LCG state u64 → f64 for uniform variate; precision sufficient for PK variation"
-)]
-fn execute_cpu_population_pk_batch(
-    n_patients: usize,
-    dose_mg: f64,
-    f_bioavail: f64,
-    seed: u64,
-) -> GpuResult {
-    let mut aucs = Vec::with_capacity(n_patients);
-    let mut rng_state = seed;
-    for _ in 0..n_patients {
-        rng_state = crate::rng::lcg_step(rng_state);
-        let u = (rng_state >> 33) as f64 / f64::from(u32::MAX);
-        let cl_factor = 0.5 + u;
-        let cl = 10.0 * cl_factor;
-        let auc = f_bioavail * dose_mg / cl;
-        aucs.push(auc);
-    }
-    GpuResult::PopulationPkBatch(aucs)
-}
-
-fn execute_cpu_diversity_batch(communities: &[Vec<f64>]) -> GpuResult {
-    let results: Vec<(f64, f64)> = communities
-        .iter()
-        .map(|c| (microbiome::shannon_index(c), microbiome::simpson_index(c)))
-        .collect();
-    GpuResult::DiversityBatch(results)
-}
-
-fn execute_cpu_mm_batch(
-    vmax: f64,
-    km: f64,
-    vd: f64,
-    dt: f64,
-    n_steps: u32,
-    n_patients: u32,
-    seed: u32,
-) -> GpuResult {
-    let params = pkpd::MichaelisMentenParams { vmax, km, vd };
-    let dose_mg = vd * 6.0;
-    let t_end = f64::from(n_steps) * dt;
-    let mut aucs = Vec::with_capacity(n_patients as usize);
-    for i in 0..n_patients {
-        let u = wang_hash_uniform(seed.wrapping_add(i));
-        let factor = u.mul_add(0.6, 0.7);
-        let patient_params = pkpd::MichaelisMentenParams {
-            vmax: params.vmax * factor,
-            ..params.clone()
-        };
-        let (_, concs) = pkpd::mm_pk_simulate(&patient_params, dose_mg, t_end, dt);
-        let auc = pkpd::mm_auc(&concs, dt);
-        aucs.push(auc);
-    }
-    GpuResult::MichaelisMentenBatch(aucs)
-}
-
-fn execute_cpu_scfa_batch(params: &microbiome::ScfaParams, fiber_inputs: &[f64]) -> GpuResult {
-    let results: Vec<(f64, f64, f64)> = fiber_inputs
-        .iter()
-        .map(|&f| microbiome::scfa_production(f, params))
-        .collect();
-    GpuResult::ScfaBatch(results)
-}
-
-fn execute_cpu_beat_classify_batch(beats: &[Vec<f64>], templates: &[Vec<f64>]) -> GpuResult {
-    use crate::biosignal::classification;
-    let tmpl_structs: Vec<classification::BeatTemplate> = templates
-        .iter()
-        .enumerate()
-        .map(|(i, w)| {
-            let class = match i {
-                0 => classification::BeatClass::Normal,
-                1 => classification::BeatClass::Pvc,
-                2 => classification::BeatClass::Pac,
-                _ => classification::BeatClass::Unknown,
-            };
-            classification::BeatTemplate {
-                class,
-                waveform: w.clone(),
-            }
-        })
-        .collect();
-    let results: Vec<(u32, f64)> = beats
-        .iter()
-        .map(|beat| {
-            let (class, corr) = classification::classify_beat(beat, &tmpl_structs, 0.0);
-            let idx = match class {
-                classification::BeatClass::Normal => 0,
-                classification::BeatClass::Pvc => 1,
-                classification::BeatClass::Pac => 2,
-                classification::BeatClass::Unknown => u32::MAX,
-            };
-            (idx, corr)
-        })
-        .collect();
-    GpuResult::BeatClassifyBatch(results)
-}
-
-/// Execute a GPU operation using CPU fallback (pure Rust).
-///
-/// This is the reference implementation. The GPU path (behind `gpu` feature)
-/// must produce identical results within f64 tolerance.
-#[must_use]
-pub fn execute_cpu(op: &GpuOp) -> GpuResult {
-    match op {
-        GpuOp::HillSweep {
-            emax,
-            ec50,
-            n,
-            concentrations,
-        } => execute_cpu_hill_sweep(*emax, *ec50, *n, concentrations),
-        GpuOp::PopulationPkBatch {
-            n_patients,
-            dose_mg,
-            f_bioavail,
-            seed,
-        } => execute_cpu_population_pk_batch(*n_patients, *dose_mg, *f_bioavail, *seed),
-        GpuOp::DiversityBatch { communities } => execute_cpu_diversity_batch(communities),
-        GpuOp::MichaelisMentenBatch {
-            vmax,
-            km,
-            vd,
-            dt,
-            n_steps,
-            n_patients,
-            seed,
-        } => execute_cpu_mm_batch(*vmax, *km, *vd, *dt, *n_steps, *n_patients, *seed),
-        GpuOp::ScfaBatch {
-            params,
-            fiber_inputs,
-        } => execute_cpu_scfa_batch(params, fiber_inputs),
-        GpuOp::BeatClassifyBatch { beats, templates } => {
-            execute_cpu_beat_classify_batch(beats, templates)
-        }
-    }
-}
-
-/// Wang hash for deterministic per-patient PRNG (mirrors WGSL shader).
-fn wang_hash_uniform(seed: u32) -> f64 {
-    let mut s = seed;
-    s = (s ^ 61) ^ (s >> 16);
-    s = s.wrapping_mul(9);
-    s = s ^ (s >> 4);
-    s = s.wrapping_mul(0x27d4_eb2d);
-    s = s ^ (s >> 15);
-    // xorshift32
-    s ^= s << 13;
-    s ^= s >> 17;
-    s ^= s << 5;
-    f64::from(s) / f64::from(u32::MAX)
 }
 
 /// Returns the barraCuda codegen'd WGSL shader for ODE-based ops.
@@ -455,33 +199,6 @@ pub fn gpu_memory_estimate(op: &GpuOp) -> u64 {
         }
     }
 }
-
-// ---------------------------------------------------------------------------
-// GPU execution (feature-gated)
-// ---------------------------------------------------------------------------
-
-/// Error type for GPU execution.
-#[derive(Debug)]
-pub enum GpuError {
-    /// No GPU device available.
-    NoDevice(String),
-    /// Shader compilation or dispatch failed.
-    Dispatch(String),
-    /// Buffer readback failed.
-    Readback(String),
-}
-
-impl std::fmt::Display for GpuError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::NoDevice(msg) => write!(f, "GPU: no device: {msg}"),
-            Self::Dispatch(msg) => write!(f, "GPU: dispatch failed: {msg}"),
-            Self::Readback(msg) => write!(f, "GPU: readback failed: {msg}"),
-        }
-    }
-}
-
-impl std::error::Error for GpuError {}
 
 /// wgpu-backed session wrapper (pipelines, buffers) when the `gpu` feature is on.
 #[cfg(feature = "gpu")]

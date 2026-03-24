@@ -17,6 +17,7 @@ mod registry;
 
 /// All registered Python control scripts under `control/`, for completeness checks.
 pub use registry::PROVENANCE_REGISTRY;
+pub use registry::{distinct_tracks, record_for_experiment, records_for_track, tracks};
 
 use serde::{Deserialize, Serialize};
 

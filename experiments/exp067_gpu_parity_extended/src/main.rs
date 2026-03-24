@@ -85,7 +85,7 @@ fn validate_auc_and_bray_curtis(h: &mut ValidationHarness) {
     h.check_abs("auc_rectangle_exact_50.0", rect_auc, 50.0, MACHINE_EPSILON);
 
     let auc2 = auc_trapezoidal(&times, &concs);
-    h.check_abs("auc_deterministic", auc, auc2, f64::EPSILON);
+    h.check_abs("auc_deterministic", auc, auc2, CPU_PARITY);
 
     println!("\n=== Bray-Curtis Dissimilarity (pairwise batch) ===");
     let sample_a = [0.3, 0.3, 0.2, 0.1, 0.1];
