@@ -294,9 +294,9 @@ pub fn fetch_tiered(
 
     #[cfg(not(feature = "nestgate"))]
     Err(DataError::Rpc(format!(
-        "NCBI fetch failed: no biomeOS or NestGate socket available, and local cache miss. \
+        "NCBI fetch failed: no data provider socket available, and local cache miss. \
          Enable the `nestgate` feature for direct HTTP, or set BIOMEOS_SOCKET / \
-         NESTGATE_SOCKET, or pre-populate cache at \
+         HEALTHSPRING_DATA_SOCKET, or pre-populate cache at \
          HEALTHSPRING_DATA_ROOT/ncbi_cache/{db}/{id}.json"
     )))
 }

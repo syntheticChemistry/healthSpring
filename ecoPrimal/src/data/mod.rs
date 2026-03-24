@@ -65,8 +65,8 @@ pub enum DataError {
 impl std::fmt::Display for DataError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::SocketNotFound => write!(f, "NestGate/biomeOS socket not found"),
-            Self::Rpc(msg) => write!(f, "NestGate RPC error: {msg}"), // runtime string, no backticks
+            Self::SocketNotFound => write!(f, "data provider socket not found"),
+            Self::Rpc(msg) => write!(f, "data provider RPC error: {msg}"),
             Self::NcbiHttp { status, url } => {
                 write!(f, "NCBI HTTP error: {status} for {url}")
             }

@@ -57,7 +57,7 @@ fn run_foce_estimation() -> (Vec<pkpd::Subject>, pkpd::NlmeResult, Vec<f64>, Vec
         n_theta: 3,
         n_eta: 3,
         max_iter: 150,
-        tol: 1e-6,
+        tol: crate::tolerances::NLME_DEFAULT_TOL,
         seed: 12_345,
     };
 
@@ -185,7 +185,10 @@ fn build_population_node(
         .iter()
         .map(|e| (result.theta[1] + e[1]).exp())
         .collect();
-    let aucs: Vec<f64> = cls.iter().map(|&cl| 100.0 / cl.max(1e-6)).collect();
+    let aucs: Vec<f64> = cls
+        .iter()
+        .map(|&cl| 100.0 / cl.max(crate::tolerances::NLME_DEFAULT_TOL))
+        .collect();
     channels.push(scatter3d(
         "pop_param_space",
         "Individual CL x Vd x AUC",

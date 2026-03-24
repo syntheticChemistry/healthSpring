@@ -164,7 +164,7 @@ pub fn discover_shader_compiler() -> Option<PathBuf> {
     discover_by_capability("shader")
 }
 
-/// Probe for an inference primal (Squirrel) by capability.
+/// Probe for an inference primal by capability.
 ///
 /// Resolution order:
 /// 1. Explicit socket path via `HEALTHSPRING_INFERENCE_SOCKET` env
@@ -184,6 +184,66 @@ pub fn discover_inference_primal() -> Option<PathBuf> {
         return Some(path);
     }
     discover_by_capability("model")
+}
+
+/// Probe for an ephemeral session primal by capability.
+///
+/// Ephemeral sessions provide short-lived isolated compute contexts for
+/// sensitive data (patient records, trial data) that auto-destroy on timeout.
+///
+/// No hardcoded primal names — capability-based discovery only.
+#[must_use]
+pub fn discover_ephemeral_primal() -> Option<PathBuf> {
+    if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_EPHEMERAL_SOCKET") {
+        return Some(path);
+    }
+    if let Some(path) = std::env::var("HEALTHSPRING_EPHEMERAL_PRIMAL")
+        .ok()
+        .and_then(|name| discover_primal(&name))
+    {
+        return Some(path);
+    }
+    discover_by_capability("ephemeral")
+}
+
+/// Probe for a permanence primal by capability.
+///
+/// Permanence primals provide durable, content-addressed storage for
+/// validated results, provenance records, and baseline snapshots.
+///
+/// No hardcoded primal names — capability-based discovery only.
+#[must_use]
+pub fn discover_permanence_primal() -> Option<PathBuf> {
+    if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_PERMANENCE_SOCKET") {
+        return Some(path);
+    }
+    if let Some(path) = std::env::var("HEALTHSPRING_PERMANENCE_PRIMAL")
+        .ok()
+        .and_then(|name| discover_primal(&name))
+    {
+        return Some(path);
+    }
+    discover_by_capability("permanence")
+}
+
+/// Probe for an attribution primal by capability.
+///
+/// Attribution primals track provenance chains, licensing, and contribution
+/// records across the ecosystem (SCYBORG trio compliance).
+///
+/// No hardcoded primal names — capability-based discovery only.
+#[must_use]
+pub fn discover_attribution_primal() -> Option<PathBuf> {
+    if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_ATTRIBUTION_SOCKET") {
+        return Some(path);
+    }
+    if let Some(path) = std::env::var("HEALTHSPRING_ATTRIBUTION_PRIMAL")
+        .ok()
+        .and_then(|name| discover_primal(&name))
+    {
+        return Some(path);
+    }
+    discover_by_capability("attribution")
 }
 
 /// Discover a primal by capability domain (public entry point).
@@ -378,9 +438,22 @@ mod tests {
 
     #[test]
     fn discover_inference_primal_returns_option() {
-        // No env set, no model primal in socket dir → typically None.
-        // Verifies function runs without panic.
         let _ = discover_inference_primal();
+    }
+
+    #[test]
+    fn discover_ephemeral_primal_returns_option() {
+        let _ = discover_ephemeral_primal();
+    }
+
+    #[test]
+    fn discover_permanence_primal_returns_option() {
+        let _ = discover_permanence_primal();
+    }
+
+    #[test]
+    fn discover_attribution_primal_returns_option() {
+        let _ = discover_attribution_primal();
     }
 
     #[test]

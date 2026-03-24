@@ -35,7 +35,7 @@ pub enum PushError {
 impl std::fmt::Display for PushError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::NotFound(msg) => write!(f, "petalTongue not found: {msg}"),
+            Self::NotFound(msg) => write!(f, "visualization primal not found: {msg}"),
             Self::ConnectionFailed(e) => write!(f, "connection failed: {e}"),
             Self::SerializationError(e) => write!(f, "serialization error: {e}"),
             Self::RpcError { code, message } => write!(f, "RPC error {code}: {message}"),
@@ -131,7 +131,7 @@ mod tests {
     fn push_error_display_not_found() {
         let e = PushError::NotFound("no socket".into());
         let s = format!("{e}");
-        assert!(s.contains("petalTongue not found"));
+        assert!(s.contains("visualization primal not found"));
         assert!(s.contains("no socket"));
     }
 

@@ -98,11 +98,11 @@ pub fn announce_to_songbird(our_socket: &Path) {
         Ok(()) => {
             info!(
                 count = healthspring_barracuda::visualization::capabilities::CAPABILITIES.len(),
-                "songbird: announced health.* capabilities"
+                "discovery: announced health.* capabilities"
             );
         }
         Err(e) => {
-            info!("songbird not available ({e}) — discovery via socket dir only");
+            info!("discovery service not available ({e}) — socket dir only");
         }
     }
 }

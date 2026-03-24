@@ -93,7 +93,7 @@ pub fn gpu_available() -> bool {
     })
 }
 
-/// GPU probe stub when the `gpu` feature is disabled — always returns `false`.
+/// GPU availability when the `gpu` feature is disabled — always `false`.
 #[cfg(not(feature = "gpu"))]
 #[must_use]
 pub const fn gpu_available() -> bool {

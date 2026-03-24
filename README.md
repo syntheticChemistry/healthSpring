@@ -5,7 +5,7 @@
 **Date:** March 24, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V42 — Comprehensive Audit & Deep Debt Resolution. 877 tests, 83 experiments, 54 Python baselines with verified check counts and DOI-sourced baseline citations. barraCuda v0.3.7 (CI-gated pin). metalForge smart-refactored (4 modules). GPU dispatch extracted into named helpers. 3 bitwise determinism tests. WFDB round-trip integration test. biomeOS graph/niche IPC client. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in production library code. `rustfmt.toml` pinned to edition 2024.
+**Status:** V43 — Cross-Spring Absorption & Self-Knowledge Compliance. 888 tests, 83 experiments, 54 Python baselines. Cast module expanded (groundSpring V122 pattern: 14 named conversions). Self-knowledge compliance: zero cross-primal name leaks in production error strings. Upstream contract tolerances. Extended 7-primal discovery (ephemeral, permanence, attribution). simulation.rs smart-refactored (4 modules: stress, population, ecosystem, causal_chain). validation.rs smart-refactored (5 modules: check, sink, harness, or_exit, metrics). Inline tolerances centralized to `tolerances.rs`. Zero clippy, zero unsafe, zero `#[allow]`, zero `#[expect]` in production. `rustfmt.toml` pinned edition 2024.
 
 ---
 

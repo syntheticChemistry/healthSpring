@@ -66,7 +66,7 @@ impl Default for NlmeConfig {
             n_theta: 3,
             n_eta: 3,
             max_iter: 200,
-            tol: 1e-6,
+            tol: crate::tolerances::NLME_DEFAULT_TOL,
             seed: 42,
         }
     }
@@ -108,7 +108,8 @@ pub fn oral_one_compartment_model(theta: &[f64], eta: &[f64], dose: f64, time: f
     let absorption = (theta[2] + eta[2]).exp();
     let elimination = clearance / volume;
 
-    if (absorption - elimination).abs() < 1e-12 || volume <= 0.0 {
+    if (absorption - elimination).abs() < crate::tolerances::MACHINE_EPSILON_TIGHT || volume <= 0.0
+    {
         return 0.0;
     }
 

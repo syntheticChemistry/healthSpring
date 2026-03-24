@@ -323,7 +323,7 @@ fn compute_and_health_tools() -> Vec<McpToolDef> {
     vec![
         McpToolDef {
             name: "compute.offload",
-            description: "Offload compute to Node Atomic (toadStool) GPU",
+            description: "Offload compute to Node Atomic GPU via compute.dispatch",
             input_schema: || {
                 json!({
                     "type": "object",
@@ -336,7 +336,7 @@ fn compute_and_health_tools() -> Vec<McpToolDef> {
         },
         McpToolDef {
             name: "compute.shader_compile",
-            description: "Sovereign WGSL shader compilation via coralReef",
+            description: "Sovereign WGSL shader compilation via shader.compile capability",
             input_schema: || {
                 json!({
                     "type": "object",
@@ -350,7 +350,7 @@ fn compute_and_health_tools() -> Vec<McpToolDef> {
         // ── Model (1 tool) ──────────────────────────────────────────────
         McpToolDef {
             name: "model.inference_route",
-            description: "Route model inference to Squirrel primal",
+            description: "Route model inference via model.inference capability",
             input_schema: || {
                 json!({
                     "type": "object",

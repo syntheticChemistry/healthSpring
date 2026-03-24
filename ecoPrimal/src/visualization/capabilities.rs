@@ -47,17 +47,17 @@ pub const TRANSPORTS: &[&str] = &["jsonrpc"];
 /// Error type for capability operations.
 #[derive(Debug)]
 pub enum CapabilityError {
-    /// Songbird socket not found.
+    /// Discovery service socket not found.
     NotFound(String),
-    /// Connection to Songbird failed.
+    /// Connection to discovery service failed.
     ConnectionFailed(std::io::Error),
     /// JSON serialization error.
     SerializationError(String),
-    /// Songbird returned an error response.
+    /// Discovery service returned an error response.
     RpcError {
         /// JSON-RPC or application error code.
         code: i64,
-        /// Error message from Songbird.
+        /// Error message from discovery service.
         message: String,
     },
 }
@@ -65,11 +65,11 @@ pub enum CapabilityError {
 impl std::fmt::Display for CapabilityError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::NotFound(msg) => write!(f, "Songbird not found: {msg}"),
-            Self::ConnectionFailed(e) => write!(f, "Songbird connection failed: {e}"),
+            Self::NotFound(msg) => write!(f, "discovery service not found: {msg}"),
+            Self::ConnectionFailed(e) => write!(f, "discovery service connection failed: {e}"),
             Self::SerializationError(e) => write!(f, "serialization error: {e}"),
             Self::RpcError { code, message } => {
-                write!(f, "Songbird RPC error {code}: {message}")
+                write!(f, "discovery service RPC error {code}: {message}")
             }
         }
     }
@@ -214,7 +214,9 @@ fn discover_songbird() -> CapResult<PathBuf> {
         }
     }
 
-    Err(CapabilityError::NotFound("no Songbird socket found".into()))
+    Err(CapabilityError::NotFound(
+        "no discovery service socket found".into(),
+    ))
 }
 
 fn send_songbird_rpc(socket_path: &PathBuf, request: &serde_json::Value) -> CapResult<()> {
@@ -300,8 +302,8 @@ mod tests {
 
     #[test]
     fn capability_error_display() {
-        let e = CapabilityError::NotFound("no songbird".into());
-        assert!(format!("{e}").contains("Songbird not found"));
+        let e = CapabilityError::NotFound("no socket".into());
+        assert!(format!("{e}").contains("discovery service not found"));
 
         let e = CapabilityError::RpcError {
             code: -32600,

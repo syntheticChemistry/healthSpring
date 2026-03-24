@@ -385,6 +385,28 @@ pub const DECOMPOSITION_GUARD: f64 = 1e-30;
 /// Box-Muller `u1` clamp — prevents `ln(0)` in normal sampling.
 pub const BOX_MULLER_CLAMP: f64 = 1e-30;
 
+// ── Upstream Contract Tolerances ─────────────────────────────────────
+//
+// Values agreed with other ecosystem components via wateringHole handoffs.
+// Changes here must be coordinated with the upstream primal/spring.
+
+/// barraCuda GPU f32 parity for Hill: cross-spring agreed tolerance.
+/// Source: `HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR24_2026.md`
+pub const UPSTREAM_GPU_HILL_PARITY: f64 = 1e-4;
+
+/// barraCuda GPU diversity dispatch: cross-spring agreed tolerance.
+pub const UPSTREAM_GPU_DIVERSITY_PARITY: f64 = 1e-4;
+
+/// barraCuda fused pipeline vs sequential dispatch: agreed tolerance.
+pub const UPSTREAM_GPU_FUSED_PARITY: f64 = 1e-4;
+
+/// PRNG seed determinism: cross-spring agreed — LCG with identical seed
+/// must produce identical sequences across springs.
+pub const UPSTREAM_PRNG_DETERMINISM: f64 = 0.0;
+
+/// Shannon/Simpson cross-validation to Python: agreed with groundSpring.
+pub const UPSTREAM_DIVERSITY_CROSS_VALIDATE: f64 = 1e-8;
+
 // ── IPC Configuration Constants ──────────────────────────────────────
 
 /// JSON-RPC response buffer size (bytes) for capability probes.

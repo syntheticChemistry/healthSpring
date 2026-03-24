@@ -35,7 +35,7 @@ capabilities over Unix sockets for biomeOS graph composition.
   - `healthspring-toadstool` — pipeline orchestration
 - **IPC**: JSON-RPC 2.0 over Unix domain sockets, 59 capabilities (46 science + 13 infrastructure); `normalize_method()` maps legacy-prefixed names before routing
 - **License**: AGPL-3.0-or-later (scyBorg trio)
-- **Tests**: 877 (lib + proptest + IPC fuzz + doc + integration + experiment bins)
+- **Tests**: 888 (lib + proptest + IPC fuzz + doc + integration + experiment bins)
 - **Coverage**: ~81% line (lib), 90% target
 - **Clippy**: 0 warnings, 0 errors (pedantic + nursery + doc-markdown, all promoted to error), workspace-level `[lints]`
 - **Validation harness**: `ValidationSink` trait (pluggable check output for experiments)
