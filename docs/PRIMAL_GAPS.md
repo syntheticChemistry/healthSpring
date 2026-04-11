@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-04-10
-**healthSpring version**: V49 (0.9.0)
+**Date**: 2026-04-11
+**healthSpring version**: V50 (0.10.0)
 
 ---
 
@@ -78,7 +78,10 @@ per the semantic naming standard's `domain.verb` pattern. Update
 healthSpring's `tower_atomic.rs` once the ecosystem agrees on the canonical
 Songbird method names.
 
-**Status**: Pending Songbird/primalSpring semantic naming alignment.
+**Status**: healthSpring V50 adds dual-method fallback in `tower_atomic.rs` —
+tries `discovery.find_by_capability` first, falls back to
+`net.discovery.find_by_capability`. Full resolution pending Songbird canonical
+naming.
 
 ---
 
@@ -187,7 +190,10 @@ verify Squirrel as part of the healthSpring niche deployment.
 once Squirrel reaches ecoBin compliance and publishes stable `inference.*`
 capabilities.
 
-**Status**: Blocked on Squirrel/neuralSpring WGSL inference maturity.
+**Status**: healthSpring V50 adds optional `squirrel_b` node to
+`healthspring_niche_deploy.toml` with `required = false`. biomeOS will
+start Squirrel if available, skip gracefully if not. Full integration
+blocked on Squirrel ecoBin compliance and stable `inference.*` capability set.
 
 ---
 
@@ -197,10 +203,10 @@ capabilities.
 |---|-----|------------|--------------------|--------------------|
 | 1 | Capability namespace | — | **Fixed V49**: aliases added | Confirm alignment |
 | 2 | Ionic bridge | BearDog + NestGate | Wire when available | Evolve primals |
-| 3 | Discovery naming | Songbird alignment | Update tower_atomic | Standardize names |
+| 3 | Discovery naming | Songbird alignment | **V50**: dual fallback | Standardize names |
 | 4 | Inference namespace | Squirrel alignment | `inference.*` added | Pick canonical ns |
 | 5 | Readiness semantics | — | Fixed V48 | — |
 | 6 | Resilience wiring | — | Fixed V48 | — |
 | 7 | YAML manifest | — | Fixed V48 | — |
 | 8 | Deploy fragments | — | **Fixed V49**: metadata added | — |
-| 9 | Squirrel in deploy | Squirrel maturity | Add when ready | Evolve Squirrel |
+| 9 | Squirrel in deploy | Squirrel maturity | **V50**: optional node added | Evolve Squirrel |

@@ -28,10 +28,8 @@ pub fn dispatch_cross_species_pk(params: &Value) -> Value {
 
 /// Canine IL-31 serum kinetics under treatment.
 pub fn dispatch_canine_il31(params: &Value) -> Value {
-    let (Some(baseline_pg_ml), Some(t_hr)) = (
-        f(params, "baseline_pg_ml"),
-        f(params, "t_hr"),
-    ) else {
+    let (Some(baseline_pg_ml), Some(t_hr)) = (f(params, "baseline_pg_ml"), f(params, "t_hr"))
+    else {
         return missing("baseline_pg_ml, t_hr");
     };
     let treatment = match params

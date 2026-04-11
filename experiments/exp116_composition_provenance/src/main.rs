@@ -11,7 +11,7 @@
 //! the composition-layer provenance contracts that biomeOS relies on.
 
 use healthspring_barracuda::data;
-use healthspring_barracuda::provenance::{self, PROVENANCE_REGISTRY};
+use healthspring_barracuda::provenance::{self, all_records, registry_len};
 use healthspring_barracuda::validation::ValidationHarness;
 
 fn main() {
@@ -23,11 +23,11 @@ fn main() {
 
     h.check_bool(
         "Provenance registry has records for experiments",
-        PROVENANCE_REGISTRY.len() >= 10,
+        registry_len() >= 10,
     );
 
     let mut well_formed = true;
-    for record in PROVENANCE_REGISTRY {
+    for record in all_records() {
         if record.python_script.is_empty()
             || record.experiment.is_empty()
             || record.git_commit.is_empty()
@@ -38,12 +38,8 @@ fn main() {
     h.check_bool("All provenance records are well-formed", well_formed);
 
     // ── Trio availability probe ─────────────────────────────────────
-    // Without live primals, trio is unavailable — but the probe must not panic
-    let trio = data::trio_available();
-    h.check_bool(
-        "Trio availability probe returns without panic",
-        !trio || trio,
-    );
+    let _ = data::trio_available();
+    h.check_bool("Trio availability probe returns without panic", true);
 
     // ── Data session lifecycle: begin → record → complete ───────────
     let session = data::begin_data_session("exp116_provenance_test");
@@ -53,21 +49,15 @@ fn main() {
         "source": "test",
         "operation": "validate_provenance_lifecycle",
     });
-    let recorded = data::record_fetch_step(&session.id, &step);
-    h.check_bool("Session record returns available flag", recorded.available || !recorded.available);
+    let _ = data::record_fetch_step(&session.id, &step);
+    h.check_bool("Session record returns without panic", true);
 
     let chain = data::complete_data_session(&session.id, "AGPL-3.0-or-later");
-    h.check_bool(
-        "Session complete returns status",
-        !chain.status.is_empty(),
-    );
+    h.check_bool("Session complete returns status", !chain.status.is_empty());
 
     // ── Record lookup by experiment ─────────────────────────────────
     let hill_record = provenance::record_for_experiment("exp001");
-    h.check_bool(
-        "Provenance lookup finds exp001",
-        hill_record.is_some(),
-    );
+    h.check_bool("Provenance lookup finds exp001", hill_record.is_some());
     if let Some(rec) = hill_record {
         h.check_bool(
             "exp001 provenance has python_script",
@@ -85,10 +75,7 @@ fn main() {
 
     // ── Record lookup by track ──────────────────────────────────────
     let pkpd_count = provenance::records_for_track("pkpd").count();
-    h.check_bool(
-        "PKPD track has provenance records",
-        pkpd_count > 0,
-    );
+    h.check_bool("PKPD track has provenance records", pkpd_count > 0);
 
     let microbiome_count = provenance::records_for_track("microbiome").count();
     h.check_bool(
@@ -99,10 +86,7 @@ fn main() {
     // ── Session determinism ─────────────────────────────────────────
     let s1 = data::begin_data_session("determinism_a");
     let s2 = data::begin_data_session("determinism_b");
-    h.check_bool(
-        "Distinct sessions get distinct IDs",
-        s1.id != s2.id,
-    );
+    h.check_bool("Distinct sessions get distinct IDs", s1.id != s2.id);
 
     h.exit();
 }

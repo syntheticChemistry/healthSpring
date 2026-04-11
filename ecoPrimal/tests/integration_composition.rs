@@ -20,7 +20,8 @@ use healthspring_barracuda::ipc::dispatch::{dispatch_science, registered_capabil
 use healthspring_barracuda::{microbiome, pkpd, tolerances};
 
 fn assert_dispatch_f64(method: &str, params: &serde_json::Value, key: &str, expected: f64) {
-    let result = dispatch_science(method, params).unwrap_or_else(|| panic!("{method} returned None"));
+    let result =
+        dispatch_science(method, params).unwrap_or_else(|| panic!("{method} returned None"));
     let actual = result
         .get(key)
         .and_then(serde_json::Value::as_f64)
@@ -37,7 +38,8 @@ fn assert_dispatch_f64(method: &str, params: &serde_json::Value, key: &str, expe
 #[test]
 fn hill_dispatch_matches_direct() {
     for drug in pkpd::ALL_INHIBITORS {
-        let direct = pkpd::hill_dose_response(drug.ic50_jak1_nm, drug.ic50_jak1_nm, drug.hill_n, 1.0);
+        let direct =
+            pkpd::hill_dose_response(drug.ic50_jak1_nm, drug.ic50_jak1_nm, drug.hill_n, 1.0);
         assert_dispatch_f64(
             "science.pkpd.hill_dose_response",
             &serde_json::json!({

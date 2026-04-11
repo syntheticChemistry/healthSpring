@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 10, 2026
+**Date:** April 11, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V49 — Composition Audit Remediation. 940+ tests, 89 experiments (83 science + 6 composition), 54 Python baselines, 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). All 5 `health.*` proto-nucleate aliases wired. Deploy graphs carry fragment metadata + bonding policy. `uncertainty::std_dev` delegated to barraCuda. WGSL shader removal plan documented. exp117 IPC round-trip validation. V49 handoff at `wateringHole/handoffs/`. ecoBin harvested to plasmidBin.
+**Status:** V50 — Composition Evolution. 960+ tests, 89 experiments (83 science + 6 composition), 54 Python baselines, 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). Capability-first primal.forward routing. Squirrel optional node in deploy graph. Discovery dual-method fallback. Provenance registry split (3 files, all under 1000 LOC). Zero clippy warnings (pedantic+nursery). V50 handoff at wateringHole/handoffs/. Python and Rust are now both validation targets for NUCLEUS composition patterns.
 
 ---
 
@@ -33,8 +33,8 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V49** (Composition Audit Remediation) |
-| **Total tests** | **940+** (810 lib + proptest + IPC fuzz + 32 integration + 89 experiment bins) |
+| Version | **V50** (Composition Evolution) |
+| **Total tests** | **960+** (830 lib + proptest + IPC fuzz + 37 integration + 89 experiment bins) |
 | Experiments complete | 89 (83 science Tracks 1–9 + 6 composition Tier 4) |
 | Composition validation (Tier 4) | 6 experiments (exp112–117), 73+ checks — IPC dispatch + proto-nucleate + wire round-trip |
 | JSON-RPC capabilities | 80+ (62 science + 22 infrastructure — `capability.list`, `health.*`, `inference.*`, provenance, compute/data routing) |
@@ -508,6 +508,7 @@ Tier 0: Python control (published algorithm, reference implementation)
 Tier 1: Rust CPU (Pure Rust, f64-canonical, tolerance-documented)
 Tier 2: Rust GPU (barraCuda WGSL shaders, math parity with CPU)
 Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
+Tier 4: Primal composition (IPC dispatch vs direct Rust — the NUCLEUS composition surface)
 ```
 
 **Current state**: Tier 0+1 validation complete for **83** experiments (ValidationHarness **83/83**; paper queue and per-track coverage as in Current Metrics above). **Tier 2 live**: 6 WGSL shaders (3 Tier A + 3 Tier B), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **V25**: Track 6+7 complete — 12 experiments in that wave (Exp090–094, Exp100–106), 173 validation checks, discovery/ and comparative/ modules. **V20**: petalTongue V16 visualization — 34-node full study with 6 V16 nodes, unified dashboard (326 checks), patient explorer with streaming. **V18**: CPU parity — Rust 84× faster than Python across V16 primitives.
@@ -640,7 +641,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 928 tests
+cargo test --workspace                  # 960+ tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

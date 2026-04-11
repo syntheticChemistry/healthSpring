@@ -2,6 +2,7 @@
 //! Stage unit tests.
 
 use super::*;
+use healthspring_barracuda::tolerances::MACHINE_EPSILON;
 use healthspring_forge::Substrate;
 
 #[test]
@@ -80,7 +81,7 @@ fn reduce_sum() {
     let input = [1.0, 2.0, 3.0];
     let r = stage.execute(Some(&input));
     assert_eq!(r.output_data.len(), 1);
-    assert!((r.output_data[0] - 6.0).abs() < 1e-10);
+    assert!((r.output_data[0] - 6.0).abs() < MACHINE_EPSILON);
 }
 
 #[test]
@@ -95,7 +96,7 @@ fn reduce_mean() {
     let input = [2.0, 4.0, 6.0];
     let r = stage.execute(Some(&input));
     assert_eq!(r.output_data.len(), 1);
-    assert!((r.output_data[0] - 4.0).abs() < 1e-10);
+    assert!((r.output_data[0] - 4.0).abs() < MACHINE_EPSILON);
 }
 
 #[test]
@@ -380,7 +381,7 @@ fn bray_curtis_pairwise_dissimilarity() {
     assert!(r.success);
     assert_eq!(r.output_data.len(), 3, "3 pairs from 3 communities");
     assert!(
-        r.output_data[0].abs() < 1e-10,
+        r.output_data[0].abs() < MACHINE_EPSILON,
         "identical communities → BC = 0"
     );
     assert!(r.output_data[1] > 0.0, "different communities → BC > 0");
@@ -418,8 +419,8 @@ fn exp_decay_transform_reduces_values() {
     let r = stage.execute(Some(&input));
     assert!(r.success);
     let factor = (-1.0_f64).exp();
-    assert!((r.output_data[0] - 10.0 * factor).abs() < 1e-10);
-    assert!((r.output_data[1] - 20.0 * factor).abs() < 1e-10);
+    assert!((r.output_data[0] - 10.0 * factor).abs() < MACHINE_EPSILON);
+    assert!((r.output_data[1] - 20.0 * factor).abs() < MACHINE_EPSILON);
 }
 
 #[test]

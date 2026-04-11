@@ -274,3 +274,24 @@ capabilities = [
 
 [graph.node.env]
 HEALTHSPRING_FAMILY_ID = "default"
+
+# -- Node 9 (optional): Squirrel (AI inference — neuralSpring provider) ----
+# Blocked: Squirrel ecoBin compliance + stable inference.* capability set.
+# When available, healthSpring gains inference.complete, inference.embed,
+# inference.models for clinical decision support via IPC — no code changes.
+# See docs/PRIMAL_GAPS.md §9.
+[[graph.node]]
+name = "squirrel_b"
+binary = "squirrel_primal"
+order = 25
+required = false
+depends_on = ["beardog", "songbird"]
+health_method = "health.liveness"
+by_capability = "inference"
+capabilities = [
+    "inference.complete",
+    "inference.embed",
+    "inference.models",
+    "ai.complete",
+    "ai.models",
+]

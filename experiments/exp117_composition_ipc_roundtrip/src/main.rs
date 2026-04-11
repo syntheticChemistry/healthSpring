@@ -51,23 +51,23 @@ fn validate_rpc_serialization(h: &mut ValidationHarness) {
 /// Proto-nucleate `health.*` aliases resolve to `science.*` methods.
 fn validate_proto_aliases(h: &mut ValidationHarness) {
     let caps = dispatch::registered_capabilities();
-    let methods: Vec<&str> = caps.iter().map(|(m, _)| *m).collect();
+    let has = |name: &str| caps.iter().any(|(m, _)| *m == name);
 
     h.check_bool(
         "hill_dose_response is registered",
-        methods.contains(&"science.pkpd.hill_dose_response"),
+        has("science.pkpd.hill_dose_response"),
     );
     h.check_bool(
         "assess_patient is registered",
-        methods.contains(&"science.diagnostic.assess_patient"),
+        has("science.diagnostic.assess_patient"),
     );
     h.check_bool(
         "patient_parameterize is registered",
-        methods.contains(&"science.clinical.patient_parameterize"),
+        has("science.clinical.patient_parameterize"),
     );
     h.check_bool(
         "population_montecarlo is registered",
-        methods.contains(&"science.diagnostic.population_montecarlo"),
+        has("science.diagnostic.population_montecarlo"),
     );
 }
 
@@ -81,7 +81,10 @@ fn validate_health_probes(h: &mut ValidationHarness) {
 
     let params = serde_json::json!({"drug": "test", "concentration": 1.0});
     let result = dispatch::dispatch_science("science.pkpd.hill_dose_response", &params);
-    h.check_bool("science dispatch returns Some for valid method", result.is_some());
+    h.check_bool(
+        "science dispatch returns Some for valid method",
+        result.is_some(),
+    );
 
     let unknown = dispatch::dispatch_science("science.nonexistent.method", &params);
     h.check_bool("unknown method returns None", unknown.is_none());
@@ -95,7 +98,10 @@ fn validate_capability_surface(h: &mut ValidationHarness) {
 
     h.check_lower("registered capabilities >= 58", cap_count, 58.0);
 
-    let science_count = caps.iter().filter(|(m, _)| m.starts_with("science.")).count() as f64;
+    let science_count = caps
+        .iter()
+        .filter(|(m, _)| m.starts_with("science."))
+        .count() as f64;
     h.check_lower("science capabilities >= 55", science_count, 55.0);
 
     for (method, _domain) in &caps {
@@ -111,9 +117,9 @@ fn validate_capability_surface(h: &mut ValidationHarness) {
 /// The V49 `health.genomics` alias is wired and discoverable.
 fn validate_genomics_alias(h: &mut ValidationHarness) {
     let caps = dispatch::registered_capabilities();
-    let methods: Vec<&str> = caps.iter().map(|(m, _)| *m).collect();
     h.check_bool(
         "qs_gene_profile is registered (genomics target)",
-        methods.contains(&"science.microbiome.qs_gene_profile"),
+        caps.iter()
+            .any(|(m, _)| *m == "science.microbiome.qs_gene_profile"),
     );
 }

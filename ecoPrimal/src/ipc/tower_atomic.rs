@@ -19,9 +19,9 @@
 //!
 //! | Boundary | Bond type | Trust model | Encryption |
 //! |----------|-----------|-------------|------------|
-//! | Tower A (patient enclave) | Ionic | BearDog A enforces family-scoped trust | BearDog-encrypted at rest + in transit |
-//! | Tower B (analytics) | Ionic | BearDog B verifies Squirrel + analytics primals | BearDog-encrypted at rest + in transit |
-//! | Ionic bridge (A ↔ B) | Ionic | De-identified aggregates only; BearDog cross-family bond | No PII crosses; aggregates signed by BearDog A |
+//! | Tower A (patient enclave) | Ionic | `BearDog` A enforces family-scoped trust | `BearDog`-encrypted at rest + in transit |
+//! | Tower B (analytics) | Ionic | `BearDog` B verifies Squirrel + analytics primals | `BearDog`-encrypted at rest + in transit |
+//! | Ionic bridge (A ↔ B) | Ionic | De-identified aggregates only; `BearDog` cross-family bond | No PII crosses; aggregates signed by `BearDog` A |
 //! | Within-tower IPC | Covalent | Same-family trust; UDS-only | Platform socket permissions |
 //!
 //! ## Usage
@@ -107,8 +107,11 @@ impl TowerAtomic {
 
     /// Discover a primal that provides the given capability.
     ///
-    /// Queries the discovery primal's `net.discovery` service for a primal
-    /// socket advertising the requested capability.
+    /// Queries the discovery primal's Songbird service for a primal socket
+    /// advertising the requested capability. Tries the canonical
+    /// `discovery.find_by_capability` method first, falling back to the
+    /// legacy `net.discovery.find_by_capability` for backward compat
+    /// (see `docs/PRIMAL_GAPS.md` §3).
     ///
     /// # Errors
     ///
@@ -121,9 +124,16 @@ impl TowerAtomic {
 
         let result = super::rpc::try_send(
             &self.discovery_socket,
-            "net.discovery.find_by_capability",
+            "discovery.find_by_capability",
             &params,
-        )?;
+        )
+        .or_else(|_| {
+            super::rpc::try_send(
+                &self.discovery_socket,
+                "net.discovery.find_by_capability",
+                &params,
+            )
+        })?;
 
         result
             .get("socket_path")

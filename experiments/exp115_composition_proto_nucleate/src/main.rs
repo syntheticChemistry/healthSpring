@@ -11,8 +11,8 @@
 //! helpers, tower atomic structure, and IPC infrastructure readiness
 //! without requiring a running primal server.
 
-use healthspring_barracuda::ipc::socket;
 use healthspring_barracuda::ipc::dispatch::registered_capabilities;
+use healthspring_barracuda::ipc::socket;
 use healthspring_barracuda::validation::ValidationHarness;
 
 fn main() {
@@ -29,10 +29,7 @@ fn main() {
 
     let socket_dir = socket::resolve_socket_dir();
     let dir_str = socket_dir.to_string_lossy();
-    h.check_bool(
-        "Socket dir contains biomeos",
-        dir_str.contains("biomeos"),
-    );
+    h.check_bool("Socket dir contains biomeos", dir_str.contains("biomeos"));
 
     // ── Orchestrator socket resolution ──────────────────────────────
     let orch = socket::orchestrator_socket();

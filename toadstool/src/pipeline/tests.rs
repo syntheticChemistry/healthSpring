@@ -224,7 +224,7 @@ fn pipeline_data_flow_correctness() {
     for i in 0..5 {
         let expected = gen_out[i] * gen_out[i];
         assert!(
-            (square_out[i] - expected).abs() < 1e-10,
+            (square_out[i] - expected).abs() < healthspring_barracuda::tolerances::MACHINE_EPSILON,
             "square[{i}] = {} expected {}",
             square_out[i],
             expected
@@ -232,7 +232,7 @@ fn pipeline_data_flow_correctness() {
     }
     let expected_sum: f64 = square_out.iter().sum();
     assert!(
-        (sum_out[0] - expected_sum).abs() < 1e-10,
+        (sum_out[0] - expected_sum).abs() < healthspring_barracuda::tolerances::MACHINE_EPSILON,
         "sum = {} expected {}",
         sum_out[0],
         expected_sum
@@ -331,7 +331,9 @@ fn pipeline_transform_square() {
     assert_eq!(out.len(), 3);
     for (i, &out_val) in out.iter().enumerate() {
         let inp = result.stage_results[0].output_data[i];
-        assert!(inp.mul_add(-inp, out_val).abs() < 1e-10);
+        assert!(
+            inp.mul_add(-inp, out_val).abs() < healthspring_barracuda::tolerances::MACHINE_EPSILON
+        );
     }
 }
 

@@ -185,6 +185,7 @@ impl Tower {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use healthspring_barracuda::tolerances::HALF_LIFE_POINT;
 
     fn test_node() -> Node {
         Node {
@@ -316,6 +317,6 @@ mod tests {
     #[test]
     fn pcie_gen4_bandwidth() {
         let bw = PcieGeneration::Gen4.lane_bandwidth_gbps();
-        assert!((bw - 1.969).abs() < 1e-6);
+        assert!((bw - 1.969).abs() < HALF_LIFE_POINT);
     }
 }

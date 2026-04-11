@@ -13,11 +13,14 @@
 //! The [`PROVENANCE_REGISTRY`] enumerates all Python control scripts in
 //! `control/` for completeness verification.
 
+mod records_infra;
+mod records_science;
 mod registry;
 
-/// All registered Python control scripts under `control/`, for completeness checks.
-pub use registry::PROVENANCE_REGISTRY;
-pub use registry::{distinct_tracks, record_for_experiment, records_for_track, tracks};
+pub use registry::{
+    PROVENANCE_INFRA, PROVENANCE_SCIENCE, all_records, distinct_tracks, record_for_experiment,
+    records_for_track, registry_len, tracks,
+};
 
 use serde::{Deserialize, Serialize};
 
@@ -223,8 +226,7 @@ mod tests {
             .join("..")
             .join("control");
         let py_count = count_py_files(&control_dir);
-        let py_entries = PROVENANCE_REGISTRY
-            .iter()
+        let py_entries = all_records()
             .filter(|r| !r.python_script.is_empty())
             .count();
         assert_eq!(
@@ -247,8 +249,7 @@ mod tests {
                 }
             }
         }
-        let registry_experiments: Vec<&str> = PROVENANCE_REGISTRY
-            .iter()
+        let registry_experiments: Vec<&str> = all_records()
             .filter(|r| r.experiment.starts_with("exp"))
             .filter(|r| {
                 r.experiment

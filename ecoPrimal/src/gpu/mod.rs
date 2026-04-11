@@ -124,7 +124,7 @@ pub const fn gpu_available() -> bool {
 ///
 /// All six local WGSL shaders have been absorbed upstream to barraCuda.
 /// Removal sequence:
-/// 1. **Tier A** (Hill, PopPK, Diversity): remove once `execute_fused_local`
+/// 1. **Tier A** (Hill, `PopPK`, Diversity): remove once `execute_fused_local`
 ///    is replaced by `TensorSession` — these are only retained for the
 ///    single-encoder fusion path that cannot mix barraCuda encoders.
 /// 2. **Tier B** (MM, SCFA, BeatClassify): remove once

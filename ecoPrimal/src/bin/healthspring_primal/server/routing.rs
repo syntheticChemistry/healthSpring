@@ -237,7 +237,9 @@ fn handle_primal_forward(params: &serde_json::Value) -> serde_json::Value {
         .cloned()
         .unwrap_or_else(|| serde_json::json!({}));
 
-    let Some(target_socket) = socket::discover_primal(target) else {
+    let target_socket =
+        socket::discover_by_capability_public(target).or_else(|| socket::discover_primal(target));
+    let Some(target_socket) = target_socket else {
         return serde_json::json!({
             "error": "primal_not_found",
             "target": target,

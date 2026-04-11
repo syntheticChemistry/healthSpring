@@ -469,12 +469,7 @@ mod tests {
     }
 
     fn arb_encoding() -> impl Strategy<Value = &'static str> {
-        prop_oneof![
-            Just("json"),
-            Just("cbor"),
-            Just("msgpack"),
-            Just("raw"),
-        ]
+        prop_oneof![Just("json"), Just("cbor"), Just("msgpack"), Just("raw"),]
     }
 
     fn arb_algorithm() -> impl Strategy<Value = &'static str> {

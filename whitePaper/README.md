@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** March 23, 2026
-**Status:** V48 — Composition Validation & ecoBin Harvest. 88 experiments, 940+ tests, 80+ JSON-RPC capabilities (58 science + 22 infra), 54 Python baselines, 73 composition validation checks. ecoBin harvested to plasmidBin. barraCuda v0.3.11. Zero clippy, zero unsafe.
+**Date:** April 11, 2026
+**Status:** V50 — Composition Evolution. Python was the validation target for Rust. Now Rust and Python are both validation targets for NUCLEUS composition patterns. 89 experiments, 960+ tests, 80+ JSON-RPC capabilities (62 science + 22 infra), 54 Python baselines, 89 provenance entries (100% coverage), 6 Tier 4 composition experiments validating IPC dispatch parity. ecoBin harvested to plasmidBin. barraCuda v0.3.11. Zero clippy, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -11,13 +11,19 @@
 
 healthSpring is a **Spring** — a validation project within the ecoPrimals ecosystem.
 Its job is to prove that published health science algorithms can be faithfully ported
-from Python to Rust to GPU, producing identical results at every stage, and then to
-build usable clinical applications from those validated foundations.
+from Python to Rust to GPU, producing identical results at every stage, composed into
+NUCLEUS primal compositions via IPC, and deployed as sovereign health applications.
 
 **The one-sentence version**: We reproduce published health science papers in Python,
-rewrite them in Rust (with GPU acceleration), verify the results match, and then
-use that validated math to build real tools — drug dosing, colonization resistance
-scoring, biosignal processing, and drug discovery pipelines.
+rewrite them in Rust (with GPU acceleration), verify the results match, compose them
+into primal services via JSON-RPC, and then deploy those validated compositions as
+real tools — drug dosing, colonization resistance scoring, biosignal processing,
+and drug discovery pipelines.
+
+**The validation ladder**: Python was the validation target for Rust. Now both Python
+and Rust are validation targets for the primal composition layer. Tier 4 experiments
+(exp112–117) prove that dispatching science through JSON-RPC IPC produces bit-identical
+results to calling Rust functions directly — the composition is faithful to the science.
 
 **As of V21**, we are expanding from human health to the **health of living systems**.
 The math is species-agnostic: the Hill equation, Anderson localization, Bateman PK,

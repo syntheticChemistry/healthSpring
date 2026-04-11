@@ -4,6 +4,33 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V50 — 2026-04-11 — Composition Evolution
+
+### Added
+- Optional Squirrel node in `healthspring_niche_deploy.toml` (`required = false`) for
+  `inference.*` capabilities when available.
+- Dual-method discovery fallback in `tower_atomic.rs`: tries `discovery.find_by_capability`
+  first, falls back to legacy `net.discovery.find_by_capability`.
+- Provenance registry split: `registry.rs` (80 LOC logic) + `records_science.rs` (460 LOC,
+  Tracks 1–5) + `records_infra.rs` (720 LOC, Tracks 6–10+). All under 1000 LOC.
+- V50 handoff: `wateringHole/handoffs/HEALTHSPRING_V50_COMPOSITION_EVOLUTION_HANDOFF_APR11_2026.md`.
+- Cross-team primal evolution handoff for barraCuda, toadStool, primalSpring, biomeOS.
+
+### Changed
+- `primal.forward` routing: capability-based discovery first, name-based fallback.
+- exp112/exp113 refactored: `main()` extracted into domain-coherent helper functions.
+- exp114: `if_same_then_else` and `unnecessary_map_or` clippy errors fixed.
+- exp116: `overly_complex_bool_expr` tautologies fixed.
+- Inline tolerance values in toadstool/metalForge tests migrated to `tolerances::*` constants.
+- Doc backticks added for `BearDog`, `PopPK` references in module-level docs.
+- `PRIMAL_GAPS.md` updated to V50: §3 (dual discovery fallback), §9 (Squirrel optional node).
+
+### Fixed
+- 4 clippy errors in composition experiments (exp112, exp114, exp116).
+- 7 clippy warnings in library code (doc formatting, hex literals, paragraph breaks).
+- 579-line `cargo fmt` drift resolved.
+- `provenance/registry.rs` split from 1224 LOC to 3 files (all under 1000 LOC standard).
+
 ## V49 — 2026-04-10 — Composition Audit Remediation
 
 ### Added

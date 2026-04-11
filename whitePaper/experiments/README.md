@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V49 — Composition Audit Remediation. 89 experiments (83 science + 6 composition Tier 4), 940+ tests, 84 JSON-RPC capabilities (62 science + 22 infra), 89 provenance entries (100% coverage). Python → Rust → Primal composition validation.
-**Last Updated**: April 10, 2026
+**Status**: V50 — Composition Evolution. 89 experiments (83 science + 6 composition Tier 4), 960+ tests, 80+ JSON-RPC capabilities (62 science + 22 infra), 89 provenance entries (100% coverage). Python and Rust are both validation targets for NUCLEUS composition patterns.
+**Last Updated**: April 11, 2026
 
 ---
 

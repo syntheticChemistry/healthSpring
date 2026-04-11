@@ -163,7 +163,7 @@ fn execute_cpu_beat_classify_batch(beats: &[Vec<f64>], templates: &[Vec<f64>]) -
 /// Michaelis-Menten batch parity with the WGSL kernel.
 fn wang_hash_uniform(seed: u32) -> f64 {
     let mut s = seed;
-    s = (s ^ 61) ^ (s >> 16);
+    s = (s ^ 0x3d) ^ (s >> 16);
     s = s.wrapping_mul(9);
     s = s ^ (s >> 4);
     s = s.wrapping_mul(0x27d4_eb2d);

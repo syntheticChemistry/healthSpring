@@ -25,12 +25,8 @@ fn main() {
     let mut failed_methods = Vec::new();
     for (method, _domain) in &caps {
         let empty_result = dispatch_science(method, &serde_json::json!({}));
-        if let Some(v) = empty_result {
-            if v.get("error").is_some() {
-                dispatched_count += 1;
-            } else {
-                dispatched_count += 1;
-            }
+        if empty_result.is_some() {
+            dispatched_count += 1;
         } else {
             failed_methods.push(*method);
         }
@@ -49,7 +45,9 @@ fn main() {
     for (method, _domain) in &caps {
         let result = dispatch_science(method, &serde_json::json!({}));
         if let Some(v) = result {
-            if v.get("error").map_or(false, |e| e.as_str() == Some("missing_params")) {
+            if v.get("error")
+                .is_some_and(|e| e.as_str() == Some("missing_params"))
+            {
                 structured_errors += 1;
             }
         }
@@ -65,10 +63,7 @@ fn main() {
         "concentration": 10.0, "ic50": 10.0, "hill_n": 1.0, "e_max": 1.0,
     });
     let direct = dispatch_science("science.pkpd.hill_dose_response", &hill_params);
-    let has_direct = direct
-        .as_ref()
-        .and_then(|v| v.get("response"))
-        .is_some();
+    let has_direct = direct.as_ref().and_then(|v| v.get("response")).is_some();
     h.check_bool("Direct Hill dispatch returns response", has_direct);
 
     // health.clinical → science.diagnostic.assess_patient
@@ -77,7 +72,10 @@ fn main() {
     });
     let clinical = dispatch_science("science.diagnostic.assess_patient", &patient_params);
     let has_clinical = clinical.is_some();
-    h.check_bool("Clinical assess_patient dispatch returns result", has_clinical);
+    h.check_bool(
+        "Clinical assess_patient dispatch returns result",
+        has_clinical,
+    );
 
     // ── Domain coverage: at least one handler per domain ────────────
     let domains: Vec<&str> = caps.iter().map(|(_, d)| *d).collect();
@@ -95,18 +93,17 @@ fn main() {
     ];
     for domain in &expected_domains {
         let present = domains.iter().any(|d| d == domain);
-        h.check_bool(&format!("Domain '{domain}' has registered handlers"), present);
+        h.check_bool(
+            &format!("Domain '{domain}' has registered handlers"),
+            present,
+        );
     }
 
     // ── Determinism: registry is stable across calls ────────────────
     let caps2 = registered_capabilities();
     h.check_bool(
         "Registry is deterministic",
-        caps.len() == caps2.len()
-            && caps
-                .iter()
-                .zip(caps2.iter())
-                .all(|((a, _), (b, _))| a == b),
+        caps.len() == caps2.len() && caps.iter().zip(caps2.iter()).all(|((a, _), (b, _))| a == b),
     );
 
     h.exit();

@@ -20,12 +20,10 @@ use healthspring_barracuda::pkpd::{self, ALL_INHIBITORS};
 use healthspring_barracuda::tolerances;
 use healthspring_barracuda::validation::ValidationHarness;
 
-fn main() {
-    let mut h = ValidationHarness::new("Exp112 Composition PK/PD Dispatch Parity");
-
-    // ── Hill dose-response: direct vs dispatched ────────────────────
+fn validate_hill_parity(h: &mut ValidationHarness) {
     for drug in ALL_INHIBITORS {
-        let direct = pkpd::hill_dose_response(drug.ic50_jak1_nm, drug.ic50_jak1_nm, drug.hill_n, 1.0);
+        let direct =
+            pkpd::hill_dose_response(drug.ic50_jak1_nm, drug.ic50_jak1_nm, drug.hill_n, 1.0);
 
         let params = serde_json::json!({
             "concentration": drug.ic50_jak1_nm,
@@ -44,11 +42,15 @@ fn main() {
                 tolerances::DETERMINISM,
             );
         } else {
-            h.check_bool(&format!("{} Hill dispatch returned result", drug.name), false);
+            h.check_bool(
+                &format!("{} Hill dispatch returned result", drug.name),
+                false,
+            );
         }
     }
+}
 
-    // ── One-compartment IV: direct vs dispatched ────────────────────
+fn validate_compartment_and_auc(h: &mut ValidationHarness) {
     let direct_iv = pkpd::pk_iv_bolus(100.0, 10.0, 6.93, 0.0);
     let params_iv = serde_json::json!({
         "dose_mg": 100.0, "vd": 10.0, "half_life_hr": 6.93, "t": 0.0,
@@ -56,12 +58,16 @@ fn main() {
     let dispatched_iv = dispatch_science("science.pkpd.one_compartment_pk", &params_iv)
         .and_then(|v| v.get("concentration").and_then(serde_json::Value::as_f64));
     if let Some(ipc_val) = dispatched_iv {
-        h.check_abs("1-comp IV C(0) IPC parity", ipc_val, direct_iv, tolerances::DETERMINISM);
+        h.check_abs(
+            "1-comp IV C(0) IPC parity",
+            ipc_val,
+            direct_iv,
+            tolerances::DETERMINISM,
+        );
     } else {
         h.check_bool("1-comp IV dispatch returned result", false);
     }
 
-    // ── AUC trapezoidal: direct vs dispatched ───────────────────────
     let times = vec![0.0, 1.0, 2.0, 3.0];
     let concs = vec![10.0, 7.0, 3.0, 1.0];
     let direct_auc = pkpd::auc_trapezoidal(&times, &concs);
@@ -71,12 +77,16 @@ fn main() {
     let dispatched_auc = dispatch_science("science.pkpd.auc_trapezoidal", &params_auc)
         .and_then(|v| v.get("auc").and_then(serde_json::Value::as_f64));
     if let Some(ipc_val) = dispatched_auc {
-        h.check_abs("AUC trapezoidal IPC parity", ipc_val, direct_auc, tolerances::DETERMINISM);
+        h.check_abs(
+            "AUC trapezoidal IPC parity",
+            ipc_val,
+            direct_auc,
+            tolerances::DETERMINISM,
+        );
     } else {
         h.check_bool("AUC dispatch returned result", false);
     }
 
-    // ── Allometric scaling: direct vs dispatched ──────────────────────
     let direct_allo = pkpd::allometric_scale(10.0, 70.0, 70.0, 0.75);
     let params_allo = serde_json::json!({
         "param_animal": 10.0, "bw_animal": 70.0, "bw_human": 70.0,
@@ -93,13 +103,10 @@ fn main() {
     } else {
         h.check_bool("Allometric dispatch returned result", false);
     }
+}
 
-    // ── Michaelis-Menten simulation: direct vs dispatched ───────────
-    let mm_params = pkpd::MichaelisMentenParams {
-        vmax: pkpd::PHENYTOIN_PARAMS.vmax,
-        km: pkpd::PHENYTOIN_PARAMS.km,
-        vd: pkpd::PHENYTOIN_PARAMS.vd,
-    };
+fn validate_mm_and_pop(h: &mut ValidationHarness) {
+    let mm_params = pkpd::PHENYTOIN_PARAMS;
     let (_, direct_concs) = pkpd::mm_pk_simulate(&mm_params, 25.0, 72.0, 0.1);
     let direct_auc_mm = pkpd::mm_auc(&direct_concs, 0.1);
     let params_mm = serde_json::json!({
@@ -108,13 +115,23 @@ fn main() {
     let dispatched_mm = dispatch_science("science.pkpd.michaelis_menten_nonlinear", &params_mm);
     if let Some(v) = &dispatched_mm {
         if let Some(ipc_auc) = v.get("auc").and_then(serde_json::Value::as_f64) {
-            h.check_abs("MM AUC IPC parity", ipc_auc, direct_auc_mm, tolerances::DETERMINISM);
+            h.check_abs(
+                "MM AUC IPC parity",
+                ipc_auc,
+                direct_auc_mm,
+                tolerances::DETERMINISM,
+            );
         } else {
             h.check_bool("MM dispatch returned auc", false);
         }
         if let Some(c_final) = v.get("c_final").and_then(serde_json::Value::as_f64) {
             let direct_final = direct_concs.last().copied().unwrap_or(0.0);
-            h.check_abs("MM c_final IPC parity", c_final, direct_final, tolerances::DETERMINISM);
+            h.check_abs(
+                "MM c_final IPC parity",
+                c_final,
+                direct_final,
+                tolerances::DETERMINISM,
+            );
         } else {
             h.check_bool("MM dispatch returned c_final", false);
         }
@@ -123,11 +140,13 @@ fn main() {
         h.check_bool("MM dispatch returned c_final", false);
     }
 
-    // ── Population PK: dispatched returns valid structure ────────────
     let params_pop = serde_json::json!({"n": 10, "seed": 42});
     let dispatched_pop = dispatch_science("science.pkpd.population_pk", &params_pop);
     if let Some(v) = &dispatched_pop {
-        let has_auc_mean = v.get("auc_mean").and_then(serde_json::Value::as_f64).is_some();
+        let has_auc_mean = v
+            .get("auc_mean")
+            .and_then(serde_json::Value::as_f64)
+            .is_some();
         let has_n = v.get("n").and_then(serde_json::Value::as_u64) == Some(10);
         h.check_bool("PopPK IPC returns auc_mean", has_auc_mean);
         h.check_bool("PopPK IPC returns correct n", has_n);
@@ -135,8 +154,15 @@ fn main() {
         h.check_bool("PopPK dispatch returned result", false);
         h.check_bool("PopPK IPC returns correct n", false);
     }
+}
 
-    // ── Determinism: same dispatch twice ────────────────────────────
+fn main() {
+    let mut h = ValidationHarness::new("Exp112 Composition PK/PD Dispatch Parity");
+
+    validate_hill_parity(&mut h);
+    validate_compartment_and_auc(&mut h);
+    validate_mm_and_pop(&mut h);
+
     let params_det = serde_json::json!({
         "concentration": 15.0, "ic50": 10.0, "hill_n": 2.0, "e_max": 1.0,
     });

@@ -374,6 +374,7 @@ pub const TOX_IPR_LOCALIZED: f64 = 0.50;
 
 /// Cross-spring hormesis tolerance: maximum acceptable drift between
 /// healthSpring and wetSpring biphasic models at shared parameter sets.
+///
 /// Both models use algebraically identical formulae when stimulation
 /// Hill n=1; this tolerance covers floating-point implementation variance.
 pub const HORMESIS_CROSS_SPRING: f64 = 1e-12;

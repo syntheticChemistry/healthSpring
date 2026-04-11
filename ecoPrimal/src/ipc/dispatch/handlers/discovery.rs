@@ -8,10 +8,9 @@ use crate::discovery::{compound, fibrosis, hts, matrix_score};
 
 /// MATRIX drug repurposing score with Anderson geometry.
 pub fn dispatch_matrix_score(params: &Value) -> Value {
-    let (Some(on_target_ic50), Some(off_target_ic50s)) = (
-        f(params, "on_target_ic50"),
-        fa(params, "off_target_ic50s"),
-    ) else {
+    let (Some(on_target_ic50), Some(off_target_ic50s)) =
+        (f(params, "on_target_ic50"), fa(params, "off_target_ic50s"))
+    else {
         return missing("on_target_ic50, off_target_ic50s");
     };
     let localization_length = f(params, "localization_length").unwrap_or(10.0);
@@ -54,7 +53,10 @@ pub fn dispatch_hts_analysis(params: &Value) -> Value {
         Vec::new()
     };
 
-    let hit_count = hits.iter().filter(|h| h.classification != hts::HitClass::Inactive).count();
+    let hit_count = hits
+        .iter()
+        .filter(|h| h.classification != hts::HitClass::Inactive)
+        .count();
 
     serde_json::json!({
         "z_prime": z_prime,
@@ -71,10 +73,9 @@ pub fn dispatch_hts_analysis(params: &Value) -> Value {
 
 /// Compound library IC50 profiling.
 pub fn dispatch_compound_library(params: &Value) -> Value {
-    let (Some(concentrations), Some(responses)) = (
-        fa(params, "concentrations"),
-        fa(params, "responses"),
-    ) else {
+    let (Some(concentrations), Some(responses)) =
+        (fa(params, "concentrations"), fa(params, "responses"))
+    else {
         return missing("concentrations, responses");
     };
     let estimate = compound::estimate_ic50(&concentrations, &responses);
