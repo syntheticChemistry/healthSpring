@@ -4,7 +4,38 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
-## [Unreleased] — V48
+## V49 — 2026-04-10 — Composition Audit Remediation
+
+### Added
+- `health.genomics` capability + proto-nucleate alias → `science.microbiome.qs_gene_profile`.
+  All five `health.*` proto-nucleate aliases are now wired.
+- `exp117_composition_ipc_roundtrip` — Tier 4 IPC wire protocol validation (71 checks):
+  round-trip serialization, proto-nucleate alias dispatch, health probe routing, full
+  capability surface completeness.
+- Deploy graph fragment metadata: `fragments`, `particle_profile`, `proto_nucleate`,
+  `[graph.bonding]` with bond type, trust model, encryption tiers per atomic boundary.
+- Bonding policy matrix documented in `tower_atomic.rs` module docs.
+- WGSL shader removal plan documented in `gpu/mod.rs` (all 6 absorbed upstream).
+- 36 new provenance registry entries for non-Python experiments → 89 total (100% coverage).
+- `PRIMAL_GAPS.md` gaps §8 (deploy fragment metadata — fixed) and §9 (Squirrel in deploy).
+- V49 handoff: `wateringHole/handoffs/HEALTHSPRING_V49_COMPOSITION_AUDIT_HANDOFF_APR10_2026.md`.
+- V49 classification table for 21 tolerance-exempt experiments in `TOLERANCE_REGISTRY.md`.
+
+### Changed
+- barraCuda pin updated from v0.3.7 (`c04d848`) to v0.3.11 (`7f6649f`).
+- `uncertainty::std_dev` delegated to `barracuda::stats::correlation::std_dev`.
+- Sovereign dispatch error messages now name each unsupported op + reference EVOLUTION_MAP.
+- `provenance::tests::registry_complete` split into `registry_covers_all_python_scripts`
+  and `registry_covers_all_experiments` (decoupled from 1:1 Python file assumption).
+- All spec docs (`BARRACUDA_REQUIREMENTS`, `EVOLUTION_MAP`, `TOLERANCE_REGISTRY`) updated to V49.
+
+### Fixed
+- `cross_validate.py`: `TOL_AUC` aliased to `LEVEL_SPACING_RATIO` (0.02) instead of
+  `AUC_TRAPEZOIDAL` (0.01). Fixed to use correct registry constant.
+- CI: added `pip install -r control/requirements.txt` before Python cross-validation.
+- `PRIMAL_GAPS.md` gap §1 resolved — `health.*` science aliases implemented (option a).
+
+## V48 — 2026-04-10
 
 ### Added
 - `docs/PRIMAL_GAPS.md` — primal composition gap registry per NUCLEUS alignment protocol.
@@ -16,29 +47,16 @@ This project uses internal versioning (V-series) for development milestones.
 - Infrastructure capabilities in YAML niche manifest (`niches/healthspring-health.yaml`).
 - Cross-compile CI targets (`x86_64-unknown-linux-musl`, `aarch64-unknown-linux-musl`).
 - GPU CI job enabled as weekly scheduled run.
-- **Tier 4 composition validation** — 5 new experiments (exp112–exp116, 73 checks total):
-  - `exp112_composition_pkpd` — IPC dispatch vs direct Rust for PK/PD (12 checks).
-  - `exp113_composition_microbiome` — IPC dispatch vs direct Rust for microbiome (10 checks).
-  - `exp114_composition_health_triad` — capability surface + domain coverage (17 checks).
-  - `exp115_composition_proto_nucleate` — proto-nucleate alignment + socket resolution (20 checks).
-  - `exp116_composition_provenance` — provenance lifecycle + session round-trip (14 checks).
-- `ecoPrimal/tests/integration_composition.rs` — 12 composition integration tests.
-- `specs/COMPOSITION_VALIDATION.md` — Tier 4 validation specification.
-- CI `composition` job running all composition tests and experiments.
+- **Tier 4 composition validation** — 5 new experiments (exp112–exp116, 73 checks total).
 - ecoBin static-PIE binary (x86_64-musl, 2.5 MB) harvested to `infra/plasmidBin/healthspring/`.
-- CI cross-compile job now uploads ecoBin artifacts and verifies static linkage.
+- CI cross-compile job with artifact upload and static linkage verification.
 
 ### Changed
-- `health.readiness` now gates `ready` on science dispatch status instead of
-  hardcoded `true`.
-- Inline tolerance literals in integration tests replaced with named constants
-  from `tolerances.rs`.
-- `build_semantic_mappings()` refactored from large `json!` macro to
-  programmatic map construction (avoids recursion limit with 80+ entries).
+- `health.readiness` gates on science dispatch status.
+- `build_semantic_mappings()` refactored to programmatic map construction.
 
 ### Fixed
-- YAML niche manifest now includes all 89 capabilities the binary serves
-  (was missing 14 infrastructure capabilities).
+- YAML niche manifest now includes all capabilities the binary serves.
 
 ## V47 — 2026-04-07
 

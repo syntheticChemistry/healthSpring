@@ -99,6 +99,7 @@ members = [
     "experiments/exp114_composition_health_triad",
     "experiments/exp115_composition_proto_nucleate",
     "experiments/exp116_composition_provenance",
+    "experiments/exp117_composition_ipc_roundtrip",
 ]
 
 [workspace.package]

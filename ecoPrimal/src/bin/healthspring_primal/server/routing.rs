@@ -43,6 +43,7 @@ pub fn dispatch_request(
 fn resolve_proto_alias(method: &str) -> Option<&'static str> {
     match method {
         "health.pharmacology" => Some("science.pkpd.hill_dose_response"),
+        "health.genomics" => Some("science.microbiome.qs_gene_profile"),
         "health.clinical" => Some("science.diagnostic.assess_patient"),
         "health.de_identify" => Some("science.clinical.patient_parameterize"),
         "health.aggregate" => Some("science.diagnostic.population_montecarlo"),

@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V48 — Composition Validation & ecoBin Harvest. 940+ tests, 88 experiments (83 science + 5 composition), 73 composition validation checks. ecoBin harvested to plasmidBin. 80+ capabilities (58 science + 22 infra). `resilient_send` for IPC. Proto-nucleate aliases. barraCuda v0.3.11. Zero clippy (pedantic+nursery), zero unsafe.
+**Status**: V49 — Composition Audit Remediation. 940+ tests, 89 experiments (83 science + 6 composition), 89 provenance entries (100% coverage). All 5 `health.*` proto-nucleate aliases wired. Deploy graphs carry fragment metadata + bonding policy. barraCuda v0.3.11 (7f6649f). ecoBin 2.5 MB. Zero clippy, zero unsafe.
 **Last Updated**: April 10, 2026
 
 ---
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V48** | [Composition Validation & ecoBin](handoffs/HEALTHSPRING_V48_COMPOSITION_VALIDATION_ECOBIN_HANDOFF_APR10_2026.md) | Apr 10 | Tier 4 composition validation (73 checks), ecoBin harvest, IPC resilience, proto-nucleate aliases. Guidance for all teams. |
+| **V49** | [Composition Audit Remediation](handoffs/HEALTHSPRING_V49_COMPOSITION_AUDIT_HANDOFF_APR10_2026.md) | Apr 10 | Full audit remediation. 89 provenance entries, all proto-nucleate aliases, deploy graph bonding, exp117 IPC validation. Primal evolution guidance for all teams. |
+| **V48** | [Composition Validation & ecoBin](handoffs/HEALTHSPRING_V48_COMPOSITION_VALIDATION_ECOBIN_HANDOFF_APR10_2026.md) | Apr 10 | Tier 4 composition validation (73 checks), ecoBin harvest. |
 | | *V1–V47 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive

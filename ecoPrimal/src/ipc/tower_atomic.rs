@@ -15,6 +15,15 @@
 //! 3. **Bootstrap readiness**: Check whether the Tower Atomic is available
 //!    on the local machine.
 //!
+//! ## Bonding Policy (healthSpring proto-nucleate)
+//!
+//! | Boundary | Bond type | Trust model | Encryption |
+//! |----------|-----------|-------------|------------|
+//! | Tower A (patient enclave) | Ionic | BearDog A enforces family-scoped trust | BearDog-encrypted at rest + in transit |
+//! | Tower B (analytics) | Ionic | BearDog B verifies Squirrel + analytics primals | BearDog-encrypted at rest + in transit |
+//! | Ionic bridge (A ↔ B) | Ionic | De-identified aggregates only; BearDog cross-family bond | No PII crosses; aggregates signed by BearDog A |
+//! | Within-tower IPC | Covalent | Same-family trust; UDS-only | Platform socket permissions |
+//!
 //! ## Usage
 //!
 //! ```rust,no_run

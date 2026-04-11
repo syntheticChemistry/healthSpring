@@ -218,17 +218,50 @@ mod tests {
     }
 
     #[test]
-    fn registry_complete() {
+    fn registry_covers_all_python_scripts() {
         let control_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("..")
             .join("control");
-        let count = count_py_files(&control_dir);
+        let py_count = count_py_files(&control_dir);
+        let py_entries = PROVENANCE_REGISTRY
+            .iter()
+            .filter(|r| !r.python_script.is_empty())
+            .count();
         assert_eq!(
-            PROVENANCE_REGISTRY.len(),
-            count,
-            "PROVENANCE_REGISTRY has {} entries but control/ has {} .py files — add missing entries",
-            PROVENANCE_REGISTRY.len(),
-            count,
+            py_entries, py_count,
+            "Registry has {py_entries} Python entries but control/ has {py_count} .py files",
+        );
+    }
+
+    #[test]
+    fn registry_covers_all_experiments() {
+        let experiments_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("..")
+            .join("experiments");
+        let mut exp_count = 0_usize;
+        if let Ok(entries) = std::fs::read_dir(experiments_dir) {
+            for entry in entries.flatten() {
+                let name = entry.file_name();
+                if name.to_string_lossy().starts_with("exp") {
+                    exp_count += 1;
+                }
+            }
+        }
+        let registry_experiments: Vec<&str> = PROVENANCE_REGISTRY
+            .iter()
+            .filter(|r| r.experiment.starts_with("exp"))
+            .filter(|r| {
+                r.experiment
+                    .chars()
+                    .nth(3)
+                    .is_some_and(|c| c.is_ascii_digit())
+            })
+            .map(|r| r.experiment)
+            .collect();
+        assert!(
+            registry_experiments.len() >= exp_count,
+            "Registry has {} experiment entries but experiments/ has {exp_count} crates",
+            registry_experiments.len(),
         );
     }
 }

@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-04-10
-**healthSpring version**: V48 (0.8.0)
+**healthSpring version**: V49 (0.9.0)
 
 ---
 
@@ -31,8 +31,11 @@ will not match what healthSpring advertises via `capability.list`.
 Option (b) is preferred — it avoids a parallel namespace and keeps `health.*`
 reserved for probes and composition health per the semantic naming standard.
 
-**Status**: healthSpring V48 adds `inference.*` aliases; `health.*` science
-aliases deferred pending primalSpring decision on namespace.
+**Status**: healthSpring V49 implements option (a): `health.pharmacology`,
+`health.genomics`, `health.clinical`, `health.de_identify`, and
+`health.aggregate` are registered in `ALL_CAPABILITIES` and routed via
+`resolve_proto_alias()` in `server/routing.rs` to canonical `science.*`
+methods. Both namespaces coexist — `science.*` remains the primary surface.
 
 ---
 
@@ -159,14 +162,45 @@ to the YAML manifest.
 
 ---
 
+## 8. Deploy Graph Fragment Metadata
+
+**Gap**: Deploy graph TOMLs (`healthspring_niche_deploy.toml`,
+`healthspring_biomeos_deploy.toml`) listed NUCLEUS atomics in comments but
+lacked formal `fragments`, `particle_profile`, and `bonding` metadata keys.
+
+**Status**: Fixed in V49 — both deploy graphs now declare `fragments`,
+`particle_profile`, `proto_nucleate`, and `[graph.bonding]` with bond type,
+trust model, and encryption tiers per atomic boundary.
+
+---
+
+## 9. Squirrel Not in Deploy Graphs
+
+**Gap**: The proto-nucleate places `squirrel_b` in Tower B for clinical AI.
+healthSpring's deploy graphs do not include a Squirrel node —
+`inference_dispatch` discovers Squirrel dynamically by capability if running.
+
+**Impact**: Without Squirrel in the deploy graph, biomeOS will not start or
+verify Squirrel as part of the healthSpring niche deployment.
+
+**Proposed resolution**: Add optional Squirrel node to `healthspring_niche_deploy.toml`
+once Squirrel reaches ecoBin compliance and publishes stable `inference.*`
+capabilities.
+
+**Status**: Blocked on Squirrel/neuralSpring WGSL inference maturity.
+
+---
+
 ## Summary Matrix
 
 | # | Gap | Blocked On | healthSpring Action | primalSpring Action |
 |---|-----|------------|--------------------|--------------------|
-| 1 | Capability namespace | Naming decision | Add aliases if (a) | Update proto if (b) |
+| 1 | Capability namespace | — | **Fixed V49**: aliases added | Confirm alignment |
 | 2 | Ionic bridge | BearDog + NestGate | Wire when available | Evolve primals |
 | 3 | Discovery naming | Songbird alignment | Update tower_atomic | Standardize names |
 | 4 | Inference namespace | Squirrel alignment | `inference.*` added | Pick canonical ns |
-| 5 | Readiness semantics | — | Fixed | — |
-| 6 | Resilience wiring | — | `resilient_send` added | — |
-| 7 | YAML manifest | — | Fixed | — |
+| 5 | Readiness semantics | — | Fixed V48 | — |
+| 6 | Resilience wiring | — | Fixed V48 | — |
+| 7 | YAML manifest | — | Fixed V48 | — |
+| 8 | Deploy fragments | — | **Fixed V49**: metadata added | — |
+| 9 | Squirrel in deploy | Squirrel maturity | Add when ready | Evolve Squirrel |

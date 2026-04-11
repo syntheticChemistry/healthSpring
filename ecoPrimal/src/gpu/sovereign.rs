@@ -167,8 +167,21 @@ fn dispatch_via_sovereign(
             let results: Vec<f64> = bytemuck::cast_slice(&data).to_vec();
             Ok(GpuResult::HillSweep(results))
         }
-        _ => Err(GpuError::Dispatch(
-            "sovereign dispatch: only HillSweep supported; other ops use wgpu path".into(),
-        )),
+        GpuOp::PopulationPkBatch { .. }
+        | GpuOp::DiversityBatch { .. }
+        | GpuOp::MichaelisMentenBatch { .. }
+        | GpuOp::ScfaBatch { .. }
+        | GpuOp::BeatClassifyBatch { .. } => Err(GpuError::Dispatch(format!(
+            "sovereign dispatch: {op_name} not yet wired; uses wgpu path. \
+             Expansion tracked in specs/EVOLUTION_MAP.md",
+            op_name = match op {
+                GpuOp::PopulationPkBatch { .. } => "PopulationPkBatch",
+                GpuOp::DiversityBatch { .. } => "DiversityBatch",
+                GpuOp::MichaelisMentenBatch { .. } => "MichaelisMentenBatch",
+                GpuOp::ScfaBatch { .. } => "ScfaBatch",
+                GpuOp::BeatClassifyBatch { .. } => "BeatClassifyBatch",
+                _ => "unknown",
+            }
+        ))),
     }
 }

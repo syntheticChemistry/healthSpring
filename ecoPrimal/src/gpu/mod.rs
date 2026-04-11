@@ -112,12 +112,27 @@ pub const fn gpu_available() -> bool {
 /// - `barracuda::shaders::math::hill_f64.wgsl`
 /// - `barracuda::shaders::science::population_pk_f64.wgsl`
 /// - `barracuda::shaders::bio::diversity_fusion_f64.wgsl`
+/// - `barracuda::ops::health::{MichaelisMentenBatchGpu, ScfaBatchGpu, BeatClassifyGpu}`
 ///
 /// These local copies are the Spring validation targets — bit-identical
 /// to the versions absorbed by barraCuda. When healthSpring evolves to
 /// consume `barracuda::ops::{HillFunctionF64, PopulationPkF64}` and
 /// `barracuda::ops::bio::DiversityFusionGpu`, these local copies will
 /// be removed.
+///
+/// ## Shader Removal Plan (V49)
+///
+/// All six local WGSL shaders have been absorbed upstream to barraCuda.
+/// Removal sequence:
+/// 1. **Tier A** (Hill, PopPK, Diversity): remove once `execute_fused_local`
+///    is replaced by `TensorSession` — these are only retained for the
+///    single-encoder fusion path that cannot mix barraCuda encoders.
+/// 2. **Tier B** (MM, SCFA, BeatClassify): remove once
+///    `barracuda::ops::health` covers the fused pipeline path.
+/// 3. **All**: remove `shader_for_op()` and `shaders` module; switch
+///    remaining call sites to `barracuda::ops` or codegen paths.
+///
+/// Blocker: `TensorSession` API availability in barraCuda.
 ///
 /// ## Precision
 ///

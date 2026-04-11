@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** April 10, 2026
-**Status:** V48 — Composition Validation & ecoBin Harvest. 940+ tests, 88 experiments (83 science + 5 composition Tier 4), 54 Python baselines, 73 composition validation checks. Tier 4 proves IPC dispatch parity: every science method called through JSON-RPC dispatch matches direct Rust to 1e-12. ecoBin static-PIE binary harvested to plasmidBin. `resilient_send` for IPC retry. `inference.*` + `health.*` proto-nucleate aliases. barraCuda v0.3.11. Zero clippy (pedantic+nursery), zero unsafe.
+**Status:** V49 — Composition Audit Remediation. Python was the validation target for Rust. Now Rust and Python are both validation targets for ecoPrimal NUCLEUS composition patterns. 940+ tests, 89 experiments (83 science + 6 composition Tier 4), 54 Python baselines, 89 provenance entries (100% coverage). Tier 4 proves IPC dispatch parity + wire protocol round-trip fidelity + proto-nucleate alias resolution. All 5 `health.*` proto-nucleate aliases wired. Deploy graphs carry NUCLEUS fragment metadata + bonding policy. ecoBin 2.5 MB static-PIE. barraCuda v0.3.11. Zero clippy, zero unsafe.
 
 ---
 

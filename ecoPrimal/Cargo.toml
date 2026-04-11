@@ -29,7 +29,7 @@ nestgate = ["dep:ureq"]
 npu = []
 
 [dependencies]
-# Validated against barraCuda rev c04d848 (v0.3.7, 2026-03-22).
+# Validated against barraCuda rev 7f6649f (v0.3.11, 2026-04-10).
 # Path dep for local development; CI should pin to this rev.
 # barracuda-core is required for barraCuda's internal feature resolution.
 barracuda-core = { path = "../../barraCuda/crates/barracuda-core", default-features = false }

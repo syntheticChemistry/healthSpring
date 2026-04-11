@@ -2,7 +2,7 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V48 — Composition Validation & ecoBin Harvest. 88 experiments (83 science + 5 composition Tier 4), 940+ tests, 80+ JSON-RPC capabilities, 73 composition validation checks.
+**Status**: V49 — Composition Audit Remediation. 89 experiments (83 science + 6 composition Tier 4), 940+ tests, 84 JSON-RPC capabilities (62 science + 22 infra), 89 provenance entries (100% coverage). Python → Rust → Primal composition validation.
 **Last Updated**: April 10, 2026
 
 ---

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: March 23, 2026
-**Status**: V44 — Deep Debt Resolution Sprint. 83 experiments, 928 tests, 59 capabilities (46 science + 13 infra), 53 Python baselines. barraCuda v0.3.7. V41: Workspace lints, tracing, env-driven discovery, ODE codegen, proptest numerical. V40: Module conflict resolved, 17 magic numbers → constants, provenance/ refactored. V39: Toxicology, simulation, hormesis. V38: Deep debt. V36: All 6 GPU ops rewired.
+**Last Updated**: April 10, 2026
+**Status**: V49 — Composition Audit Remediation. 89 experiments, 940+ tests, 62 science + 22 infra capabilities, 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). Sovereign dispatch expanded with named fallback errors per op. Local WGSL shader removal plan documented (blocked on TensorSession). `uncertainty::std_dev` delegated to `barracuda::stats`.
 
 ---
 

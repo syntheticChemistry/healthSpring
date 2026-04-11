@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: April 10, 2026
-**Status**: V48 — Composition Validation. 88 experiments, 940+ tests. Five new Tier 4 composition experiments (exp112–116) validating IPC dispatch parity against direct Rust.
+**Status**: V49 — Composition Audit Remediation. 89 experiments, 940+ tests. Six Tier 4 composition experiments (exp112–117): IPC dispatch parity, proto-nucleate alias resolution, wire protocol round-trip, health probe routing, capability surface completeness.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a five-tier pipeline:
 
@@ -11,7 +11,7 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 - **Tier 3**: metalForge dispatch (NUCLEUS routing, PCIe P2P)
 - **Tier 4**: Composition validation (IPC dispatch vs direct Rust — the primal composition surface)
 
-**All 88 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
+**All 89 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
 
 ---
 
@@ -207,6 +207,7 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 114 | `exp114_composition_health_triad` | Capability surface coverage (58+ methods, 10 domains, structured errors) | 17 |
 | 115 | `exp115_composition_proto_nucleate` | Proto-nucleate alignment (socket resolution, discovery, constants) | 20 |
 | 116 | `exp116_composition_provenance` | Provenance session lifecycle (registry, data sessions, trio probe) | 14 |
+| 117 | `exp117_composition_ipc_roundtrip` | IPC wire protocol round-trip + proto-nucleate aliases + capability surface | 71 |
 
 ---
 

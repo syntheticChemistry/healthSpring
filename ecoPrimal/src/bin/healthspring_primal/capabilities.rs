@@ -78,6 +78,7 @@ pub const ALL_CAPABILITIES: &[&str] = &[
     // ── Proto-nucleate aliases (NUCLEUS_SPRING_ALIGNMENT.md) ──────────
     // Maps proto-nucleate `health.*` capabilities to the science surface.
     "health.pharmacology",
+    "health.genomics",
     "health.clinical",
     "health.de_identify",
     "health.aggregate",

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: March 24, 2026
-**Status**: V44 — Cross-Spring Absorption. Tier 2+3 GPU live. barraCuda v0.3.7 (CI-gated pin, rev `c04d848`). GPU dispatch extracted into 6 named CPU helpers + 3 GPU path functions. `execute_cpu` no longer carries `#[expect(too_many_lines)]`. ODE codegen (`BatchedOdeRK4`) wired to `GpuOp::MichaelisMentenBatch`. 3 `OdeSystem` impls (MM, OralOneCompartment, TwoCompartment). **All six GPU ops** LIVE for both `GpuContext` and `gpu::dispatch` paths. Self-knowledge compliance; simulation/validation refactoring. Absorption handoff at `wateringHole/handoffs/HEALTHSPRING_V44_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR24_2026.md` (prior toadStool/barraCuda absorption snapshot in `wateringHole/handoffs/archive/HEALTHSPRING_V42_TOADSTOOL_BARRACUDA_ABSORPTION_HANDOFF_MAR24_2026.md`).
+**Last Updated**: April 10, 2026
+**Status**: V49 — Composition validation audit. barraCuda v0.3.11 (CI-gated pin, rev `7f6649f`). All six GPU ops LIVE. `uncertainty::std_dev` delegated to `barracuda::stats::correlation::std_dev`. Local WGSL shaders retained for validation but all absorbed upstream. TensorSession adoption pending upstream API. Sovereign dispatch pilot (Hill-only via coralReef). Prior: V44 Cross-Spring Absorption (handoff in archive).
 
 ---
 

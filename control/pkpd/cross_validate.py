@@ -31,7 +31,7 @@ import tolerances as tol_registry  # noqa: E402
 TOL_MACHINE = tol_registry.MACHINE_EPSILON
 TOL_MACHINE_LOOSE = tol_registry.DIVERSITY_CROSS_VALIDATE
 TOL_NUMERICAL = tol_registry.HALF_LIFE_POINT
-TOL_AUC = tol_registry.LEVEL_SPACING_RATIO
+TOL_AUC = tol_registry.AUC_TRAPEZOIDAL
 TOL_AUC_IV = 1.0  # 1% of ~100 for IV AUC numerical vs analytical
 TOL_TMAX = tol_registry.TMAX_NUMERICAL
 TOL_POPULATION = tol_registry.LOGNORMAL_RECOVERY

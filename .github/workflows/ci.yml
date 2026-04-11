@@ -28,13 +28,13 @@ jobs:
       run: cargo doc --workspace --no-deps
     - name: Dependency audit (cargo-deny)
       uses: EmbarkStudios/cargo-deny-action@v2
-    - name: Verify barraCuda version (pinned to v0.3.7 / c04d848)
+    - name: Verify barraCuda version (pinned to v0.3.11 / 7f6649f)
       run: |
         BARRACUDA_VERSION=$(cargo metadata --format-version=1 --no-deps \
           | python3 -c "import sys,json; pkgs=json.load(sys.stdin)['packages']; print(next(p['version'] for p in pkgs if p['name']=='healthspring-barracuda'))")
         echo "healthspring-barracuda version: $BARRACUDA_VERSION"
-        grep -q 'barracuda.*c04d848' ecoPrimal/Cargo.toml \
-          || (echo "ERROR: barraCuda pin comment missing or changed — expected rev c04d848" && exit 1)
+        grep -q 'barracuda.*7f6649f' ecoPrimal/Cargo.toml \
+          || (echo "ERROR: barraCuda pin comment missing or changed — expected rev 7f6649f" && exit 1)
 
   test:
     runs-on: ubuntu-latest
@@ -71,6 +71,8 @@ jobs:
             fi
           done < <(grep 'name = "exp' "$toml" 2>/dev/null | sed 's/.*"\(.*\)".*/\1/')
         done
+    - name: Install Python dependencies (pinned baselines)
+      run: pip install -r control/requirements.txt
     - name: Python cross-validation
       run: python3 control/pkpd/cross_validate.py
 
@@ -88,7 +90,8 @@ jobs:
                    exp113_composition_microbiome \
                    exp114_composition_health_triad \
                    exp115_composition_proto_nucleate \
-                   exp116_composition_provenance; do
+                   exp116_composition_provenance \
+                   exp117_composition_ipc_roundtrip; do
           echo "=== $bin ==="
           cargo run --release --bin "$bin"
           echo

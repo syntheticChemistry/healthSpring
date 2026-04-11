@@ -5,7 +5,7 @@
 **Date:** April 10, 2026
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V48 — Composition Validation & ecoBin Harvest. 940+ tests, 88 experiments (83 science + 5 composition), 54 Python baselines, 73 composition validation checks. ecoBin harvested to plasmidBin (static-PIE x86_64-musl, 2.5 MB). Tier 4 composition validation proves IPC dispatch parity against direct Rust. `resilient_send` wired for retriable IPC. `inference.*` + `health.*` proto-nucleate aliases. CI: composition job, cross-compile with artifact upload, weekly GPU. barraCuda v0.3.11. Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`.
+**Status:** V49 — Composition Audit Remediation. 940+ tests, 89 experiments (83 science + 6 composition), 54 Python baselines, 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). All 5 `health.*` proto-nucleate aliases wired. Deploy graphs carry fragment metadata + bonding policy. `uncertainty::std_dev` delegated to barraCuda. WGSL shader removal plan documented. exp117 IPC round-trip validation. V49 handoff at `wateringHole/handoffs/`. ecoBin harvested to plasmidBin.
 
 ---
 
@@ -33,13 +33,13 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V48** (Composition Validation & ecoBin Harvest) |
-| **Total tests** | **940+** (810 lib + proptest + IPC fuzz + 32 integration + 88 experiment bins) |
-| Experiments complete | 88 (83 science Tracks 1–9 + 5 composition Tier 4) |
-| Composition validation (Tier 4) | 5 experiments (exp112–116), 73/73 checks — IPC dispatch vs direct Rust |
-| JSON-RPC capabilities | 80+ (58 science + 22 infrastructure — `capability.list`, `health.*`, `inference.*`, provenance, compute/data routing) |
+| Version | **V49** (Composition Audit Remediation) |
+| **Total tests** | **940+** (810 lib + proptest + IPC fuzz + 32 integration + 89 experiment bins) |
+| Experiments complete | 89 (83 science Tracks 1–9 + 6 composition Tier 4) |
+| Composition validation (Tier 4) | 6 experiments (exp112–117), 73+ checks — IPC dispatch + proto-nucleate + wire round-trip |
+| JSON-RPC capabilities | 80+ (62 science + 22 infrastructure — `capability.list`, `health.*`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
-| Python baselines | **54** with structured provenance registry (all 9 tracks, verified check counts + DOI baseline sources) |
+| Python baselines | **54** with structured provenance registry (89 total entries, 100% experiment coverage) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
 | ecoBin | Static-PIE x86_64-musl, 2.5 MB, harvested to `infra/plasmidBin/healthspring/` |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity |

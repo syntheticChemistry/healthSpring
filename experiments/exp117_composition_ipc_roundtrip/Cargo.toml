@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "healthspring-exp117-composition-ipc-roundtrip"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+healthspring-barracuda = { path = "../../ecoPrimal" }
+serde_json = "1"
+
+[[bin]]
+name = "exp117_composition_ipc_roundtrip"
+path = "src/main.rs"

@@ -249,6 +249,34 @@
 | exp088 | — | N/A — integration/dashboard demo |
 | exp110 | `MACHINE_EPSILON`, `ANDERSON_IDENTITY`, `DETERMINISM` (Hill, MM PK, allometric) | Machine epsilon (comparative medicine) |
 
+### Experiments classified in V49 audit (tolerance-exempt)
+
+Experiments without `tolerances::` imports — classified as non-numeric validation:
+
+| Experiment | Category | Rationale |
+|-----------|----------|-----------|
+| exp023 | Structural | Biosignal fusion: range/ordering checks (no float tolerance) |
+| exp055 | GPU bench | GPU scaling: theoretical Amdahl/Gustafson bounds |
+| exp056 | Demo | Study scenario generation (no validation targets) |
+| exp061 | Demo | Mixed hardware dispatch demo (no validation targets) |
+| exp063 | Demo | Clinical TRT scenario explorer (no validation targets) |
+| exp064 | Demo | IPC push integration demo (no validation targets) |
+| exp066 | Bench | barraCuda CPU benchmark timing (no validation targets) |
+| exp068 | Bench | GPU benchmark timing (no validation targets) |
+| exp071 | Demo | Mixed system pipeline demo (no validation targets) |
+| exp072 | Demo | Compute dashboard visualization (no validation targets) |
+| exp073 | Demo | Clinical TRT dashboard demo (no validation targets) |
+| exp074 | Integration | IPC roundtrip determinism (structural checks only) |
+| exp076 | Demo | Full pipeline scenario composition (no validation targets) |
+| exp085 | GPU bench | GPU vs CPU V16 benchmark comparison |
+| exp088 | Demo | Unified dashboard visualization (no validation targets) |
+| exp089 | Demo | Patient explorer interactive (no validation targets) |
+| exp097 | Science | Affinity landscape: uses inline domain thresholds (registry rows above) |
+| exp108 | Science | Real 16S Anderson: uses inline literature thresholds |
+| exp114 | Composition | Health triad: structural/boolean registry checks |
+| exp115 | Composition | Proto-nucleate alignment: structural/string checks |
+| exp116 | Composition | Provenance session lifecycle: structural checks |
+
 ## Numerical Guard Constants (non-validation)
 
 | Constant | Value | Domain | Rationale |

@@ -13,6 +13,7 @@
 //! All functions are pure, deterministic (given a seed), and `#[must_use]`.
 
 use barracuda::rng::lcg_step;
+use barracuda::stats::correlation;
 use barracuda::stats::mean;
 
 use crate::rng::normal_sample;
@@ -288,13 +289,7 @@ fn percentile_pair(sorted: &[f64], alpha: f64) -> (f64, f64) {
 }
 
 fn std_dev(data: &[f64]) -> f64 {
-    if data.len() < 2 {
-        return 0.0;
-    }
-    let m = mean(data);
-    let var = data.iter().map(|&x| (x - m).powi(2)).sum::<f64>()
-        / crate::validation::len_f64(data.len() - 1);
-    var.sqrt()
+    correlation::std_dev(data).unwrap_or(0.0)
 }
 
 #[cfg(test)]

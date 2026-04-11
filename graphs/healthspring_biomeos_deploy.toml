@@ -16,9 +16,20 @@
 
 [graph]
 id = "healthspring_deploy"
-version = "0.3.0"
+version = "0.4.0"
 description = "healthSpring medical science primal deployment atop Node Atomic"
 coordination = "Sequential"
+
+# NUCLEUS Atomic fragments (primalSpring/graphs/fragments/ canonical definitions)
+fragments = ["tower_atomic", "nest_atomic"]
+particle_profile = "neutron_heavy"
+proto_nucleate = "healthspring_enclave_proto_nucleate"
+
+# Bonding policy (cross-atomic trust boundaries)
+[graph.bonding]
+bond_type = "ionic"
+trust_model = "dual_tower_enclave"
+encryption_tiers = { tower_a = "beardog_encrypted", tower_b = "beardog_encrypted", ionic_bridge = "de_identified_only" }
 
 # -- Phase 1: Verify infrastructure ------------------------------------------
 
