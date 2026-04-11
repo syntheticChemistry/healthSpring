@@ -2,7 +2,7 @@
 # healthSpring vs. Every Cure MATRIX — Comparative Analysis
 
 **Last Updated**: April 10, 2026
-**Status**: V48 — Cross-Spring Absorption (current; replaces V35 status line). 940+ tests, 88 experiments, 59 capabilities. Self-knowledge compliance; simulation/validation refactoring. Onboarding document for researchers whose work we have ingested and evolved —
+**Status**: V51 — Hardened Composition Patterns. 976 tests, 89 experiments, 84+ capabilities. TCP + UDS, BTSP, typed IPC clients, structured discovery, ecoBin 0.8.0. barraCuda v0.3.11. Onboarding document for researchers whose work we have ingested and evolved —
 particularly Fajgenbaum (MATRIX), Lisabeth (ADDRC HTS), and collaborators entering the
 healthSpring ecosystem.
 **Audience**: Drug discovery researchers, pharmacologists, computational biologists, and anyone
@@ -297,5 +297,5 @@ Anderson tissue lattice modeling can.
 2. **Understand the validation chain**: [METHODOLOGY.md](../METHODOLOGY.md)
 3. **See your papers reproduced**: wetSpring Exp157/158 (Fajgenbaum), neuralSpring nS-601–605 (Gonzales)
 4. **See the extension**: healthSpring Exp001–006 (human PK/PD), Track 7 (drug discovery)
-5. **Run it yourself**: `cargo test --workspace` (940+ tests, zero unsafe code)
+5. **Run it yourself**: `cargo test --workspace` (976 tests, zero unsafe code)
 6. **Explore the specs**: [PAPER_REVIEW_QUEUE.md](../../specs/PAPER_REVIEW_QUEUE.md) for Track 7 paper queue

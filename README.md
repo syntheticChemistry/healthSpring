@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 11, 2026
+**Date:** April 11, 2026 (V51)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V50 — Composition Evolution. 960+ tests, 89 experiments (83 science + 6 composition), 54 Python baselines, 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). Capability-first primal.forward routing. Squirrel optional node in deploy graph. Discovery dual-method fallback. Provenance registry split (3 files, all under 1000 LOC). Zero clippy warnings (pedantic+nursery). V50 handoff at wateringHole/handoffs/. Python and Rust are now both validation targets for NUCLEUS composition patterns.
+**Status:** V51 — Hardened Composition Patterns. 976 tests, 89 experiments (83 science + 6 composition), 54 Python baselines, 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). TCP JSON-RPC listener (`--port`), domain symlink discovery, `identity.get`, `health.check`, `methods[]` in `capabilities.list`, LOCAL/ROUTED capability split, BTSP handshake module, typed `PrimalClient`/`InferenceClient`, structured `DiscoveryResult`. `CoralReefDevice` → `SovereignDevice` API fix. ecoBin 0.8.0 at `infra/plasmidBin/`. Zero clippy warnings (pedantic+nursery). Python and Rust are both validation targets for NUCLEUS composition patterns.
 
 ---
 
@@ -33,18 +33,18 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V50** (Composition Evolution) |
-| **Total tests** | **960+** (830 lib + proptest + IPC fuzz + 37 integration + 89 experiment bins) |
+| Version | **V51** (Hardened Composition Patterns) |
+| **Total tests** | **976** (845 lib + proptest + IPC fuzz + 37 integration + 89 experiment bins + 9 doc-tests) |
 | Experiments complete | 89 (83 science Tracks 1–9 + 6 composition Tier 4) |
 | Composition validation (Tier 4) | 6 experiments (exp112–117), 73+ checks — IPC dispatch + proto-nucleate + wire round-trip |
-| JSON-RPC capabilities | 80+ (62 science + 22 infrastructure — `capability.list`, `health.*`, `inference.*`, provenance, compute/data routing) |
+| JSON-RPC capabilities | 84+ (62 science + 22 infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **54** with structured provenance registry (89 total entries, 100% experiment coverage) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
 | ecoBin | Static-PIE x86_64-musl, 2.5 MB, harvested to `infra/plasmidBin/healthspring/` |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity |
 | CPU parity | Rust 84× faster than Python across V16 primitives |
-| biomeOS niche | **Live** — `UniBin`-compliant primal binary (`serve`/`version`/`capabilities` subcommands), SIGTERM/SIGINT handling |
+| biomeOS niche | **Live** — `UniBin`-compliant primal binary (`serve`/`server`/`version`/`capabilities`), `--port` TCP, domain symlink, SIGTERM/SIGINT |
 | NLME population PK | FOCE + SAEM estimation, NCA metrics, CWRES/VPC/GOF diagnostics |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Ellsworth (Med Chem), Mok (Allure Medical) |
 | Unsafe blocks | **0** (`forbid(unsafe_code)` in `[workspace.lints]`) |
@@ -544,7 +544,17 @@ healthSpring/
 │       │   ├── dispatch.rs
 │       │   ├── context.rs  # GpuContext (350 LOC — single-op + fused orchestrator)
 │       │   ├── fused.rs    # Per-op buffer prep + readback decode (extracted from context)
-│       │   └── sovereign.rs # Sovereign GPU dispatch via CoralReefDevice
+│       │   └── sovereign.rs # Sovereign GPU dispatch via SovereignDevice
+│       ├── ipc/          # JSON-RPC IPC infrastructure
+│       │   ├── mod.rs       # Module root
+│       │   ├── socket.rs    # XDG socket resolution + primal discovery
+│       │   ├── rpc.rs       # JSON-RPC response helpers + client
+│       │   ├── error.rs     # IpcError (8 variants + query helpers)
+│       │   ├── resilience.rs # CircuitBreaker + RetryPolicy
+│       │   ├── btsp.rs      # BTSP client handshake (BearDog Transport Security)
+│       │   ├── client.rs    # Typed PrimalClient + InferenceClient wrappers
+│       │   ├── discover.rs  # Structured DiscoveryResult + DiscoverySource
+│       │   └── tower_atomic.rs # Tower Atomic integration
 │       ├── discovery/    # Track 7: MATRIX, HTS, compound, fibrosis
 │       │   ├── matrix_score.rs
 │       │   ├── hts.rs
@@ -641,7 +651,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 960+ tests
+cargo test --workspace                  # 976 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

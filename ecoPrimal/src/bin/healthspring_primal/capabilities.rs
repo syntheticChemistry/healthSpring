@@ -92,11 +92,15 @@ pub const ALL_CAPABILITIES: &[&str] = &[
     // ── Cross-primal ─────────────────────────────────────────────────
     "primal.forward",
     "primal.discover",
-    // ── Health probes (coralReef Iter 51 alignment) ─────────────────
+    // ── Health probes (DEPLOYMENT_VALIDATION_STANDARD alignment) ─────
     "health.liveness",
     "health.readiness",
+    "health.check",
+    // ── Identity (Capability Wire Standard April 2026) ───────────────
+    "identity.get",
     // ── Niche deployment (`biomeOS` graph composition) ───────────────
     "capability.list",
+    "mcp.tools.list",
     // ── Compute offload (Node Atomic) ────────────────────────────────
     "compute.offload",
     "compute.shader_compile", // coralReef coordination
@@ -127,11 +131,106 @@ pub fn build_semantic_mappings() -> serde_json::Value {
     serde_json::Value::Object(map)
 }
 
-/// Capability listing (`biomeOS` niche composition).
+/// Capabilities served locally by this primal (dispatched in-process).
+pub const LOCAL_CAPABILITIES: &[&str] = &[
+    "science.pkpd.hill_dose_response",
+    "science.pkpd.one_compartment_pk",
+    "science.pkpd.two_compartment_pk",
+    "science.pkpd.pbpk_simulate",
+    "science.pkpd.population_pk",
+    "science.pkpd.allometric_scale",
+    "science.pkpd.auc_trapezoidal",
+    "science.pkpd.nlme_foce",
+    "science.pkpd.nlme_saem",
+    "science.pkpd.nca_analysis",
+    "science.pkpd.cwres_diagnostics",
+    "science.pkpd.vpc_simulate",
+    "science.pkpd.gof_compute",
+    "science.pkpd.michaelis_menten_nonlinear",
+    "science.microbiome.shannon_index",
+    "science.microbiome.simpson_index",
+    "science.microbiome.pielou_evenness",
+    "science.microbiome.chao1",
+    "science.microbiome.anderson_gut",
+    "science.microbiome.colonization_resistance",
+    "science.microbiome.fmt_blend",
+    "science.microbiome.bray_curtis",
+    "science.microbiome.antibiotic_perturbation",
+    "science.microbiome.scfa_production",
+    "science.microbiome.gut_brain_serotonin",
+    "science.microbiome.qs_gene_profile",
+    "science.microbiome.qs_effective_disorder",
+    "science.biosignal.pan_tompkins",
+    "science.biosignal.hrv_metrics",
+    "science.biosignal.ppg_spo2",
+    "science.biosignal.eda_analysis",
+    "science.biosignal.eda_stress_detection",
+    "science.biosignal.arrhythmia_classification",
+    "science.biosignal.fuse_channels",
+    "science.biosignal.wfdb_decode",
+    "science.endocrine.testosterone_pk",
+    "science.endocrine.trt_outcomes",
+    "science.endocrine.population_trt",
+    "science.endocrine.hrv_trt_response",
+    "science.endocrine.cardiac_risk",
+    "science.diagnostic.assess_patient",
+    "science.diagnostic.population_montecarlo",
+    "science.diagnostic.composite_risk",
+    "science.clinical.trt_scenario",
+    "science.clinical.patient_parameterize",
+    "science.clinical.risk_annotate",
+    "science.comparative.cross_species_pk",
+    "science.comparative.canine_il31",
+    "science.comparative.canine_jak1",
+    "science.discovery.matrix_score",
+    "science.discovery.hts_analysis",
+    "science.discovery.compound_library",
+    "science.discovery.fibrosis_pathway",
+    "science.toxicology.biphasic_dose_response",
+    "science.toxicology.toxicity_landscape",
+    "science.toxicology.hormetic_optimum",
+    "science.simulation.mechanistic_fitness",
+    "science.simulation.ecosystem_simulate",
+    "health.pharmacology",
+    "health.genomics",
+    "health.clinical",
+    "health.de_identify",
+    "health.aggregate",
+    "composition.health_health",
+    "provenance.begin",
+    "provenance.record",
+    "provenance.complete",
+    "provenance.status",
+    "primal.forward",
+    "primal.discover",
+    "health.liveness",
+    "health.readiness",
+    "health.check",
+    "identity.get",
+    "capability.list",
+    "mcp.tools.list",
+];
+
+/// Capabilities routed to canonical providers via IPC (not served locally).
+pub const ROUTED_CAPABILITIES: &[(&str, &str)] = &[
+    ("compute.offload", "toadstool"),
+    ("compute.shader_compile", "coralreef"),
+    ("data.fetch", "nestgate"),
+    ("model.inference_route", "squirrel"),
+    ("inference.complete", "squirrel"),
+    ("inference.embed", "squirrel"),
+    ("inference.models", "squirrel"),
+    ("inference.route", "squirrel"),
+];
+
+/// Capability listing per Capability Wire Standard (April 2026).
 ///
-/// Enriched response includes `operation_dependencies` and `cost_estimates`
-/// so Pathway Learner can plan optimal execution graphs.
+/// Response includes the canonical `methods` flat array for biomeOS O(1)
+/// discovery, plus enriched `science` / `infrastructure` groupings and
+/// Pathway Learner metadata (`operation_dependencies`, `cost_estimates`).
 pub fn handle_capability_list() -> serde_json::Value {
+    let methods: Vec<&str> = ALL_CAPABILITIES.to_vec();
+
     let science: Vec<&str> = ALL_CAPABILITIES
         .iter()
         .filter(|c| c.starts_with("science."))
@@ -149,6 +248,8 @@ pub fn handle_capability_list() -> serde_json::Value {
                 || c.starts_with("provenance.")
                 || c.starts_with("composition.")
                 || c.starts_with("health.")
+                || c.starts_with("identity.")
+                || c.starts_with("mcp.")
         })
         .copied()
         .collect();
@@ -157,12 +258,56 @@ pub fn handle_capability_list() -> serde_json::Value {
         "primal": PRIMAL_NAME,
         "version": env!("CARGO_PKG_VERSION"),
         "domain": PRIMAL_DOMAIN,
+        "methods": methods,
         "total": ALL_CAPABILITIES.len(),
         "science": science,
         "infrastructure": infra,
+        "provided_capabilities": provided_capabilities(),
         "operation_dependencies": operation_dependencies(),
         "cost_estimates": cost_estimates(),
     })
+}
+
+/// Identity probe per Capability Discovery Standard.
+pub fn handle_identity_get() -> serde_json::Value {
+    serde_json::json!({
+        "primal": PRIMAL_NAME,
+        "version": env!("CARGO_PKG_VERSION"),
+        "domain": PRIMAL_DOMAIN,
+        "license": "AGPL-3.0-or-later",
+        "architecture": "ecoBin",
+        "composition_model": "nucleated",
+        "particle_profile": "neutron_heavy",
+        "proto_nucleate": "healthspring_enclave_proto_nucleate",
+    })
+}
+
+/// Structured capability groupings (local vs routed) for biomeOS.
+fn provided_capabilities() -> serde_json::Value {
+    let local: Vec<serde_json::Value> = LOCAL_CAPABILITIES
+        .iter()
+        .map(|c| {
+            serde_json::json!({
+                "method": c,
+                "served_locally": true,
+            })
+        })
+        .collect();
+
+    let routed: Vec<serde_json::Value> = ROUTED_CAPABILITIES
+        .iter()
+        .map(|(method, provider)| {
+            serde_json::json!({
+                "method": method,
+                "served_locally": false,
+                "canonical_provider": provider,
+            })
+        })
+        .collect();
+
+    let mut all = local;
+    all.extend(routed);
+    serde_json::Value::Array(all)
 }
 
 /// Dependency graph between science operations for Pathway Learner.

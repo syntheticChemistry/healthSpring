@@ -2,7 +2,7 @@
 # Composition Validation — Tier 4
 
 **Created**: April 10, 2026
-**Status**: Active — 5 composition experiments (73 checks), 12 integration tests
+**Status**: Active — 6 composition experiments (144 checks), 12 integration tests
 
 ---
 
@@ -34,8 +34,9 @@ introduces zero numerical divergence.
 | exp114 | `composition_health_triad` | Capability surface + domain coverage | 17 | PASS |
 | exp115 | `composition_proto_nucleate` | Proto-nucleate alignment + socket resolution | 20 | PASS |
 | exp116 | `composition_provenance` | Provenance lifecycle + session round-trip | 14 | PASS |
+| exp117 | `composition_ipc_roundtrip` | IPC wire protocol + proto-nucleate aliases + capability surface | 71 | PASS |
 
-**Total**: 73 composition validation checks, all passing.
+**Total**: 144 composition validation checks, all passing.
 
 ---
 

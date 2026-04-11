@@ -49,7 +49,7 @@ without establishing causality.
 
 | Order | Document | What you'll learn |
 |:-----:|----------|------------------|
-| 4 | [baseCamp/README.md](baseCamp/README.md) | All 83 experiments, validation counts, per-track status |
+| 4 | [baseCamp/README.md](baseCamp/README.md) | All 89 experiments, validation counts, per-track status |
 | 5 | [baseCamp/gonzales/README.md](baseCamp/gonzales/README.md) | PK/PD sub-thesis: Gonzales canine → human → drug discovery pipeline |
 | 6 | [baseCamp/EXTENSION_PLAN.md](baseCamp/EXTENSION_PLAN.md) | Where we're going: Tracks 6–7, datasets, QS gene profiling, living systems |
 

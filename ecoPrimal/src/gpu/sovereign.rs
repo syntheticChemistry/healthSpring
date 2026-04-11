@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Sovereign GPU dispatch via `barraCuda` `CoralReefDevice`.
+//! Sovereign GPU dispatch via `barraCuda` `SovereignDevice`.
 //!
 //! Routes GPU compute through the sovereign pipeline:
 //! `barraCuda` WGSL → `coralReef` compile → `toadStool` dispatch → native binary
@@ -23,16 +23,16 @@
 //!
 //! ## Cache requirement
 //!
-//! `CoralReefDevice` requires pre-compiled native binaries in the coral cache.
+//! `SovereignDevice` requires pre-compiled native binaries in the coral cache.
 //! The first wgpu run can spawn `spawn_coral_compile` in the background;
 //! subsequent runs may hit the cache and use sovereign dispatch.
 
 use super::{GpuOp, GpuResult};
 
-/// Attempt sovereign GPU dispatch via `CoralReefDevice`.
+/// Attempt sovereign GPU dispatch via `SovereignDevice`.
 ///
 /// Returns `None` if the sovereign path should not be tried (feature disabled,
-/// coralReef not discoverable, or `CoralReefDevice` unavailable). Returns
+/// coralReef not discoverable, or `SovereignDevice` unavailable). Returns
 /// `Some(Ok(result))` on success, `Some(Err(e))` when sovereign was attempted
 /// but failed (e.g. cache miss, toadStool unreachable).
 ///
@@ -46,7 +46,7 @@ pub fn try_sovereign_dispatch(op: &GpuOp) -> Option<Result<GpuResult, super::Gpu
 
     discover_shader_compiler()?;
 
-    let Ok(device) = barracuda::device::CoralReefDevice::with_auto_device() else {
+    let Ok(device) = barracuda::device::SovereignDevice::with_auto_device() else {
         return None;
     };
 
@@ -80,7 +80,7 @@ pub const fn try_sovereign_dispatch(_op: &GpuOp) -> Option<Result<GpuResult, sup
     reason = "concentration count fits u32 for GPU dispatch workgroups"
 )]
 fn dispatch_via_sovereign(
-    device: &barracuda::device::CoralReefDevice,
+    device: &barracuda::device::SovereignDevice,
     op: &GpuOp,
 ) -> Result<GpuResult, super::GpuError> {
     use barracuda::device::backend::{BufferBinding, DispatchDescriptor, GpuBackend};

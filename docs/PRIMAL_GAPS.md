@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-04-11
-**healthSpring version**: V50 (0.10.0)
+**healthSpring version**: V51 (ecoBin 0.8.0)
 
 ---
 
@@ -197,6 +197,41 @@ blocked on Squirrel ecoBin compliance and stable `inference.*` capability set.
 
 ---
 
+---
+
+## 10. BTSP Handshake — Client Ready, Server Pending
+
+**Gap**: healthSpring V51 implements the BTSP client handshake module
+(`ipc/btsp.rs`) with `BtspMessage` enum, `family_seed_from_env()`, and
+`client_hello()`. However, no primal in the ecosystem currently exposes a
+BTSP server endpoint. The handshake cannot be exercised end-to-end.
+
+**Impact**: Cross-primal authentication remains unenforced. All IPC is
+currently unauthenticated plaintext over UDS/TCP.
+
+**Status**: Client module ready in V51. Awaiting BearDog BTSP server endpoint.
+
+---
+
+## 11. Typed IPC Clients — Not Yet Wired into Production Paths
+
+**Gap**: `PrimalClient` and `InferenceClient` in `ipc/client.rs` provide
+typed, resilient cross-primal communication. However, the existing dispatch
+paths (`primal.forward`, `compute.offload`, `data.fetch`) still use raw
+`rpc::try_send` / `rpc::send`. The typed clients are available but not yet
+integrated into production request flows.
+
+**Impact**: Production code misses health probe fallback chains and structured
+discovery tracking that the typed clients provide.
+
+**Proposed resolution**: Incrementally migrate `primal.forward` and
+`compute.offload` to use `PrimalClient` in the next sprint. `InferenceClient`
+integration deferred until Squirrel is available.
+
+**Status**: Modules created in V51. Integration pending.
+
+---
+
 ## Summary Matrix
 
 | # | Gap | Blocked On | healthSpring Action | primalSpring Action |
@@ -210,3 +245,5 @@ blocked on Squirrel ecoBin compliance and stable `inference.*` capability set.
 | 7 | YAML manifest | — | Fixed V48 | — |
 | 8 | Deploy fragments | — | **Fixed V49**: metadata added | — |
 | 9 | Squirrel in deploy | Squirrel maturity | **V50**: optional node added | Evolve Squirrel |
+| 10 | BTSP handshake | BearDog BTSP server | **V51**: client module ready | Expose BTSP endpoint |
+| 11 | Typed IPC clients | Internal migration | **V51**: modules created | — |

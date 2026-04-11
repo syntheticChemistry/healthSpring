@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Leverage Guide — Standalone, Trio, and Full Niche
 
-**Date**: April 10, 2026
-**Primal**: healthSpring V48 (`healthspring-barracuda` 0.1.0, ecoBin 0.8.0)
+**Date**: April 11, 2026
+**Primal**: healthSpring V51 (`healthspring-barracuda` 0.1.0, ecoBin 0.8.0)
 **Audience**: All springs, all primals, biomeOS integrators
 **Status**: Active
 
@@ -12,7 +12,7 @@
 
 This document describes how healthSpring can be leveraged — alone and in composition with other primals — by springs and ecosystem consumers. Each primal in the ecosystem produces an equivalent guide. Together, these guides form a combinatorial recipe book for emergent behaviors.
 
-healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. 928 tests, 83 experiments, 59 capabilities (46 science + 13 infra). Cross-spring absorption; self-knowledge compliance; simulation/validation refactoring. barraCuda v0.3.7.
+healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. 976 tests, 89 experiments, 84+ capabilities (62 science + 22 infra). TCP + UDS listeners, BTSP handshake, typed IPC clients, structured discovery. barraCuda v0.3.11.
 
 **Philosophy**: Health science is sovereign. Hill dose-response, Shannon diversity, Pan-Tompkins QRS — these are universal primitives. healthSpring owns the biology; other primals own the hardware, the network, the storage, the identity. Discover at runtime, compose at will.
 
@@ -143,8 +143,8 @@ healthSpring is a **niche**, not a node. The primal provides capabilities; graph
 
 | Component | Count |
 |-----------|-------|
-| Primal binary | `healthspring_primal` |
-| Capabilities | 79 |
+| Primal binary | `healthspring_primal` (UniBin: `serve`/`server`/`version`/`capabilities`, `--port` TCP) |
+| Capabilities | 84+ |
 | Domain dispatchers | 6 (`pkpd`, `microbiome`, `biosignal`, `endocrine`, `diagnostic`, `clinical`) |
 | Workflow graphs | 5 |
 
@@ -166,7 +166,7 @@ healthSpring exposes `DataChannel`, `HealthScenario`, `ClinicalRange` schemas. S
 
 ## 4. Capability Reference
 
-Top capabilities by domain (46 science + 13 infra):
+Top capabilities by domain (62 science + 22 infra):
 
 | Domain | Key Capabilities |
 |--------|------------------|
@@ -176,7 +176,7 @@ Top capabilities by domain (46 science + 13 infra):
 | **Endocrine** | `testosterone_pk`, `trt_outcomes`, `population_trt`, `hrv_trt_response`, `cardiac_risk` |
 | **Diagnostic** | `assess_patient`, `composite_risk`, `population_montecarlo` |
 | **Clinical** | `trt_scenario`, `patient_parameterize`, `risk_annotate` |
-| **Infra** | `provenance.begin/record/complete`, `primal.forward`, `compute.offload`, `data.fetch`, `health.liveness`, `health.readiness` |
+| **Infra** | `provenance.begin/record/complete`, `primal.forward`, `compute.offload`, `data.fetch`, `health.liveness`, `health.readiness`, `health.check`, `identity.get`, `capability.list`, `mcp.tools.list` |
 
 ---
 
@@ -202,14 +202,18 @@ Top capabilities by domain (46 science + 13 infra):
 
 ## 7. Evolution Status
 
-| Metric | V44 |
+| Metric | V51 |
 |--------|-----|
-| Tests | 928 |
-| Experiments | 83 |
+| Tests | 976 |
+| Experiments | 89 (83 science + 6 composition) |
 | Python baselines | 54 |
 | Cross-validation | 113/113 |
-| Capabilities | 59 |
+| Capabilities | 84+ (62 science + 22 infra) |
 | GPU ops (barraCuda) | 6/6 |
+| IPC transports | UDS + TCP (`--port`) |
+| BTSP handshake | Client module ready |
+| Typed IPC clients | `PrimalClient`, `InferenceClient` |
+| Structured discovery | `DiscoveryResult` + `DiscoverySource` |
 | Unsafe blocks | 0 |
 | `#[allow()]` | 0 |
 | Clippy warnings | 0 |
@@ -252,4 +256,5 @@ This guide tracks healthSpring's evolution. As capabilities are added, compositi
 
 | Version | Date | Changes |
 |---------|------|---------|
+| V51 | April 11, 2026 | TCP listener, BTSP, typed clients, structured discovery, `identity.get`, `health.check`, LOCAL/ROUTED split. 976 tests, 84+ capabilities. |
 | V36 | March 18, 2026 | Initial guide: 79 capabilities, 6 GPU ops rewired, 5 workflow graphs, 6 domain dispatchers |

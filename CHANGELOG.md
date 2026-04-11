@@ -4,6 +4,47 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V51 — 2026-04-11 — Hardened Composition Patterns
+
+### Added
+- TCP JSON-RPC listener via `--port` flag or `HEALTHSPRING_PORT` env var (newline-delimited
+  JSON-RPC 2.0 over TCP, aligned with `PRIMAL_IPC_PROTOCOL.md` v3.1).
+- `server` subcommand alias for `serve` (UniBin standard).
+- `identity.get` JSON-RPC method returning primal metadata (name, version, domain, license,
+  architecture, composition model, particle profile, proto-nucleate reference).
+- `health.check` JSON-RPC method for lightweight health probe (status, primal, version,
+  domain, uptime).
+- `methods: [string]` top-level array in `capabilities.list` response per
+  `PRIMAL_CAPABILITY_WIRE_STANDARD_APR08_2026.md`.
+- `LOCAL_CAPABILITIES` and `ROUTED_CAPABILITIES` constants with `served_locally` and
+  `canonical_provider` metadata in capability registration payloads.
+- `provided_capabilities()` structured output in `capabilities.list` (local vs routed).
+- Domain symlink (`health.sock`) created on bind, cleaned on shutdown (capability-domain
+  discovery per `PRIMAL_IPC_PROTOCOL.md` v3.1).
+- `ipc/btsp.rs` — BTSP (BearDog Transport Security Protocol) client handshake module:
+  `BtspMessage` enum, `family_seed_from_env()`, `client_hello()`, pure-Rust base64 decoder.
+- `ipc/client.rs` — Typed `PrimalClient` (health/capabilities fallback chains, typed calls)
+  and `InferenceClient` (discover, complete, embed, models) wrappers.
+- `ipc/discover.rs` — Structured `DiscoveryResult` and `DiscoverySource` for traceable
+  primal discovery (env override, capability probe, well-known path, not found).
+- `status` field (`"healthy"` / `"degraded"`) in `health.readiness` response.
+- V51 handoff: `wateringHole/handoffs/HEALTHSPRING_V51_HARDENED_COMPOSITION_HANDOFF_APR11_2026.md`.
+
+### Changed
+- `CoralReefDevice` → `SovereignDevice` in `gpu/sovereign.rs` (upstream API rename).
+- `handle_connection` refactored to generic `handle_lines<R,W>` supporting both Unix and TCP.
+- `cmd_serve` accepts `tcp_port: Option<u16>` and spawns TCP listener thread when provided.
+- `register_with_biomeos` iterates `LOCAL_CAPABILITIES` and `ROUTED_CAPABILITIES` separately
+  with `served_locally`/`canonical_provider` metadata per primalSpring niche pattern.
+- `plasmidBin/manifest.lock` healthspring version updated 0.7.0 → 0.8.0 (resolves drift).
+
+### Fixed
+- `CoralReefDevice` compile error in `gpu/sovereign.rs` (5 occurrences).
+- Broken intra-doc link in `provenance/mod.rs`.
+- `clippy::needless_pass_by_value` in `accept_tcp`, `handle_unix_connection`,
+  `handle_tcp_connection` (justified `#[expect]` with reasons).
+- `clippy::map_unwrap_or` in TCP port logging.
+
 ## V50 — 2026-04-11 — Composition Evolution
 
 ### Added

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Paper Review Queue
 
-**Last Updated**: March 23, 2026
-**Status**: V44 — Deep Debt Resolution Sprint. 83 experiments complete (Tracks 1–9), 928 tests, 45/45 papers complete. 53 provenance records, 23 MCP tools, deny.toml, 59 capabilities (46 science + 13 infra). barraCuda v0.3.7, 6 GPU ops.
+**Last Updated**: April 11, 2026
+**Status**: V51 — Hardened Composition Patterns. 89 experiments (83 science + 6 composition), 976 tests, 45/45 papers complete. 89 provenance entries, 84+ capabilities (62 science + 22 infra). barraCuda v0.3.11, 6 GPU ops.
 
 ---
 

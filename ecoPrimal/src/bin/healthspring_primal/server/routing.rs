@@ -31,9 +31,11 @@ pub fn dispatch_request(
 ) -> serde_json::Value {
     let method = rpc::normalize_method(method);
     match method {
-        "lifecycle.health" | "health" | "health.check" | "lifecycle.status" => handle_health(state),
+        "lifecycle.health" | "health" | "lifecycle.status" => handle_health(state),
         "health.liveness" => handle_liveness(),
         "health.readiness" => handle_readiness(state),
+        "health.check" => handle_health_check(state),
+        "identity.get" => crate::capabilities::handle_identity_get(),
         "composition.health_health" => handle_composition_health(state),
         _ => dispatch_extended(method, params, state),
     }
@@ -154,8 +156,11 @@ fn handle_readiness(state: &PrimalState) -> serde_json::Value {
     let compute = socket::discover_compute_primal().is_some();
     let data = socket::discover_data_primal().is_some();
 
+    let status = if science_ok { "healthy" } else { "degraded" };
+
     serde_json::json!({
         "ready": science_ok,
+        "status": status,
         "primal": crate::capabilities::PRIMAL_NAME,
         "version": env!("CARGO_PKG_VERSION"),
         "domain": crate::capabilities::PRIMAL_DOMAIN,
@@ -166,6 +171,23 @@ fn handle_readiness(state: &PrimalState) -> serde_json::Value {
             "compute_provider": compute,
             "data_provider": data,
         },
+    })
+}
+
+/// Distinct `health.check` probe per Deployment Validation Standard.
+///
+/// Richer than liveness (includes version, primal identity) but lighter
+/// than the full `handle_health` operational payload.
+fn handle_health_check(state: &PrimalState) -> serde_json::Value {
+    let science_ok = true;
+    let status = if science_ok { "healthy" } else { "degraded" };
+
+    serde_json::json!({
+        "status": status,
+        "primal": crate::capabilities::PRIMAL_NAME,
+        "version": env!("CARGO_PKG_VERSION"),
+        "domain": crate::capabilities::PRIMAL_DOMAIN,
+        "uptime_secs": state.start_time.elapsed().as_secs(),
     })
 }
 

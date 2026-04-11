@@ -1,5 +1,8 @@
 # healthSpring Codebase Completion Audit Report
 
+> **Note**: This is a V42 historical snapshot. Current metrics: V51, 976 tests,
+> 89 experiments, zero clippy/fmt/doc warnings. See `README.md` for current state.
+
 ## V42 (March 23, 2026)
 
 V42 deep debt resolution: all 548 missing_docs resolved; clippy pedantic+nursery+doc-markdown passes with `-D warnings`; RUSTSEC-2026-0049 resolved; 3 barraCuda API drift errors fixed; `transport.rs` panic evolved to `Result`; `ValidationSink` trait added; `normalize_method()` IPC; `OnceLock` GPU probe; 928 tests all passing.
@@ -10,7 +13,7 @@ V42 deep debt resolution: all 548 missing_docs resolved; clippy pedantic+nursery
 
 ## Historical snapshot (pre-V39, 2026-03-19)
 
-**Scope:** All Rust source files in `/home/strandgate/Development/ecoPrimals/healthSpring`
+**Scope:** All Rust source files in `ecoPrimals/springs/healthSpring`
 
 ---
 

@@ -35,14 +35,14 @@ capabilities over Unix sockets for biomeOS graph composition.
   - `healthspring-toadstool` — pipeline orchestration
 - **IPC**: JSON-RPC 2.0 over Unix domain sockets, 59 capabilities (46 science + 13 infrastructure); `normalize_method()` maps legacy-prefixed names before routing
 - **License**: AGPL-3.0-or-later (scyBorg trio)
-- **Tests**: 928 (lib + proptest + IPC fuzz + doc + integration + experiment bins)
+- **Tests**: 976 (lib + proptest + IPC fuzz + doc + integration + experiment bins)
 - **Coverage**: target 90% line (llvm-cov)
 - **Clippy**: 0 warnings, 0 errors (pedantic + nursery + doc-markdown, all promoted to error), workspace-level `[lints]`
 - **Validation harness**: `ValidationSink` trait (pluggable check output for experiments)
 - **Unsafe code**: 0 (`forbid(unsafe_code)` in workspace lints)
 - **MSRV**: 1.87 (Edition 2024)
-- **Crates**: 86 workspace members (3 lib + 83 experiments)
-- **GPU**: 6 WGSL shaders via barraCuda v0.3.7 (Hill, PopPK, Diversity, MM, SCFA, Beat); availability probe cached in `OnceLock`
+- **Crates**: 92 workspace members (3 lib + 89 experiments)
+- **GPU**: 6 WGSL shaders via barraCuda v0.3.11 (Hill, PopPK, Diversity, MM, SCFA, Beat); availability probe cached in `OnceLock`
 - **Tracing**: library code uses `tracing` (no `println!` in lib)
 
 ## Key Capabilities (JSON-RPC)
@@ -68,7 +68,7 @@ capabilities over Unix sockets for biomeOS graph composition.
 
 | Repo | Relationship |
 |------|-------------|
-| **barraCuda** | GPU math library (path dep, v0.3.7) |
+| **barraCuda** | GPU math library (path dep, v0.3.11) |
 | **coralReef** | WGSL compiler pipeline |
 | **toadStool** | Dispatch orchestration |
 | **wetSpring** | Shared gut microbiome, hormesis framework |

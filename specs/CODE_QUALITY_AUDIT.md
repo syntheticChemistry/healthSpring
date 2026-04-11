@@ -1,5 +1,8 @@
 # healthSpring Code Quality Audit Report
 
+> **Note**: This is a V42 historical snapshot. Current metrics: V51, 976 tests,
+> zero clippy/fmt/doc warnings. See `README.md` and `CHANGELOG.md` for current state.
+
 ## V42 (March 23, 2026)
 
 | Metric | Value |

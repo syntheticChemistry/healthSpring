@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: April 11, 2026
-**Status**: V50 — Composition Evolution. 89 experiments, 960+ tests. Six Tier 4 composition experiments (exp112–117): IPC dispatch parity, proto-nucleate alias resolution, wire protocol round-trip, health probe routing, capability surface completeness. Python and Rust are both validation targets for NUCLEUS composition patterns.
+**Status**: V51 — Hardened Composition Patterns. 89 experiments, 976 tests. Six Tier 4 composition experiments (exp112–117): IPC dispatch parity, proto-nucleate alias resolution, wire protocol round-trip, health probe routing, capability surface completeness. TCP + UDS listeners, BTSP handshake, typed PrimalClient/InferenceClient, structured discovery. Python and Rust are both validation targets for NUCLEUS composition patterns.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a five-tier pipeline:
 

@@ -10,7 +10,7 @@
 //! `git_commit`, python, numpy). This module provides Rust-side types to
 //! consume and validate that provenance chain.
 //!
-//! The [`PROVENANCE_REGISTRY`] enumerates all Python control scripts in
+//! The provenance registry enumerates all Python control scripts in
 //! `control/` for completeness verification.
 
 mod records_infra;

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: April 10, 2026
-**Status**: V49 — Composition Audit Remediation. 89 experiments, 940+ tests, 62 science + 22 infra capabilities, 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). Sovereign dispatch expanded with named fallback errors per op. Local WGSL shader removal plan documented (blocked on TensorSession). `uncertainty::std_dev` delegated to `barracuda::stats`.
+**Last Updated**: April 11, 2026
+**Status**: V51 — Hardened Composition Patterns. 89 experiments, 976 tests, 84+ capabilities (62 science + 22 infra), 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). `CoralReefDevice` → `SovereignDevice` API fix. TCP + UDS listeners, BTSP handshake, typed IPC clients. Local WGSL shader removal plan documented (blocked on TensorSession).
 
 ---
 

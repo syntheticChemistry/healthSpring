@@ -67,7 +67,8 @@ pub fn register_with_biomeos(our_socket: &Path) {
     }
 
     let mut registered = 0;
-    for cap in crate::capabilities::ALL_CAPABILITIES {
+
+    for cap in crate::capabilities::LOCAL_CAPABILITIES {
         if rpc::send(
             target_socket,
             "capability.register",
@@ -75,6 +76,25 @@ pub fn register_with_biomeos(our_socket: &Path) {
                 "primal": crate::capabilities::PRIMAL_NAME,
                 "capability": cap,
                 "socket": our_socket.to_string_lossy(),
+                "served_locally": true,
+            }),
+        )
+        .is_some()
+        {
+            registered += 1;
+        }
+    }
+
+    for &(cap, provider) in crate::capabilities::ROUTED_CAPABILITIES {
+        if rpc::send(
+            target_socket,
+            "capability.register",
+            &serde_json::json!({
+                "primal": crate::capabilities::PRIMAL_NAME,
+                "capability": cap,
+                "socket": our_socket.to_string_lossy(),
+                "served_locally": false,
+                "canonical_provider": provider,
             }),
         )
         .is_some()
@@ -85,9 +105,11 @@ pub fn register_with_biomeos(our_socket: &Path) {
 
     info!(
         registered,
+        local = crate::capabilities::LOCAL_CAPABILITIES.len(),
+        routed = crate::capabilities::ROUTED_CAPABILITIES.len(),
         total = crate::capabilities::ALL_CAPABILITIES.len(),
         domain = crate::capabilities::PRIMAL_DOMAIN,
-        "capabilities registered"
+        "capabilities registered (local + routed)"
     );
 }
 

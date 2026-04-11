@@ -19,7 +19,7 @@ workspace = true
 default = []
 gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck"]
 barracuda-ops = ["gpu"]
-# Sovereign dispatch via barraCuda CoralReefDevice: WGSL → coralReef compile →
+# Sovereign dispatch via barraCuda SovereignDevice: WGSL → coralReef compile →
 # toadStool dispatch → native binary. Replaces strip_f64_enable() workaround.
 sovereign-dispatch = ["gpu", "barracuda/sovereign-dispatch"]
 nestgate = ["dep:ureq"]
