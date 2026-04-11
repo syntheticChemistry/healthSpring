@@ -132,14 +132,13 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "barracuda"
-version = "0.3.7"
+version = "0.3.11"
 dependencies = [
  "blake3",
  "bytemuck",
  "bytes",
  "half",
  "naga",
- "num-traits",
  "pollster 0.3.0",
  "rand 0.9.2",
  "rayon",
@@ -153,7 +152,7 @@ dependencies = [
 
 [[package]]
 name = "barracuda-core"
-version = "0.3.7"
+version = "0.3.11"
 dependencies = [
  "barracuda",
  "blake3",
@@ -164,6 +163,8 @@ dependencies = [
  "tarpc",
  "thiserror",
  "tokio",
+ "tokio-serde",
+ "tokio-util",
  "tracing",
  "tracing-subscriber",
 ]
@@ -1496,6 +1497,46 @@ name = "healthspring-exp111"
 version = "0.1.0"
 dependencies = [
  "healthspring-barracuda",
+]
+
+[[package]]
+name = "healthspring-exp112"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "serde_json",
+]
+
+[[package]]
+name = "healthspring-exp113"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "serde_json",
+]
+
+[[package]]
+name = "healthspring-exp114"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "serde_json",
+]
+
+[[package]]
+name = "healthspring-exp115"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "serde_json",
+]
+
+[[package]]
+name = "healthspring-exp116"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "serde_json",
 ]
 
 [[package]]

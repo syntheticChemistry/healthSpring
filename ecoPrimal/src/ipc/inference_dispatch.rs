@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Typed client for inference primal `model.*` protocol.
+//! Typed client for inference primal protocol.
+//!
+//! Supports both `model.*` and `inference.*` method namespaces for
+//! compatibility with Squirrel / neuralSpring (proto-nucleate uses
+//! `inference.*`; legacy callers use `model.*`).
 //!
 //! Discovery is capability-based — no hardcoded primal names.
 
@@ -24,6 +28,13 @@ impl core::fmt::Display for InferenceError {
     }
 }
 
+/// Discover an inference primal by probing both `model.*` and `inference.*`
+/// capability namespaces.
+fn discover_inference_socket() -> Option<std::path::PathBuf> {
+    socket::discover_inference_primal()
+        .or_else(|| socket::discover_by_capability_public("inference"))
+}
+
 /// Route a model inference request to the discovered inference primal.
 ///
 /// # Errors
@@ -31,12 +42,16 @@ impl core::fmt::Display for InferenceError {
 /// Returns [`InferenceError`] if no inference primal is available or the
 /// RPC call fails.
 pub fn infer(params: &serde_json::Value) -> Result<serde_json::Value, InferenceError> {
-    let inference_socket =
-        socket::discover_inference_primal().ok_or(InferenceError::NoInferencePrimal)?;
-    rpc::try_send(&inference_socket, "model.infer", params).map_err(InferenceError::Send)
+    let inference_socket = discover_inference_socket().ok_or(InferenceError::NoInferencePrimal)?;
+    rpc::resilient_send(&inference_socket, "inference.complete", params)
+        .or_else(|_| rpc::resilient_send(&inference_socket, "model.infer", params))
+        .map_err(InferenceError::Send)
 }
 
-/// Route a model operation by name to the discovered inference primal.
+/// Route an inference operation by name to the discovered inference primal.
+///
+/// Tries the `inference.{operation}` namespace first (proto-nucleate
+/// alignment), then falls back to `model.{operation}`.
 ///
 /// # Errors
 ///
@@ -46,16 +61,26 @@ pub fn route(
     operation: &str,
     params: &serde_json::Value,
 ) -> Result<serde_json::Value, InferenceError> {
-    let inference_socket =
-        socket::discover_inference_primal().ok_or(InferenceError::NoInferencePrimal)?;
-    let method = format!("model.{operation}");
-    rpc::try_send(&inference_socket, &method, params).map_err(InferenceError::Send)
+    let inference_socket = discover_inference_socket().ok_or(InferenceError::NoInferencePrimal)?;
+    let inference_method = format!("inference.{operation}");
+    let model_method = format!("model.{operation}");
+    rpc::resilient_send(&inference_socket, &inference_method, params)
+        .or_else(|e| {
+            if e.is_method_not_found() {
+                rpc::resilient_send(&inference_socket, &model_method, params)
+            } else {
+                Err(e)
+            }
+        })
+        .map_err(InferenceError::Send)
 }
 
-/// Query model capabilities from the discovered inference primal.
+/// Query inference capabilities from the discovered inference primal.
+///
+/// Returns capabilities matching both `model.*` and `inference.*` namespaces.
 #[must_use]
 pub fn capabilities() -> Vec<String> {
-    let Some(inference_socket) = socket::discover_inference_primal() else {
+    let Some(inference_socket) = discover_inference_socket() else {
         return Vec::new();
     };
     let Ok(result) = rpc::try_send(&inference_socket, "capability.list", &serde_json::json!({}))
@@ -64,7 +89,7 @@ pub fn capabilities() -> Vec<String> {
     };
     socket::extract_capability_strings(&result)
         .into_iter()
-        .filter(|s| s.starts_with("model."))
+        .filter(|s| s.starts_with("model.") || s.starts_with("inference."))
         .map(str::to_owned)
         .collect()
 }

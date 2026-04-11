@@ -7,6 +7,8 @@ use serde_json::Value;
 
 pub(super) mod biosignal;
 pub(super) mod clinical;
+pub(super) mod comparative;
+pub(super) mod discovery;
 pub(super) mod microbiome;
 pub(super) mod pkpd;
 pub(super) mod simulation;
@@ -69,11 +71,12 @@ mod tests {
     use serde_json::json;
 
     use super::*;
+    use crate::tolerances;
 
     #[test]
     fn param_f_extracts_float() {
         let p = json!({"dose": 10.5});
-        assert!((f(&p, "dose").unwrap() - 10.5).abs() < 1e-15);
+        assert!((f(&p, "dose").unwrap() - 10.5).abs() < tolerances::MACHINE_EPSILON_STRICT);
         assert!(f(&p, "missing").is_none());
     }
 
@@ -82,7 +85,7 @@ mod tests {
         let p = json!({"times": [0.0, 1.0, 2.0]});
         let v = fa(&p, "times").unwrap();
         assert_eq!(v.len(), 3);
-        assert!((v[1] - 1.0).abs() < 1e-15);
+        assert!((v[1] - 1.0).abs() < tolerances::MACHINE_EPSILON_STRICT);
     }
 
     #[test]
@@ -183,6 +186,93 @@ mod tests {
         let r = pkpd::dispatch_pbpk(&p);
         assert!(r["auc"].as_f64().unwrap() > 0.0);
         assert!(r["n_steps"].as_u64().unwrap() > 0);
+    }
+
+    // ── Comparative handler tests ──────────────────────────────────
+
+    #[test]
+    fn dispatch_cross_species_pk_returns_scaled() {
+        let p = json!({"cl_ref": 10.0, "bw_ref": 70.0, "bw_target": 10.0, "vd_ref": 1.0});
+        let r = comparative::dispatch_cross_species_pk(&p);
+        assert!(r["scaled_clearance"].as_f64().unwrap() > 0.0);
+        assert!(r["predicted_half_life"].as_f64().unwrap() > 0.0);
+    }
+
+    #[test]
+    fn dispatch_cross_species_pk_missing_params() {
+        let p = json!({"cl_ref": 10.0});
+        let r = comparative::dispatch_cross_species_pk(&p);
+        assert_eq!(r["error"], "missing_params");
+    }
+
+    #[test]
+    fn dispatch_canine_il31_returns_kinetics() {
+        let p = json!({"baseline_pg_ml": 50.0, "t_hr": 24.0, "treatment": "oclacitinib"});
+        let r = comparative::dispatch_canine_il31(&p);
+        assert!(r["il31_pg_ml"].as_f64().is_some());
+        assert!(r["pruritus_vas"].as_f64().is_some());
+    }
+
+    #[test]
+    fn dispatch_canine_jak1_returns_selectivity() {
+        let p = json!({"jak1_nm": 10.0, "jak2_nm": 2800.0, "jak3_nm": 500.0, "tyk2_nm": 1900.0});
+        let r = comparative::dispatch_canine_jak1(&p);
+        assert!(r["jak1_selectivity"].as_f64().unwrap() > 1.0);
+        assert!(r["reference_selectivity"].as_f64().unwrap() > 1.0);
+    }
+
+    // ── Discovery handler tests ─────────────────────────────────────
+
+    #[test]
+    fn dispatch_matrix_score_returns_combined() {
+        let p = json!({
+            "on_target_ic50": 10.0, "off_target_ic50s": [1000.0, 500.0],
+            "localization_length": 10.0, "tissue_thickness": 5.0,
+            "w_baseline": 3.0, "w_treated": 2.0
+        });
+        let r = discovery::dispatch_matrix_score(&p);
+        assert!(r["combined_score"].as_f64().unwrap() > 0.0);
+        assert!(r["pathway_score"].as_f64().unwrap() > 0.0);
+    }
+
+    #[test]
+    fn dispatch_matrix_score_missing_params() {
+        let p = json!({"on_target_ic50": 10.0});
+        let r = discovery::dispatch_matrix_score(&p);
+        assert_eq!(r["error"], "missing_params");
+    }
+
+    #[test]
+    fn dispatch_hts_analysis_returns_zprime() {
+        let p = json!({
+            "pos_mean": 100.0, "pos_std": 5.0,
+            "neg_mean": 10.0, "neg_std": 3.0,
+            "signals": [50.0, 80.0, 15.0],
+            "sample_stds": [5.0, 4.0, 6.0]
+        });
+        let r = discovery::dispatch_hts_analysis(&p);
+        assert!(r["z_prime"].as_f64().unwrap() > 0.0);
+    }
+
+    #[test]
+    fn dispatch_compound_library_returns_ic50() {
+        let p = json!({
+            "concentrations": [0.1, 1.0, 10.0, 100.0],
+            "responses": [0.05, 0.2, 0.5, 0.9]
+        });
+        let r = discovery::dispatch_compound_library(&p);
+        assert!(r["ic50"].as_f64().unwrap() > 0.0);
+    }
+
+    #[test]
+    fn dispatch_fibrosis_pathway_returns_score() {
+        let p = json!({
+            "concentration_um": 10.0,
+            "rho_ic50_um": 5.0, "mrtf_ic50_um": 3.0, "srf_ic50_um": 8.0
+        });
+        let r = discovery::dispatch_fibrosis_pathway(&p);
+        assert!(r["anti_fibrotic_score"].as_f64().unwrap() > 0.0);
+        assert!(r["fibrotic_geometry"].as_f64().is_some());
     }
 
     // ── Toxicology handler tests ─────────────────────────────────────

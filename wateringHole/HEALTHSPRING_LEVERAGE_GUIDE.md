@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Leverage Guide — Standalone, Trio, and Full Niche
 
-**Date**: March 24, 2026
-**Primal**: healthSpring V44 (`healthspring-barracuda` 0.1.0)
+**Date**: April 10, 2026
+**Primal**: healthSpring V48 (`healthspring-barracuda` 0.1.0, ecoBin 0.8.0)
 **Audience**: All springs, all primals, biomeOS integrators
 **Status**: Active
 

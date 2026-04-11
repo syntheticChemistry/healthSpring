@@ -59,6 +59,30 @@ pub const ALL_CAPABILITIES: &[&str] = &[
     "science.clinical.trt_scenario",
     "science.clinical.patient_parameterize",
     "science.clinical.risk_annotate",
+    // ── Comparative ──────────────────────────────────────────────────
+    "science.comparative.cross_species_pk",
+    "science.comparative.canine_il31",
+    "science.comparative.canine_jak1",
+    // ── Discovery ────────────────────────────────────────────────────
+    "science.discovery.matrix_score",
+    "science.discovery.hts_analysis",
+    "science.discovery.compound_library",
+    "science.discovery.fibrosis_pathway",
+    // ── Toxicology ───────────────────────────────────────────────────
+    "science.toxicology.biphasic_dose_response",
+    "science.toxicology.toxicity_landscape",
+    "science.toxicology.hormetic_optimum",
+    // ── Simulation ───────────────────────────────────────────────────
+    "science.simulation.mechanistic_fitness",
+    "science.simulation.ecosystem_simulate",
+    // ── Proto-nucleate aliases (NUCLEUS_SPRING_ALIGNMENT.md) ──────────
+    // Maps proto-nucleate `health.*` capabilities to the science surface.
+    "health.pharmacology",
+    "health.clinical",
+    "health.de_identify",
+    "health.aggregate",
+    // ── Composition health (COMPOSITION_HEALTH_STANDARD.md) ──────────
+    "composition.health_health",
     // ── Provenance trio (`biomeOS` composition) ──────────────────────
     "provenance.begin",
     "provenance.record",
@@ -77,39 +101,29 @@ pub const ALL_CAPABILITIES: &[&str] = &[
     "compute.shader_compile", // coralReef coordination
     // ── Data (`NestGate` routing) ────────────────────────────────────
     "data.fetch",
-    // ── Model inference (Squirrel coordination) ─────────────────────
+    // ── Inference (Squirrel / neuralSpring coordination) ─────────────
     "model.inference_route",
+    "inference.complete",
+    "inference.embed",
+    "inference.models",
+    "inference.route",
 ];
 
 /// Build semantic mappings for capability registration with biomeOS.
+///
+/// Maps short method names to fully-qualified `domain.verb` methods.
+/// Built from `ALL_CAPABILITIES` to stay in sync automatically.
 pub fn build_semantic_mappings() -> serde_json::Value {
-    serde_json::json!({
-        "hill_dose_response":       "science.pkpd.hill_dose_response",
-        "one_compartment_pk":       "science.pkpd.one_compartment_pk",
-        "two_compartment_pk":       "science.pkpd.two_compartment_pk",
-        "pbpk_simulate":            "science.pkpd.pbpk_simulate",
-        "population_pk":            "science.pkpd.population_pk",
-        "nca_analysis":             "science.pkpd.nca_analysis",
-        "nlme_foce":                "science.pkpd.nlme_foce",
-        "nlme_saem":                "science.pkpd.nlme_saem",
-        "vpc_simulate":             "science.pkpd.vpc_simulate",
-        "gof_compute":              "science.pkpd.gof_compute",
-        "shannon_index":            "science.microbiome.shannon_index",
-        "simpson_index":            "science.microbiome.simpson_index",
-        "anderson_gut":             "science.microbiome.anderson_gut",
-        "colonization_resistance":  "science.microbiome.colonization_resistance",
-        "qs_gene_profile":          "science.microbiome.qs_gene_profile",
-        "pan_tompkins":             "science.biosignal.pan_tompkins",
-        "hrv_metrics":              "science.biosignal.hrv_metrics",
-        "ppg_spo2":                 "science.biosignal.ppg_spo2",
-        "wfdb_decode":              "science.biosignal.wfdb_decode",
-        "testosterone_pk":          "science.endocrine.testosterone_pk",
-        "trt_outcomes":             "science.endocrine.trt_outcomes",
-        "population_trt":           "science.endocrine.population_trt",
-        "assess_patient":           "science.diagnostic.assess_patient",
-        "composite_risk":           "science.diagnostic.composite_risk",
-        "trt_scenario":             "science.clinical.trt_scenario",
-    })
+    let mut map = serde_json::Map::with_capacity(ALL_CAPABILITIES.len());
+    for cap in ALL_CAPABILITIES {
+        if let Some(short) = cap.rsplit('.').next() {
+            map.insert(
+                short.to_string(),
+                serde_json::Value::String((*cap).to_string()),
+            );
+        }
+    }
+    serde_json::Value::Object(map)
 }
 
 /// Capability listing (`biomeOS` niche composition).
@@ -129,8 +143,11 @@ pub fn handle_capability_list() -> serde_json::Value {
                 || c.starts_with("compute.")
                 || c.starts_with("data.")
                 || c.starts_with("model.")
+                || c.starts_with("inference.")
                 || c.starts_with("capability.")
                 || c.starts_with("provenance.")
+                || c.starts_with("composition.")
+                || c.starts_with("health.")
         })
         .copied()
         .collect();

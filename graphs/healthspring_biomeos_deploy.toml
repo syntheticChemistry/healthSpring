@@ -1,0 +1,119 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# biomeOS-format deployment graph for healthSpring medical science niche.
+#
+# This graph is consumable by biomeOS's neural_graph.rs / NeuralExecutor:
+#   [[nodes]] with action/params (biomeOS graph schema)
+#
+# For primalSpring structural validation, see:
+#   graphs/healthspring_niche_deploy.toml  ([[graph.node]] format)
+#
+# biomeOS bundles its own copy at primals/biomeOS/graphs/healthspring_deploy.toml.
+# This local copy is the spring's authoritative declaration — upstream should
+# absorb from here.
+#
+# Sync date: 2026-04-07 (V47)
+
+[graph]
+id = "healthspring_deploy"
+version = "0.3.0"
+description = "healthSpring medical science primal deployment atop Node Atomic"
+coordination = "Sequential"
+
+# -- Phase 1: Verify infrastructure ------------------------------------------
+
+[[nodes]]
+id = "verify-tower"
+action = "check_primal"
+params = { primal = "beardog", required = true }
+
+[[nodes]]
+id = "verify-songbird"
+action = "check_primal"
+params = { primal = "songbird", required = true }
+depends_on = ["verify-tower"]
+
+[[nodes]]
+id = "verify-toadstool"
+action = "check_primal"
+params = { primal = "toadstool", required = false }
+depends_on = ["verify-songbird"]
+
+[[nodes]]
+id = "verify-nestgate"
+action = "check_primal"
+params = { primal = "nestgate", required = false }
+depends_on = ["verify-songbird"]
+
+# -- Phase 2: Verify provenance trio (optional) ------------------------------
+
+[[nodes]]
+id = "verify-rhizocrypt"
+action = "check_primal"
+params = { primal = "rhizocrypt", required = false }
+depends_on = ["verify-tower"]
+
+[[nodes]]
+id = "verify-loamspine"
+action = "check_primal"
+params = { primal = "loamspine", required = false }
+depends_on = ["verify-rhizocrypt"]
+
+[[nodes]]
+id = "verify-sweetgrass"
+action = "check_primal"
+params = { primal = "sweetgrass", required = false }
+depends_on = ["verify-loamspine"]
+
+# -- Phase 3: Start healthSpring ----------------------------------------------
+
+[[nodes]]
+id = "start-healthspring"
+action = "start_primal"
+depends_on = ["verify-songbird"]
+
+[nodes.params]
+primal = "healthspring"
+socket = "${XDG_RUNTIME_DIR}/biomeos/healthspring-${FAMILY_ID}.sock"
+subcommand = "server"
+
+[nodes.params.environment]
+HEALTHSPRING_FAMILY_ID = "${FAMILY_ID}"
+
+# -- Phase 4: Register capabilities ------------------------------------------
+
+[[nodes]]
+id = "register-capabilities"
+action = "register_capabilities"
+depends_on = ["start-healthspring"]
+
+[nodes.params]
+primal = "healthspring"
+domain = "medical"
+capabilities = [
+    "medical",
+    "pkpd",
+    "microbiome",
+    "biosignal",
+    "endocrine",
+    "diagnostic",
+    "clinical",
+    "comparative",
+    "discovery",
+    "toxicology",
+    "simulation",
+]
+
+# -- Phase 5: Health verification ---------------------------------------------
+
+[[nodes]]
+id = "verify-health"
+action = "health_check"
+params = { primal = "healthspring", timeout_ms = 5000 }
+depends_on = ["register-capabilities"]
+
+[[nodes]]
+id = "verify-composition"
+action = "health_check"
+params = { primal = "healthspring", method = "composition.health_health", timeout_ms = 5000 }
+depends_on = ["verify-health"]

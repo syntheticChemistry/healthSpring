@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: March 24, 2026
-**Status**: V44 — Cross-Spring Absorption. 928 tests, 83 experiments, 59 JSON-RPC capabilities (46 science + 13 infra), 54 Python baselines. Self-knowledge compliance; simulation/validation refactoring. barraCuda v0.3.7. Clippy pedantic+nursery+doc-markdown with `-D warnings`, zero unsafe, zero `#[allow]`.
+**Last Updated**: April 10, 2026
+**Status**: V48 — Composition Validation. 940+ tests, 88 experiments (83 science + 5 composition), 59 JSON-RPC capabilities (46 science + 13 infra), 54 Python baselines, 73 composition validation checks. ecoBin harvested to plasmidBin (static-PIE, 2.5 MB). barraCuda v0.3.11. Clippy pedantic+nursery+doc-markdown with `-D warnings`, zero unsafe, zero `#[allow]`.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -13,9 +13,11 @@
 |--------|-------|
 | Rust tests (workspace) | 928 |
 | Python control checks | 54 baselines, 113/113 cross-validation (all 9 tracks) |
-| Experiments | 73 (30 Tier 0+1 + 3 diagnostic + 3 GPU + 1 viz + 3 dispatch + 3 clinical + 7 compute + 2 interaction + 2 NLME + 6 V16 primitives + 1 GPU V16 + 1 CPU bench + 3 V19 full-stack + 2 V20 visualization) |
+| Experiments | 88 (83 science + 5 composition Tier 4) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
+| Composition validation (Tier 4) | 5 experiments, 73/73 checks, 12 integration tests — IPC dispatch vs direct Rust |
+| ecoBin | Static-PIE x86_64-musl, 2.5 MB, harvested to plasmidBin |
 | toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |
 | CPU parity | Rust 84× faster than Python (Exp084, 33+17 checks) |
 | NLME population PK | FOCE + SAEM estimation, NCA, CWRES/VPC/GOF diagnostics |

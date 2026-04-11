@@ -36,6 +36,9 @@
 pub mod hormesis;
 pub use hormesis::*;
 
+#[cfg(test)]
+mod wetspring_cross_validation;
+
 use crate::tolerances;
 
 /// Per-tissue toxicity profile: binding load vs repair capacity.

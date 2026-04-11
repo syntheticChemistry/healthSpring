@@ -31,7 +31,7 @@ impl core::fmt::Display for ShaderError {
 /// Returns [`ShaderError`] if no shader primal is available or the RPC fails.
 pub fn compile(params: &serde_json::Value) -> Result<serde_json::Value, ShaderError> {
     let shader_socket = socket::discover_shader_compiler().ok_or(ShaderError::NoShaderPrimal)?;
-    rpc::try_send(&shader_socket, "shader.compile", params).map_err(ShaderError::Send)
+    rpc::resilient_send(&shader_socket, "shader.compile", params).map_err(ShaderError::Send)
 }
 
 /// Validate a WGSL shader without full compilation.
@@ -41,7 +41,7 @@ pub fn compile(params: &serde_json::Value) -> Result<serde_json::Value, ShaderEr
 /// Returns [`ShaderError`] if no shader primal is available or the RPC fails.
 pub fn validate(wgsl_source: &str) -> Result<serde_json::Value, ShaderError> {
     let shader_socket = socket::discover_shader_compiler().ok_or(ShaderError::NoShaderPrimal)?;
-    rpc::try_send(
+    rpc::resilient_send(
         &shader_socket,
         "shader.validate",
         &serde_json::json!({ "source": wgsl_source }),

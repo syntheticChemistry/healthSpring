@@ -386,4 +386,217 @@ mod tests {
         let caps = extract_capability_strings(&result);
         assert!(caps.contains(&"science.health.pkpd"));
     }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 6. DispatchOutcome ↔ extract_rpc_result consistency
+    //    (absorbed from primalSpring Phase 12.1)
+    // ═══════════════════════════════════════════════════════════════════
+
+    proptest! {
+        /// extract_rpc_result and classify_response agree on success vs failure.
+        #[test]
+        fn dispatch_outcome_extract_consistency(val in json_value_strategy()) {
+            let resp = serde_json::json!({"jsonrpc": "2.0", "result": val, "id": 1});
+            let extract_ok = extract_rpc_result(&resp).is_some();
+            let classify_ok = matches!(classify_response(&resp), DispatchOutcome::Ok(_));
+            prop_assert_eq!(extract_ok, classify_ok);
+        }
+
+        /// Error paths: both extract and classify agree it's not success.
+        #[test]
+        fn dispatch_outcome_error_consistency(
+            code in prop_oneof![
+                Just(-32700_i64), Just(-32601_i64), Just(-32600_i64),
+                Just(-1_i64), Just(0_i64), (-50000_i64..-20000),
+            ],
+            msg in prop::string::string_regex("[a-zA-Z0-9 ]{0,30}").unwrap(),
+        ) {
+            let resp = serde_json::json!({
+                "jsonrpc": "2.0",
+                "error": {"code": code, "message": msg},
+                "id": 1
+            });
+            prop_assert!(extract_rpc_result(&resp).is_none());
+            prop_assert!(!matches!(classify_response(&resp), DispatchOutcome::Ok(_)));
+        }
+
+        /// Protocol errors (-32700..-32600) are classified as ProtocolError.
+        #[test]
+        fn protocol_error_range_classified_correctly(
+            code in -32700_i64..=-32600,
+            msg in prop::string::string_regex("[a-zA-Z]{1,20}").unwrap(),
+        ) {
+            let resp = serde_json::json!({
+                "jsonrpc": "2.0",
+                "error": {"code": code, "message": msg},
+                "id": 1
+            });
+            let outcome = classify_response(&resp);
+            prop_assert!(outcome.is_protocol_error());
+        }
+
+        /// Application errors (outside protocol range) are ApplicationError.
+        #[test]
+        fn application_error_range_classified_correctly(
+            code in prop_oneof![(-50000_i64..-32701), (-32599_i64..0)],
+            msg in prop::string::string_regex("[a-zA-Z]{1,20}").unwrap(),
+        ) {
+            let resp = serde_json::json!({
+                "jsonrpc": "2.0",
+                "error": {"code": code, "message": msg},
+                "id": 1
+            });
+            let outcome = classify_response(&resp);
+            prop_assert!(!outcome.is_protocol_error());
+            let is_app_err = matches!(outcome, DispatchOutcome::ApplicationError { .. });
+            prop_assert!(is_app_err);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 7. Trio witness wire type fuzzing
+    //    (primalSpring audit: fuzz kind, encoding, algorithm, tier, context)
+    // ═══════════════════════════════════════════════════════════════════
+
+    fn arb_witness_kind() -> impl Strategy<Value = &'static str> {
+        prop_oneof![
+            Just("computation"),
+            Just("data_fetch"),
+            Just("validation"),
+            Just("experiment"),
+            Just("calibration"),
+        ]
+    }
+
+    fn arb_encoding() -> impl Strategy<Value = &'static str> {
+        prop_oneof![
+            Just("json"),
+            Just("cbor"),
+            Just("msgpack"),
+            Just("raw"),
+        ]
+    }
+
+    fn arb_algorithm() -> impl Strategy<Value = &'static str> {
+        prop_oneof![
+            Just("blake3"),
+            Just("sha256"),
+            Just("sha3-256"),
+            Just("xxhash64"),
+        ]
+    }
+
+    fn arb_tier() -> impl Strategy<Value = &'static str> {
+        prop_oneof![
+            Just("ephemeral"),
+            Just("session"),
+            Just("permanent"),
+            Just("immutable"),
+        ]
+    }
+
+    fn arb_context_value() -> impl Strategy<Value = serde_json::Value> {
+        prop_oneof![
+            Just(serde_json::Value::Null),
+            prop::string::string_regex("[a-zA-Z0-9._-]{0,30}")
+                .unwrap()
+                .prop_map(serde_json::Value::String),
+            any::<i64>().prop_map(serde_json::Value::from),
+            any::<bool>().prop_map(serde_json::Value::from),
+        ]
+    }
+
+    proptest! {
+        /// Trio witness JSON round-trips without panics. Validates that
+        /// arbitrary field combinations for the witness wire type (kind,
+        /// encoding, algorithm, tier, context) serialize and deserialize
+        /// cleanly through serde_json.
+        #[test]
+        fn trio_witness_wire_roundtrip(
+            kind in arb_witness_kind(),
+            encoding in arb_encoding(),
+            algorithm in arb_algorithm(),
+            tier in arb_tier(),
+            session_id in prop::string::string_regex("[a-f0-9]{8}-[a-f0-9]{4}").unwrap(),
+            merkle_root in prop::string::string_regex("[a-f0-9]{0,64}").unwrap(),
+            context_val in arb_context_value(),
+        ) {
+            let witness = serde_json::json!({
+                "kind": kind,
+                "encoding": encoding,
+                "algorithm": algorithm,
+                "tier": tier,
+                "session_id": session_id,
+                "merkle_root": merkle_root,
+                "context": context_val,
+            });
+            let serialized = serde_json::to_string(&witness).unwrap();
+            let parsed: serde_json::Value = serde_json::from_str(&serialized).unwrap();
+            prop_assert_eq!(parsed["kind"].as_str().unwrap(), &*kind);
+            prop_assert_eq!(parsed["encoding"].as_str().unwrap(), &*encoding);
+            prop_assert_eq!(parsed["algorithm"].as_str().unwrap(), &*algorithm);
+            prop_assert_eq!(parsed["tier"].as_str().unwrap(), &*tier);
+        }
+
+        /// DataProvenanceChain-shaped payloads serialize consistently.
+        #[test]
+        fn provenance_chain_wire_roundtrip(
+            status in prop_oneof![Just("complete"), Just("partial"), Just("unavailable")],
+            session_id in prop::string::string_regex("[a-f0-9]{0,32}").unwrap(),
+            merkle_root in prop::string::string_regex("[a-f0-9]{0,64}").unwrap(),
+            commit_id in prop::string::string_regex("[a-f0-9]{0,32}").unwrap(),
+            braid_id in prop::string::string_regex("[a-f0-9]{0,32}").unwrap(),
+        ) {
+            let chain = serde_json::json!({
+                "status": status,
+                "session_id": session_id,
+                "merkle_root": merkle_root,
+                "commit_id": commit_id,
+                "braid_id": braid_id,
+            });
+            let serialized = serde_json::to_string(&chain).unwrap();
+            let parsed: serde_json::Value = serde_json::from_str(&serialized).unwrap();
+            prop_assert_eq!(parsed["status"].as_str().unwrap(), &*status);
+            prop_assert_eq!(parsed["session_id"].as_str().unwrap(), session_id.as_str());
+        }
+
+        /// A trio witness embedded in a JSON-RPC response extracts cleanly.
+        #[test]
+        fn trio_witness_in_rpc_response_extracts(
+            kind in arb_witness_kind(),
+            tier in arb_tier(),
+            algorithm in arb_algorithm(),
+        ) {
+            let witness = serde_json::json!({
+                "witness": {
+                    "kind": kind,
+                    "tier": tier,
+                    "algorithm": algorithm,
+                    "session_id": "abc-1234",
+                    "merkle_root": "deadbeef",
+                },
+                "status": "complete",
+            });
+            let resp = serde_json::json!({"jsonrpc": "2.0", "result": witness, "id": 1});
+            let extracted = extract_rpc_result(&resp);
+            prop_assert!(extracted.is_some());
+            let result = extracted.unwrap();
+            prop_assert_eq!(result["witness"]["kind"].as_str().unwrap(), &*kind);
+            prop_assert_eq!(result["witness"]["tier"].as_str().unwrap(), &*tier);
+        }
+
+        /// Arbitrary JSON as a witness context field never panics in extract.
+        #[test]
+        fn trio_witness_arbitrary_context_never_panics(
+            context in prop::string::string_regex("[\\PC]{0,200}").unwrap(),
+        ) {
+            let witness = serde_json::json!({
+                "kind": "computation",
+                "context": context,
+            });
+            let resp = serde_json::json!({"jsonrpc": "2.0", "result": witness, "id": 1});
+            let _ = extract_rpc_result(&resp);
+            let _ = classify_response(&resp);
+        }
+    }
 }

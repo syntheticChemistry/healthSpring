@@ -94,6 +94,11 @@ members = [
     "experiments/exp109_mitbih_arrhythmia",
     "experiments/exp110_equine_laminitis",
     "experiments/exp111_causal_terrarium",
+    "experiments/exp112_composition_pkpd",
+    "experiments/exp113_composition_microbiome",
+    "experiments/exp114_composition_health_triad",
+    "experiments/exp115_composition_proto_nucleate",
+    "experiments/exp116_composition_provenance",
 ]
 
 [workspace.package]

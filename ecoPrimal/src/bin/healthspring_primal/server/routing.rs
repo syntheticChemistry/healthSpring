@@ -34,7 +34,19 @@ pub fn dispatch_request(
         "lifecycle.health" | "health" | "health.check" | "lifecycle.status" => handle_health(state),
         "health.liveness" => handle_liveness(),
         "health.readiness" => handle_readiness(state),
+        "composition.health_health" => handle_composition_health(state),
         _ => dispatch_extended(method, params, state),
+    }
+}
+
+/// Maps proto-nucleate `health.*` aliases to the canonical `science.*` method.
+fn resolve_proto_alias(method: &str) -> Option<&'static str> {
+    match method {
+        "health.pharmacology" => Some("science.pkpd.hill_dose_response"),
+        "health.clinical" => Some("science.diagnostic.assess_patient"),
+        "health.de_identify" => Some("science.clinical.patient_parameterize"),
+        "health.aggregate" => Some("science.diagnostic.population_montecarlo"),
+        _ => None,
     }
 }
 
@@ -45,6 +57,11 @@ fn dispatch_extended(
 ) -> serde_json::Value {
     if let Some(result) = dispatch::dispatch_science(method, params) {
         return result;
+    }
+    if let Some(canonical) = resolve_proto_alias(method) {
+        if let Some(result) = dispatch::dispatch_science(canonical, params) {
+            return result;
+        }
     }
 
     match method {
@@ -60,7 +77,8 @@ fn dispatch_extended(
         "primal.discover" => handle_primal_discover(),
         "compute.offload" => handle_compute_offload(params),
         "compute.shader_compile" => handle_shader_compile(params),
-        "model.inference_route" => handle_inference_route(params),
+        "model.inference_route" | "inference.route" => handle_inference_route(params),
+        m if m.starts_with("inference.") => handle_inference_passthrough(m, params),
         "data.fetch" => handle_data_fetch(params),
         _ => {
             warn!(method, "unknown method requested");
@@ -77,6 +95,7 @@ fn handle_health(state: &PrimalState) -> serde_json::Value {
     let uptime_secs = state.start_time.elapsed().as_secs();
     let requests = state.requests_served.load(Ordering::Relaxed);
     serde_json::json!({
+        "healthy": true,
         "status": "healthy",
         "primal": crate::capabilities::PRIMAL_NAME,
         "domain": crate::capabilities::PRIMAL_DOMAIN,
@@ -93,21 +112,55 @@ fn handle_health(state: &PrimalState) -> serde_json::Value {
     })
 }
 
+/// Composition health per `COMPOSITION_HEALTH_STANDARD.md`.
+///
+/// Returns the health of the health science pipeline including subsystem
+/// status for provenance trio, compute provider, and data provider.
+fn handle_composition_health(state: &PrimalState) -> serde_json::Value {
+    let provenance = healthspring_barracuda::data::trio_available();
+    let compute = socket::discover_compute_primal().is_some();
+    let data = socket::discover_data_primal().is_some();
+
+    let science_ok = true;
+    let all_healthy = science_ok && provenance && compute && data;
+
+    serde_json::json!({
+        "healthy": all_healthy,
+        "deploy_graph": "healthspring_health_niche",
+        "subsystems": {
+            "science_dispatch": if science_ok { "ok" } else { "unavailable" },
+            "provenance_trio": if provenance { "ok" } else { "degraded" },
+            "compute_provider": if compute { "ok" } else { "degraded" },
+            "data_provider": if data { "ok" } else { "degraded" },
+        },
+        "capabilities_count": crate::capabilities::ALL_CAPABILITIES.len(),
+        "science_domains": [
+            "pkpd", "microbiome", "biosignal", "endocrine",
+            "diagnostic", "clinical", "comparative", "discovery",
+            "toxicology", "simulation"
+        ],
+        "uptime_secs": state.start_time.elapsed().as_secs(),
+    })
+}
+
 fn handle_liveness() -> serde_json::Value {
     serde_json::json!({"alive": true})
 }
 
 fn handle_readiness(state: &PrimalState) -> serde_json::Value {
+    let science_ok = true;
     let provenance = healthspring_barracuda::data::trio_available();
     let compute = socket::discover_compute_primal().is_some();
     let data = socket::discover_data_primal().is_some();
-    let ready = true;
 
     serde_json::json!({
-        "ready": ready,
+        "ready": science_ok,
+        "primal": crate::capabilities::PRIMAL_NAME,
+        "version": env!("CARGO_PKG_VERSION"),
+        "domain": crate::capabilities::PRIMAL_DOMAIN,
         "uptime_secs": state.start_time.elapsed().as_secs(),
         "subsystems": {
-            "science_dispatch": true,
+            "science_dispatch": science_ok,
             "provenance_trio": provenance,
             "compute_provider": compute,
             "data_provider": data,
@@ -191,8 +244,8 @@ fn handle_primal_forward(params: &serde_json::Value) -> serde_json::Value {
         });
     };
 
-    rpc::send(&target_socket, method, &inner_params).unwrap_or_else(
-        || serde_json::json!({"error": "forward_failed", "target": target, "method": method}),
+    rpc::resilient_send(&target_socket, method, &inner_params).unwrap_or_else(
+        |e| serde_json::json!({"error": "forward_failed", "target": target, "method": method, "detail": e.to_string()}),
     )
 }
 
@@ -235,6 +288,14 @@ fn handle_inference_route(params: &serde_json::Value) -> serde_json::Value {
         .and_then(|v| v.as_str())
         .unwrap_or("infer");
 
+    match inference_dispatch::route(operation, params) {
+        Ok(result) => result,
+        Err(e) => serde_json::json!({"error": e.to_string()}),
+    }
+}
+
+fn handle_inference_passthrough(method: &str, params: &serde_json::Value) -> serde_json::Value {
+    let operation = method.strip_prefix("inference.").unwrap_or("complete");
     match inference_dispatch::route(operation, params) {
         Ok(result) => result,
         Err(e) => serde_json::json!({"error": e.to_string()}),

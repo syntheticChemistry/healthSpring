@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V44 — Deep Debt Resolution & Modern Idiomatic Evolution. 83 experiments, 928 Rust tests, 59 JSON-RPC capabilities (46 science + 13 infra). 54 baselines with verified check counts and DOI baseline sources. `primal_names` module centralized. `gpu/mod.rs` smart-refactored (696→413). Tolerance migration across 8 experiments. toadStool 51 tests. WFDB annotations 11 tests.
-**Last Updated**: March 24, 2026
+**Status**: V48 — Composition Validation & ecoBin Harvest. 88 experiments (83 science + 5 composition Tier 4), 940+ tests, 80+ JSON-RPC capabilities, 73 composition validation checks.
+**Last Updated**: April 10, 2026
 
 ---
 

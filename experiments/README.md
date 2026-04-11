@@ -1,9 +1,17 @@
 # healthSpring Experiments
 
-**Last Updated**: March 24, 2026
-**Status**: V44 — Deep Debt Resolution & Modern Idiomatic Evolution. 83 experiments, 928 tests. Tolerance migration across 8 experiments. toadStool coverage expanded (51 tests). WFDB annotations coverage (11 tests).
+**Last Updated**: April 10, 2026
+**Status**: V48 — Composition Validation. 88 experiments, 940+ tests. Five new Tier 4 composition experiments (exp112–116) validating IPC dispatch parity against direct Rust.
 
-Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow the four-tier pipeline: Python control (Tier 0) → Rust CPU (Tier 1) → GPU (Tier 2) → metalForge dispatch (Tier 3). **All 83 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
+Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a five-tier pipeline:
+
+- **Tier 0**: Python control baseline (analytical known-values)
+- **Tier 1**: Rust CPU validation (direct Rust vs Python, exit 0/1)
+- **Tier 2**: GPU parity (WGSL shader vs Rust CPU)
+- **Tier 3**: metalForge dispatch (NUCLEUS routing, PCIe P2P)
+- **Tier 4**: Composition validation (IPC dispatch vs direct Rust — the primal composition surface)
+
+**All 88 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
 
 ---
 
@@ -190,6 +198,16 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 109 | `exp109_mitbih_arrhythmia` | MIT-BIH arrhythmia classification | ValidationHarness |
 | 110 | `exp110_equine_laminitis` | Equine laminitis model | ValidationHarness |
 
+### Tier 4: Composition Validation (Exp112-116) — V48
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 112 | `exp112_composition_pkpd` | IPC dispatch vs direct Rust for PK/PD (Hill, IV, AUC, MM) | 12 |
+| 113 | `exp113_composition_microbiome` | IPC dispatch vs direct Rust for microbiome (Shannon, Simpson, Anderson) | 10 |
+| 114 | `exp114_composition_health_triad` | Capability surface coverage (58+ methods, 10 domains, structured errors) | 17 |
+| 115 | `exp115_composition_proto_nucleate` | Proto-nucleate alignment (socket resolution, discovery, constants) | 20 |
+| 116 | `exp116_composition_provenance` | Provenance session lifecycle (registry, data sessions, trio probe) | 14 |
+
 ---
 
 ## Running Experiments
@@ -221,6 +239,13 @@ cargo run --release --bin exp089_patient_explorer -- --age 55 --weight 220 --bas
 cargo run --release --bin exp090_matrix_scoring
 cargo run --release --bin exp100_canine_il31
 cargo run --release --bin exp106_feline_hyperthyroid
+
+# Tier 4: Composition validation (IPC dispatch parity)
+cargo run --release --bin exp112_composition_pkpd
+cargo run --release --bin exp113_composition_microbiome
+cargo run --release --bin exp114_composition_health_triad
+cargo run --release --bin exp115_composition_proto_nucleate
+cargo run --release --bin exp116_composition_provenance
 ```
 
 ---

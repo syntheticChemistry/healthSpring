@@ -247,6 +247,44 @@ static REGISTRY: &[CapabilityEntry] = &[
         handler: handlers::clinical::dispatch_risk_annotate,
         domain: "clinical",
     },
+    // ── Comparative ─────────────────────────────────────────────────
+    CapabilityEntry {
+        method: "science.comparative.cross_species_pk",
+        handler: handlers::comparative::dispatch_cross_species_pk,
+        domain: "comparative",
+    },
+    CapabilityEntry {
+        method: "science.comparative.canine_il31",
+        handler: handlers::comparative::dispatch_canine_il31,
+        domain: "comparative",
+    },
+    CapabilityEntry {
+        method: "science.comparative.canine_jak1",
+        handler: handlers::comparative::dispatch_canine_jak1,
+        domain: "comparative",
+    },
+    // ── Discovery ───────────────────────────────────────────────────
+    CapabilityEntry {
+        method: "science.discovery.matrix_score",
+        handler: handlers::discovery::dispatch_matrix_score,
+        domain: "discovery",
+    },
+    CapabilityEntry {
+        method: "science.discovery.hts_analysis",
+        handler: handlers::discovery::dispatch_hts_analysis,
+        domain: "discovery",
+    },
+    CapabilityEntry {
+        method: "science.discovery.compound_library",
+        handler: handlers::discovery::dispatch_compound_library,
+        domain: "discovery",
+    },
+    CapabilityEntry {
+        method: "science.discovery.fibrosis_pathway",
+        handler: handlers::discovery::dispatch_fibrosis_pathway,
+        domain: "discovery",
+    },
+    // ── Toxicology ──────────────────────────────────────────────────
     CapabilityEntry {
         method: "science.toxicology.biphasic_dose_response",
         handler: handlers::toxicology::dispatch_biphasic_dose_response,
@@ -340,7 +378,7 @@ mod tests {
     #[test]
     fn registry_lists_all_capabilities() {
         let caps = registered_capabilities();
-        assert!(caps.len() >= 51, "registry should have 51+ capabilities");
+        assert!(caps.len() >= 58, "registry should have 58+ capabilities");
         assert!(
             caps.iter()
                 .any(|(m, _)| *m == "science.pkpd.hill_dose_response")

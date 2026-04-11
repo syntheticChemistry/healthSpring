@@ -1,7 +1,7 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.11 (V44 — Deep Debt Resolution)
-**Date**: March 23, 2026
+**Version**: 0.11 (V48 — Deep Debt Resolution)
+**Date**: April 10, 2026
 
 ---
 

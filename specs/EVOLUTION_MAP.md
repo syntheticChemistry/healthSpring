@@ -71,6 +71,52 @@ Species-specific model → Species-agnostic math → Cross-species parameter bri
 
 ---
 
+## Shader Unification Decision: MM Batch (V48)
+
+**Context**: `michaelis_menten_batch_f64.wgsl` (handwritten Euler ODE + trapezoidal
+AUC) coexists with `BatchedOdeRK4::generate_shader()` codegen in `gpu/mod.rs`.
+The default dispatch path (`shader_for_op`) uses the handwritten shader; the
+codegen path (`codegen_shader_for_op`) exists but is not the default.
+
+**Decision**: Keep both paths. The handwritten Euler shader is validated against
+Python baselines and carries explicit tolerance documentation. The codegen path
+(RK4) provides higher-order accuracy for future experiments that need it. The
+default remains the handwritten shader until:
+
+1. barraCuda absorbs MM batch as a canonical op (Write → Absorb → Lean cycle).
+2. The codegen path matches the handwritten shader's validated output within
+   documented tolerances.
+
+**Action**: When barraCuda exposes `MichaelisMentenBatchGpu` as a first-class op
+with RK4 or adaptive integration, delete the handwritten WGSL and switch
+`shader_for_op` to delegate upstream. Until then, both paths serve different
+accuracy/performance tradeoffs and the duplication is intentional.
+
+## TensorSession Adoption Path (V48)
+
+**Context**: `GpuContext::execute_fused` currently runs either:
+- **Local single-encoder** (`execute_fused_local` in `fused.rs`) — true fusion,
+  one encoder for all ops, but uses local WGSL shaders.
+- **Sequential barraCuda** (`execute_fused_via_barracuda` in `context.rs`) —
+  canonical math, but one encoder per op (no fusion benefit).
+
+**Blocked on**: barraCuda `TensorSession` API (or equivalent) that allows
+composing multiple ops into a single encoder pass while using upstream math.
+
+**Adoption plan**:
+1. barraCuda exposes `TensorSession::new(device)` → `session.run(op1)` →
+   `session.run(op2)` → `session.submit()` with single encoder.
+2. healthSpring replaces `execute_fused_via_barracuda` with session-based
+   composition. `execute_fused_local` becomes a fallback for ops not yet in
+   barraCuda.
+3. Remove local WGSL shaders as their ops are absorbed by the session API.
+
+**Timeline**: Dependent on barraCuda roadmap. No healthSpring code changes
+needed until the API is available. The current dual-path design is correct
+for this stage of the evolution.
+
+---
+
 ## Track 9: Low-Affinity Binding / Toxicology / Simulation (V38)
 
 Computation as preprocessor — exploring low-affinity binding, toxicity landscapes,

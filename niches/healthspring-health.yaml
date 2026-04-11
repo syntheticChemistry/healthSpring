@@ -6,7 +6,7 @@
 
 name: healthspring
 domain: health
-version: "0.26.0"
+version: "0.1.0"
 
 capabilities:
   - science.pkpd.hill_dose_response
@@ -62,6 +62,35 @@ capabilities:
   - science.discovery.hts_analysis
   - science.discovery.compound_library
   - science.discovery.fibrosis_pathway
+  - science.toxicology.biphasic_dose_response
+  - science.toxicology.toxicity_landscape
+  - science.toxicology.hormetic_optimum
+  - science.simulation.mechanistic_fitness
+  - science.simulation.ecosystem_simulate
+  - composition.health_health
+  # Proto-nucleate aliases (NUCLEUS_SPRING_ALIGNMENT.md)
+  - health.pharmacology
+  - health.clinical
+  - health.de_identify
+  - health.aggregate
+  # Infrastructure
+  - health.liveness
+  - health.readiness
+  - capability.list
+  - provenance.begin
+  - provenance.record
+  - provenance.complete
+  - provenance.status
+  - primal.forward
+  - primal.discover
+  - compute.offload
+  - compute.shader_compile
+  - data.fetch
+  - model.inference_route
+  - inference.complete
+  - inference.embed
+  - inference.models
+  - inference.route
 
 graphs:
   - graphs/healthspring_patient_assessment.toml

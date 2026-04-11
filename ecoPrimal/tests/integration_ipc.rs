@@ -11,6 +11,7 @@
 //! a running primal server.
 
 use healthspring_barracuda::ipc::{error::IpcError, protocol, rpc, socket, transport};
+use healthspring_barracuda::tolerances;
 
 #[test]
 fn rpc_success_roundtrip() {
@@ -200,7 +201,10 @@ fn science_dispatch_hill() {
     assert!(result.is_some());
     let val = result.unwrap();
     let response = val["response"].as_f64().unwrap();
-    assert!((response - 0.5).abs() < 1e-10, "Hill at EC50 should be 0.5");
+    assert!(
+        (response - 0.5).abs() < tolerances::MACHINE_EPSILON,
+        "Hill at EC50 should be 0.5"
+    );
 }
 
 #[test]
@@ -212,7 +216,7 @@ fn science_dispatch_shannon() {
     assert!(result.is_some());
     let h = result.unwrap()["shannon"].as_f64().unwrap();
     assert!(
-        (h - 4.0_f64.ln()).abs() < 1e-10,
+        (h - 4.0_f64.ln()).abs() < tolerances::MACHINE_EPSILON,
         "Shannon of uniform-4 should be ln(4)"
     );
 }

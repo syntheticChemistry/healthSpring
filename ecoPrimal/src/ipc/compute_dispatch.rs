@@ -55,7 +55,7 @@ pub fn submit(
 ) -> Result<DispatchHandle, DispatchError> {
     let compute_socket = socket::discover_compute_primal().ok_or(DispatchError::NoComputePrimal)?;
 
-    let result = rpc::try_send(
+    let result = rpc::resilient_send(
         &compute_socket,
         "compute.dispatch.submit",
         &serde_json::json!({
@@ -83,7 +83,7 @@ pub fn submit(
 ///
 /// Returns [`DispatchError`] if the RPC call fails or the job errored.
 pub fn result(handle: &DispatchHandle) -> Result<serde_json::Value, DispatchError> {
-    let resp = rpc::try_send(
+    let resp = rpc::resilient_send(
         &handle.compute_socket,
         "compute.dispatch.result",
         &serde_json::json!({ "job_id": handle.job_id }),

@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** March 24, 2026
-**Status:** V44 — Deep Debt Resolution & Modern Idiomatic Evolution. 928 tests, 83 experiments, 54 baselines with verified check counts and DOI baseline sources. `primal_names` module centralizes all primal string literals. `PopulationPkConfig` defaults named with provenance. `gpu/mod.rs` smart-refactored (696→413). Provenance registry enhanced with track query accessors. toadStool coverage: 51 tests. WFDB annotation coverage: 11 tests. Tolerance migration across 8 experiment files. barraCuda v0.3.7 (CI-gated pin). Zero clippy (pedantic+nursery), zero unsafe, zero `#[allow]`, zero `#[expect]` in library code.
+**Last Updated:** April 10, 2026
+**Status:** V48 — Composition Validation & ecoBin Harvest. 940+ tests, 88 experiments (83 science + 5 composition Tier 4), 54 Python baselines, 73 composition validation checks. Tier 4 proves IPC dispatch parity: every science method called through JSON-RPC dispatch matches direct Rust to 1e-12. ecoBin static-PIE binary harvested to plasmidBin. `resilient_send` for IPC retry. `inference.*` + `health.*` proto-nucleate aliases. barraCuda v0.3.11. Zero clippy (pedantic+nursery), zero unsafe.
 
 ---
 

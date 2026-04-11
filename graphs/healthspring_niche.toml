@@ -33,6 +33,11 @@ provides = [
     "science.endocrine",
     "science.diagnostic",
     "science.clinical",
+    "science.comparative",
+    "science.discovery",
+    "science.toxicology",
+    "science.simulation",
+    "composition.health_health",
 ]
 requires = ["discovery"]
 
@@ -62,8 +67,14 @@ optional = true
 name = "deploy"
 path = "healthspring_niche_deploy.toml"
 coordination = "Sequential"
-description = "Bring up the full niche: Tower → Trio → NestGate → ToadStool → healthSpring"
+description = "Bring up the full niche: Tower -> Trio -> NestGate -> ToadStool -> healthSpring (primalSpring format)"
 default = true
+
+[[graphs]]
+name = "deploy_biomeos"
+path = "healthspring_biomeos_deploy.toml"
+coordination = "Sequential"
+description = "biomeOS-format deploy: verify infra -> start healthSpring -> register -> health check"
 
 [[graphs]]
 name = "patient_assessment"

@@ -36,7 +36,7 @@ impl core::fmt::Display for DataError {
 pub fn fetch(source: &str, query: &serde_json::Value) -> Result<serde_json::Value, DataError> {
     let data_socket = socket::discover_data_primal().ok_or(DataError::NoDataPrimal)?;
     let method = format!("data.{source}_fetch");
-    rpc::try_send(&data_socket, &method, query).map_err(DataError::Send)
+    rpc::resilient_send(&data_socket, &method, query).map_err(DataError::Send)
 }
 
 /// Store data via the discovered data primal.
@@ -46,7 +46,7 @@ pub fn fetch(source: &str, query: &serde_json::Value) -> Result<serde_json::Valu
 /// Returns [`DataError`] if no data primal is available or the RPC fails.
 pub fn store(key: &str, value: &serde_json::Value) -> Result<serde_json::Value, DataError> {
     let data_socket = socket::discover_data_primal().ok_or(DataError::NoDataPrimal)?;
-    rpc::try_send(
+    rpc::resilient_send(
         &data_socket,
         "data.storage.store",
         &serde_json::json!({ "key": key, "value": value }),

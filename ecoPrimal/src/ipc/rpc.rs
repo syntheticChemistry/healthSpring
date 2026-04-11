@@ -154,10 +154,49 @@ pub fn try_send(
     extract_rpc_result_owned(&parsed).ok_or(IpcError::EmptyResponse)
 }
 
+/// Send a JSON-RPC request with retry for transient failures.
+///
+/// Applies exponential backoff (3 retries, 50 ms initial, 500 ms cap) for
+/// retriable errors (connect, write, read, timeout). Non-retriable errors
+/// (RPC reject, codec) are returned immediately.
+///
+/// # Errors
+///
+/// Returns [`IpcError`] if all retry attempts are exhausted or a non-retriable
+/// error is encountered.
+pub fn resilient_send(
+    socket_path: &std::path::Path,
+    method: &str,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value, IpcError> {
+    use std::time::Duration;
+
+    let policy = super::resilience::RetryPolicy::new(
+        3,
+        Duration::from_millis(50),
+        Duration::from_millis(500),
+    );
+
+    let mut last_err = None;
+    for attempt in 0..=3 {
+        match try_send(socket_path, method, params) {
+            Ok(val) => return Ok(val),
+            Err(e) if e.is_retriable() => {
+                if let Some(delay) = policy.delay_for_attempt(attempt) {
+                    std::thread::sleep(delay);
+                }
+                last_err = Some(e);
+            }
+            Err(e) => return Err(e),
+        }
+    }
+    Err(last_err.unwrap_or(IpcError::EmptyResponse))
+}
+
 /// Send a JSON-RPC request to a Unix socket (fire-and-forget).
 ///
 /// Returns `None` if the socket is unreachable or the response is malformed.
-/// For error context, use [`try_send`].
+/// For error context, use [`try_send`] or [`resilient_send`].
 #[must_use]
 pub fn send(
     socket_path: &std::path::Path,
