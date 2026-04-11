@@ -2,7 +2,7 @@
 # biomeOS NUCLEUS Local Integration Plan
 
 **Last Updated**: April 11, 2026
-**Status**: V51 — Hardened Composition Patterns. 976 tests, 89 experiments, 84+ JSON-RPC capabilities (62 science + 22 infra), ValidationHarness 89/89. `UniBin`-compliant primal binary with TCP + UDS, BTSP handshake, typed IPC clients. barraCuda v0.3.11; 6 GPU ops. Capability-based discovery, LOCAL/ROUTED split, domain symlink. ecoBin 0.8.0.
+**Status**: V52 — Composition Validation. 985+ tests, 90 experiments, 84+ JSON-RPC capabilities (62 science + 22 infra), ValidationHarness 90/90. Typed PrimalClient wired into production, Tier 5 deploy graph validation (exp118, 99 checks). GPU tests on every PR. Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition. ecoBin 0.8.0.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

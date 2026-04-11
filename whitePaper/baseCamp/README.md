@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** April 11, 2026
-**Status:** V51 — Hardened Composition Patterns. Python was the validation target for Rust. Now Rust and Python are both validation targets for ecoPrimal NUCLEUS composition patterns. 976 tests, 89 experiments (83 science + 6 composition Tier 4), 54 Python baselines, 89 provenance entries (100% coverage). TCP + UDS listeners, BTSP handshake, typed `PrimalClient`/`InferenceClient`, structured discovery. All proto-nucleate aliases wired. Domain symlink discovery. ecoBin 0.8.0 static-PIE. barraCuda v0.3.11. Zero clippy, zero unsafe.
+**Status:** V52 — Composition Validation. Three-layer validation: Python validates science, Rust validates Python, NUCLEUS validates composition. 985+ tests, 90 experiments (84 science + 7 composition Tier 4/5), 54 Python baselines, 90 provenance entries (100% coverage). Typed `PrimalClient` wired into production (resilient default), Tier 5 deploy graph validation (exp118, 99 checks), GPU tests on every PR. TCP + UDS listeners, BTSP handshake, structured discovery. ecoBin 0.8.0 static-PIE. barraCuda v0.3.11. Zero clippy, zero unsafe.
 
 ---
 

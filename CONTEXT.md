@@ -29,19 +29,19 @@ capabilities over Unix sockets for biomeOS graph composition.
 ## Technical Facts
 
 - **Language**: 100% Rust, zero C dependencies (wgpu optional for GPU)
-- **Architecture**: workspace with 3 library crates + 83 experiment binaries
+- **Architecture**: workspace with 3 library crates + 90 experiment binaries
   - `healthspring-barracuda` — core science library
   - `healthspring-forge` — metalForge hardware dispatch
   - `healthspring-toadstool` — pipeline orchestration
 - **IPC**: JSON-RPC 2.0 over Unix domain sockets, 59 capabilities (46 science + 13 infrastructure); `normalize_method()` maps legacy-prefixed names before routing
 - **License**: AGPL-3.0-or-later (scyBorg trio)
-- **Tests**: 976 (lib + proptest + IPC fuzz + doc + integration + experiment bins)
+- **Tests**: 985+ (lib + proptest + IPC fuzz + doc + integration + experiment bins)
 - **Coverage**: target 90% line (llvm-cov)
 - **Clippy**: 0 warnings, 0 errors (pedantic + nursery + doc-markdown, all promoted to error), workspace-level `[lints]`
 - **Validation harness**: `ValidationSink` trait (pluggable check output for experiments)
 - **Unsafe code**: 0 (`forbid(unsafe_code)` in workspace lints)
 - **MSRV**: 1.87 (Edition 2024)
-- **Crates**: 92 workspace members (3 lib + 89 experiments)
+- **Crates**: 93 workspace members (3 lib + 90 experiments)
 - **GPU**: 6 WGSL shaders via barraCuda v0.3.11 (Hill, PopPK, Diversity, MM, SCFA, Beat); availability probe cached in `OnceLock`
 - **Tracing**: library code uses `tracing` (no `println!` in lib)
 

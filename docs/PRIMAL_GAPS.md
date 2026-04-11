@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-04-11
-**healthSpring version**: V51 (ecoBin 0.8.0)
+**healthSpring version**: V52 (ecoBin 0.8.0)
 
 ---
 
@@ -228,7 +228,29 @@ discovery tracking that the typed clients provide.
 `compute.offload` to use `PrimalClient` in the next sprint. `InferenceClient`
 integration deferred until Squirrel is available.
 
-**Status**: Modules created in V51. Integration pending.
+**Status**: **Fixed in V52** — `PrimalClient.call()` now uses `resilient_send`
+(retry with backoff). `try_call()` added for single-attempt paths.
+`handle_primal_forward` in routing.rs migrated to `PrimalClient`. Dispatch
+modules (`compute_dispatch`, `data_dispatch`, `shader_dispatch`,
+`inference_dispatch`) remain as domain-typed clients using `resilient_send`
+directly — they are typed clients in their own right and benefit from the
+same retry policy.
+
+---
+
+## 12. Deploy Graph Validation Against Proto-Nucleate
+
+**Gap**: No automated validation that the deploy graph
+(`healthspring_niche_deploy.toml`) is structurally consistent with the
+proto-nucleate graph (`healthspring_enclave_proto_nucleate.toml`). Fragment
+metadata, node presence, bonding policy, and capability surface could drift.
+
+**Status**: **Fixed in V52** — exp118 (`exp118_composition_deploy_graph_validation`)
+validates deploy graph TOML parsing, fragment metadata alignment
+(tower_atomic, nest_atomic), required/optional node presence, bonding policy
+(ionic, btsp_enforced, encryption_tiers), capability coverage against
+`registered_capabilities()`, Squirrel optional node, and primal identity
+constants. Added to CI composition job.
 
 ---
 
@@ -246,4 +268,5 @@ integration deferred until Squirrel is available.
 | 8 | Deploy fragments | — | **Fixed V49**: metadata added | — |
 | 9 | Squirrel in deploy | Squirrel maturity | **V50**: optional node added | Evolve Squirrel |
 | 10 | BTSP handshake | BearDog BTSP server | **V51**: client module ready | Expose BTSP endpoint |
-| 11 | Typed IPC clients | Internal migration | **V51**: modules created | — |
+| 11 | Typed IPC clients | — | **Fixed V52**: PrimalClient wired | — |
+| 12 | Deploy graph validation | — | **Fixed V52**: exp118 added | — |

@@ -1,8 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Centralized tolerance constants — Python mirror of ecoPrimal/src/tolerances.rs.
+"""Centralized tolerance constants — Python subset of ecoPrimal/src/tolerances.rs.
 
-Every constant here MUST match its Rust counterpart exactly.  When adding
-or modifying tolerances, update BOTH files and specs/TOLERANCE_REGISTRY.md.
+This file contains the tolerances used by Python cross-validation baselines.
+It is an intentional *subset* of the Rust source of truth (tolerances.rs).
+Constants present here MUST match their Rust counterparts exactly.
+
+Rust-only constants (NLME algorithm params, IPC buffers, classification
+thresholds, upstream contract tolerances, test helpers) are deliberately
+omitted — they have no Python consumer.  The authoritative registry is
+ecoPrimal/src/tolerances.rs + specs/TOLERANCE_REGISTRY.md.
 """
 
 # ── Machine Epsilon Class (1e-10 to 1e-15) ──────────────────────────

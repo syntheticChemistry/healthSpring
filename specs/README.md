@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: April 11, 2026
-**Status**: V51 — Hardened Composition Patterns. 976 tests, 89 experiments (83 science + 6 composition), 84+ JSON-RPC capabilities, 54 Python baselines, 89 provenance entries. TCP + UDS, BTSP, typed IPC clients, structured discovery, `identity.get`, `health.check`. ecoBin 0.8.0 at plasmidBin. barraCuda v0.3.11. Clippy pedantic+nursery+doc-markdown with -D warnings, zero unsafe, zero #[allow].
+**Status**: V52 — Composition Validation. 985+ tests, 90 experiments (84 science + 7 composition Tier 4/5), 84+ JSON-RPC capabilities, 54 Python baselines, 90 provenance entries. Typed PrimalClient wired into production, Tier 5 deploy graph validation (exp118, 99 checks), GPU tests on every PR. ecoBin 0.8.0. barraCuda v0.3.11. Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -11,12 +11,12 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 976 |
+| Rust tests (workspace) | 985+ |
 | Python control checks | 54 baselines, 113/113 cross-validation (all 9 tracks) |
-| Experiments | 89 (83 science + 6 composition Tier 4) |
+| Experiments | 90 (84 science + 7 composition Tier 4/5) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
-| Composition validation (Tier 4) | 6 experiments (exp112–117), 144 checks — IPC dispatch + proto-nucleate + wire round-trip |
+| Composition validation (Tier 4/5) | 7 experiments (exp112–118), 172+ checks — IPC dispatch + proto-nucleate + wire round-trip + deploy graph validation |
 | ecoBin | Static-PIE x86_64-musl, 2.5 MB, harvested to plasmidBin |
 | toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |
 | CPU parity | Rust 84× faster than Python (Exp084, 33+17 checks) |

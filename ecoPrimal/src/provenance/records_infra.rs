@@ -714,4 +714,16 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         exact_command: "",
         baseline_source: "Composition: JSON-RPC wire protocol round-trip determinism",
     },
+    ProvenanceRecord {
+        track: "validation",
+        experiment: "exp118",
+        python_script: "",
+        python_version: "",
+        description: "Composition validation: deploy graph vs proto-nucleate alignment (Tier 5)",
+        checks: 0,
+        git_commit: "",
+        run_date: "2026-04-11",
+        exact_command: "",
+        baseline_source: "Composition: TOML graph structure, fragments, bonding, capability coverage",
+    },
 ];

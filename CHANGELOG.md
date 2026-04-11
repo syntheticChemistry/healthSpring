@@ -4,6 +4,29 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V52 — 2026-04-11 — Composition Validation
+
+### Added
+- **Tier 5 deploy graph validation**: `exp118_composition_deploy_graph_validation` (99 checks)
+  validates fragment metadata, node presence, bonding policy, capability surface coverage,
+  and Squirrel optionality against proto-nucleate expectations.
+- `bench` CI job — compiles all benchmarks on every PR (regression gate).
+- `barracuda-ops` feature tests run on every PR (GPU code coverage without full GPU hardware).
+
+### Changed
+- `PrimalClient.call()` upgraded from `rpc::try_send` to `rpc::resilient_send` (retry + backoff
+  by default). New `try_call()` for single-attempt scenarios.
+- `handle_primal_forward` in routing.rs migrated from raw `rpc::resilient_send` to typed
+  `PrimalClient` (resilient default, structured error reporting).
+- `cargo llvm-cov` expanded from `--lib` to full workspace (lib + integration tests),
+  `--fail-under-lines 90`.
+- `control/tolerances.py` docstring updated: documented as intentional subset of `tolerances.rs`
+  (Rust-only constants deliberately omitted — no Python consumer).
+
+### Fixed
+- `clippy::match_wildcard_for_single_variants` in `gpu/sovereign.rs` (`_ => "unknown"` →
+  explicit `GpuOp::HillSweep { .. } => "HillSweep"`).
+
 ## V51 — 2026-04-11 — Hardened Composition Patterns
 
 ### Added

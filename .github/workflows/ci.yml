@@ -49,8 +49,10 @@ jobs:
       run: cargo build --workspace
     - name: Unit tests
       run: cargo test --workspace
-    - name: Coverage (library, fail below 90%)
-      run: cargo llvm-cov --workspace --lib --fail-under-lines 90
+    - name: Integration tests
+      run: cargo test --workspace --test '*'
+    - name: Coverage (lib + integration, fail below 90%)
+      run: cargo llvm-cov --workspace --fail-under-lines 90
 
   validate:
     runs-on: ubuntu-latest
@@ -83,7 +85,7 @@ jobs:
     - uses: dtolnay/rust-toolchain@stable
     - name: Composition integration tests
       run: cargo test -p healthspring-barracuda --test integration_composition
-    - name: Composition validation binaries (Tier 4)
+    - name: Composition validation binaries (Tier 4 + Tier 5)
       run: |
         set -e
         for bin in exp112_composition_pkpd \
@@ -91,7 +93,8 @@ jobs:
                    exp114_composition_health_triad \
                    exp115_composition_proto_nucleate \
                    exp116_composition_provenance \
-                   exp117_composition_ipc_roundtrip; do
+                   exp117_composition_ipc_roundtrip \
+                   exp118_composition_deploy_graph_validation; do
           echo "=== $bin ==="
           cargo run --release --bin "$bin"
           echo
@@ -130,11 +133,21 @@ jobs:
         name: healthspring-${{ matrix.target }}
         path: target/${{ matrix.target }}/release/healthspring_primal
 
-  test-gpu:
+  bench:
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule'
     steps:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@stable
-    - name: Test GPU
+    - name: Compile benchmarks (regression check)
+      run: cargo bench --workspace --no-run
+
+  test-gpu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Test barracuda-ops (GPU CPU path)
+      run: cargo test --workspace --features barracuda-ops
+    - name: Test GPU (full, weekly only)
+      if: github.event_name == 'schedule'
       run: cargo test --workspace --features gpu

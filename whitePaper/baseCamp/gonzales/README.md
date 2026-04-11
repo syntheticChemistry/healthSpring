@@ -1,7 +1,7 @@
 # healthSpring baseCamp: Gonzales PK/PD → Human Therapeutics
 
 **Faculty**: Andrea J. Gonzales (MSU Pharmacology & Toxicology), Erika Lisabeth (ADDRC), Richard Neubig (Drug Discovery), Edmund Ellsworth (Medicinal Chemistry)
-**Status**: V51 — 89 experiments, 976 tests, 54 Python baselines with provenance. barraCuda v0.3.11 (6 GPU shaders absorbed upstream). TCP + UDS listeners, typed IPC clients, BTSP handshake, structured discovery. Tracks 1–9 complete. Track 6 (Comparative Medicine): 7 experiments (Exp100–106). Track 7 (Drug Discovery): 5 experiments (Exp090–094). Track 9 (Toxicology/Simulation): 4 experiments (Exp097–099, 111). 6 Tier 4 composition experiments (exp112–117). ecoBin 0.8.0.
+**Status**: V52 — 90 experiments, 985+ tests, 54 Python baselines with provenance. barraCuda v0.3.11. 7 Tier 4/5 composition experiments (exp112–118) including deploy graph validation. Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition. ecoBin 0.8.0.
 **Parent**: gen3/baseCamp Paper 12 (Immunological Anderson), gen3/baseCamp Paper 13 (Sovereign Human Health Computing)
 
 ---

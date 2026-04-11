@@ -2,7 +2,7 @@
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
 **Last Updated**: April 11, 2026
-**Status**: V51 — Hardened Composition Patterns. 89 experiments, 976 tests, 54 Python baselines. barraCuda v0.3.11. 84+ capabilities (62 science + 22 infra). TCP + UDS, BTSP, typed IPC clients.
+**Status**: V52 — Composition Validation. 90 experiments, 985+ tests, 54 Python baselines. barraCuda v0.3.11. 84+ capabilities (62 science + 22 infra). Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and
@@ -364,7 +364,7 @@ All gates orchestrated via biomeOS. D4 cross-track Monte Carlo, Anderson 3D, rea
 ```
 Phase 1 (Now, Eastgate only):
   - Synthetic data, published parameters
-  - All existing 89 experiments (Tracks 1–9 + 6 Tier 4 composition)
+  - All existing 90 experiments (Tracks 1–9 + 7 Tier 4/5 composition)
   - FRONT-LOAD: MATRIX + Anderson scoring (DD-001) for ADDRC meeting
   - FRONT-LOAD: ADDRC 8K compound IC50 sweep (DD-003) — GPU Hill shader ready
   - FRONT-LOAD: Lisabeth Brucella screen analysis (DD-002)

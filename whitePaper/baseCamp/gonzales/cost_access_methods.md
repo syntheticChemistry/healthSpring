@@ -120,7 +120,7 @@ All healthSpring tools are available immediately:
 
 ```bash
 git clone <healthSpring repo>
-cargo test --workspace        # 976 tests, zero unsafe code
+cargo test --workspace        # 985+ tests, zero unsafe code
 cargo run --bin exp001_hill   # Hill dose-response (Gonzales IC50 data)
 cargo run --bin exp004_mab    # mAb cross-species PK (lokivetmab → nemolizumab)
 cargo run --bin exp075_nlme   # FOCE/SAEM population PK (sovereign NONMEM)

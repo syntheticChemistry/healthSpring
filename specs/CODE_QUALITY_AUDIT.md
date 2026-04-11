@@ -1,6 +1,6 @@
 # healthSpring Code Quality Audit Report
 
-> **Note**: This is a V42 historical snapshot. Current metrics: V51, 976 tests,
+> **Note**: This is a V42 historical snapshot. Current metrics: V52, 985+ tests,
 > zero clippy/fmt/doc warnings. See `README.md` and `CHANGELOG.md` for current state.
 
 ## V42 (March 23, 2026)
@@ -168,14 +168,17 @@ Comment in deny.toml: *"Default build has zero C deps. Exception: ring/cc allowe
 
 ## 10. CI Workflow (.github/workflows/ci.yml)
 
-**Jobs**:
+**Jobs** (V52):
 
 | Job | Steps |
 |-----|-------|
-| **quality** | `cargo fmt --check`, `cargo clippy --workspace` (pedantic + nursery), `cargo doc`, `cargo-deny` |
-| **test** | `cargo build`, `cargo test`, `cargo llvm-cov` (90% line coverage, excludes gpu/context, gpu/dispatch) |
-| **validate** | Build release, run all validation binaries, Python cross-validation |
-| **test-gpu** | Disabled (`if: false`) |
+| **quality** | `cargo fmt --check`, `cargo clippy --workspace` (pedantic + nursery), `cargo doc`, `cargo-deny`, barraCuda version pin check |
+| **test** | `cargo build`, `cargo test`, integration tests, `cargo llvm-cov` (90% line coverage, lib + integration) |
+| **validate** | Build release, run all 90 validation binaries, Python cross-validation |
+| **composition** | Integration composition tests + Tier 4/5 composition binaries (exp112–exp118) |
+| **cross-compile** | musl matrix (x86_64 + aarch64), static PIE check, ecoBin artifact upload |
+| **bench** | Compile benchmarks (regression check) |
+| **test-gpu** | `barracuda-ops` on every PR; full GPU features on weekly schedule |
 
 **RUSTFLAGS**: `-D warnings`
 

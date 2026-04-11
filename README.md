@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 11, 2026 (V51)
+**Date:** April 11, 2026 (V52)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V51 — Hardened Composition Patterns. 976 tests, 89 experiments (83 science + 6 composition), 54 Python baselines, 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). TCP JSON-RPC listener (`--port`), domain symlink discovery, `identity.get`, `health.check`, `methods[]` in `capabilities.list`, LOCAL/ROUTED capability split, BTSP handshake module, typed `PrimalClient`/`InferenceClient`, structured `DiscoveryResult`. `CoralReefDevice` → `SovereignDevice` API fix. ecoBin 0.8.0 at `infra/plasmidBin/`. Zero clippy warnings (pedantic+nursery). Python and Rust are both validation targets for NUCLEUS composition patterns.
+**Status:** V52 — Composition Validation. 985+ tests, 90 experiments (84 science + 7 composition Tier 4/5), 54 Python baselines, 90 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). Typed `PrimalClient` wired into production (resilient default), Tier 5 deploy graph validation (exp118, 99 checks), GPU tests on every PR (`barracuda-ops`), expanded `llvm-cov` scope (lib + integration). TCP JSON-RPC listener (`--port`), BTSP handshake, structured discovery, LOCAL/ROUTED capability split. ecoBin 0.8.0 at `infra/plasmidBin/`. Zero clippy warnings (pedantic+nursery). Three-layer validation: Python validates science, Rust validates Python, NUCLEUS validates composition.
 
 ---
 
@@ -33,13 +33,13 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V51** (Hardened Composition Patterns) |
-| **Total tests** | **976** (845 lib + proptest + IPC fuzz + 37 integration + 89 experiment bins + 9 doc-tests) |
-| Experiments complete | 89 (83 science Tracks 1–9 + 6 composition Tier 4) |
-| Composition validation (Tier 4) | 6 experiments (exp112–117), 73+ checks — IPC dispatch + proto-nucleate + wire round-trip |
+| Version | **V52** (Composition Validation) |
+| **Total tests** | **985+** (845 lib + proptest + IPC fuzz + 37 integration + 90 experiment bins + 9 doc-tests) |
+| Experiments complete | 90 (84 science Tracks 1–9 + 7 composition Tier 4/5) |
+| Composition validation (Tier 4/5) | 7 experiments (exp112–118), 172+ checks — IPC dispatch + proto-nucleate + wire round-trip + deploy graph validation |
 | JSON-RPC capabilities | 84+ (62 science + 22 infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
-| Python baselines | **54** with structured provenance registry (89 total entries, 100% experiment coverage) |
+| Python baselines | **54** with structured provenance registry (90 total entries, 100% experiment coverage) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
 | ecoBin | Static-PIE x86_64-musl, 2.5 MB, harvested to `infra/plasmidBin/healthspring/` |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity |
@@ -51,6 +51,23 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | TODO/FIXME in production | **0** |
 | Clippy | **0 warnings** (workspace `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V52 Composition Validation (from V51)
+
+V52 completes the shift from Rust-validates-Python to **NUCLEUS-validates-composition**. Three-layer validation: Python baselines validated Rust science; Rust validated Python baselines; now Tier 5 experiments validate that the NUCLEUS composition patterns themselves are internally consistent.
+
+| Change | Impact |
+|--------|--------|
+| **Typed IPC clients wired** | `PrimalClient.call()` uses `resilient_send` (retry + backoff). `handle_primal_forward` migrated from raw RPC to typed client. Gap #11 resolved. |
+| **Tier 5 composition validation** | exp118 (99 checks): deploy graph TOML validation, fragment metadata alignment (`tower_atomic`, `nest_atomic`), bonding policy (ionic, dual-tower), capability surface coverage, Squirrel optional node. Gap #12 resolved. |
+| **GPU tests on every PR** | `barracuda-ops` feature tests on every PR; full GPU weekly. |
+| **Expanded coverage scope** | `cargo llvm-cov` expanded from `--lib` to full workspace (lib + integration tests). |
+| **Bench CI** | New `bench` job compiles benchmarks on every PR (regression check). |
+| **tolerances.py policy** | Documented as intentional subset of `tolerances.rs` (not a full mirror). |
+| **Zero clippy warnings restored** | Fixed `match_wildcard_for_single_variants` in sovereign dispatch. |
+| **985+ tests** | Up from 976 (V51). 90 experiments (84 science + 7 composition). |
 
 ---
 
@@ -509,9 +526,10 @@ Tier 1: Rust CPU (Pure Rust, f64-canonical, tolerance-documented)
 Tier 2: Rust GPU (barraCuda WGSL shaders, math parity with CPU)
 Tier 3: metalForge (toadStool dispatch, cross-substrate routing)
 Tier 4: Primal composition (IPC dispatch vs direct Rust — the NUCLEUS composition surface)
+Tier 5: Deploy graph validation (TOML graph ↔ proto-nucleate ↔ capability surface consistency)
 ```
 
-**Current state**: Tier 0+1 validation complete for **83** experiments (ValidationHarness **83/83**; paper queue and per-track coverage as in Current Metrics above). **Tier 2 live**: 6 WGSL shaders (3 Tier A + 3 Tier B), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **V25**: Track 6+7 complete — 12 experiments in that wave (Exp090–094, Exp100–106), 173 validation checks, discovery/ and comparative/ modules. **V20**: petalTongue V16 visualization — 34-node full study with 6 V16 nodes, unified dashboard (326 checks), patient explorer with streaming. **V18**: CPU parity — Rust 84× faster than Python across V16 primitives.
+**Current state**: Tier 0+1 validation complete for **84** experiments (ValidationHarness **84/84**). **Tier 2 live**: 6 WGSL shaders (3 Tier A + 3 Tier B), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **Tier 4 live** (V47): 6 experiments (exp112–117), IPC dispatch parity, proto-nucleate alias resolution, wire protocol round-trip. **Tier 5 live** (V52): exp118, deploy graph vs proto-nucleate structural alignment (99 checks). **Three-layer validation**: Python → Rust (science), Rust → Python (baselines), NUCLEUS → composition (deploy graphs, fragments, bonding, capabilities).
 
 ---
 
@@ -587,7 +605,7 @@ healthSpring/
 │   ├── discovery/       # exp090–094
 │   ├── comparative/     # exp100–106
 │   └── scripts/         # Benchmark scripts + timing JSON results
-├── experiments/         # 83 validation binaries
+├── experiments/         # 90 validation binaries
 │   ├── exp001–exp006/   # Track 1: PK/PD
 │   ├── exp010–exp013/   # Track 2: Microbiome
 │   ├── exp020–exp023/   # Track 3: Biosignal
@@ -642,7 +660,7 @@ healthSpring/
 ├── wateringHole/        # Cross-spring handoffs
 │   └── handoffs/        # → barraCuda, toadStool, petalTongue
 ├── scripts/             # Dashboard, visualization, sync scripts
-├── Cargo.toml           # Workspace (86 members)
+├── Cargo.toml           # Workspace (93 members)
 └── README.md            # This file
 ```
 
@@ -651,7 +669,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 976 tests
+cargo test --workspace                  # 985+ tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

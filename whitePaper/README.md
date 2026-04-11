@@ -2,7 +2,7 @@
 # healthSpring White Paper
 
 **Date:** April 11, 2026
-**Status:** V50 — Composition Evolution. Python was the validation target for Rust. Now Rust and Python are both validation targets for NUCLEUS composition patterns. 89 experiments, 960+ tests, 80+ JSON-RPC capabilities (62 science + 22 infra), 54 Python baselines, 89 provenance entries (100% coverage), 6 Tier 4 composition experiments validating IPC dispatch parity. ecoBin harvested to plasmidBin. barraCuda v0.3.11. Zero clippy, zero unsafe.
+**Status:** V52 — Composition Validation. Three-layer validation: Python validates science, Rust validates Python, NUCLEUS validates composition. 90 experiments, 985+ tests, 84+ JSON-RPC capabilities (62 science + 22 infra), 54 Python baselines, 90 provenance entries (100% coverage), 7 Tier 4/5 composition experiments (IPC dispatch parity + deploy graph validation). ecoBin 0.8.0. barraCuda v0.3.11. Zero clippy, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -23,7 +23,9 @@ and drug discovery pipelines.
 **The validation ladder**: Python was the validation target for Rust. Now both Python
 and Rust are validation targets for the primal composition layer. Tier 4 experiments
 (exp112–117) prove that dispatching science through JSON-RPC IPC produces bit-identical
-results to calling Rust functions directly — the composition is faithful to the science.
+results to calling Rust functions directly. Tier 5 (exp118) validates that the deploy
+graph itself is structurally aligned with the proto-nucleate — fragments, bonding policy,
+capability surface, and atomic composition all internally consistent.
 
 **As of V21**, we are expanding from human health to the **health of living systems**.
 The math is species-agnostic: the Hill equation, Anderson localization, Bateman PK,
@@ -49,7 +51,7 @@ without establishing causality.
 
 | Order | Document | What you'll learn |
 |:-----:|----------|------------------|
-| 4 | [baseCamp/README.md](baseCamp/README.md) | All 89 experiments, validation counts, per-track status |
+| 4 | [baseCamp/README.md](baseCamp/README.md) | All 90 experiments, validation counts, per-track status |
 | 5 | [baseCamp/gonzales/README.md](baseCamp/gonzales/README.md) | PK/PD sub-thesis: Gonzales canine → human → drug discovery pipeline |
 | 6 | [baseCamp/EXTENSION_PLAN.md](baseCamp/EXTENSION_PLAN.md) | Where we're going: Tracks 6–7, datasets, QS gene profiling, living systems |
 
@@ -240,8 +242,8 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 
 | Metric | Value |
 |--------|-------|
-| Experiments | 83 complete (Tracks 1–9), 15 queued |
-| Rust tests | 928 (lib + proptest + IPC fuzz + doc + experiment bins) |
+| Experiments | 90 complete (84 science + 7 composition Tier 4/5) |
+| Rust tests | 985+ (lib + proptest + IPC fuzz + doc + integration + experiment bins) |
 | Python checks | 194 cross-validation |
 | Paper queue | 30/30 complete, 15 new queued |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |

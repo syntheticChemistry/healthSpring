@@ -42,12 +42,29 @@ impl PrimalClient {
         &self.socket
     }
 
-    /// Send a JSON-RPC call and return the result.
+    /// Send a JSON-RPC call with retry (resilient default).
+    ///
+    /// Uses exponential backoff for transient failures. For single-attempt
+    /// calls, use [`try_call`](Self::try_call).
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if all retry attempts are exhausted or a
+    /// non-retriable error is encountered.
+    pub fn call(
+        &self,
+        method: &str,
+        params: &serde_json::Value,
+    ) -> Result<serde_json::Value, IpcError> {
+        rpc::resilient_send(&self.socket, method, params)
+    }
+
+    /// Send a JSON-RPC call without retry (single attempt).
     ///
     /// # Errors
     ///
     /// Returns `IpcError` if the socket connection or JSON-RPC exchange fails.
-    pub fn call(
+    pub fn try_call(
         &self,
         method: &str,
         params: &serde_json::Value,

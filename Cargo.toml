@@ -100,6 +100,7 @@ members = [
     "experiments/exp115_composition_proto_nucleate",
     "experiments/exp116_composition_provenance",
     "experiments/exp117_composition_ipc_roundtrip",
+    "experiments/exp118_composition_deploy_graph_validation",
 ]
 
 [workspace.package]

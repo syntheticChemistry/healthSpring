@@ -1,17 +1,18 @@
 # healthSpring Experiments
 
 **Last Updated**: April 11, 2026
-**Status**: V51 — Hardened Composition Patterns. 89 experiments, 976 tests. Six Tier 4 composition experiments (exp112–117): IPC dispatch parity, proto-nucleate alias resolution, wire protocol round-trip, health probe routing, capability surface completeness. TCP + UDS listeners, BTSP handshake, typed PrimalClient/InferenceClient, structured discovery. Python and Rust are both validation targets for NUCLEUS composition patterns.
+**Status**: V52 — Composition Validation. 90 experiments, 985+ tests. Seven Tier 4/5 composition experiments (exp112–118): IPC dispatch parity, proto-nucleate alias resolution, wire protocol round-trip, health probe routing, capability surface completeness, deploy graph vs proto-nucleate structural alignment. Three-layer validation: Python validates science, Rust validates Python, NUCLEUS validates composition.
 
-Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a five-tier pipeline:
+Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a six-tier pipeline:
 
 - **Tier 0**: Python control baseline (analytical known-values)
 - **Tier 1**: Rust CPU validation (direct Rust vs Python, exit 0/1)
 - **Tier 2**: GPU parity (WGSL shader vs Rust CPU)
 - **Tier 3**: metalForge dispatch (NUCLEUS routing, PCIe P2P)
 - **Tier 4**: Composition validation (IPC dispatch vs direct Rust — the primal composition surface)
+- **Tier 5**: Deploy graph validation (TOML graph ↔ proto-nucleate ↔ capability surface consistency)
 
-**All 89 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
+**All 90 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
 
 ---
 
@@ -198,7 +199,7 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 109 | `exp109_mitbih_arrhythmia` | MIT-BIH arrhythmia classification | ValidationHarness |
 | 110 | `exp110_equine_laminitis` | Equine laminitis model | ValidationHarness |
 
-### Tier 4: Composition Validation (Exp112-116) — V48
+### Tier 4: Composition Validation (Exp112-117) — V48
 
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
@@ -208,6 +209,12 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 115 | `exp115_composition_proto_nucleate` | Proto-nucleate alignment (socket resolution, discovery, constants) | 20 |
 | 116 | `exp116_composition_provenance` | Provenance session lifecycle (registry, data sessions, trio probe) | 14 |
 | 117 | `exp117_composition_ipc_roundtrip` | IPC wire protocol round-trip + proto-nucleate aliases + capability surface | 71 |
+
+### Tier 5: Deploy Graph Validation (Exp118) — V52
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 118 | `exp118_composition_deploy_graph_validation` | Deploy graph ↔ proto-nucleate structural alignment (fragments, nodes, bonding, capabilities, Squirrel optionality) | 99 |
 
 ---
 
@@ -247,6 +254,9 @@ cargo run --release --bin exp113_composition_microbiome
 cargo run --release --bin exp114_composition_health_triad
 cargo run --release --bin exp115_composition_proto_nucleate
 cargo run --release --bin exp116_composition_provenance
+
+# Tier 5: Deploy graph validation
+cargo run --release --bin exp118_composition_deploy_graph_validation  # 99 checks
 ```
 
 ---

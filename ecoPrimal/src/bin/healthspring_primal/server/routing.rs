@@ -10,7 +10,8 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Instant;
 
 use healthspring_barracuda::ipc::{
-    compute_dispatch, data_dispatch, dispatch, inference_dispatch, rpc, shader_dispatch, socket,
+    client::PrimalClient, compute_dispatch, data_dispatch, dispatch, inference_dispatch, rpc,
+    shader_dispatch, socket,
 };
 use tracing::warn;
 
@@ -269,7 +270,8 @@ fn handle_primal_forward(params: &serde_json::Value) -> serde_json::Value {
         });
     };
 
-    rpc::resilient_send(&target_socket, method, &inner_params).unwrap_or_else(
+    let client = PrimalClient::new(target_socket, target);
+    client.call(method, &inner_params).unwrap_or_else(
         |e| serde_json::json!({"error": "forward_failed", "target": target, "method": method, "detail": e.to_string()}),
     )
 }

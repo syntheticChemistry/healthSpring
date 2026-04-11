@@ -1,6 +1,6 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.12 (V51 — Hardened Composition Patterns)
+**Version**: 0.13 (V52 — Composition Validation)
 **Date**: April 11, 2026
 
 ---
@@ -181,7 +181,7 @@ analysis pipeline, and integration of QS gene profiling for microbial drug targe
 
 ## 3. What We Have Learned
 
-Seven months of validation across 89 experiments, 976 tests, and 45 reproduced papers
+Seven months of validation across 90 experiments, 985+ tests, and 45 reproduced papers
 have produced several key insights:
 
 ### 3.1 Species-agnostic mathematics works

@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V51 — Hardened Composition Patterns. 976 tests, 89 experiments (83 science + 6 composition), 89 provenance entries (100% coverage). TCP listener, BTSP handshake, typed IPC clients, structured discovery, `identity.get`, `health.check`, LOCAL/ROUTED capability split, domain symlink. barraCuda v0.3.11 (7f6649f). ecoBin 0.8.0. Zero clippy, zero unsafe.
+**Status**: V52 — Composition Validation. 985+ tests, 90 experiments (84 science + 7 composition Tier 4/5), 90 provenance entries (100% coverage). Typed IPC clients wired (PrimalClient resilient default), Tier 5 deploy graph validation (exp118, 99 checks), GPU tests on every PR, expanded coverage scope. barraCuda v0.3.11 (7f6649f). ecoBin 0.8.0. Zero clippy, zero unsafe.
 **Last Updated**: April 11, 2026
 
 ---
@@ -22,6 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
+| **V52** | [Composition Validation](handoffs/HEALTHSPRING_V52_COMPOSITION_VALIDATION_HANDOFF_APR11_2026.md) | Apr 11 | Tier 5 deploy graph validation (exp118), typed IPC clients wired, GPU CI on every PR, expanded coverage, tolerances.py policy fix. |
+| **V52** | [Primal Evolution](handoffs/HEALTHSPRING_V52_PRIMAL_EVOLUTION_HANDOFF_APR11_2026.md) | Apr 11 | Primal usage inventory, composition learnings, NUCLEUS deployment patterns, evolution opportunities for all teams. |
 | **V51** | [Hardened Composition](handoffs/HEALTHSPRING_V51_HARDENED_COMPOSITION_HANDOFF_APR11_2026.md) | Apr 11 | TCP listener, BTSP, typed clients, structured discovery, `identity.get`, `health.check`, LOCAL/ROUTED split, domain symlink. Cross-ecosystem handoff. |
 | **V50** | [Composition Evolution](handoffs/HEALTHSPRING_V50_COMPOSITION_EVOLUTION_HANDOFF_APR11_2026.md) | Apr 11 | Capability-first routing, Squirrel optional node, discovery dual fallback, provenance split. |
 | | *V1–V49 → `handoffs/archive/`* | | Fossil record |

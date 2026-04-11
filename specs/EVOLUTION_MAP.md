@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: April 11, 2026
-**Status**: V51 — Hardened Composition Patterns. 89 experiments, 976 tests, 84+ capabilities (62 science + 22 infra), 89 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). `CoralReefDevice` → `SovereignDevice` API fix. TCP + UDS listeners, BTSP handshake, typed IPC clients. Local WGSL shader removal plan documented (blocked on TensorSession).
+**Status**: V52 — Composition Validation. 90 experiments, 985+ tests, 84+ capabilities (62 science + 22 infra), 90 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). Typed PrimalClient wired into production, Tier 5 deploy graph validation (exp118). GPU tests on every PR. Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
 
 ---
 

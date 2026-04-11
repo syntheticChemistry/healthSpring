@@ -180,7 +180,7 @@ fn dispatch_via_sovereign(
                 GpuOp::MichaelisMentenBatch { .. } => "MichaelisMentenBatch",
                 GpuOp::ScfaBatch { .. } => "ScfaBatch",
                 GpuOp::BeatClassifyBatch { .. } => "BeatClassifyBatch",
-                _ => "unknown",
+                GpuOp::HillSweep { .. } => "HillSweep",
             }
         ))),
     }

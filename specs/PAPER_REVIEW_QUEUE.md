@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: April 11, 2026
-**Status**: V51 — Hardened Composition Patterns. 89 experiments (83 science + 6 composition), 976 tests, 45/45 papers complete. 89 provenance entries, 84+ capabilities (62 science + 22 infra). barraCuda v0.3.11, 6 GPU ops.
+**Status**: V52 — Composition Validation. 90 experiments (84 science + 7 composition Tier 4/5), 985+ tests, 45/45 papers complete. 90 provenance entries, 84+ capabilities (62 science + 22 infra). barraCuda v0.3.11, 6 GPU ops.
 
 ---
 
