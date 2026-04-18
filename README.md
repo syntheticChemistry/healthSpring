@@ -66,9 +66,9 @@ V53 completes the composition evolution spiral: Python baselines validated Rust 
 | **Zero `dyn` dispatch** | `Box<dyn ValidationSink>` replaced with `ValidationSink` enum dispatch — stadial zero-dyn compliance. |
 | **Typed errors** | `ServerError` and `TrioError` enums replace `Result<_, String>` in server and provenance IPC paths. |
 | **Capability routing by domain** | `ROUTED_CAPABILITIES` maps to `by_capability` domains, not hardcoded primal names. |
-| **`niche.rs` composition registry** | `COMPOSITION_EXPERIMENTS` constant maps all 10 composition experiments to validation tiers. |
+| **`niche.rs` composition registry** | `COMPOSITION_EXPERIMENTS` constant maps all 11 composition experiments to validation tiers (Tier 3–5). |
 | **ecoBin 0.9.0** | 3.2 MB static-PIE x86_64-musl, harvested to `infra/plasmidBin/`. barraCuda v0.3.12. |
-| **936+ tests** | 93 experiments (84 science + 10 composition). Zero clippy, zero `dyn`, zero `async-trait`. |
+| **948+ tests** | 94 experiments (84 science + 11 composition Tier 3–5). Zero clippy, zero `dyn`, zero `async-trait`. |
 | **`PROTO_NUCLEATE_VALIDATION_CAPABILITIES`** | 10 manifest-mirrored IPC methods (storage, inference, dag, crypto, braid). Level 5 readiness. |
 | **`BARRACUDA_IPC_MIGRATION`** | 12 library→IPC mappings inventoried. Level 5 gap documented (§17). |
 | **`math_dispatch` module** | Centralizes 11 `barracuda::` call sites. `primal-proof` feature routes 2 wire-ready methods via IPC. |

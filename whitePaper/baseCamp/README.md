@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** April 17, 2026
-**Status:** V53 — Composition Parity (Live IPC). Four-layer validation: Python validates science, Rust validates Python, in-process dispatch validates composition, **live IPC validates NUCLEUS wire path**. 936+ tests, 93 experiments (84 science + 10 composition Tier 3–4), 54 Python baselines, 93 provenance entries (100% coverage). Three live IPC experiments (exp119–121): science parity, provenance trio, health probes over Unix socket JSON-RPC. Zero `dyn` dispatch, typed errors, capability routing by domain. ecoBin 0.9.0 static-PIE. barraCuda v0.3.12. Zero clippy, zero unsafe.
+**Status:** V53 — Levels 1–4 DONE, Level 5 (primal proof) in progress. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). `math_dispatch` centralizes all `barracuda::` call sites; `primal-proof` feature routes wire-ready methods via `BarraCudaClient` IPC. Live IPC experiments (exp119–121) + Level 5 barraCuda parity (exp122). 2/11 wire-ready, 9 pending barraCuda wire handlers. ecoBin 0.9.0 static-PIE. barraCuda v0.3.12. Zero clippy, zero unsafe.
 
 ---
 

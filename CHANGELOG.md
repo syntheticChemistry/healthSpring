@@ -15,8 +15,8 @@ This project uses internal versioning (V-series) for development milestones.
     (session lifecycle, Merkle root, commit, braid).
   - `exp121_composition_live_health` — NUCLEUS health probes over IPC
     (liveness, readiness, capability.list, identity.get, niche science dispatch).
-- `niche::COMPOSITION_EXPERIMENTS` — centralized registry mapping all 10 composition
-  experiments to their validation tier (tier3/tier4).
+- `niche::COMPOSITION_EXPERIMENTS` — centralized registry mapping all 11 composition
+  experiments to their validation tier (tier3/tier4/tier5).
 - `niche::PROTO_NUCLEATE_VALIDATION_CAPABILITIES` — 10 IPC methods mirrored from
   `healthspring_enclave_proto_nucleate.toml` manifest (Level 5 readiness).
 - `niche::BARRACUDA_IPC_MIGRATION` — 12 library→IPC call site mappings for Level 5

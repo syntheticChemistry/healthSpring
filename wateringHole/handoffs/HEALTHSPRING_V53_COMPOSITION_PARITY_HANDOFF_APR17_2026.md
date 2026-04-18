@@ -16,7 +16,7 @@ in-process dispatch parity (JSON-RPC method routing = direct Rust), V53
 validates the **live NUCLEUS wire path**: Unix socket IPC to a running
 primal server produces identical science results to direct Rust calls.
 
-The four-layer validation ladder is now complete:
+The composition validation layers (Layers 0–3) are now complete:
 
 ```
 Layer 0: Python control     → peer-reviewed science (DOI-cited baselines)
@@ -70,8 +70,8 @@ we learned and what the ecosystem should absorb.
 
 ### Niche composition registry
 
-- `niche::COMPOSITION_EXPERIMENTS` maps all 10 composition experiments to their
-  validation tier (tier3_dispatch_parity through tier4_live_health_probes).
+- `niche::COMPOSITION_EXPERIMENTS` maps all 11 composition experiments to their
+  validation tier (tier3 through tier5_primal_proof_ipc).
 
 ### ecoBin 0.9.0
 
@@ -182,8 +182,8 @@ from the proto-nucleate manifest (`healthspring_enclave_proto_nucleate.toml`).
 ### Validation ladder status
 
 ```
-Level 1: Python baseline        — DONE (all 93 experiments cite DOI/SRA provenance)
-Level 2: Rust validation        — DONE (93 experiments, 936 tests)
+Level 1: Python baseline        — DONE (all 94 experiments cite DOI/SRA provenance)
+Level 2: Rust validation        — DONE (94 experiments, 948 tests)
 Level 3: barraCuda CPU          — DONE (exp040 CPU parity, exp066 bench)
 Level 4: barraCuda GPU          — DONE (exp041+ GPU, feature-gated)
 Level 5: Primal composition     — IN PROGRESS (exp119–121 live IPC; barraCuda lib→IPC pending)

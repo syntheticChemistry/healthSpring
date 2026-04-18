@@ -1,6 +1,6 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.13 (V52 — Composition Validation)
+**Version**: 0.14 (V53 — Level 5 Primal Proof)
 **Date**: April 11, 2026
 
 ---

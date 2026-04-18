@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-04-11
-**healthSpring version**: V52 (ecoBin 0.8.0)
+**Date**: 2026-04-17
+**healthSpring version**: V53 (ecoBin 0.9.0)
 
 ---
 
