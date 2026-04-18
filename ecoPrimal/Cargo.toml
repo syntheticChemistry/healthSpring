@@ -22,6 +22,11 @@ barracuda-ops = ["gpu"]
 # Sovereign dispatch via barraCuda SovereignDevice: WGSL → coralReef compile →
 # toadStool dispatch → native binary. Replaces strip_f64_enable() workaround.
 sovereign-dispatch = ["gpu", "barracuda/sovereign-dispatch"]
+# Level 5 primal proof: routes wire-ready math calls (stats.mean, stats.std_dev)
+# through barraCuda's JSON-RPC surface over UDS instead of library imports.
+# The library dep stays for Level 2 comparison and for the 9 methods not yet
+# on barraCuda's wire (see math_dispatch.rs wire status table).
+primal-proof = []
 nestgate = ["dep:ureq"]
 # NPU dispatch is a future evolution — Akida driver will be discovered at
 # runtime via capability-based probing, not compiled in as a path dep.

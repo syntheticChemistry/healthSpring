@@ -12,7 +12,7 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 - **Tier 4**: Composition validation (IPC dispatch vs direct Rust — the primal composition surface)
 - **Tier 5**: Deploy graph validation (TOML graph ↔ proto-nucleate ↔ capability surface consistency)
 
-**All 93 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
+**All 94 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
 
 ---
 
@@ -223,6 +223,12 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 119 | `exp119_composition_live_parity` | Live IPC science dispatch vs direct Rust (Hill, 1-comp PK, AUC, Shannon, Anderson) | 6+ |
 | 120 | `exp120_composition_live_provenance` | Live provenance trio round-trip (session lifecycle, Merkle, commit, braid) | 5+ |
 | 121 | `exp121_composition_live_health` | Live NUCLEUS health probes (liveness, readiness, capability.list, identity.get, niche dispatch) | 6+ |
+
+### Tier 5: Level 5 Primal Proof — barraCuda IPC (Exp122) — V53
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 122 | `exp122_primal_proof_barracuda_parity` | `math_dispatch` known-values, `BarraCudaClient` IPC vs local (stats.mean, stats.std_dev, rng.uniform), wire-pending inventory | 10+ |
 
 ---
 

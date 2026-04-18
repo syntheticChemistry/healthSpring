@@ -25,7 +25,7 @@ pub fn hill_dose_response(concentration: f64, ic50: f64, hill_n: f64, e_max: f64
     if ic50 <= 0.0 || concentration < 0.0 {
         return 0.0;
     }
-    e_max * barracuda::stats::hill(concentration, ic50, hill_n)
+    e_max * crate::math_dispatch::hill(concentration, ic50, hill_n)
 }
 
 /// Sweep Hill dose-response across a concentration array.

@@ -5,6 +5,7 @@
 //! `SPRING_AS_PROVIDER_PATTERN`. Transport selection is runtime-based
 //! following ecoBin v3.0 (Unix sockets, TCP fallback).
 
+pub mod barracuda_client;
 pub mod btsp;
 pub mod client;
 pub mod compute_dispatch;

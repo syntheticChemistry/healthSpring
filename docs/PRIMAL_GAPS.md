@@ -338,9 +338,17 @@ barraCuda ecobin — the gap is in healthSpring's wiring.
 3. Validate: IPC result == library result == Python baseline
 4. `niche::BARRACUDA_IPC_MIGRATION` inventories all 12 call sites
 
-**Status**: Gap documented (V53). `niche.rs` carries
-`BARRACUDA_IPC_MIGRATION` inventory and
-`PROTO_NUCLEATE_VALIDATION_CAPABILITIES` constant. Implementation pending.
+**Status**: V53 — infrastructure complete. `math_dispatch` centralizes all 11
+non-RNG call sites with IPC routing behind `primal-proof` feature. 2/11 methods
+wire-ready (`stats.mean`, `stats.std_dev`). 9/11 methods pending barraCuda wire
+handlers. `BarraCudaClient` typed IPC client ready. `exp122` validates parity.
+
+**barraCuda wire gap**: 9 methods exist as Rust library functions but are NOT
+in barraCuda's 32 JSON-RPC method catalog: `stats.hill`, `stats.shannon_from_frequencies`,
+`stats.simpson`, `stats.chao1_classic`, `stats.bray_curtis`,
+`special.anderson_diagonalize`, `health.pkpd.mm_auc`,
+`health.microbiome.antibiotic_perturbation`, `health.biosignal.scr_rate`.
+When barraCuda adds these, healthSpring flips each to IPC in `math_dispatch.rs`.
 
 ---
 
@@ -364,4 +372,4 @@ barraCuda ecobin — the gap is in healthSpring's wiring.
 | 14 | Zero `dyn` dispatch | — | **Fixed V53**: enum `ValidationSink` | — |
 | 15 | Typed error returns | — | **Fixed V53**: `ServerError`, `TrioError` | — |
 | 16 | Capability routing by domain | — | **Fixed V53**: `by_capability` domains | — |
-| 17 | barraCuda lib→IPC (Level 5) | — | **V53**: gap documented, inventory in `niche.rs` | barraCuda IPC surface ready |
+| 17 | barraCuda lib→IPC (Level 5) | 9/11 methods not on wire | **V53**: `math_dispatch` + `BarraCudaClient` + `exp122` | barraCuda: add 9 wire handlers |

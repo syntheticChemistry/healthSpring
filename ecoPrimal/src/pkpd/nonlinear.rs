@@ -103,7 +103,7 @@ pub fn mm_apparent_half_life(params: &MichaelisMentenParams, concentration: f64)
 /// Delegates to `barracuda::health::pkpd::mm_auc` — identical signature and formula.
 #[must_use]
 pub fn mm_auc(concs: &[f64], dt: f64) -> f64 {
-    barracuda::health::pkpd::mm_auc(concs, dt)
+    crate::math_dispatch::mm_auc(concs, dt)
 }
 
 /// Analytical AUC for Michaelis-Menten IV bolus (exact, not approximation).

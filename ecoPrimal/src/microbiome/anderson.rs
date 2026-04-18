@@ -28,7 +28,7 @@ pub fn anderson_hamiltonian_1d(disorder: &[f64], t_hop: f64) -> Vec<f64> {
 /// `L × L` matrix (row-major) with eigenvector `k` in row `k`.
 #[must_use]
 pub fn anderson_diagonalize(disorder: &[f64], t_hop: f64) -> (Vec<f64>, Vec<f64>) {
-    barracuda::special::anderson_diagonalize(disorder, t_hop)
+    crate::math_dispatch::anderson_diagonalize(disorder, t_hop)
 }
 
 /// Inverse participation ratio: `IPR = Σ |ψ_i|⁴`.

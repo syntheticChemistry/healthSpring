@@ -5,7 +5,7 @@
 **Date:** April 17, 2026 (V53)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V53 — Composition Parity (Live IPC) / Level 5 Primal Proof in progress. 936+ tests, 93 experiments (84 science + 10 composition Tier 3–4), 54 Python baselines, 93 provenance entries (100% coverage). barraCuda v0.3.12 (workspace current). Zero `dyn` dispatch (enum `ValidationSink`), typed errors (`ServerError`, `TrioError`), capability routing by domain (not primal identity). Live IPC experiments (exp119–121): science parity, provenance trio, health probes — all over Unix socket JSON-RPC. `niche.rs` carries `PROTO_NUCLEATE_VALIDATION_CAPABILITIES` (10 manifest methods) and `BARRACUDA_IPC_MIGRATION` (12 library→IPC mappings). ecoBin 0.9.0 (3.2 MB static-PIE x86_64-musl) at `infra/plasmidBin/`. Validation ladder: Level 1–4 DONE, Level 5 (primal proof — barraCuda lib→IPC migration) documented, Level 6 (clean-machine NUCLEUS) ready.
+**Status:** V53 — Levels 1–4 DONE, Level 5 (primal proof) in progress. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). barraCuda v0.3.12. `math_dispatch` centralizes all 11 `barracuda::` call sites; `primal-proof` feature routes wire-ready methods (`stats.mean`, `stats.std_dev`) via `BarraCudaClient` IPC; falls back to library when offline. 2/11 wire-ready, 9 pending barraCuda wire handlers. `exp122` Level 5 parity experiment. ecoBin 0.9.0 at `infra/plasmidBin/`. Level 6 (clean-machine NUCLEUS) ready.
 
 ---
 
@@ -33,10 +33,10 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V53** (Composition Parity — Live IPC) |
-| **Total tests** | **936+** (852 lib + proptest + IPC fuzz + 33 forge + 51 toadstool + 93 experiment bins) |
-| Experiments complete | 93 (84 science Tracks 1–9 + 10 composition Tier 3–4) |
-| Composition validation (Tier 3–4) | 10 experiments (exp112–121) — in-process dispatch parity, proto-nucleate, wire round-trip, deploy graph, **live IPC science parity**, **live provenance trio**, **live health probes** |
+| Version | **V53** (Composition Parity — Level 5 Primal Proof) |
+| **Total tests** | **948+** (864 lib + proptest + IPC fuzz + 33 forge + 51 toadstool + 94 experiment bins) |
+| Experiments complete | 94 (84 science Tracks 1–9 + 11 composition Tier 3–5) |
+| Composition validation (Tier 3–5) | 11 experiments (exp112–122) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, **Level 5 barraCuda IPC parity** |
 | JSON-RPC capabilities | 84+ (62 science + 22 infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **54** with structured provenance registry (90 total entries, 100% experiment coverage) |
@@ -71,6 +71,9 @@ V53 completes the composition evolution spiral: Python baselines validated Rust 
 | **936+ tests** | 93 experiments (84 science + 10 composition). Zero clippy, zero `dyn`, zero `async-trait`. |
 | **`PROTO_NUCLEATE_VALIDATION_CAPABILITIES`** | 10 manifest-mirrored IPC methods (storage, inference, dag, crypto, braid). Level 5 readiness. |
 | **`BARRACUDA_IPC_MIGRATION`** | 12 library→IPC mappings inventoried. Level 5 gap documented (§17). |
+| **`math_dispatch` module** | Centralizes 11 `barracuda::` call sites. `primal-proof` feature routes 2 wire-ready methods via IPC. |
+| **`BarraCudaClient`** | Typed IPC client for barraCuda ecobin (stats.mean, stats.std_dev, rng.uniform). |
+| **`exp122` (Level 5)** | Primal proof: barraCuda IPC parity + wire-pending inventory. |
 
 ---
 

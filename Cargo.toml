@@ -104,6 +104,7 @@ members = [
     "experiments/exp119_composition_live_parity",
     "experiments/exp120_composition_live_provenance",
     "experiments/exp121_composition_live_health",
+    "experiments/exp122_primal_proof_barracuda_parity",
 ]
 
 [workspace.package]

@@ -48,6 +48,7 @@ pub mod discovery;
 pub mod endocrine;
 pub mod gpu;
 pub mod ipc;
+pub mod math_dispatch;
 pub mod microbiome;
 pub mod microbiome_transfer;
 pub mod niche;

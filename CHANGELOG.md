@@ -21,9 +21,18 @@ This project uses internal versioning (V-series) for development milestones.
   `healthspring_enclave_proto_nucleate.toml` manifest (Level 5 readiness).
 - `niche::BARRACUDA_IPC_MIGRATION` — 12 library→IPC call site mappings for Level 5
   primal proof (barraCuda library deps must become IPC calls).
+- **`math_dispatch` module**: Centralizes all 11 non-RNG `barracuda::` call sites.
+  Behind `--features primal-proof`, wire-ready methods (`stats.mean`, `stats.std_dev`)
+  route through barraCuda ecobin IPC. Falls back to library when offline.
+- **`BarraCudaClient`** (`ipc/barracuda_client.rs`): Typed IPC client for barraCuda's
+  JSON-RPC surface (`stats.mean`, `stats.std_dev`, `rng.uniform`, `health.liveness`).
+- **`primal-proof` feature**: Feature flag for Level 5 IPC routing in `math_dispatch`.
+- **`exp122_primal_proof_barracuda_parity`**: Level 5 validation — `math_dispatch`
+  known-values, `BarraCudaClient` IPC vs local, wire-pending inventory check.
 - PRIMAL_GAPS.md §17 — barraCuda lib→IPC gap documented with migration plan.
+  9/11 methods pending barraCuda wire handlers.
 - `#![forbid(unsafe_code)]` applied directly to `ecoPrimal/src/lib.rs` crate root.
-- Provenance records for exp119–121 in `records_infra.rs` (track: composition).
+- Provenance records for exp119–122 in `records_infra.rs` (track: composition).
 
 ### Changed
 - **`ValidationSink` refactored**: `Box<dyn ValidationSink>` replaced with enum dispatch

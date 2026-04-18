@@ -25,7 +25,7 @@ pub struct StressAssessment {
 /// Delegates to `barracuda::health::biosignal::scr_rate` — identical signature.
 #[must_use]
 pub fn scr_rate(n_scr_events: usize, duration_s: f64) -> f64 {
-    barracuda::health::biosignal::scr_rate(n_scr_events, duration_s)
+    crate::math_dispatch::scr_rate(n_scr_events, duration_s)
 }
 
 /// Compute mean SCR recovery half-time from phasic EDA signal.

@@ -51,14 +51,14 @@ pub fn fmt_blend(donor: &[f64], recipient: &[f64], engraftment: f64) -> Vec<f64>
 #[must_use]
 pub fn bray_curtis(a: &[f64], b: &[f64]) -> f64 {
     if a.len() == b.len() {
-        barracuda::stats::bray_curtis(a, b)
+        crate::math_dispatch::bray_curtis(a, b)
     } else {
         let n = a.len().max(b.len());
         let mut a_pad = vec![0.0; n];
         let mut b_pad = vec![0.0; n];
         a_pad[..a.len()].copy_from_slice(a);
         b_pad[..b.len()].copy_from_slice(b);
-        barracuda::stats::bray_curtis(&a_pad, &b_pad)
+        crate::math_dispatch::bray_curtis(&a_pad, &b_pad)
     }
 }
 
@@ -75,7 +75,7 @@ pub fn antibiotic_perturbation_abundances(
     susceptibilities: &[f64],
     duration_h: f64,
 ) -> Vec<f64> {
-    barracuda::health::microbiome::antibiotic_perturbation(abundances, susceptibilities, duration_h)
+    crate::math_dispatch::antibiotic_perturbation(abundances, susceptibilities, duration_h)
 }
 
 /// Simulate Shannon diversity time course under antibiotic perturbation

@@ -190,17 +190,22 @@ Level 5: Primal composition     — IN PROGRESS (exp119–121 live IPC; barraCud
 Level 6: NUCLEUS deployment     — READY (plasmidBin ecobin 0.9.0 harvested)
 ```
 
-### Migration plan (§17)
+### Implementation (§17 — complete)
 
-1. Add `BarraCudaClient` typed IPC client (like `PrimalClient`, targets
-   barraCuda ecobin at `stats.mean`, `stats.hill`, etc.)
-2. Feature-gate: `--features primal-proof` routes math via IPC; default
-   keeps library dep for Level 2 comparison
-3. Three-tier validation (following hotSpring pattern):
-   - Tier 1: local dispatch (library, always green in CI)
-   - Tier 2: IPC-wired (live barraCuda ecobin)
-   - Tier 3: full NUCLEUS from plasmidBin (clean machine)
-4. Validate: IPC result == library result == Python baseline
+1. **`BarraCudaClient`** (`ipc/barracuda_client.rs`): Typed IPC client for
+   barraCuda ecobin — `stats.mean`, `stats.std_dev`, `rng.uniform`,
+   `health.liveness`. Discover via socket dir scan.
+2. **`math_dispatch`** module: Centralizes all 11 non-RNG `barracuda::` call
+   sites. Behind `--features primal-proof`, `stats.mean` and `stats.std_dev`
+   route through barraCuda ecobin IPC. Falls back to library when offline.
+3. **`primal-proof` feature**: Feature flag in `ecoPrimal/Cargo.toml`.
+4. **`exp122`**: Level 5 parity — local known-values + IPC vs local + inventory.
+5. **9 methods wire-pending**: barraCuda's JSON-RPC surface does NOT include
+   `stats.hill`, `shannon_from_frequencies`, `simpson`, `chao1_classic`,
+   `bray_curtis`, `anderson_diagonalize`, `health.pkpd.mm_auc`,
+   `health.microbiome.antibiotic_perturbation`, `health.biosignal.scr_rate`.
+   These exist as library functions only. When barraCuda adds wire handlers,
+   healthSpring flips each to IPC in `math_dispatch.rs` — zero API changes.
 
 ### Sibling spring patterns adopted
 
@@ -227,12 +232,19 @@ Level 6: NUCLEUS deployment     — READY (plasmidBin ecobin 0.9.0 harvested)
   (`dual_tower_enclave`) vs proto-nucleate trust_model (`btsp_enforced`).
 
 ### To barraCuda
-- **IPC parity priority**: healthSpring has 12 library calls to migrate to
-  barraCuda's 32 JSON-RPC methods. Confirm these map cleanly: `stats.mean`,
-  `stats.std_dev`, `stats.hill`, `stats.shannon_from_frequencies`,
-  `stats.simpson`, `stats.chao1_classic`, `stats.bray_curtis`,
-  `special.anderson_diagonalize`, `rng.uniform`, `health.pkpd.mm_auc`,
-  `health.microbiome.antibiotic_perturbation`, `health.biosignal.scr_rate`.
+- **ADD 9 JSON-RPC WIRE HANDLERS**: healthSpring's `math_dispatch` is ready
+  to route all 11 methods through IPC. 2 are wired today (`stats.mean`,
+  `stats.std_dev`). The following 9 exist as library functions but NOT in
+  barraCuda's JSON-RPC dispatch — please add:
+  - `stats.hill(concentration, ic50, hill_n) -> f64`
+  - `stats.shannon_from_frequencies(frequencies: [f64]) -> f64`
+  - `stats.simpson(abundances: [f64]) -> f64`
+  - `stats.chao1_classic(counts: [u64]) -> f64`
+  - `stats.bray_curtis(a: [f64], b: [f64]) -> f64`
+  - `special.anderson_diagonalize(disorder: [f64], t_hop: f64) -> {eigenvalues, eigenvectors}`
+  - `health.pkpd.mm_auc(concs: [f64], dt: f64) -> f64`
+  - `health.microbiome.antibiotic_perturbation(abundances, susceptibilities, duration_h) -> [f64]`
+  - `health.biosignal.scr_rate(n_scr_events: usize, duration_s: f64) -> f64`
 - **TensorSession API**: Enables local shader removal (Write → Absorb → Lean).
   healthSpring has 6 fused pipeline patterns waiting.
 - **Anderson eigensolve GPU**: Gut lattice localization is a shader candidate.
@@ -268,10 +280,12 @@ Level 6: NUCLEUS deployment     — READY (plasmidBin ecobin 0.9.0 harvested)
 ## Validation Evidence
 
 ```
-cargo test --lib                → 936 tests, 0 failures (852 + 33 + 51)
+cargo test --lib                → 948 tests, 0 failures (864 + 33 + 51)
 cargo clippy --workspace -- -D warnings  → 0 warnings
 cargo fmt --check               → clean
+cargo check --features primal-proof      → compiles
 exp119 (offline)                → 6/6 PASS (skip-on-offline)
 exp120 (offline)                → 4/4 PASS (skip-on-offline)
 exp121 (offline)                → 6/6 PASS (skip-on-offline)
+exp122 (offline)                → 10/10 PASS (known-values + skip-on-offline)
 ```

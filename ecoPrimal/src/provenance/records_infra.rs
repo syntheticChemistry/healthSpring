@@ -762,4 +762,16 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         exact_command: "",
         baseline_source: "Composition: NUCLEUS health probes over live JSON-RPC",
     },
+    ProvenanceRecord {
+        track: "composition",
+        experiment: "exp122",
+        python_script: "",
+        python_version: "",
+        description: "Level 5 primal proof: barraCuda ecobin IPC vs library parity (stats.mean, stats.std_dev, rng.uniform)",
+        checks: 0,
+        git_commit: "",
+        run_date: "2026-04-17",
+        exact_command: "",
+        baseline_source: "Primal proof: barraCuda wire-ready methods over JSON-RPC UDS",
+    },
 ];

@@ -50,7 +50,7 @@ pub use clinical::*;
 /// ```
 #[must_use]
 pub fn shannon_index(abundances: &[f64]) -> f64 {
-    barracuda::stats::shannon_from_frequencies(abundances)
+    crate::math_dispatch::shannon_from_frequencies(abundances)
 }
 
 /// Simpson diversity: `D = 1 - Σ p_i²`.
@@ -58,7 +58,7 @@ pub fn shannon_index(abundances: &[f64]) -> f64 {
 /// `D = 0` for monoculture, approaches `1 - 1/S` for even community.
 #[must_use]
 pub fn simpson_index(abundances: &[f64]) -> f64 {
-    barracuda::stats::simpson(abundances)
+    crate::math_dispatch::simpson(abundances)
 }
 
 /// Inverse Simpson: `1 / Σ p_i²`.
@@ -83,7 +83,7 @@ pub fn pielou_evenness(abundances: &[f64]) -> f64 {
     if s <= 1 {
         return 0.0;
     }
-    let h = barracuda::stats::shannon_from_frequencies(abundances);
+    let h = crate::math_dispatch::shannon_from_frequencies(abundances);
     let h_max = (s as f64).ln();
     if h_max == 0.0 { 0.0 } else { h / h_max }
 }
@@ -94,7 +94,7 @@ pub fn pielou_evenness(abundances: &[f64]) -> f64 {
 /// bias-corrected form `S_obs + f1·(f1-1)/2`.
 #[must_use]
 pub fn chao1(counts: &[u64]) -> f64 {
-    barracuda::stats::chao1_classic(counts)
+    crate::math_dispatch::chao1_classic(counts)
 }
 
 /// Map Pielou evenness to Anderson disorder `W`.

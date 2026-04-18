@@ -200,6 +200,10 @@ pub const COMPOSITION_EXPERIMENTS: &[(&str, &str)] = &[
         "tier4_live_provenance_trio",
     ),
     ("exp121_composition_live_health", "tier4_live_health_probes"),
+    (
+        "exp122_primal_proof_barracuda_parity",
+        "tier5_primal_proof_ipc",
+    ),
 ];
 
 /// Relative cost estimates (CPU milliseconds for typical inputs).
@@ -309,6 +313,10 @@ mod tests {
         assert!(
             tiers.iter().any(|t| t.starts_with("tier4")),
             "must have tier4 experiments"
+        );
+        assert!(
+            tiers.iter().any(|t| t.starts_with("tier5")),
+            "must have tier5 experiments"
         );
     }
 

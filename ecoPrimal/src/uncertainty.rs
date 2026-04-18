@@ -13,9 +13,8 @@
 //! All functions are pure, deterministic (given a seed), and `#[must_use]`.
 
 use barracuda::rng::lcg_step;
-use barracuda::stats::correlation;
-use barracuda::stats::mean;
 
+use crate::math_dispatch;
 use crate::rng::normal_sample;
 
 /// Bootstrap confidence interval result.
@@ -89,7 +88,7 @@ pub fn bootstrap_mean(
     seed: u64,
 ) -> BootstrapResult {
     assert!(!data.is_empty(), "bootstrap requires non-empty data");
-    let estimate = mean(data);
+    let estimate = math_dispatch::mean(data);
     let n = data.len();
     let mut rng = seed;
     let mut estimates = Vec::with_capacity(n_replicates);
@@ -168,7 +167,7 @@ pub fn jackknife_mean_variance(data: &[f64]) -> JackknifeResult {
     );
     let n = data.len();
     let n_f = n as f64;
-    let full_mean = mean(data);
+    let full_mean = math_dispatch::mean(data);
     let total_sum: f64 = data.iter().sum();
 
     let leave_one_means: Vec<f64> = data
@@ -176,7 +175,7 @@ pub fn jackknife_mean_variance(data: &[f64]) -> JackknifeResult {
         .map(|&xi| (total_sum - xi) / (n_f - 1.0))
         .collect();
 
-    let jk_mean = mean(&leave_one_means);
+    let jk_mean = math_dispatch::mean(&leave_one_means);
     let jk_var = leave_one_means
         .iter()
         .map(|&m| (m - jk_mean).powi(2))
@@ -267,7 +266,7 @@ pub fn monte_carlo_propagate(
         results.push(model_fn(&perturbed));
     }
 
-    let m = mean(&results);
+    let m = math_dispatch::mean(&results);
     let sd = std_dev(&results);
     (m, sd)
 }
@@ -289,7 +288,7 @@ fn percentile_pair(sorted: &[f64], alpha: f64) -> (f64, f64) {
 }
 
 fn std_dev(data: &[f64]) -> f64 {
-    correlation::std_dev(data).unwrap_or(0.0)
+    math_dispatch::std_dev(data).unwrap_or(0.0)
 }
 
 #[cfg(test)]
