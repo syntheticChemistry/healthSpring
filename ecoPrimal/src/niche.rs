@@ -120,6 +120,57 @@ pub struct NicheDependency {
     pub capability: &'static str,
 }
 
+/// Primal IPC methods this spring must call for the Level 5 primal proof.
+///
+/// Mirrors `validation_capabilities` in `healthspring_enclave_proto_nucleate.toml`.
+/// These are the capabilities the spring validates against a running NUCLEUS
+/// deployed from plasmidBin ecobins. The spring does NOT appear in the graph —
+/// it validates externally.
+pub const PROTO_NUCLEATE_VALIDATION_CAPABILITIES: &[&str] = &[
+    "storage.store",
+    "storage.retrieve",
+    "inference.complete",
+    "inference.embed",
+    "dag.session.create",
+    "dag.event.append",
+    "crypto.hash",
+    "crypto.sign",
+    "braid.create",
+    "braid.commit",
+];
+
+/// barraCuda library imports that must become IPC calls for Level 5.
+///
+/// Today these are compiled in via `barracuda` path dependency. For the
+/// primal proof, each must route through barraCuda's 32 JSON-RPC methods
+/// over UDS. The library dep stays for Level 2 (Rust proof) comparison.
+pub const BARRACUDA_IPC_MIGRATION: &[(&str, &str)] = &[
+    ("barracuda::stats::mean", "stats.mean"),
+    ("barracuda::stats::correlation::std_dev", "stats.std_dev"),
+    ("barracuda::stats::hill", "stats.hill"),
+    (
+        "barracuda::stats::shannon_from_frequencies",
+        "stats.shannon_from_frequencies",
+    ),
+    ("barracuda::stats::simpson", "stats.simpson"),
+    ("barracuda::stats::chao1_classic", "stats.chao1_classic"),
+    ("barracuda::stats::bray_curtis", "stats.bray_curtis"),
+    (
+        "barracuda::special::anderson_diagonalize",
+        "special.anderson_diagonalize",
+    ),
+    ("barracuda::rng::lcg_step", "rng.uniform"),
+    ("barracuda::health::pkpd::mm_auc", "health.pkpd.mm_auc"),
+    (
+        "barracuda::health::microbiome::antibiotic_perturbation",
+        "health.microbiome.antibiotic_perturbation",
+    ),
+    (
+        "barracuda::health::biosignal::scr_rate",
+        "health.biosignal.scr_rate",
+    ),
+];
+
 /// Composition validation experiments.
 ///
 /// Each entry maps an experiment binary to its validation tier:
@@ -259,5 +310,29 @@ mod tests {
             tiers.iter().any(|t| t.starts_with("tier4")),
             "must have tier4 experiments"
         );
+    }
+
+    #[test]
+    fn proto_nucleate_caps_match_manifest() {
+        assert!(PROTO_NUCLEATE_VALIDATION_CAPABILITIES.contains(&"storage.store"));
+        assert!(PROTO_NUCLEATE_VALIDATION_CAPABILITIES.contains(&"crypto.hash"));
+        assert!(PROTO_NUCLEATE_VALIDATION_CAPABILITIES.contains(&"inference.complete"));
+        assert!(PROTO_NUCLEATE_VALIDATION_CAPABILITIES.contains(&"dag.session.create"));
+        assert!(PROTO_NUCLEATE_VALIDATION_CAPABILITIES.contains(&"braid.create"));
+        assert_eq!(PROTO_NUCLEATE_VALIDATION_CAPABILITIES.len(), 10);
+    }
+
+    #[test]
+    fn barracuda_migration_entries_have_ipc_targets() {
+        for (lib_path, ipc_method) in BARRACUDA_IPC_MIGRATION {
+            assert!(
+                lib_path.starts_with("barracuda::"),
+                "{lib_path} must be a barracuda:: path"
+            );
+            assert!(
+                ipc_method.contains('.'),
+                "{ipc_method} must be a dotted IPC method"
+            );
+        }
     }
 }

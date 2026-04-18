@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V53 — Composition Parity (Live IPC). 936+ tests, 93 experiments (84 science + 10 composition Tier 3–4), 93 provenance entries (100% coverage). Live IPC parity (exp119–121), zero `dyn` dispatch, typed errors, capability routing by domain. barraCuda v0.3.12. ecoBin 0.9.0. Zero clippy, zero unsafe.
+**Status**: V53 — Levels 1–4 DONE, Level 5 (primal proof) in progress. 936+ tests, 93 experiments (84 science + 10 composition Tier 3–4), 93 provenance entries (100% coverage). Live IPC parity (exp119–121), zero `dyn` dispatch, typed errors, capability routing by domain. barraCuda v0.3.12 (12 library→IPC call sites documented). ecoBin 0.9.0. Zero clippy, zero unsafe.
 **Last Updated**: April 17, 2026
 
 ---
@@ -22,7 +22,7 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V53** | [Composition Parity](handoffs/HEALTHSPRING_V53_COMPOSITION_PARITY_HANDOFF_APR17_2026.md) | Apr 17 | Live IPC science parity (exp119), provenance trio (exp120), health probes (exp121). Zero `dyn` dispatch, typed errors, capability routing by domain. ecoBin 0.9.0. |
+| **V53** | [Composition Parity](handoffs/HEALTHSPRING_V53_COMPOSITION_PARITY_HANDOFF_APR17_2026.md) | Apr 17 | Live IPC parity (exp119–121). Level 5 primal proof gap: 12 barraCuda lib→IPC mappings. `PROTO_NUCLEATE_VALIDATION_CAPABILITIES`, `BARRACUDA_IPC_MIGRATION`. ecoBin 0.9.0. |
 | | *V1–V52 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive

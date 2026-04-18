@@ -5,7 +5,7 @@
 **Date:** April 17, 2026 (V53)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V53 — Composition Parity (Live IPC). 936+ tests, 93 experiments (84 science + 10 composition Tier 3–4), 54 Python baselines, 93 provenance entries (100% coverage). barraCuda v0.3.12 (workspace current). Zero `dyn` dispatch (enum `ValidationSink`), typed errors (`ServerError`, `TrioError`), capability routing by domain (not primal identity). Three new live IPC experiments (exp119–121): science parity, provenance trio, health probes — all over Unix socket JSON-RPC. `niche.rs` composition experiment registry. ecoBin 0.9.0 (3.2 MB static-PIE x86_64-musl) at `infra/plasmidBin/`. Zero clippy warnings (pedantic+nursery). Four-layer validation: Python validates science, Rust validates Python, in-process dispatch validates composition, **live IPC validates NUCLEUS wire path**.
+**Status:** V53 — Composition Parity (Live IPC) / Level 5 Primal Proof in progress. 936+ tests, 93 experiments (84 science + 10 composition Tier 3–4), 54 Python baselines, 93 provenance entries (100% coverage). barraCuda v0.3.12 (workspace current). Zero `dyn` dispatch (enum `ValidationSink`), typed errors (`ServerError`, `TrioError`), capability routing by domain (not primal identity). Live IPC experiments (exp119–121): science parity, provenance trio, health probes — all over Unix socket JSON-RPC. `niche.rs` carries `PROTO_NUCLEATE_VALIDATION_CAPABILITIES` (10 manifest methods) and `BARRACUDA_IPC_MIGRATION` (12 library→IPC mappings). ecoBin 0.9.0 (3.2 MB static-PIE x86_64-musl) at `infra/plasmidBin/`. Validation ladder: Level 1–4 DONE, Level 5 (primal proof — barraCuda lib→IPC migration) documented, Level 6 (clean-machine NUCLEUS) ready.
 
 ---
 
@@ -69,6 +69,8 @@ V53 completes the composition evolution spiral: Python baselines validated Rust 
 | **`niche.rs` composition registry** | `COMPOSITION_EXPERIMENTS` constant maps all 10 composition experiments to validation tiers. |
 | **ecoBin 0.9.0** | 3.2 MB static-PIE x86_64-musl, harvested to `infra/plasmidBin/`. barraCuda v0.3.12. |
 | **936+ tests** | 93 experiments (84 science + 10 composition). Zero clippy, zero `dyn`, zero `async-trait`. |
+| **`PROTO_NUCLEATE_VALIDATION_CAPABILITIES`** | 10 manifest-mirrored IPC methods (storage, inference, dag, crypto, braid). Level 5 readiness. |
+| **`BARRACUDA_IPC_MIGRATION`** | 12 library→IPC mappings inventoried. Level 5 gap documented (§17). |
 
 ---
 

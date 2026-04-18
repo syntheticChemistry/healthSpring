@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: April 17, 2026
-**Status**: V53 — Composition Parity (Live IPC). 93 experiments, 936+ tests, 84+ capabilities (62 science + 22 infra), 93 provenance entries (100% coverage). barraCuda v0.3.12. Live IPC parity (exp119–121), zero `dyn` dispatch, typed errors, capability routing by domain. ecoBin 0.9.0. Four-layer validation: Python → science, Rust → baselines, dispatch → composition, **live IPC → NUCLEUS wire path**.
+**Status**: V53 — Levels 1–4 DONE, Level 5 (primal proof) in progress. 93 experiments, 936+ tests, 84+ capabilities (62 science + 22 infra), 93 provenance entries (100% coverage). barraCuda v0.3.12. Live IPC parity (exp119–121), zero `dyn` dispatch, typed errors, capability routing by domain. ecoBin 0.9.0. Validation ladder: L1 Python → L2 Rust → L3 barraCuda CPU → L4 GPU → L5 **primal proof (barraCuda lib→IPC, 12 call sites documented)** → L6 NUCLEUS deploy (plasmidBin ready).
 
 ---
 

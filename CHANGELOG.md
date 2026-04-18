@@ -17,6 +17,11 @@ This project uses internal versioning (V-series) for development milestones.
     (liveness, readiness, capability.list, identity.get, niche science dispatch).
 - `niche::COMPOSITION_EXPERIMENTS` — centralized registry mapping all 10 composition
   experiments to their validation tier (tier3/tier4).
+- `niche::PROTO_NUCLEATE_VALIDATION_CAPABILITIES` — 10 IPC methods mirrored from
+  `healthspring_enclave_proto_nucleate.toml` manifest (Level 5 readiness).
+- `niche::BARRACUDA_IPC_MIGRATION` — 12 library→IPC call site mappings for Level 5
+  primal proof (barraCuda library deps must become IPC calls).
+- PRIMAL_GAPS.md §17 — barraCuda lib→IPC gap documented with migration plan.
 - `#![forbid(unsafe_code)]` applied directly to `ecoPrimal/src/lib.rs` crate root.
 - Provenance records for exp119–121 in `records_infra.rs` (track: composition).
 

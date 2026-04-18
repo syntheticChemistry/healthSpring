@@ -300,6 +300,50 @@ whichever primal currently advertises it.
 
 ---
 
+## 17. barraCuda Library → IPC Migration (Level 5 Primal Proof)
+
+**Gap**: healthSpring links barraCuda as a Rust library dependency (`barracuda`
+crate via path dep) and calls 12+ functions directly:
+
+| Library call | IPC method | Module |
+|-------------|-----------|--------|
+| `barracuda::stats::mean` | `stats.mean` | `uncertainty.rs` |
+| `barracuda::stats::correlation::std_dev` | `stats.std_dev` | `uncertainty.rs` |
+| `barracuda::stats::hill` | `stats.hill` | `pkpd/dose_response.rs` |
+| `barracuda::stats::shannon_from_frequencies` | `stats.shannon_from_frequencies` | `microbiome/mod.rs` |
+| `barracuda::stats::simpson` | `stats.simpson` | `microbiome/mod.rs` |
+| `barracuda::stats::chao1_classic` | `stats.chao1_classic` | `microbiome/mod.rs` |
+| `barracuda::stats::bray_curtis` | `stats.bray_curtis` | `microbiome/clinical.rs` |
+| `barracuda::special::anderson_diagonalize` | `special.anderson_diagonalize` | `microbiome/anderson.rs` |
+| `barracuda::rng::lcg_step` | `rng.uniform` | `rng.rs` |
+| `barracuda::health::pkpd::mm_auc` | `health.pkpd.mm_auc` | `pkpd/nonlinear.rs` |
+| `barracuda::health::microbiome::*` | `health.microbiome.*` | `microbiome/clinical.rs` |
+| `barracuda::health::biosignal::scr_rate` | `health.biosignal.scr_rate` | `biosignal/stress.rs` |
+
+Additionally, 6 GPU ops use `barracuda::ops::*` and `barracuda::device::*`
+behind the `barracuda-ops` / `gpu` features.
+
+For the Level 5 primal proof, the primal binary must call barraCuda over IPC
+(its 32 JSON-RPC methods), not link it. The library dep stays for Level 2
+(Rust proof) baseline comparison.
+
+**Impact**: healthSpring cannot pass Level 5 until math calls route through
+barraCuda's UDS JSON-RPC surface. The IPC methods already exist in the
+barraCuda ecobin — the gap is in healthSpring's wiring.
+
+**Migration path**:
+1. Add `BarraCudaClient` (typed IPC client, like `PrimalClient`)
+2. Feature-gate: `--features primal-proof` routes math via IPC;
+   default keeps library dep for Level 2
+3. Validate: IPC result == library result == Python baseline
+4. `niche::BARRACUDA_IPC_MIGRATION` inventories all 12 call sites
+
+**Status**: Gap documented (V53). `niche.rs` carries
+`BARRACUDA_IPC_MIGRATION` inventory and
+`PROTO_NUCLEATE_VALIDATION_CAPABILITIES` constant. Implementation pending.
+
+---
+
 ## Summary Matrix
 
 | # | Gap | Blocked On | healthSpring Action | primalSpring Action |
@@ -320,3 +364,4 @@ whichever primal currently advertises it.
 | 14 | Zero `dyn` dispatch | — | **Fixed V53**: enum `ValidationSink` | — |
 | 15 | Typed error returns | — | **Fixed V53**: `ServerError`, `TrioError` | — |
 | 16 | Capability routing by domain | — | **Fixed V53**: `by_capability` domains | — |
+| 17 | barraCuda lib→IPC (Level 5) | — | **V53**: gap documented, inventory in `niche.rs` | barraCuda IPC surface ready |

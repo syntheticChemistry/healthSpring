@@ -110,27 +110,34 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 
 ## Composition Validation — Python → Rust → Primal
 
-The validation ladder has four layers. Each layer uses the previous as its
+The validation ladder has six levels. Each level uses the previous as its
 validation target:
 
 ```
-Layer 0: Python control    → peer-reviewed science (DOI-cited baselines)
-Layer 1: Rust CPU           → faithful port (f64-canonical, tolerance-documented)
-Layer 2: In-process dispatch→ JSON-RPC method routing produces identical results
-Layer 3: Live IPC           → Unix socket wire path to running primal server
-                              produces identical results to direct Rust
+Level 1: Python baseline        → peer-reviewed science (DOI-cited baselines)        DONE
+Level 2: Rust validation        → faithful port, spring binary (the "Rust proof")    DONE
+Level 3: barraCuda CPU          → same math via primal WGSL shaders (CPU fallback)   DONE
+Level 4: barraCuda GPU          → sovereign shader execution, hardware validated     DONE
+Level 5: Primal composition     → science via NUCLEUS primals over IPC               IN PROGRESS
+Level 6: NUCLEUS deployment     → plasmidBin ecobins on clean machine                READY
 ```
 
 **Python was the validation target for Rust. Now Rust and Python are both
 validation targets for the primal composition.** The science doesn't change —
 we prove the NUCLEUS composition patterns faithfully reproduce it at every layer.
 
+The Level 5 gap: healthSpring currently links barraCuda as a library dependency
+and calls 12 functions in-process. For the primal proof, these must route
+through barraCuda's 32 JSON-RPC methods over UDS. The IPC surface already
+exists in the barraCuda ecobin — the gap is in healthSpring's wiring.
+`niche::BARRACUDA_IPC_MIGRATION` inventories all 12 call sites.
+
 | Tier | Experiments | What it proves |
 |------|-------------|----------------|
 | Tier 3 (dispatch) | exp112–118 | `dispatch_science(method, params)` = direct Rust call |
 | Tier 4 (live IPC) | exp119–121 | `PrimalClient.call(method, params)` over Unix socket = direct Rust call |
 
-The Tier 4 experiments (V53) complete the composition evolution spiral:
+The Tier 4 experiments (V53) complete the live-IPC layer:
 
 - **exp119** — Hill dose-response, compartmental PK, AUC, Shannon diversity,
   Anderson eigenvalues: IPC result matches local Rust within `DETERMINISM` tolerance.

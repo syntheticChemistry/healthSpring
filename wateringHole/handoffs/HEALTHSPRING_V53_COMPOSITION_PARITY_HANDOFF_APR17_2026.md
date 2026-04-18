@@ -158,8 +158,58 @@ discovery (5), toxicology (3), simulation (2).
 | 2 | Ionic bridge enforcement | Blocked | BearDog `crypto.ionic_bond` |
 | 4 | Inference canonical namespace | Partial | primalSpring/Squirrel alignment |
 | 10 | BTSP server endpoint | Blocked | BearDog BTSP server |
+| 17 | barraCuda lib→IPC (Level 5) | Documented | healthSpring wiring (12 call sites) |
 
-All other gaps (§1, §3, §5–§9, §11, §12) are resolved.
+Gaps §1, §3, §5–§9, §11–§16 are resolved.
+
+---
+
+## Level 5 Primal Proof — Gap Analysis
+
+### The gap
+
+healthSpring currently links barraCuda as a Rust library dependency and calls
+12 functions in-process (`barracuda::stats::mean`, `barracuda::stats::hill`,
+`barracuda::special::anderson_diagonalize`, etc.). For the Level 5 primal
+proof, these must route through barraCuda's 32 JSON-RPC methods over UDS.
+The IPC surface already exists in the barraCuda ecobin — the gap is in
+healthSpring's wiring.
+
+`niche::BARRACUDA_IPC_MIGRATION` inventories all 12 library→IPC mappings.
+`niche::PROTO_NUCLEATE_VALIDATION_CAPABILITIES` mirrors the 10 capabilities
+from the proto-nucleate manifest (`healthspring_enclave_proto_nucleate.toml`).
+
+### Validation ladder status
+
+```
+Level 1: Python baseline        — DONE (all 93 experiments cite DOI/SRA provenance)
+Level 2: Rust validation        — DONE (93 experiments, 936 tests)
+Level 3: barraCuda CPU          — DONE (exp040 CPU parity, exp066 bench)
+Level 4: barraCuda GPU          — DONE (exp041+ GPU, feature-gated)
+Level 5: Primal composition     — IN PROGRESS (exp119–121 live IPC; barraCuda lib→IPC pending)
+Level 6: NUCLEUS deployment     — READY (plasmidBin ecobin 0.9.0 harvested)
+```
+
+### Migration plan (§17)
+
+1. Add `BarraCudaClient` typed IPC client (like `PrimalClient`, targets
+   barraCuda ecobin at `stats.mean`, `stats.hill`, etc.)
+2. Feature-gate: `--features primal-proof` routes math via IPC; default
+   keeps library dep for Level 2 comparison
+3. Three-tier validation (following hotSpring pattern):
+   - Tier 1: local dispatch (library, always green in CI)
+   - Tier 2: IPC-wired (live barraCuda ecobin)
+   - Tier 3: full NUCLEUS from plasmidBin (clean machine)
+4. Validate: IPC result == library result == Python baseline
+
+### Sibling spring patterns adopted
+
+- **hotSpring V0.6.32**: Three-tier composition probes, named tolerances
+  in `tolerances/physics.rs`, `HOTSPRING_NO_NUCLEUS=1` for standalone skip,
+  `NucleusContext` for parity calls.
+- **neuralSpring V1.32**: `PROTO_NUCLEATE_VALIDATION_CAPABILITIES` constant
+  mirroring manifest, strict proto-nucleate vs spring-deploy separation,
+  `depends_on` alignment verification.
 
 ---
 
@@ -169,13 +219,20 @@ All other gaps (§1, §3, §5–§9, §11, §12) are resolved.
 - **Audit this push**: healthSpring V53 is ready for composition audit.
   `niche.rs` carries full self-knowledge (PRIMAL_ID, NICHE_DOMAIN, FRAGMENTS,
   BOND_TYPE, TRUST_MODEL, DEPENDENCIES, CAPABILITIES, CONSUMED_CAPABILITIES,
-  COMPOSITION_EXPERIMENTS, COST_ESTIMATES, OPERATION_DEPENDENCIES).
+  COMPOSITION_EXPERIMENTS, COST_ESTIMATES, OPERATION_DEPENDENCIES,
+  PROTO_NUCLEATE_VALIDATION_CAPABILITIES, BARRACUDA_IPC_MIGRATION).
 - **Absorb composition validation pattern**: exp119–121 pattern (discover →
   call → compare → skip-on-offline) should become a reusable crate.
 - **Validate proto-nucleate alignment**: deploy graph trust_model
   (`dual_tower_enclave`) vs proto-nucleate trust_model (`btsp_enforced`).
 
 ### To barraCuda
+- **IPC parity priority**: healthSpring has 12 library calls to migrate to
+  barraCuda's 32 JSON-RPC methods. Confirm these map cleanly: `stats.mean`,
+  `stats.std_dev`, `stats.hill`, `stats.shannon_from_frequencies`,
+  `stats.simpson`, `stats.chao1_classic`, `stats.bray_curtis`,
+  `special.anderson_diagonalize`, `rng.uniform`, `health.pkpd.mm_auc`,
+  `health.microbiome.antibiotic_perturbation`, `health.biosignal.scr_rate`.
 - **TensorSession API**: Enables local shader removal (Write → Absorb → Lean).
   healthSpring has 6 fused pipeline patterns waiting.
 - **Anderson eigensolve GPU**: Gut lattice localization is a shader candidate.
@@ -184,15 +241,27 @@ All other gaps (§1, §3, §5–§9, §11, §12) are resolved.
 - **Ionic bond runtime**: `crypto.ionic_bond`, `crypto.verify_family` for
   dual-tower enforcement. Deploy graph declares it; runtime enforcement awaiting.
 - **BTSP server endpoint**: `ipc/btsp.rs` has pure-Rust client handshake ready.
+- **`crypto.hash` ownership**: healthSpring routes `crypto.hash` to BearDog
+  (not barraCuda). Confirm this is the canonical provider.
 
 ### To biomeOS
 - **Deploy graph validated**: `healthspring_niche_deploy.toml` structurally
   validated (exp118, 99 checks). Four workflow graphs ready for Neural API.
 - **ecoBin 0.9.0**: Static-PIE binary at `infra/plasmidBin/healthspring/`.
+- **Clean-machine test**: healthSpring Tier 3 harness should discover NUCLEUS
+  sockets via `$BIOMEOS_ORCHESTRATOR_SOCKET` or socket dir scan — not
+  hardcoded paths. Confirm biomeOS socket layout.
 
 ### To Squirrel / neuralSpring
 - **Inference namespace**: healthSpring routes `inference.*` to Squirrel.
   Confirm or evolve the canonical namespace.
+
+### To all springs
+- **Adopt `PROTO_NUCLEATE_VALIDATION_CAPABILITIES`**: Each spring's `niche.rs`
+  should mirror its manifest's `validation_capabilities` as a const array.
+  Enables machine-readable composition readiness checks.
+- **Adopt `BARRACUDA_IPC_MIGRATION`**: Inventory your `barracuda::` library
+  imports and their IPC targets. This is the Level 5 gap for every spring.
 
 ---
 

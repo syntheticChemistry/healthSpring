@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: April 17, 2026
-**Status**: V53 — Composition Parity (Live IPC). 93 experiments, 936+ tests. Ten composition experiments (exp112–121): in-process dispatch parity, proto-nucleate alignment, wire round-trip, deploy graph validation, plus three **live IPC** experiments (science parity, provenance trio, health probes) over Unix socket JSON-RPC. Four-layer validation: Python validates science, Rust validates Python, dispatch validates composition, **live IPC validates NUCLEUS wire path**.
+**Status**: V53 — Levels 1–4 DONE, Level 5 in progress. 93 experiments, 936+ tests. Ten composition experiments (exp112–121): in-process dispatch parity, proto-nucleate alignment, wire round-trip, deploy graph validation, plus three **live IPC** experiments (science parity, provenance trio, health probes) over Unix socket JSON-RPC. Level 5 primal proof gap: 12 barraCuda library calls must become IPC — inventoried in `niche::BARRACUDA_IPC_MIGRATION`.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a six-tier pipeline:
 
