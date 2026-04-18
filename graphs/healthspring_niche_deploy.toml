@@ -254,6 +254,12 @@ capabilities = [
     "science.simulation.ecosystem_simulate",
     # Composition health (COMPOSITION_HEALTH_STANDARD.md)
     "composition.health_health",
+    # Proto-nucleate aliases (NUCLEUS_SPRING_ALIGNMENT.md)
+    "health.pharmacology",
+    "health.genomics",
+    "health.clinical",
+    "health.de_identify",
+    "health.aggregate",
     # Provenance trio (biomeOS composition)
     "provenance.begin",
     "provenance.record",
@@ -263,10 +269,17 @@ capabilities = [
     "primal.forward",
     "primal.discover",
     "capability.list",
+    "identity.get",
+    "health.check",
+    "mcp.tools.list",
     "compute.offload",
     "compute.shader_compile",
     "data.fetch",
     "model.inference_route",
+    "inference.complete",
+    "inference.embed",
+    "inference.models",
+    "inference.route",
     # Health probes
     "health.liveness",
     "health.readiness",

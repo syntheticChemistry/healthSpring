@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: April 10, 2026
-**Status**: V49 — Composition validation audit. barraCuda v0.3.11 (CI-gated pin, rev `7f6649f`). All six GPU ops LIVE. `uncertainty::std_dev` delegated to `barracuda::stats::correlation::std_dev`. Local WGSL shaders retained for validation but all absorbed upstream. TensorSession adoption pending upstream API. Sovereign dispatch pilot (Hill-only via coralReef). Prior: V44 Cross-Spring Absorption (handoff in archive).
+**Last Updated**: April 17, 2026
+**Status**: V53 — Composition Parity (Live IPC). barraCuda v0.3.12 (workspace current). All six GPU ops LIVE. `uncertainty::std_dev` delegated to `barracuda::stats::correlation::std_dev`. Local WGSL shaders retained for fused pipeline but all absorbed upstream. TensorSession adoption pending upstream API. Sovereign dispatch pilot (Hill-only via coralReef). ecoBin 0.9.0.
 
 ---
 

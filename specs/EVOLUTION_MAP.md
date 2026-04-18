@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: April 11, 2026
-**Status**: V52 — Composition Validation. 90 experiments, 985+ tests, 84+ capabilities (62 science + 22 infra), 90 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). Typed PrimalClient wired into production, Tier 5 deploy graph validation (exp118). GPU tests on every PR. Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
+**Last Updated**: April 17, 2026
+**Status**: V53 — Composition Parity (Live IPC). 93 experiments, 936+ tests, 84+ capabilities (62 science + 22 infra), 93 provenance entries (100% coverage). barraCuda v0.3.12. Live IPC parity (exp119–121), zero `dyn` dispatch, typed errors, capability routing by domain. ecoBin 0.9.0. Four-layer validation: Python → science, Rust → baselines, dispatch → composition, **live IPC → NUCLEUS wire path**.
 
 ---
 

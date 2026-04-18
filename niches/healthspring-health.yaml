@@ -70,13 +70,17 @@ capabilities:
   - composition.health_health
   # Proto-nucleate aliases (NUCLEUS_SPRING_ALIGNMENT.md)
   - health.pharmacology
+  - health.genomics
   - health.clinical
   - health.de_identify
   - health.aggregate
   # Infrastructure
   - health.liveness
   - health.readiness
+  - health.check
+  - identity.get
   - capability.list
+  - mcp.tools.list
   - provenance.begin
   - provenance.record
   - provenance.complete
