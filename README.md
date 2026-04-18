@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 11, 2026 (V52)
+**Date:** April 17, 2026 (V53)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V52 — Composition Validation. 985+ tests, 90 experiments (84 science + 7 composition Tier 4/5), 54 Python baselines, 90 provenance entries (100% coverage). barraCuda v0.3.11 (7f6649f). Typed `PrimalClient` wired into production (resilient default), Tier 5 deploy graph validation (exp118, 99 checks), GPU tests on every PR (`barracuda-ops`), expanded `llvm-cov` scope (lib + integration). TCP JSON-RPC listener (`--port`), BTSP handshake, structured discovery, LOCAL/ROUTED capability split. ecoBin 0.8.0 at `infra/plasmidBin/`. Zero clippy warnings (pedantic+nursery). Three-layer validation: Python validates science, Rust validates Python, NUCLEUS validates composition.
+**Status:** V53 — Composition Parity (Live IPC). 936+ tests, 93 experiments (84 science + 10 composition Tier 3–4), 54 Python baselines, 93 provenance entries (100% coverage). barraCuda v0.3.12 (workspace current). Zero `dyn` dispatch (enum `ValidationSink`), typed errors (`ServerError`, `TrioError`), capability routing by domain (not primal identity). Three new live IPC experiments (exp119–121): science parity, provenance trio, health probes — all over Unix socket JSON-RPC. `niche.rs` composition experiment registry. ecoBin 0.9.0 (3.2 MB static-PIE x86_64-musl) at `infra/plasmidBin/`. Zero clippy warnings (pedantic+nursery). Four-layer validation: Python validates science, Rust validates Python, in-process dispatch validates composition, **live IPC validates NUCLEUS wire path**.
 
 ---
 
@@ -33,15 +33,15 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V52** (Composition Validation) |
-| **Total tests** | **985+** (845 lib + proptest + IPC fuzz + 37 integration + 90 experiment bins + 9 doc-tests) |
-| Experiments complete | 90 (84 science Tracks 1–9 + 7 composition Tier 4/5) |
-| Composition validation (Tier 4/5) | 7 experiments (exp112–118), 172+ checks — IPC dispatch + proto-nucleate + wire round-trip + deploy graph validation |
+| Version | **V53** (Composition Parity — Live IPC) |
+| **Total tests** | **936+** (852 lib + proptest + IPC fuzz + 33 forge + 51 toadstool + 93 experiment bins) |
+| Experiments complete | 93 (84 science Tracks 1–9 + 10 composition Tier 3–4) |
+| Composition validation (Tier 3–4) | 10 experiments (exp112–121) — in-process dispatch parity, proto-nucleate, wire round-trip, deploy graph, **live IPC science parity**, **live provenance trio**, **live health probes** |
 | JSON-RPC capabilities | 84+ (62 science + 22 infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **54** with structured provenance registry (90 total entries, 100% experiment coverage) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
-| ecoBin | Static-PIE x86_64-musl, 2.5 MB, harvested to `infra/plasmidBin/healthspring/` |
+| ecoBin | Static-PIE x86_64-musl, 3.2 MB, harvested to `infra/plasmidBin/healthspring/` (v0.9.0) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity |
 | CPU parity | Rust 84× faster than Python across V16 primitives |
 | biomeOS niche | **Live** — `UniBin`-compliant primal binary (`serve`/`server`/`version`/`capabilities`), `--port` TCP, domain symlink, SIGTERM/SIGINT |
@@ -54,20 +54,21 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 ---
 
-## V52 Composition Validation (from V51)
+## V53 Composition Parity — Live IPC (from V52)
 
-V52 completes the shift from Rust-validates-Python to **NUCLEUS-validates-composition**. Three-layer validation: Python baselines validated Rust science; Rust validated Python baselines; now Tier 5 experiments validate that the NUCLEUS composition patterns themselves are internally consistent.
+V53 completes the composition evolution spiral: Python baselines validated Rust science; Rust validated Python; in-process dispatch validated the composition layer; now **live IPC experiments validate the NUCLEUS wire path** — Unix socket JSON-RPC to a running primal server, comparing results against direct Rust calls.
 
 | Change | Impact |
 |--------|--------|
-| **Typed IPC clients wired** | `PrimalClient.call()` uses `resilient_send` (retry + backoff). `handle_primal_forward` migrated from raw RPC to typed client. Gap #11 resolved. |
-| **Tier 5 composition validation** | exp118 (99 checks): deploy graph TOML validation, fragment metadata alignment (`tower_atomic`, `nest_atomic`), bonding policy (ionic, dual-tower), capability surface coverage, Squirrel optional node. Gap #12 resolved. |
-| **GPU tests on every PR** | `barracuda-ops` feature tests on every PR; full GPU weekly. |
-| **Expanded coverage scope** | `cargo llvm-cov` expanded from `--lib` to full workspace (lib + integration tests). |
-| **Bench CI** | New `bench` job compiles benchmarks on every PR (regression check). |
-| **tolerances.py policy** | Documented as intentional subset of `tolerances.rs` (not a full mirror). |
-| **Zero clippy warnings restored** | Fixed `match_wildcard_for_single_variants` in sovereign dispatch. |
-| **985+ tests** | Up from 976 (V51). 90 experiments (84 science + 7 composition). |
+| **Live IPC parity (exp119)** | Science methods called via Unix socket JSON-RPC produce identical results to direct Rust calls. Graceful skip when primal offline. |
+| **Live provenance trio (exp120)** | Provenance session lifecycle (create → record → complete → Merkle root) validated over IPC. |
+| **Live health probes (exp121)** | `health.liveness`, `health.readiness`, `capability.list`, `identity.get` exercised over real wire path. |
+| **Zero `dyn` dispatch** | `Box<dyn ValidationSink>` replaced with `ValidationSink` enum dispatch — stadial zero-dyn compliance. |
+| **Typed errors** | `ServerError` and `TrioError` enums replace `Result<_, String>` in server and provenance IPC paths. |
+| **Capability routing by domain** | `ROUTED_CAPABILITIES` maps to `by_capability` domains, not hardcoded primal names. |
+| **`niche.rs` composition registry** | `COMPOSITION_EXPERIMENTS` constant maps all 10 composition experiments to validation tiers. |
+| **ecoBin 0.9.0** | 3.2 MB static-PIE x86_64-musl, harvested to `infra/plasmidBin/`. barraCuda v0.3.12. |
+| **936+ tests** | 93 experiments (84 science + 10 composition). Zero clippy, zero `dyn`, zero `async-trait`. |
 
 ---
 

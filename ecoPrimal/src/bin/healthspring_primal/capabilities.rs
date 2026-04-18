@@ -211,16 +211,22 @@ pub const LOCAL_CAPABILITIES: &[&str] = &[
     "mcp.tools.list",
 ];
 
-/// Capabilities routed to canonical providers via IPC (not served locally).
+/// Capabilities routed to external providers via IPC (not served locally).
+///
+/// Each entry maps a capability method to the **capability domain** used for
+/// `by_capability` discovery at runtime — never a hardcoded primal identity.
+/// The discovery layer resolves the domain to whichever primal currently
+/// advertises it (e.g., `"compute"` resolves to toadStool today, but could
+/// resolve to any primal that registers compute capabilities in the future).
 pub const ROUTED_CAPABILITIES: &[(&str, &str)] = &[
-    ("compute.offload", "toadstool"),
-    ("compute.shader_compile", "coralreef"),
-    ("data.fetch", "nestgate"),
-    ("model.inference_route", "squirrel"),
-    ("inference.complete", "squirrel"),
-    ("inference.embed", "squirrel"),
-    ("inference.models", "squirrel"),
-    ("inference.route", "squirrel"),
+    ("compute.offload", "compute"),
+    ("compute.shader_compile", "shader"),
+    ("data.fetch", "storage"),
+    ("model.inference_route", "inference"),
+    ("inference.complete", "inference"),
+    ("inference.embed", "inference"),
+    ("inference.models", "inference"),
+    ("inference.route", "inference"),
 ];
 
 /// Capability listing per Capability Wire Standard (April 2026).
@@ -296,11 +302,11 @@ fn provided_capabilities() -> serde_json::Value {
 
     let routed: Vec<serde_json::Value> = ROUTED_CAPABILITIES
         .iter()
-        .map(|(method, provider)| {
+        .map(|(method, capability_domain)| {
             serde_json::json!({
                 "method": method,
                 "served_locally": false,
-                "canonical_provider": provider,
+                "by_capability": capability_domain,
             })
         })
         .collect();

@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: April 11, 2026
-**Status**: V52 — Composition Validation. 90 experiments, 985+ tests. Seven Tier 4/5 composition experiments (exp112–118): IPC dispatch parity, proto-nucleate alias resolution, wire protocol round-trip, health probe routing, capability surface completeness, deploy graph vs proto-nucleate structural alignment. Three-layer validation: Python validates science, Rust validates Python, NUCLEUS validates composition.
+**Last Updated**: April 17, 2026
+**Status**: V53 — Composition Parity (Live IPC). 93 experiments, 936+ tests. Ten composition experiments (exp112–121): in-process dispatch parity, proto-nucleate alignment, wire round-trip, deploy graph validation, plus three **live IPC** experiments (science parity, provenance trio, health probes) over Unix socket JSON-RPC. Four-layer validation: Python validates science, Rust validates Python, dispatch validates composition, **live IPC validates NUCLEUS wire path**.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a six-tier pipeline:
 
@@ -12,7 +12,7 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 - **Tier 4**: Composition validation (IPC dispatch vs direct Rust — the primal composition surface)
 - **Tier 5**: Deploy graph validation (TOML graph ↔ proto-nucleate ↔ capability surface consistency)
 
-**All 90 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
+**All 93 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
 
 ---
 
@@ -210,11 +210,19 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 116 | `exp116_composition_provenance` | Provenance session lifecycle (registry, data sessions, trio probe) | 14 |
 | 117 | `exp117_composition_ipc_roundtrip` | IPC wire protocol round-trip + proto-nucleate aliases + capability surface | 71 |
 
-### Tier 5: Deploy Graph Validation (Exp118) — V52
+### Tier 3: Deploy Graph Validation (Exp118) — V52
 
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
 | 118 | `exp118_composition_deploy_graph_validation` | Deploy graph ↔ proto-nucleate structural alignment (fragments, nodes, bonding, capabilities, Squirrel optionality) | 99 |
+
+### Tier 4: Live IPC Composition Parity (Exp119-121) — V53
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 119 | `exp119_composition_live_parity` | Live IPC science dispatch vs direct Rust (Hill, 1-comp PK, AUC, Shannon, Anderson) | 6+ |
+| 120 | `exp120_composition_live_provenance` | Live provenance trio round-trip (session lifecycle, Merkle, commit, braid) | 5+ |
+| 121 | `exp121_composition_live_health` | Live NUCLEUS health probes (liveness, readiness, capability.list, identity.get, niche dispatch) | 6+ |
 
 ---
 
@@ -255,8 +263,14 @@ cargo run --release --bin exp114_composition_health_triad
 cargo run --release --bin exp115_composition_proto_nucleate
 cargo run --release --bin exp116_composition_provenance
 
-# Tier 5: Deploy graph validation
+# Tier 3: Deploy graph validation
 cargo run --release --bin exp118_composition_deploy_graph_validation  # 99 checks
+
+# Tier 4: Live IPC composition parity (requires running healthspring_primal)
+cargo run --release --bin healthspring_primal -- serve &  # start primal server
+cargo run --release --bin exp119_composition_live_parity              # science parity
+cargo run --release --bin exp120_composition_live_provenance          # provenance trio
+cargo run --release --bin exp121_composition_live_health              # health probes
 ```
 
 ---

@@ -20,6 +20,24 @@ use std::time::Instant;
 use healthspring_barracuda::ipc::socket;
 use tracing::{error, info};
 
+/// Server lifecycle errors.
+#[derive(Debug)]
+pub enum ServerError {
+    /// Failed to create socket directory, remove stale socket, or bind.
+    Io(std::io::Error),
+    /// Failed to configure socket options.
+    SocketConfig(std::io::Error),
+}
+
+impl std::fmt::Display for ServerError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Io(e) => write!(f, "server I/O error: {e}"),
+            Self::SocketConfig(e) => write!(f, "socket configuration error: {e}"),
+        }
+    }
+}
+
 /// Creates a domain symlink (`health.sock` -> actual socket) for capability
 /// discovery per `PRIMAL_IPC_PROTOCOL.md` v3.1.
 fn create_domain_symlink(socket_path: &std::path::Path) -> Option<std::path::PathBuf> {
@@ -51,17 +69,15 @@ fn create_domain_symlink(socket_path: &std::path::Path) -> Option<std::path::Pat
 /// Starts the JSON-RPC server: binds to the Unix socket (and optionally TCP),
 /// registers with biomeOS, spawns heartbeat, and accepts connections until
 /// shutdown.
-pub fn cmd_serve(tcp_port: Option<u16>) -> Result<(), String> {
+pub fn cmd_serve(tcp_port: Option<u16>) -> Result<(), ServerError> {
     let socket_path = socket::resolve_bind_path();
 
     if let Some(parent) = socket_path.parent() {
-        std::fs::create_dir_all(parent)
-            .map_err(|e| format!("Cannot create socket directory {}: {e}", parent.display()))?;
+        std::fs::create_dir_all(parent).map_err(ServerError::Io)?;
     }
 
     if socket_path.exists() {
-        std::fs::remove_file(&socket_path)
-            .map_err(|e| format!("Cannot remove stale socket {}: {e}", socket_path.display()))?;
+        std::fs::remove_file(&socket_path).map_err(ServerError::Io)?;
     }
 
     let state = Arc::new(routing::PrimalState {
@@ -69,12 +85,11 @@ pub fn cmd_serve(tcp_port: Option<u16>) -> Result<(), String> {
         requests_served: AtomicU64::new(0),
     });
 
-    let listener = std::os::unix::net::UnixListener::bind(&socket_path)
-        .map_err(|e| format!("Cannot bind to {}: {e}", socket_path.display()))?;
+    let listener = std::os::unix::net::UnixListener::bind(&socket_path).map_err(ServerError::Io)?;
 
     listener
         .set_nonblocking(false)
-        .map_err(|e| format!("Cannot set listener options: {e}"))?;
+        .map_err(ServerError::SocketConfig)?;
 
     let domain_symlink = create_domain_symlink(&socket_path);
 

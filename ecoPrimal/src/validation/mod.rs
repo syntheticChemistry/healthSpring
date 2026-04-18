@@ -18,4 +18,4 @@ pub use check::{Check, ToleranceMode};
 pub use harness::ValidationHarness;
 pub use metrics::{LengthMismatch, index_of_agreement, len_f64, mae, nse, r_squared, rmse};
 pub use or_exit::OrExit;
-pub use sink::{CollectingSink, SilentSink, TracingSink, ValidationSink};
+pub use sink::{CollectingSink, ValidationSink};

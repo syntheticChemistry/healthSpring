@@ -101,6 +101,9 @@ members = [
     "experiments/exp116_composition_provenance",
     "experiments/exp117_composition_ipc_roundtrip",
     "experiments/exp118_composition_deploy_graph_validation",
+    "experiments/exp119_composition_live_parity",
+    "experiments/exp120_composition_live_provenance",
+    "experiments/exp121_composition_live_health",
 ]
 
 [workspace.package]

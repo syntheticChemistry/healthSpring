@@ -4,6 +4,38 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V53 — 2026-04-17 — Composition Parity (Live IPC)
+
+### Added
+- **Tier 4 live IPC experiments**: Three new composition experiments that exercise the
+  full Unix socket JSON-RPC wire path against a live healthSpring primal server:
+  - `exp119_composition_live_parity` — science dispatch via IPC vs direct Rust
+    (Hill, compartment PK, AUC, Shannon, Anderson). Graceful skip when primal offline.
+  - `exp120_composition_live_provenance` — provenance trio round-trip over IPC
+    (session lifecycle, Merkle root, commit, braid).
+  - `exp121_composition_live_health` — NUCLEUS health probes over IPC
+    (liveness, readiness, capability.list, identity.get, niche science dispatch).
+- `niche::COMPOSITION_EXPERIMENTS` — centralized registry mapping all 10 composition
+  experiments to their validation tier (tier3/tier4).
+- `#![forbid(unsafe_code)]` applied directly to `ecoPrimal/src/lib.rs` crate root.
+- Provenance records for exp119–121 in `records_infra.rs` (track: composition).
+
+### Changed
+- **`ValidationSink` refactored**: `Box<dyn ValidationSink>` replaced with enum dispatch
+  (`ValidationSink::{Tracing, Silent, Collecting}`) — stadial zero-dyn compliance.
+- **`ServerError` typed enum**: `cmd_serve` returns `ServerError` instead of `String`.
+- **`TrioError` typed enum**: `capability_call`/`resilient_capability_call` in provenance
+  return `TrioError` instead of `String`.
+- **Capability routing by domain**: `ROUTED_CAPABILITIES` maps to capability domains
+  (`compute`, `shader`, `storage`, `inference`) instead of hardcoded primal names.
+- CWRES bound in exp075 sourced from `tolerances::CWRES_MEAN` (was hardcoded `3.0`).
+- barraCuda version comment updated to v0.3.12 (workspace current).
+- ecoBin 0.9.0 harvested to `infra/plasmidBin/healthspring/` (3.2 MB static-PIE x86_64-musl).
+
+### Fixed
+- Removed `TracingSink`, `SilentSink` type exports (replaced by `ValidationSink` enum).
+- Redundant `CollectingSink` import in harness tests.
+
 ## V52 — 2026-04-11 — Composition Validation
 
 ### Added

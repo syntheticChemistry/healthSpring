@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: April 11, 2026
-**Status**: V52 — Composition Validation. 985+ tests, 90 experiments (84 science + 7 composition Tier 4/5), 84+ JSON-RPC capabilities, 54 Python baselines, 90 provenance entries. Typed PrimalClient wired into production, Tier 5 deploy graph validation (exp118, 99 checks), GPU tests on every PR. ecoBin 0.8.0. barraCuda v0.3.11. Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
+**Last Updated**: April 17, 2026
+**Status**: V53 — Composition Parity (Live IPC). 936+ tests, 93 experiments (84 science + 10 composition Tier 3–4), 84+ JSON-RPC capabilities, 54 Python baselines, 93 provenance entries. Live IPC parity (exp119–121), zero `dyn` dispatch, typed errors, capability routing by domain. ecoBin 0.9.0. barraCuda v0.3.12. Four-layer validation: Python → science, Rust → baselines, dispatch → composition, **live IPC → NUCLEUS wire path**.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -11,13 +11,13 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 985+ |
+| Rust tests (workspace) | 936+ |
 | Python control checks | 54 baselines, 113/113 cross-validation (all 9 tracks) |
-| Experiments | 90 (84 science + 7 composition Tier 4/5) |
+| Experiments | 93 (84 science + 10 composition Tier 3–4) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
-| Composition validation (Tier 4/5) | 7 experiments (exp112–118), 172+ checks — IPC dispatch + proto-nucleate + wire round-trip + deploy graph validation |
-| ecoBin | Static-PIE x86_64-musl, 2.5 MB, harvested to plasmidBin |
+| Composition validation (Tier 3–4) | 10 experiments (exp112–121) — dispatch parity + proto-nucleate + wire round-trip + deploy graph + **live IPC science parity** + **live provenance trio** + **live health probes** |
+| ecoBin | Static-PIE x86_64-musl, 3.2 MB, harvested to plasmidBin (v0.9.0) |
 | toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |
 | CPU parity | Rust 84× faster than Python (Exp084, 33+17 checks) |
 | NLME population PK | FOCE + SAEM estimation, NCA, CWRES/VPC/GOF diagnostics |

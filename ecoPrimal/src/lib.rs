@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//
-// Lint policy: workspace-level [lints] in root Cargo.toml.
-// forbid(unsafe_code), deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used}).
+#![forbid(unsafe_code)]
 
 //! healthSpring barraCuda — health science compute library.
 //!
@@ -52,6 +50,7 @@ pub mod gpu;
 pub mod ipc;
 pub mod microbiome;
 pub mod microbiome_transfer;
+pub mod niche;
 pub mod pkpd;
 pub mod primal_names;
 pub mod provenance;

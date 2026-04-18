@@ -254,6 +254,52 @@ constants. Added to CI composition job.
 
 ---
 
+## 13. Live IPC Composition Parity
+
+**Gap**: In-process dispatch parity (exp112–118) validates the routing layer
+but not the actual wire path: socket connect, JSON serialize, transport,
+JSON deserialize, response extraction. Live IPC parity is required to prove
+the NUCLEUS wire path is faithful.
+
+**Status**: **Fixed in V53** — Three live IPC experiments added:
+- exp119: Science dispatch parity over Unix socket (Hill, PK, AUC, Shannon, Anderson).
+- exp120: Provenance trio round-trip over IPC (session lifecycle, Merkle/commit/braid).
+- exp121: NUCLEUS health probes over IPC (liveness, readiness, capability.list, identity).
+All skip gracefully when primal is offline.
+
+---
+
+## 14. `dyn` Dispatch in Application Code
+
+**Gap**: `Box<dyn ValidationSink>` violated the stadial zero-dyn invariant.
+
+**Status**: **Fixed in V53** — Replaced with `ValidationSink` enum dispatch
+(`Tracing`, `Silent`, `Collecting`). Zero `dyn` in application code.
+
+---
+
+## 15. `Result<_, String>` Error Types
+
+**Gap**: `cmd_serve` and provenance IPC functions returned `Result<_, String>`,
+providing opaque error context and preventing match-based error handling.
+
+**Status**: **Fixed in V53** — `ServerError` enum for server lifecycle,
+`TrioError` enum for provenance IPC. Both implement `Display` and are
+structurally matchable.
+
+---
+
+## 16. Hardcoded Primal Names in Capability Routing
+
+**Gap**: `ROUTED_CAPABILITIES` mapped capability methods to primal names
+(`"toadstool"`, `"squirrel"`, `"nestgate"`) instead of capability domains.
+
+**Status**: **Fixed in V53** — Routes to capability domains (`"compute"`,
+`"shader"`, `"storage"`, `"inference"`). Discovery resolves the domain to
+whichever primal currently advertises it.
+
+---
+
 ## Summary Matrix
 
 | # | Gap | Blocked On | healthSpring Action | primalSpring Action |
@@ -270,3 +316,7 @@ constants. Added to CI composition job.
 | 10 | BTSP handshake | BearDog BTSP server | **V51**: client module ready | Expose BTSP endpoint |
 | 11 | Typed IPC clients | — | **Fixed V52**: PrimalClient wired | — |
 | 12 | Deploy graph validation | — | **Fixed V52**: exp118 added | — |
+| 13 | Live IPC parity | — | **Fixed V53**: exp119–121 | Absorb pattern |
+| 14 | Zero `dyn` dispatch | — | **Fixed V53**: enum `ValidationSink` | — |
+| 15 | Typed error returns | — | **Fixed V53**: `ServerError`, `TrioError` | — |
+| 16 | Capability routing by domain | — | **Fixed V53**: `by_capability` domains | — |

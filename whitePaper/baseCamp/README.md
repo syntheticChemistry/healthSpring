@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** April 11, 2026
-**Status:** V52 — Composition Validation. Three-layer validation: Python validates science, Rust validates Python, NUCLEUS validates composition. 985+ tests, 90 experiments (84 science + 7 composition Tier 4/5), 54 Python baselines, 90 provenance entries (100% coverage). Typed `PrimalClient` wired into production (resilient default), Tier 5 deploy graph validation (exp118, 99 checks), GPU tests on every PR. TCP + UDS listeners, BTSP handshake, structured discovery. ecoBin 0.8.0 static-PIE. barraCuda v0.3.11. Zero clippy, zero unsafe.
+**Last Updated:** April 17, 2026
+**Status:** V53 — Composition Parity (Live IPC). Four-layer validation: Python validates science, Rust validates Python, in-process dispatch validates composition, **live IPC validates NUCLEUS wire path**. 936+ tests, 93 experiments (84 science + 10 composition Tier 3–4), 54 Python baselines, 93 provenance entries (100% coverage). Three live IPC experiments (exp119–121): science parity, provenance trio, health probes over Unix socket JSON-RPC. Zero `dyn` dispatch, typed errors, capability routing by domain. ecoBin 0.9.0 static-PIE. barraCuda v0.3.12. Zero clippy, zero unsafe.
 
 ---
 
@@ -104,7 +104,44 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **9** | 9 |
 | **Criterion benchmarks** | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **976** (tests) | **2,900+** |
+| **Total** | **688** | **287+** (Tier 0) | **936** (tests) | **2,900+** |
+
+---
+
+## Composition Validation — Python → Rust → Primal
+
+The validation ladder has four layers. Each layer uses the previous as its
+validation target:
+
+```
+Layer 0: Python control    → peer-reviewed science (DOI-cited baselines)
+Layer 1: Rust CPU           → faithful port (f64-canonical, tolerance-documented)
+Layer 2: In-process dispatch→ JSON-RPC method routing produces identical results
+Layer 3: Live IPC           → Unix socket wire path to running primal server
+                              produces identical results to direct Rust
+```
+
+**Python was the validation target for Rust. Now Rust and Python are both
+validation targets for the primal composition.** The science doesn't change —
+we prove the NUCLEUS composition patterns faithfully reproduce it at every layer.
+
+| Tier | Experiments | What it proves |
+|------|-------------|----------------|
+| Tier 3 (dispatch) | exp112–118 | `dispatch_science(method, params)` = direct Rust call |
+| Tier 4 (live IPC) | exp119–121 | `PrimalClient.call(method, params)` over Unix socket = direct Rust call |
+
+The Tier 4 experiments (V53) complete the composition evolution spiral:
+
+- **exp119** — Hill dose-response, compartmental PK, AUC, Shannon diversity,
+  Anderson eigenvalues: IPC result matches local Rust within `DETERMINISM` tolerance.
+- **exp120** — Provenance trio session lifecycle: create → record → complete,
+  Merkle root integrity, commit, braid attribution.
+- **exp121** — NUCLEUS health contract: `health.liveness`, `health.readiness`,
+  `capability.list` (all niche capabilities advertised), `identity.get`, niche
+  science dispatch.
+
+All three skip gracefully when the primal server is offline — no false failures
+in CI or developer workstations.
 
 ---
 

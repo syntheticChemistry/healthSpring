@@ -197,7 +197,10 @@ fn validate_diagnostics(h: &mut ValidationHarness) {
     println!("  CWRES mean: {:.4}", summary.mean);
     println!("  CWRES std:  {:.4}", summary.std_dev);
 
-    h.check_bool("CWRES mean within [-3, 3]", summary.mean.abs() < 3.0);
+    h.check_bool(
+        "CWRES mean within registry bound",
+        summary.mean.abs() < healthspring_barracuda::tolerances::CWRES_MEAN,
+    );
 
     let gof = compute_gof(oral_one_compartment_model, &subjects, &result);
     println!("  GOF individual R²: {:.4}", gof.r_squared_individual);

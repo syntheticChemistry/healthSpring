@@ -8,7 +8,7 @@ use tracing::info;
 use crate::tolerances;
 
 use super::check::{Check, ToleranceMode};
-use super::sink::{SilentSink, TracingSink, ValidationSink};
+use super::sink::ValidationSink;
 
 static TRACING_INIT: Once = Once::new();
 
@@ -40,7 +40,7 @@ fn init_validation_tracing() {
 pub struct ValidationHarness {
     name: String,
     checks: Vec<Check>,
-    sink: Box<dyn ValidationSink>,
+    sink: ValidationSink,
 }
 
 impl ValidationHarness {
@@ -52,7 +52,7 @@ impl ValidationHarness {
         Self {
             name: name.into(),
             checks: Vec::new(),
-            sink: Box::new(TracingSink),
+            sink: ValidationSink::Tracing,
         }
     }
 
@@ -62,13 +62,13 @@ impl ValidationHarness {
         Self {
             name: name.into(),
             checks: Vec::new(),
-            sink: Box::new(SilentSink),
+            sink: ValidationSink::Silent,
         }
     }
 
     /// Create a harness with a custom sink.
     #[must_use]
-    pub fn with_sink(name: &str, sink: Box<dyn ValidationSink>) -> Self {
+    pub fn with_sink(name: &str, sink: ValidationSink) -> Self {
         Self {
             name: name.into(),
             checks: Vec::new(),
@@ -232,7 +232,7 @@ impl ValidationHarness {
 
 #[cfg(test)]
 mod tests {
-    use super::super::CollectingSink;
+    use super::super::sink::{CollectingSink, ValidationSink};
     use super::ValidationHarness;
 
     #[test]
@@ -313,7 +313,7 @@ mod tests {
 
     #[test]
     fn collecting_sink() {
-        let sink = Box::new(CollectingSink::default());
+        let sink = ValidationSink::Collecting(CollectingSink::default());
         let mut h = ValidationHarness::with_sink("test", sink);
         h.check_abs("check1", 1.0, 1.0, 1e-10);
         assert!(h.all_passed());

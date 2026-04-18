@@ -124,6 +124,33 @@ fn record_success() {
     LAST_FAILURE_EPOCH_MS.store(0, Ordering::Relaxed);
 }
 
+/// Errors from provenance trio IPC calls.
+#[derive(Debug)]
+enum TrioError {
+    /// Circuit breaker is open — trio recently unavailable.
+    CircuitOpen,
+    /// Transport I/O failure.
+    Io(std::io::Error),
+    /// JSON serialization/deserialization failure.
+    Json(serde_json::Error),
+    /// JSON-RPC error response from the peer.
+    Rpc { code: i64, message: String },
+    /// Peer returned no `result` field.
+    EmptyResult,
+}
+
+impl std::fmt::Display for TrioError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::CircuitOpen => write!(f, "circuit open — trio recently unavailable"),
+            Self::Io(e) => write!(f, "trio I/O: {e}"),
+            Self::Json(e) => write!(f, "trio JSON: {e}"),
+            Self::Rpc { code, message } => write!(f, "trio RPC error {code}: {message}"),
+            Self::EmptyResult => write!(f, "no result in trio response"),
+        }
+    }
+}
+
 /// `capability_call` with circuit breaker + exponential backoff retry.
 ///
 /// Retries transient I/O failures up to `MAX_RETRIES` times. If the
@@ -134,12 +161,12 @@ fn resilient_capability_call(
     capability: &str,
     operation: &str,
     args: &serde_json::Value,
-) -> Result<serde_json::Value, String> {
+) -> Result<serde_json::Value, TrioError> {
     if circuit_is_open() {
-        return Err("circuit open — trio recently unavailable".into());
+        return Err(TrioError::CircuitOpen);
     }
 
-    let mut last_err = String::new();
+    let mut last_err = TrioError::EmptyResult;
     for attempt in 0..=MAX_RETRIES {
         match capability_call(socket_path, capability, operation, args) {
             Ok(v) => {
@@ -165,7 +192,7 @@ fn capability_call(
     capability: &str,
     operation: &str,
     args: &serde_json::Value,
-) -> Result<serde_json::Value, String> {
+) -> Result<serde_json::Value, TrioError> {
     let request = serde_json::json!({
         "jsonrpc": "2.0",
         "method": "capability.call",
@@ -177,39 +204,32 @@ fn capability_call(
         "id": 1,
     });
 
-    let mut stream = std::os::unix::net::UnixStream::connect(socket_path)
-        .map_err(|e| format!("connect: {e}"))?;
+    let mut stream = std::os::unix::net::UnixStream::connect(socket_path).map_err(TrioError::Io)?;
     stream.set_read_timeout(Some(Duration::from_secs(10))).ok();
     stream.set_write_timeout(Some(Duration::from_secs(10))).ok();
 
-    let payload = serde_json::to_string(&request).map_err(|e| format!("serialize: {e}"))?;
+    let payload = serde_json::to_string(&request).map_err(TrioError::Json)?;
     stream
         .write_all(payload.as_bytes())
-        .map_err(|e| format!("write: {e}"))?;
-    stream
-        .write_all(b"\n")
-        .map_err(|e| format!("write newline: {e}"))?;
-    stream.flush().map_err(|e| format!("flush: {e}"))?;
+        .map_err(TrioError::Io)?;
+    stream.write_all(b"\n").map_err(TrioError::Io)?;
+    stream.flush().map_err(TrioError::Io)?;
     stream
         .shutdown(std::net::Shutdown::Write)
-        .map_err(|e| format!("shutdown: {e}"))?;
+        .map_err(TrioError::Io)?;
 
     let mut reader = BufReader::new(stream);
     let mut line = String::new();
-    reader
-        .read_line(&mut line)
-        .map_err(|e| format!("read: {e}"))?;
+    reader.read_line(&mut line).map_err(TrioError::Io)?;
 
-    let parsed: serde_json::Value =
-        serde_json::from_str(line.trim()).map_err(|e| format!("parse: {e}"))?;
+    let parsed: serde_json::Value = serde_json::from_str(line.trim()).map_err(TrioError::Json)?;
 
     if let Some(err) = parsed.get("error") {
         let (code, message) = crate::ipc::rpc::extract_rpc_error(err);
-        return Err(format!("rpc error {code}: {message}"));
+        return Err(TrioError::Rpc { code, message });
     }
 
-    crate::ipc::rpc::extract_rpc_result_owned(&parsed)
-        .ok_or_else(|| "no result in response".to_string())
+    crate::ipc::rpc::extract_rpc_result_owned(&parsed).ok_or(TrioError::EmptyResult)
 }
 
 fn unavailable_result(id: &str) -> ProvenanceResult {
