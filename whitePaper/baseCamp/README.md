@@ -118,7 +118,7 @@ Level 1: Python baseline        → peer-reviewed science (DOI-cited baselines) 
 Level 2: Rust validation        → faithful port, spring binary (the "Rust proof")    DONE
 Level 3: barraCuda CPU          → same math via primal WGSL shaders (CPU fallback)   DONE
 Level 4: barraCuda GPU          → sovereign shader execution, hardware validated     DONE
-Level 5: Primal composition     → science via NUCLEUS primals over IPC               IN PROGRESS
+Level 5: guideStone             → self-validating binary (bare + NUCLEUS IPC)       DONE (Level 2)
 Level 6: NUCLEUS deployment     → plasmidBin ecobins on clean machine                READY
 ```
 
@@ -126,11 +126,19 @@ Level 6: NUCLEUS deployment     → plasmidBin ecobins on clean machine         
 validation targets for the primal composition.** The science doesn't change —
 we prove the NUCLEUS composition patterns faithfully reproduce it at every layer.
 
-The Level 5 gap: healthSpring currently links barraCuda as a library dependency
-and calls 12 functions in-process. For the primal proof, these must route
-through barraCuda's 32 JSON-RPC methods over UDS. The IPC surface already
-exists in the barraCuda ecobin — the gap is in healthSpring's wiring.
-`niche::BARRACUDA_IPC_MIGRATION` inventories all 12 call sites.
+**V54 guideStone**: The `healthspring_guidestone` binary validates bare
+properties 1–5 (Deterministic, Traceable, Env-Agnostic, Tolerance-Documented,
+Self-Verifying) without requiring NUCLEUS. When NUCLEUS is deployed, it
+additionally validates IPC parity via `primalspring::composition` for generic
+barraCuda math (`stats.mean`, `stats.std_dev`, `stats.variance`,
+`stats.correlation`) and probes 10 manifest capabilities.
+
+**Key reframe (V54)**: The 9 domain-specific methods in `math_dispatch` (Hill,
+Shannon, Simpson, Chao1, Bray-Curtis, Anderson, MM-AUC, antibiotic perturbation,
+SCR rate) are LOCAL compositions of barraCuda primitives — they belong to
+healthSpring, not to barraCuda's 32 generic IPC methods. Only `stats.mean` and
+`stats.std_dev` are generic IPC candidates. The previous "9 pending wire
+handlers" framing is withdrawn.
 
 | Tier | Experiments | What it proves |
 |------|-------------|----------------|

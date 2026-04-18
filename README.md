@@ -33,10 +33,10 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V53** (Composition Parity — Level 5 Primal Proof) |
+| Version | **V54** (guideStone Level 2 — properties documented, `healthspring_guidestone` binary) |
 | **Total tests** | **948+** (864 lib + proptest + IPC fuzz + 33 forge + 51 toadstool + 94 experiment bins) |
 | Experiments complete | 94 (84 science Tracks 1–9 + 11 composition Tier 3–5) |
-| Composition validation (Tier 3–5) | 11 experiments (exp112–122) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, **Level 5 barraCuda IPC parity** |
+| Composition validation (Tier 3–5) | 11 experiments (exp112–122) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity. `healthspring_guidestone` supersedes exp122 as guideStone artifact. |
 | JSON-RPC capabilities | 84+ (62 science + 22 infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **54** with structured provenance registry (90 total entries, 100% experiment coverage) |
@@ -51,6 +51,20 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | TODO/FIXME in production | **0** |
 | Clippy | **0 warnings** (workspace `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V54 guideStone Level 2 (from V53)
+
+V54 introduces the **guideStone** — a self-validating binary that certifies five properties (Deterministic Output, Reference-Traceable, Self-Verifying, Environment-Agnostic, Tolerance-Documented) per the `GUIDESTONE_COMPOSITION_STANDARD` v1.0.0 from primalSpring. The guideStone supersedes exp122 as the Level 5 artifact: instead of an experiment binary, a standalone `healthspring_guidestone` validates bare properties without NUCLEUS + IPC parity when NUCLEUS is deployed.
+
+| Change | Impact |
+|--------|--------|
+| **`healthspring_guidestone` binary** | Self-validating NUCLEUS node. Bare properties 1–5 validated locally. NUCLEUS IPC parity via `primalspring::composition` for `stats.mean`, `stats.std_dev`, `stats.variance`, `stats.correlation` + 10 manifest capabilities. |
+| **`guidestone` Cargo feature** | Enables `primalspring` path dep + guidestone binary. Default build unchanged. |
+| **`math_dispatch` reframed** | Now a "validation window" — 9 domain-specific methods (Hill, Shannon, etc.) are LOCAL compositions of barraCuda primitives, not missing wire handlers. Only `stats.mean` + `stats.std_dev` are generic IPC. |
+| **`BARRACUDA_IPC_MIGRATION` corrected** | "9 pending wire handlers" → "9 domain compositions (local)". barraCuda's 32 IPC methods are generic math; domain functions belong to the spring. |
+| **`niche.rs` guideStone metadata** | `GUIDESTONE_READINESS` = 2, `GUIDESTONE_BINARY`, `GUIDESTONE_PROPERTIES` (P1 ✓, P2 ✓, P3 ✗ CHECKSUMS, P4 ✓, P5 ✓). |
 
 ---
 
@@ -69,11 +83,9 @@ V53 completes the composition evolution spiral: Python baselines validated Rust 
 | **`niche.rs` composition registry** | `COMPOSITION_EXPERIMENTS` constant maps all 11 composition experiments to validation tiers (Tier 3–5). |
 | **ecoBin 0.9.0** | 3.2 MB static-PIE x86_64-musl, harvested to `infra/plasmidBin/`. barraCuda v0.3.12. |
 | **948+ tests** | 94 experiments (84 science + 11 composition Tier 3–5). Zero clippy, zero `dyn`, zero `async-trait`. |
-| **`PROTO_NUCLEATE_VALIDATION_CAPABILITIES`** | 10 manifest-mirrored IPC methods (storage, inference, dag, crypto, braid). Level 5 readiness. |
-| **`BARRACUDA_IPC_MIGRATION`** | 12 library→IPC mappings inventoried. Level 5 gap documented (§17). |
 | **`math_dispatch` module** | Centralizes 11 `barracuda::` call sites. `primal-proof` feature routes 2 wire-ready methods via IPC. |
 | **`BarraCudaClient`** | Typed IPC client for barraCuda ecobin (stats.mean, stats.std_dev, rng.uniform). |
-| **`exp122` (Level 5)** | Primal proof: barraCuda IPC parity + wire-pending inventory. |
+| **`exp122` (Level 5)** | Primal proof: barraCuda IPC parity + wire-pending inventory. Superseded by `healthspring_guidestone` in V54. |
 
 ---
 

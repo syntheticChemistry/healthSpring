@@ -1,7 +1,7 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.14 (V53 — Level 5 Primal Proof)
-**Date**: April 11, 2026
+**Version**: 0.15 (V54 — guideStone Level 2)
+**Date**: April 18, 2026
 
 ---
 
@@ -181,7 +181,7 @@ analysis pipeline, and integration of QS gene profiling for microbial drug targe
 
 ## 3. What We Have Learned
 
-Seven months of validation across 90 experiments, 985+ tests, and 45 reproduced papers
+Seven months of validation across 94 experiments, 948+ tests, and 45 reproduced papers
 have produced several key insights:
 
 ### 3.1 Species-agnostic mathematics works
@@ -246,14 +246,16 @@ comparative analysis.
 
 ## 4. Validation Protocol
 
-Same four-tier protocol as all ecoPrimals springs:
+Six-level validation ladder — each level uses the previous as its validation target:
 
-| Tier | Description | Acceptance |
-|------|-------------|------------|
-| 0 | Python control (reference implementation from published paper) | Reproduces published results |
-| 1 | Rust CPU (Pure Rust, f64-canonical) | Matches Python within documented tolerance |
-| 2 | Rust GPU (BarraCUDA WGSL shaders) | Matches CPU within documented tolerance |
-| 3 | metalForge (ToadStool dispatch, cross-substrate) | Matches GPU, routing validated |
+| Level | Description | Acceptance |
+|-------|-------------|------------|
+| 1 | Python control (reference implementation from published paper) | Reproduces published results |
+| 2 | Rust CPU (Pure Rust, f64-canonical) | Matches Python within documented tolerance |
+| 3 | barraCuda CPU (WGSL shaders, CPU fallback) | Matches Rust within documented tolerance |
+| 4 | barraCuda GPU (sovereign shader execution) | Matches CPU within documented tolerance |
+| 5 | guideStone (self-validating binary via `primalspring::composition`) | Bare properties 1–5 + NUCLEUS IPC parity |
+| 6 | NUCLEUS deployment (plasmidBin ecobins on clean machine) | Full composition on sovereign hardware |
 
 ---
 
