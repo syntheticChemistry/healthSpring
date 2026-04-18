@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: April 17, 2026
-**Status**: V53 — Levels 1–4 DONE, Level 5 (primal proof) in progress. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 84+ JSON-RPC capabilities, 54 Python baselines, 94 provenance entries. `math_dispatch` centralizes 11 `barracuda::` call sites; `primal-proof` feature routes wire-ready methods via IPC. `BarraCudaClient` typed IPC client. `exp122` Level 5 parity. 9/11 methods pending barraCuda wire handlers. ecoBin 0.9.0. barraCuda v0.3.12.
+**Last Updated**: April 18, 2026
+**Status**: V54 — guideStone Level 2. Levels 1–4 DONE. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 84+ JSON-RPC capabilities, 54 Python baselines, 94 provenance entries. `healthspring_guidestone` binary validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`. `math_dispatch` reframed as validation window (2 generic IPC + 9 local domain compositions). ecoBin 0.9.0. barraCuda v0.3.12.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---

@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V53 — Levels 1–4 DONE, Level 5 (primal proof) in progress. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 94 provenance entries (100% coverage). `math_dispatch` + `BarraCudaClient` + `primal-proof` feature. 2/11 methods wire-ready, 9 pending barraCuda wire handlers. barraCuda v0.3.12. ecoBin 0.9.0. Zero clippy, zero unsafe.
-**Last Updated**: April 17, 2026
+**Status**: V54 — guideStone Level 2 (properties documented, `healthspring_guidestone` binary). Levels 1–4 DONE. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 94 provenance entries. `math_dispatch` reframed as validation window (2 generic IPC + 9 local domain compositions). barraCuda v0.3.12. ecoBin 0.9.0. Zero clippy, zero unsafe.
+**Last Updated**: April 18, 2026
 
 ---
 
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V53** | [Composition Parity](handoffs/HEALTHSPRING_V53_COMPOSITION_PARITY_HANDOFF_APR17_2026.md) | Apr 17 | Level 5 primal proof: `math_dispatch` + `BarraCudaClient` + `primal-proof` feature + exp122. Live IPC parity (exp119–121). 2/11 wire-ready, 9 pending barraCuda. ecoBin 0.9.0. |
+| **V54** | [guideStone Level 2](handoffs/HEALTHSPRING_V54_GUIDESTONE_HANDOFF_APR18_2026.md) | Apr 18 | `healthspring_guidestone` binary. Bare properties 1–5. NUCLEUS IPC parity via `primalspring::composition`. `math_dispatch` reframed as validation window. V53 "9 wire handlers" ask withdrawn. |
+| **V53** | [Composition Parity](handoffs/HEALTHSPRING_V53_COMPOSITION_PARITY_HANDOFF_APR17_2026.md) | Apr 17 | Level 5 primal proof: `math_dispatch` + `BarraCudaClient` + `primal-proof` feature + exp122. Live IPC parity (exp119–121). ecoBin 0.9.0. |
 | | *V1–V52 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive

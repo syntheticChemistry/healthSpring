@@ -4,6 +4,33 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V54 — 2026-04-18 — guideStone Level 2
+
+### Added
+- **`healthspring_guidestone` binary**: Self-validating NUCLEUS node per
+  `GUIDESTONE_COMPOSITION_STANDARD` v1.0.0. Validates bare properties 1–5
+  (deterministic, traceable, env-agnostic, tolerance-documented) without
+  primals. When NUCLEUS deployed: validates IPC parity via
+  `primalspring::composition` for `stats.mean`, `stats.std_dev`,
+  `stats.variance`, `stats.correlation`, plus 10 manifest capabilities
+  (`storage`, `crypto`, `dag`, `inference`, `braid`). Exit 0/1/2.
+- **`guidestone` feature**: Enables `primalspring` dep + guidestone binary.
+- **`niche::GUIDESTONE_READINESS`** = 2 (properties documented).
+- **`niche::GUIDESTONE_BINARY`** = `healthspring_guidestone`.
+- **`niche::GUIDESTONE_PROPERTIES`**: P1 ✓, P2 ✓, P3 ✗ (CHECKSUMS pending),
+  P4 ✓, P5 ✓.
+- `primalspring` v0.9.15 as optional path dependency.
+
+### Changed
+- **`math_dispatch` reframed as "validation window"** per guideStone standard.
+  The 9 domain-specific methods (Hill, Shannon, Simpson, Chao1, Bray-Curtis,
+  Anderson, MM-AUC, antibiotic perturbation, SCR rate) are LOCAL compositions
+  of barraCuda primitives — not missing wire handlers. Only `stats.mean` and
+  `stats.std_dev` are generic IPC candidates.
+- **`BARRACUDA_IPC_MIGRATION` doc corrected**: "9 pending wire handlers" → "9
+  domain compositions (local)". barraCuda's 32 IPC methods are generic math;
+  domain functions belong to the spring.
+
 ## V53 — 2026-04-17 — Composition Parity (Live IPC)
 
 ### Added
@@ -30,7 +57,7 @@ This project uses internal versioning (V-series) for development milestones.
 - **`exp122_primal_proof_barracuda_parity`**: Level 5 validation — `math_dispatch`
   known-values, `BarraCudaClient` IPC vs local, wire-pending inventory check.
 - PRIMAL_GAPS.md §17 — barraCuda lib→IPC gap documented with migration plan.
-  9/11 methods pending barraCuda wire handlers.
+  (V54: reframed — 9 methods are domain compositions, not wire gaps.)
 - `#![forbid(unsafe_code)]` applied directly to `ecoPrimal/src/lib.rs` crate root.
 - Provenance records for exp119–122 in `records_infra.rs` (track: composition).
 

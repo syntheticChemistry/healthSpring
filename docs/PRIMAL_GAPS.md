@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-04-17
-**healthSpring version**: V53 (ecoBin 0.9.0)
+**Date**: 2026-04-18
+**healthSpring version**: V54 (ecoBin 0.9.0, guideStone Level 2)
 
 ---
 
@@ -338,17 +338,20 @@ barraCuda ecobin — the gap is in healthSpring's wiring.
 3. Validate: IPC result == library result == Python baseline
 4. `niche::BARRACUDA_IPC_MIGRATION` inventories all 12 call sites
 
-**Status**: V53 — infrastructure complete. `math_dispatch` centralizes all 11
-non-RNG call sites with IPC routing behind `primal-proof` feature. 2/11 methods
-wire-ready (`stats.mean`, `stats.std_dev`). 9/11 methods pending barraCuda wire
-handlers. `BarraCudaClient` typed IPC client ready. `exp122` validates parity.
+**Status**: V54 — **reframed**. The V53 narrative ("9 methods not on wire")
+was incorrect. The 9 "pending" methods are **domain-specific healthSpring
+science** (Hill, Shannon, Simpson, etc.) — local compositions of barraCuda's
+generic primitives. They are NOT candidates for barraCuda IPC migration.
+barraCuda's 32 IPC methods are generic math (stats, linalg, tensor, spectral).
 
-**barraCuda wire gap**: 9 methods exist as Rust library functions but are NOT
-in barraCuda's 32 JSON-RPC method catalog: `stats.hill`, `stats.shannon_from_frequencies`,
-`stats.simpson`, `stats.chao1_classic`, `stats.bray_curtis`,
-`special.anderson_diagonalize`, `health.pkpd.mm_auc`,
-`health.microbiome.antibiotic_perturbation`, `health.biosignal.scr_rate`.
-When barraCuda adds these, healthSpring flips each to IPC in `math_dispatch.rs`.
+The correct framing: `math_dispatch` is the "validation window" (temporary
+tooling per `GUIDESTONE_COMPOSITION_STANDARD`). The `healthspring_guidestone`
+binary uses `primalspring::composition::validate_parity` for generic IPC
+(`stats.mean`, `stats.std_dev`, `stats.variance`, `stats.correlation`).
+Domain functions stay local.
+
+**No barraCuda wire gap exists.** The ecosystem ask from V53 (add 9 wire
+handlers) is withdrawn.
 
 ---
 
@@ -372,4 +375,5 @@ When barraCuda adds these, healthSpring flips each to IPC in `math_dispatch.rs`.
 | 14 | Zero `dyn` dispatch | — | **Fixed V53**: enum `ValidationSink` | — |
 | 15 | Typed error returns | — | **Fixed V53**: `ServerError`, `TrioError` | — |
 | 16 | Capability routing by domain | — | **Fixed V53**: `by_capability` domains | — |
-| 17 | barraCuda lib→IPC (Level 5) | 9/11 methods not on wire | **V53**: `math_dispatch` + `BarraCudaClient` + `exp122` | barraCuda: add 9 wire handlers |
+| 17 | barraCuda lib→IPC (Level 5) | — | **V54**: reframed — 9 methods are local domain compositions, not wire gaps. guideStone uses `CompositionContext` for generic IPC | None (V53 ask withdrawn) |
+| 18 | guideStone P3 (CHECKSUMS) | Infrastructure | V54: guideStone Level 2 created, P3 pending CHECKSUMS generation | — |

@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 17, 2026 (V53)
+**Date:** April 18, 2026 (V54)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V53 — Levels 1–4 DONE, Level 5 (primal proof) in progress. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). barraCuda v0.3.12. `math_dispatch` centralizes all 11 `barracuda::` call sites; `primal-proof` feature routes wire-ready methods (`stats.mean`, `stats.std_dev`) via `BarraCudaClient` IPC; falls back to library when offline. 2/11 wire-ready, 9 pending barraCuda wire handlers. `exp122` Level 5 parity experiment. ecoBin 0.9.0 at `infra/plasmidBin/`. Level 6 (clean-machine NUCLEUS) ready.
+**Status:** V54 — guideStone Level 2 (properties documented, binary created). Levels 1–4 DONE. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). barraCuda v0.3.12. `healthspring_guidestone` binary (requires `--features guidestone`) validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`. `math_dispatch` is the validation window (2 generic IPC methods + 9 domain compositions local). ecoBin 0.9.0 at `infra/plasmidBin/`.
 
 ---
 

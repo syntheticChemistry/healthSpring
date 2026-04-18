@@ -139,11 +139,18 @@ pub const PROTO_NUCLEATE_VALIDATION_CAPABILITIES: &[&str] = &[
     "braid.commit",
 ];
 
-/// barraCuda library imports that must become IPC calls for Level 5.
+/// barraCuda library call sites and their IPC method equivalents.
 ///
-/// Today these are compiled in via `barracuda` path dependency. For the
-/// primal proof, each must route through barraCuda's 32 JSON-RPC methods
-/// over UDS. The library dep stays for Level 2 (Rust proof) comparison.
+/// Two categories:
+/// - **Generic IPC** (`stats.mean`, `stats.std_dev`): available on barraCuda's
+///   32-method JSON-RPC surface. The guideStone validates these via
+///   `primalspring::composition::validate_parity`.
+/// - **Domain compositions** (hill, shannon, etc.): healthSpring-specific
+///   science built from barraCuda primitives. These stay as local library
+///   calls — they are NOT candidates for IPC migration.
+///
+/// The library dep stays for Level 2 comparison. The guideStone uses pure
+/// IPC via `CompositionContext` for generic methods.
 pub const BARRACUDA_IPC_MIGRATION: &[(&str, &str)] = &[
     ("barracuda::stats::mean", "stats.mean"),
     ("barracuda::stats::correlation::std_dev", "stats.std_dev"),
@@ -205,6 +212,46 @@ pub const COMPOSITION_EXPERIMENTS: &[(&str, &str)] = &[
         "tier5_primal_proof_ipc",
     ),
 ];
+
+// ── guideStone metadata ──────────────────────────────────────────────────
+
+/// guideStone readiness level (per `GUIDESTONE_COMPOSITION_STANDARD` v1.0.0).
+///
+/// 0 = not started, 1 = validation exists, 2 = properties documented,
+/// 3 = bare guideStone works, 4 = NUCLEUS guideStone works, 5 = certified.
+pub const GUIDESTONE_READINESS: u8 = 2;
+
+/// guideStone binary name for this spring.
+pub const GUIDESTONE_BINARY: &str = "healthspring_guidestone";
+
+/// guideStone property status.
+///
+/// Each boolean indicates whether the property is fully satisfied.
+pub const GUIDESTONE_PROPERTIES: GuideStoneProperties = GuideStoneProperties {
+    deterministic: true,
+    traceable: true,
+    self_verifying: false,
+    env_agnostic: true,
+    tolerance_documented: true,
+};
+
+/// The 5 guideStone properties for certification.
+#[expect(
+    clippy::struct_excessive_bools,
+    reason = "each bool is a distinct guideStone property per GUIDESTONE_COMPOSITION_STANDARD"
+)]
+pub struct GuideStoneProperties {
+    /// P1: Same binary, same results, any architecture.
+    pub deterministic: bool,
+    /// P2: Every number traces to a paper or proof.
+    pub traceable: bool,
+    /// P3: Tampered inputs detected, non-zero exit. Requires CHECKSUMS.
+    pub self_verifying: bool,
+    /// P4: Pure Rust, ecoBin, no network, no sudo.
+    pub env_agnostic: bool,
+    /// P5: Every tolerance has a derivation.
+    pub tolerance_documented: bool,
+}
 
 /// Relative cost estimates (CPU milliseconds for typical inputs).
 pub const COST_ESTIMATES: &[(&str, f64)] = &[
@@ -328,6 +375,19 @@ mod tests {
         assert!(PROTO_NUCLEATE_VALIDATION_CAPABILITIES.contains(&"dag.session.create"));
         assert!(PROTO_NUCLEATE_VALIDATION_CAPABILITIES.contains(&"braid.create"));
         assert_eq!(PROTO_NUCLEATE_VALIDATION_CAPABILITIES.len(), 10);
+    }
+
+    #[test]
+    fn guidestone_metadata_consistent() {
+        assert_eq!(GUIDESTONE_BINARY, "healthspring_guidestone");
+        assert!(GUIDESTONE_READINESS <= 5);
+        // P3 (self-verifying) requires CHECKSUMS — not yet implemented
+        assert!(!GUIDESTONE_PROPERTIES.self_verifying);
+        // P1, P2, P4, P5 are satisfied
+        assert!(GUIDESTONE_PROPERTIES.deterministic);
+        assert!(GUIDESTONE_PROPERTIES.traceable);
+        assert!(GUIDESTONE_PROPERTIES.env_agnostic);
+        assert!(GUIDESTONE_PROPERTIES.tolerance_documented);
     }
 
     #[test]

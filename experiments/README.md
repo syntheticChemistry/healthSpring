@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: April 17, 2026
-**Status**: V53 — Levels 1–4 DONE, Level 5 in progress. 94 experiments, 948+ tests. Eleven composition experiments (exp112–122): dispatch parity, proto-nucleate, wire round-trip, deploy graph, three live IPC experiments, plus **Level 5 primal proof** (`math_dispatch` → `BarraCudaClient` IPC parity). 2/11 barraCuda methods wire-ready, 9 pending wire handlers.
+**Last Updated**: April 18, 2026
+**Status**: V54 — guideStone Level 2. 94 experiments, 948+ tests. Eleven composition experiments (exp112–122): dispatch parity, proto-nucleate, wire round-trip, deploy graph, three live IPC experiments, plus Level 5 parity. `healthspring_guidestone` binary supersedes `exp122` as the official guideStone artifact (exp122 remains as the composition experiment).
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a six-tier pipeline:
 

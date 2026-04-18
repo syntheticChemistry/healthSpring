@@ -1,32 +1,38 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Centralized math dispatch — routes barraCuda library calls through IPC
-//! when the `primal-proof` feature is active.
+//! Centralized math dispatch — the "validation window" for guideStone evolution.
 //!
 //! This module wraps every `barracuda::` call site in healthSpring. The
 //! default path delegates to the library (Level 2 Rust proof). With
 //! `--features primal-proof`, wire-ready methods route through the
-//! barraCuda ecobin's JSON-RPC surface (Level 5 primal proof).
+//! barraCuda ecobin's JSON-RPC surface.
 //!
-//! ## Wire status
+//! ## guideStone context
 //!
-//! | Method | Wire status | Feature-gated |
-//! |--------|-------------|---------------|
-//! | `stats.mean` | ON WIRE | Yes |
-//! | `stats.std_dev` | ON WIRE | Yes |
-//! | `rng.uniform` | ON WIRE (batch API) | No — architectural mismatch with step LCG |
-//! | `stats.hill` | PENDING — library only | No |
-//! | `stats.shannon_from_frequencies` | PENDING — library only | No |
-//! | `stats.simpson` | PENDING — library only | No |
-//! | `stats.chao1_classic` | PENDING — library only | No |
-//! | `stats.bray_curtis` | PENDING — library only | No |
-//! | `special.anderson_diagonalize` | PENDING — library only | No |
-//! | `health.pkpd.mm_auc` | PENDING — library only | No |
-//! | `health.microbiome.antibiotic_perturbation` | PENDING — library only | No |
-//! | `health.biosignal.scr_rate` | PENDING — library only | No |
+//! This module is the **validation window** (per `GUIDESTONE_COMPOSITION_STANDARD`):
+//! temporary tooling that proves the math works through NUCLEUS before the
+//! guideStone binary takes over. The guideStone uses `primalspring::composition`
+//! for IPC routing; this module stays for Level 2 library comparison.
 //!
-//! When barraCuda adds JSON-RPC handlers for the PENDING methods, flip
-//! each to IPC behind `primal-proof` — the call sites are already routed
-//! through this module.
+//! ## Method classification
+//!
+//! | Method | Type | IPC via |
+//! |--------|------|---------|
+//! | `stats.mean` | Generic barraCuda IPC | `primal-proof` feature / guideStone `CompositionContext` |
+//! | `stats.std_dev` | Generic barraCuda IPC | `primal-proof` feature / guideStone `CompositionContext` |
+//! | `hill` | Domain composition (local) | N/A — healthSpring-specific science |
+//! | `shannon_from_frequencies` | Domain composition (local) | N/A — healthSpring-specific science |
+//! | `simpson` | Domain composition (local) | N/A — healthSpring-specific science |
+//! | `chao1_classic` | Domain composition (local) | N/A — healthSpring-specific science |
+//! | `bray_curtis` | Domain composition (local) | N/A — healthSpring-specific science |
+//! | `anderson_diagonalize` | Domain composition (local) | N/A — healthSpring-specific science |
+//! | `mm_auc` | Domain composition (local) | N/A — healthSpring-specific science |
+//! | `antibiotic_perturbation` | Domain composition (local) | N/A — healthSpring-specific science |
+//! | `scr_rate` | Domain composition (local) | N/A — healthSpring-specific science |
+//!
+//! Domain-specific functions (Hill, Shannon, etc.) are LOCAL compositions of
+//! barraCuda's generic primitives. They belong to the spring, not the primal.
+//! barraCuda's 32 IPC methods are generic (stats, linalg, tensor, spectral).
+//! The guideStone validates generic IPC parity; domain science stays local.
 
 #[cfg(feature = "primal-proof")]
 use std::sync::OnceLock;
@@ -84,7 +90,7 @@ pub fn std_dev(data: &[f64]) -> Option<f64> {
     barracuda::stats::correlation::std_dev(data).ok()
 }
 
-// ── Wire-pending: library only (awaiting barraCuda wire handlers) ────────
+// ── Domain compositions: local science (not IPC candidates) ─────────────
 
 /// Hill equation: `x^n / (k^n + x^n)`.
 #[must_use]
@@ -152,7 +158,7 @@ pub const WIRE_READY_COUNT: usize = 2;
 /// Total methods managed by this module.
 pub const TOTAL_COUNT: usize = 11;
 
-/// Methods not yet on barraCuda's JSON-RPC surface.
+/// Domain-specific methods (local compositions, not IPC candidates).
 pub const WIRE_PENDING_COUNT: usize = TOTAL_COUNT - WIRE_READY_COUNT;
 
 #[cfg(test)]

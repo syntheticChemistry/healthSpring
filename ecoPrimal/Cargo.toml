@@ -24,9 +24,14 @@ barracuda-ops = ["gpu"]
 sovereign-dispatch = ["gpu", "barracuda/sovereign-dispatch"]
 # Level 5 primal proof: routes wire-ready math calls (stats.mean, stats.std_dev)
 # through barraCuda's JSON-RPC surface over UDS instead of library imports.
-# The library dep stays for Level 2 comparison and for the 9 methods not yet
-# on barraCuda's wire (see math_dispatch.rs wire status table).
+# The library dep stays for Level 2 comparison; domain-specific functions
+# (hill, shannon, simpson, etc.) stay local — they compose from barraCuda
+# primitives rather than being generic IPC methods.
 primal-proof = []
+# guideStone binary: self-validating NUCLEUS node using primalspring
+# composition API. Validates domain science through IPC, certifies 5
+# guideStone properties, exit 0/1/2 semantics.
+guidestone = ["dep:primalspring"]
 nestgate = ["dep:ureq"]
 # NPU dispatch is a future evolution — Akida driver will be discovered at
 # runtime via capability-based probing, not compiled in as a path dep.
@@ -51,9 +56,18 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"], optio
 bytemuck = { version = "1", features = ["derive"], optional = true }
 ureq = { version = "3", optional = true }
 
+# primalSpring composition API — used by the guideStone binary for
+# CompositionContext, validate_parity, validate_liveness, and tolerances.
+primalspring = { path = "../../primalSpring/ecoPrimal", optional = true }
+
 [[bin]]
 name = "healthspring_primal"
 path = "src/bin/healthspring_primal/main.rs"
+
+[[bin]]
+name = "healthspring_guidestone"
+path = "src/bin/healthspring_guidestone/main.rs"
+required-features = ["guidestone"]
 
 [dev-dependencies]
 approx = "0.5"
