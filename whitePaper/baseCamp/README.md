@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** April 20, 2026
-**Status:** V55 — guideStone Level 3 (bare works, three-tier primal proof harness). primalSpring v0.9.16. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). `healthspring_guidestone` binary: Tier 1 (local), Tier 2 (IPC-wired), Tier 3 (primal proof). P3 Self-Verifying via BLAKE3 checksums. ecoBin 0.9.0. barraCuda v0.3.12. Zero clippy, zero unsafe.
+**Last Updated:** April 19, 2026
+**Status:** V56 — guideStone Level 4 (NUCLEUS validated, 49/49 live). Live IPC parity via barraCuda RTX 3070. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.16. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). Three-tier harness: Tier 1 local, Tier 2 IPC-wired (barraCuda live), Tier 3 primal proof. ecoBin 0.9.0. barraCuda v0.3.12. Zero clippy, zero unsafe.
 
 ---
 
@@ -118,7 +118,7 @@ Level 1: Python baseline        → peer-reviewed science (DOI-cited baselines) 
 Level 2: Rust validation        → faithful port, spring binary (the "Rust proof")    DONE
 Level 3: barraCuda CPU          → same math via primal WGSL shaders (CPU fallback)   DONE
 Level 4: barraCuda GPU          → sovereign shader execution, hardware validated     DONE
-Level 5: guideStone             → self-validating binary (bare + NUCLEUS IPC)       DONE (Level 2)
+Level 5: guideStone             → self-validating binary (bare + NUCLEUS IPC)       DONE (Level 4)
 Level 6: NUCLEUS deployment     → plasmidBin ecobins on clean machine                READY
 ```
 
@@ -126,19 +126,18 @@ Level 6: NUCLEUS deployment     → plasmidBin ecobins on clean machine         
 validation targets for the primal composition.** The science doesn't change —
 we prove the NUCLEUS composition patterns faithfully reproduce it at every layer.
 
-**V54 guideStone**: The `healthspring_guidestone` binary validates bare
-properties 1–5 (Deterministic, Traceable, Env-Agnostic, Tolerance-Documented,
-Self-Verifying) without requiring NUCLEUS. When NUCLEUS is deployed, it
-additionally validates IPC parity via `primalspring::composition` for generic
-barraCuda math (`stats.mean`, `stats.std_dev`, `stats.variance`,
-`stats.correlation`) and probes 10 manifest capabilities.
+**V56 guideStone (Level 4)**: The `healthspring_guidestone` binary validates
+bare properties 1–5 (Deterministic, Traceable, Self-Verifying via BLAKE3,
+Env-Agnostic, Tolerance-Documented) without NUCLEUS (Tier 1). When NUCLEUS is
+deployed, it validates IPC parity via `primalspring::composition` for
+`stats.mean` and `stats.std_dev` (Tier 2), then confirms the primal proof —
+same primitives reproduce through NUCLEUS (Tier 3). **V56 achieved 49/49 checks
+against live barraCuda on RTX 3070 with zero-diff parity.**
 
-**Key reframe (V54)**: The 9 domain-specific methods in `math_dispatch` (Hill,
-Shannon, Simpson, Chao1, Bray-Curtis, Anderson, MM-AUC, antibiotic perturbation,
-SCR rate) are LOCAL compositions of barraCuda primitives — they belong to
-healthSpring, not to barraCuda's 32 generic IPC methods. Only `stats.mean` and
-`stats.std_dev` are generic IPC candidates. The previous "9 pending wire
-handlers" framing is withdrawn.
+Domain-specific functions (Hill, Shannon, Simpson, Bray-Curtis, etc.) are LOCAL
+compositions of barraCuda primitives — validated in Tier 1, not routed through
+IPC. `stats.variance` and `stats.correlation` are documented wire gaps
+awaiting barraCuda evolution (Gap §19).
 
 | Tier | Experiments | What it proves |
 |------|-------------|----------------|

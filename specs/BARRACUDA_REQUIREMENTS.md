@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: April 18, 2026
-**Status**: V55 — guideStone Level 2. Composition Parity (Live IPC). barraCuda v0.3.12 (workspace current). All six GPU ops LIVE. `uncertainty::std_dev` delegated to `barracuda::stats::correlation::std_dev`. Local WGSL shaders retained for fused pipeline but all absorbed upstream. TensorSession adoption pending upstream API. Sovereign dispatch pilot (Hill-only via coralReef). ecoBin 0.9.0.
+**Last Updated**: April 19, 2026
+**Status**: V56 — guideStone Level 4 (NUCLEUS validated). Live IPC parity: `stats.mean` 0.00e0, `stats.std_dev` 0.00e0 via barraCuda RTX 3070. Wire gaps: `stats.variance`, `stats.correlation` not on JSON-RPC surface (Gap 19). barraCuda v0.3.12. All six GPU ops LIVE. ecoBin 0.9.0. primalSpring v0.9.16.
 
 ---
 

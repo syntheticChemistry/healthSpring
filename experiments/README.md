@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: April 20, 2026
-**Status**: V55 — guideStone Level 3. 94 experiments, 948+ tests. Eleven composition experiments (exp112–122). `healthspring_guidestone` binary (three-tier primal proof harness per v1.1.0): Tier 1 local, Tier 2 IPC-wired, Tier 3 full NUCLEUS primal proof. P3 BLAKE3 checksums. primalSpring v0.9.16.
+**Last Updated**: April 19, 2026
+**Status**: V56 — guideStone Level 4 (NUCLEUS validated, 49/49 live). 94 experiments, 948+ tests. `healthspring_guidestone` three-tier harness: Tier 1 local, Tier 2 IPC-wired (barraCuda RTX 3070 — `stats.mean` 0.00e0, `stats.std_dev` 0.00e0), Tier 3 primal proof. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.16.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a six-tier pipeline:
 

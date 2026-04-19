@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: April 18, 2026
-**Status**: V54 — guideStone Level 2. Levels 1–4 DONE. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 84+ JSON-RPC capabilities, 54 Python baselines, 94 provenance entries. `healthspring_guidestone` binary validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`. `math_dispatch` reframed as validation window (2 generic IPC + 9 local domain compositions). ecoBin 0.9.0. barraCuda v0.3.12.
+**Status**: V56 — guideStone Level 4 (NUCLEUS validated, 49/49 live). Levels 1–5 DONE. 948+ tests, 94 experiments, 84+ JSON-RPC capabilities, 54 Python baselines, 94 provenance entries. Live IPC parity via barraCuda RTX 3070. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.16. ecoBin 0.9.0. barraCuda v0.3.12.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---

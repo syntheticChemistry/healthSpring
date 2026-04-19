@@ -1,7 +1,7 @@
 # healthSpring baseCamp: Gonzales PK/PD → Human Therapeutics
 
 **Faculty**: Andrea J. Gonzales (MSU Pharmacology & Toxicology), Erika Lisabeth (ADDRC), Richard Neubig (Drug Discovery), Edmund Ellsworth (Medicinal Chemistry)
-**Status**: V54 — guideStone Level 2. 94 experiments, 948+ tests, 54 Python baselines with provenance. barraCuda v0.3.12. 11 composition experiments (Tier 3–5, exp112–122) including Level 5 primal proof. Six-level validation: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 Primal IPC → L6 NUCLEUS. ecoBin 0.9.0.
+**Status**: V56 — guideStone Level 4 (NUCLEUS validated). 94 experiments, 948+ tests, 54 Python baselines with provenance. barraCuda v0.3.12. primalSpring v0.9.16. Live IPC parity via barraCuda RTX 3070. ecoBin 0.9.0.
 **Parent**: gen3/baseCamp Paper 12 (Immunological Anderson), gen3/baseCamp Paper 13 (Sovereign Human Health Computing)
 
 ---

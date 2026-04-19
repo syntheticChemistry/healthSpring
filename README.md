@@ -54,6 +54,20 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 ---
 
+## V56 guideStone Level 4 — NUCLEUS Validated (from V55)
+
+V56 completes the leap from guideStone Level 3 (bare works) to Level 4 (NUCLEUS validated): **49/49 checks pass** against a live barraCuda primal running on an NVIDIA RTX 3070 GPU. This is the first healthSpring guideStone run with a real NUCLEUS primal responding to IPC.
+
+| Change | Impact |
+|--------|--------|
+| **Live IPC parity** | `stats.mean` 0.00e0 diff, `stats.std_dev` 0.00e0 diff — zero-loss parity between local Rust and barraCuda IPC on RTX 3070. |
+| **BLAKE3 CHECKSUMS** | 17 validation-critical files hashed. P3 Self-Verifying now PASSES (was SKIP in V55). Tamper detection confirmed working. |
+| **Tier 3 restructured** | Domain science (Hill, Shannon, Simpson, Bray-Curtis) correctly classified as local compositions — validated in Tier 1, not routed through IPC. |
+| **Tier 2 trimmed** | `stats.variance` and `stats.correlation` removed — not on barraCuda wire (Gap 19). |
+| **`GUIDESTONE_READINESS`** = 4 | NUCLEUS guideStone works. Exit code 0 with live primals. |
+
+---
+
 ## V55 guideStone Level 3 — Primal Proof Harness (from V54)
 
 V55 upgrades the guideStone from Level 2 (properties documented) to Level 3 (bare guideStone works) per `GUIDESTONE_COMPOSITION_STANDARD` v1.1.0 from primalSpring v0.9.16. The binary now implements a **three-tier primal proof harness**: Tier 1 (local, always green), Tier 2 (IPC-wired, skip when absent), Tier 3 (full NUCLEUS primal proof).
