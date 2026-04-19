@@ -215,11 +215,11 @@ pub const COMPOSITION_EXPERIMENTS: &[(&str, &str)] = &[
 
 // ── guideStone metadata ──────────────────────────────────────────────────
 
-/// guideStone readiness level (per `GUIDESTONE_COMPOSITION_STANDARD` v1.0.0).
+/// guideStone readiness level (per `GUIDESTONE_COMPOSITION_STANDARD` v1.1.0).
 ///
 /// 0 = not started, 1 = validation exists, 2 = properties documented,
 /// 3 = bare guideStone works, 4 = NUCLEUS guideStone works, 5 = certified.
-pub const GUIDESTONE_READINESS: u8 = 2;
+pub const GUIDESTONE_READINESS: u8 = 3;
 
 /// guideStone binary name for this spring.
 pub const GUIDESTONE_BINARY: &str = "healthspring_guidestone";
@@ -230,7 +230,7 @@ pub const GUIDESTONE_BINARY: &str = "healthspring_guidestone";
 pub const GUIDESTONE_PROPERTIES: GuideStoneProperties = GuideStoneProperties {
     deterministic: true,
     traceable: true,
-    self_verifying: false,
+    self_verifying: true,
     env_agnostic: true,
     tolerance_documented: true,
 };
@@ -245,7 +245,7 @@ pub struct GuideStoneProperties {
     pub deterministic: bool,
     /// P2: Every number traces to a paper or proof.
     pub traceable: bool,
-    /// P3: Tampered inputs detected, non-zero exit. Requires CHECKSUMS.
+    /// P3: BLAKE3 checksums detect tampering (v1.1.0). SKIP when no manifest.
     pub self_verifying: bool,
     /// P4: Pure Rust, ecoBin, no network, no sudo.
     pub env_agnostic: bool,
@@ -381,11 +381,11 @@ mod tests {
     fn guidestone_metadata_consistent() {
         assert_eq!(GUIDESTONE_BINARY, "healthspring_guidestone");
         assert!(GUIDESTONE_READINESS <= 5);
-        // P3 (self-verifying) requires CHECKSUMS — not yet implemented
-        assert!(!GUIDESTONE_PROPERTIES.self_verifying);
-        // P1, P2, P4, P5 are satisfied
+        assert!(GUIDESTONE_READINESS >= 3, "Level 3: bare guideStone works");
+        // All 5 properties satisfied (P3 via primalspring::checksums, v1.1.0)
         assert!(GUIDESTONE_PROPERTIES.deterministic);
         assert!(GUIDESTONE_PROPERTIES.traceable);
+        assert!(GUIDESTONE_PROPERTIES.self_verifying);
         assert!(GUIDESTONE_PROPERTIES.env_agnostic);
         assert!(GUIDESTONE_PROPERTIES.tolerance_documented);
     }

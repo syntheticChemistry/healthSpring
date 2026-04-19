@@ -2,9 +2,13 @@
 
 //! Domain science validation through NUCLEUS IPC.
 //!
-//! Validates healthSpring's domain science through the primalSpring
-//! composition API. Uses `validate_parity` for generic barraCuda math
-//! and `validate_liveness` for proto-nucleate manifest capabilities.
+//! Three-tier validation per `GUIDESTONE_COMPOSITION_STANDARD` v1.1.0:
+//!
+//! - **Tier 1:** `validate_domain_science()` — local analytical checks, always green.
+//! - **Tier 2:** `validate_barracuda_math_ipc()` + `validate_manifest_capabilities()` —
+//!   IPC parity via live primals. Skips when absent.
+//! - **Tier 3:** `validate_primal_proof()` — full science parity through NUCLEUS.
+//!   The primal proof: same science that passed Python→Rust now passes through IPC.
 
 use primalspring::composition::{CompositionContext, method_to_capability_domain, validate_parity};
 use primalspring::tolerances as ps_tolerances;
@@ -252,8 +256,90 @@ fn probe_capability(
     }
 }
 
+/// Tier 3: Primal Proof — end-to-end science parity through NUCLEUS.
+///
+/// The same science that passed Python→Rust parity (Tier 0→1) now runs
+/// through primal IPC. This is the primal proof: if the guideStone can
+/// reproduce validated science through NUCLEUS composition, the spring
+/// is deployment-ready.
+pub fn validate_primal_proof(ctx: &mut CompositionContext, v: &mut ValidationResult) {
+    let data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0];
+
+    // Hill dose-response at IC50: Python→Rust→IPC chain
+    let local_hill = math_dispatch::hill(10.0, 10.0, 1.0);
+    validate_parity(
+        ctx,
+        v,
+        "primal-proof: Hill(IC50) parity",
+        method_to_capability_domain("stats.hill"),
+        "stats.hill",
+        serde_json::json!({"concentration": 10.0, "ic50": 10.0, "n": 1.0}),
+        "result",
+        local_hill,
+        ps_tolerances::IPC_ROUND_TRIP_TOL,
+    );
+
+    // Shannon diversity: uniform(4) entropy
+    let local_shannon = math_dispatch::shannon_from_frequencies(&[0.25, 0.25, 0.25, 0.25]);
+    validate_parity(
+        ctx,
+        v,
+        "primal-proof: Shannon(uniform_4) parity",
+        method_to_capability_domain("stats.shannon"),
+        "stats.shannon",
+        serde_json::json!({"frequencies": [0.25, 0.25, 0.25, 0.25]}),
+        "result",
+        local_shannon,
+        ps_tolerances::IPC_ROUND_TRIP_TOL,
+    );
+
+    // Mean: analytical 5.5
+    let local_mean = math_dispatch::mean(&data);
+    validate_parity(
+        ctx,
+        v,
+        "primal-proof: mean([1..10]) parity",
+        method_to_capability_domain("stats.mean"),
+        "stats.mean",
+        serde_json::json!({"data": data}),
+        "result",
+        local_mean,
+        ps_tolerances::IPC_ROUND_TRIP_TOL,
+    );
+
+    // Simpson diversity
+    let local_simpson = math_dispatch::simpson(&[0.25, 0.25, 0.25, 0.25]);
+    validate_parity(
+        ctx,
+        v,
+        "primal-proof: Simpson(uniform_4) parity",
+        method_to_capability_domain("stats.simpson"),
+        "stats.simpson",
+        serde_json::json!({"frequencies": [0.25, 0.25, 0.25, 0.25]}),
+        "result",
+        local_simpson,
+        ps_tolerances::IPC_ROUND_TRIP_TOL,
+    );
+
+    // Bray-Curtis: identical communities = 0
+    let local_bc = math_dispatch::bray_curtis(&[1.0, 2.0, 3.0], &[1.0, 2.0, 3.0]);
+    validate_parity(
+        ctx,
+        v,
+        "primal-proof: Bray-Curtis(identical) parity",
+        method_to_capability_domain("stats.bray_curtis"),
+        "stats.bray_curtis",
+        serde_json::json!({"a": [1.0, 2.0, 3.0], "b": [1.0, 2.0, 3.0]}),
+        "result",
+        local_bc,
+        ps_tolerances::IPC_ROUND_TRIP_TOL,
+    );
+}
+
+/// Classify IPC errors: connection errors and protocol errors (HTTP-on-UDS)
+/// are honest SKIPs; everything else is a FAIL.
 fn skip_or_fail(v: &mut ValidationResult, name: &str, e: &primalspring::ipc::IpcError) {
-    if e.is_connection_error() {
+    if e.is_connection_error() || e.is_protocol_error() {
         v.check_skip(name, &format!("not available: {e}"));
     } else {
         v.check_bool(name, false, &format!("IPC error: {e}"));

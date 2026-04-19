@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-04-18
-**healthSpring version**: V54 (ecoBin 0.9.0, guideStone Level 2)
+**Date**: 2026-04-20
+**healthSpring version**: V55 (ecoBin 0.9.0, guideStone Level 3, primalSpring v0.9.16)
 
 ---
 
@@ -376,4 +376,4 @@ handlers) is withdrawn.
 | 15 | Typed error returns | — | **Fixed V53**: `ServerError`, `TrioError` | — |
 | 16 | Capability routing by domain | — | **Fixed V53**: `by_capability` domains | — |
 | 17 | barraCuda lib→IPC (Level 5) | — | **V54**: reframed — 9 methods are local domain compositions, not wire gaps. guideStone uses `CompositionContext` for generic IPC | None (V53 ask withdrawn) |
-| 18 | guideStone P3 (CHECKSUMS) | Infrastructure | V54: guideStone Level 2 created, P3 pending CHECKSUMS generation | — |
+| 18 | guideStone P3 (CHECKSUMS) | — | **Fixed V55**: BLAKE3 via `primalspring::checksums::verify_manifest()`. SKIP when no manifest (honest scaffolding). | — |

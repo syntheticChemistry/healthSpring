@@ -2,7 +2,7 @@
 # biomeOS NUCLEUS Local Integration Plan
 
 **Last Updated**: April 11, 2026
-**Status**: V54 — guideStone Level 2. 948+ tests, 94 experiments, 84+ JSON-RPC capabilities (62 science + 22 infra), ValidationHarness 94/94. `math_dispatch` reframed as validation window (2 generic IPC methods + 9 domain compositions local to healthSpring). `healthspring_guidestone` binary validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`. exp112–122 composition validation. ecoBin 0.9.0.
+**Status**: V55 — primalSpring v0.9.16, three-tier primal proof harness. guideStone Level 2. 948+ tests, 94 experiments, 84+ JSON-RPC capabilities (62 science + 22 infra), ValidationHarness 94/94. `math_dispatch` reframed as validation window (2 generic IPC methods + 9 domain compositions local to healthSpring). `healthspring_guidestone` binary validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`. exp112–122 composition validation. ecoBin 0.9.0.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

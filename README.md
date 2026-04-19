@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 18, 2026 (V54)
+**Date:** April 20, 2026 (V55)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V54 — guideStone Level 2 (properties documented, binary created). Levels 1–4 DONE. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). barraCuda v0.3.12. `healthspring_guidestone` binary (requires `--features guidestone`) validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`. `math_dispatch` is the validation window (2 generic IPC methods + 9 domain compositions local). ecoBin 0.9.0 at `infra/plasmidBin/`.
+**Status:** V55 — guideStone Level 3 (bare works, three-tier primal proof harness). Levels 1–4 DONE. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). barraCuda v0.3.12, primalSpring v0.9.16. `healthspring_guidestone` binary: Tier 1 (local props 1–5 + domain science), Tier 2 (IPC-wired, skip when absent), Tier 3 (primal proof — science via NUCLEUS). P3 Self-Verifying via BLAKE3 checksums. Family-aware discovery. Protocol tolerance (HTTP-on-UDS → SKIP). ecoBin 0.9.0 at `infra/plasmidBin/`.
 
 ---
 
@@ -33,7 +33,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V54** (guideStone Level 2 — properties documented, `healthspring_guidestone` binary) |
+| Version | **V55** (guideStone Level 3 — three-tier primal proof harness, BLAKE3 P3, primalSpring v0.9.16) |
 | **Total tests** | **948+** (864 lib + proptest + IPC fuzz + 33 forge + 51 toadstool + 94 experiment bins) |
 | Experiments complete | 94 (84 science Tracks 1–9 + 11 composition Tier 3–5) |
 | Composition validation (Tier 3–5) | 11 experiments (exp112–122) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity. `healthspring_guidestone` supersedes exp122 as guideStone artifact. |
@@ -54,17 +54,31 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 ---
 
-## V54 guideStone Level 2 (from V53)
+## V55 guideStone Level 3 — Primal Proof Harness (from V54)
 
-V54 introduces the **guideStone** — a self-validating binary that certifies five properties (Deterministic Output, Reference-Traceable, Self-Verifying, Environment-Agnostic, Tolerance-Documented) per the `GUIDESTONE_COMPOSITION_STANDARD` v1.0.0 from primalSpring. The guideStone supersedes exp122 as the Level 5 artifact: instead of an experiment binary, a standalone `healthspring_guidestone` validates bare properties without NUCLEUS + IPC parity when NUCLEUS is deployed.
+V55 upgrades the guideStone from Level 2 (properties documented) to Level 3 (bare guideStone works) per `GUIDESTONE_COMPOSITION_STANDARD` v1.1.0 from primalSpring v0.9.16. The binary now implements a **three-tier primal proof harness**: Tier 1 (local, always green), Tier 2 (IPC-wired, skip when absent), Tier 3 (full NUCLEUS primal proof).
 
 | Change | Impact |
 |--------|--------|
-| **`healthspring_guidestone` binary** | Self-validating NUCLEUS node. Bare properties 1–5 validated locally. NUCLEUS IPC parity via `primalspring::composition` for `stats.mean`, `stats.std_dev`, `stats.variance`, `stats.correlation` + 10 manifest capabilities. |
+| **Three-tier harness** | Tier 1: bare properties + domain science (always green). Tier 2: IPC parity via live primals (`check_skip` when absent). Tier 3: primal proof — Hill, Shannon, Simpson, Bray-Curtis, mean via IPC vs local baseline. |
+| **P3 Self-Verifying** | BLAKE3 checksums via `primalspring::checksums::verify_manifest()`. SKIP when no manifest (honest scaffolding). |
+| **Protocol tolerance** | `skip_or_fail` checks `is_protocol_error()` for HTTP-on-UDS (Songbird, petalTongue) → SKIP, not FAIL. |
+| **Family-aware discovery** | `FAMILY_ID` env var; `{capability}-{family}.sock` resolution via primalSpring v0.9.16. |
+| **primalSpring v0.9.16** | Upgraded from v0.9.15. Brings `blake3`, family-aware discovery, protocol tolerance. |
+| **`GUIDESTONE_READINESS`** = 3 | Bare guideStone works. All 5 properties satisfied (P1–P5 ✓). |
+
+---
+
+## V54 guideStone Level 2 (from V53)
+
+V54 introduced the **guideStone** — a self-validating binary that certifies five properties per `GUIDESTONE_COMPOSITION_STANDARD` v1.0.0. Reframed `math_dispatch` as validation window; corrected barraCuda IPC migration narrative.
+
+| Change | Impact |
+|--------|--------|
+| **`healthspring_guidestone` binary** | Self-validating NUCLEUS node. Bare properties 1–5 validated locally. NUCLEUS IPC parity via `primalspring::composition`. |
 | **`guidestone` Cargo feature** | Enables `primalspring` path dep + guidestone binary. Default build unchanged. |
-| **`math_dispatch` reframed** | Now a "validation window" — 9 domain-specific methods (Hill, Shannon, etc.) are LOCAL compositions of barraCuda primitives, not missing wire handlers. Only `stats.mean` + `stats.std_dev` are generic IPC. |
-| **`BARRACUDA_IPC_MIGRATION` corrected** | "9 pending wire handlers" → "9 domain compositions (local)". barraCuda's 32 IPC methods are generic math; domain functions belong to the spring. |
-| **`niche.rs` guideStone metadata** | `GUIDESTONE_READINESS` = 2, `GUIDESTONE_BINARY`, `GUIDESTONE_PROPERTIES` (P1 ✓, P2 ✓, P3 ✗ CHECKSUMS, P4 ✓, P5 ✓). |
+| **`math_dispatch` reframed** | "Validation window" — 9 domain-specific methods are LOCAL compositions, not missing wire handlers. |
+| **`BARRACUDA_IPC_MIGRATION` corrected** | "9 pending wire handlers" → "9 domain compositions (local)". |
 
 ---
 

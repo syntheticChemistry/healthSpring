@@ -8,11 +8,17 @@
 
 //! healthSpring guideStone — self-validating NUCLEUS node.
 //!
-//! A guideStone carries 5 certified properties:
+//! Three-tier primal proof harness per `GUIDESTONE_COMPOSITION_STANDARD` v1.1.0:
+//!
+//! - **Tier 1 (LOCAL):** Bare properties 1–5 + domain science. Always green in CI.
+//! - **Tier 2 (IPC-WIRED):** IPC parity via live primals. `check_skip` when absent.
+//! - **Tier 3 (FULL NUCLEUS):** Deploy from plasmidBin, validate externally.
+//!
+//! ## Five certified properties
 //!
 //! 1. **Deterministic Output** — same binary, same results, any architecture
 //! 2. **Reference-Traceable** — every number traces to a paper or proof
-//! 3. **Self-Verifying** — tampered inputs detected, non-zero exit
+//! 3. **Self-Verifying** — BLAKE3 checksums detect tampering (v1.1.0)
 //! 4. **Environment-Agnostic** — pure Rust, ecoBin, no network, no sudo
 //! 5. **Tolerance-Documented** — every tolerance has a derivation
 //!
@@ -20,21 +26,18 @@
 //!
 //! - `0` — all checks passed (NUCLEUS certified)
 //! - `1` — at least one check failed
-//! - `2` — no NUCLEUS deployed (bare guideStone only)
-//!
-//! ## Layered certification
-//!
-//! `primalspring_guidestone` validates composition correctness (6 layers).
-//! This binary validates healthSpring's domain science ON TOP of that base.
+//! - `2` — no NUCLEUS deployed (bare guideStone only — Tier 1 passed)
 //!
 //! ## Usage
 //!
 //! ```bash
-//! # Bare guideStone (no primals needed)
+//! # Tier 1 only (no primals needed)
 //! cargo run --features guidestone --bin healthspring_guidestone
 //!
-//! # With NUCLEUS deployed (IPC parity)
-//! biomeos deploy --graph healthspring_enclave_proto_nucleate.toml
+//! # Tier 2+3: deploy NUCLEUS from plasmidBin, then validate
+//! export FAMILY_ID="healthspring-validation"
+//! export BEARDOG_FAMILY_SEED="$(head -c 32 /dev/urandom | xxd -p)"
+//! ./nucleus_launcher.sh --composition full start
 //! cargo run --features guidestone --bin healthspring_guidestone
 //! ```
 
@@ -48,6 +51,7 @@ fn main() {
     eprintln!("╔══════════════════════════════════════════════════════════════════╗");
     eprintln!("║  healthSpring guideStone — self-validating NUCLEUS node        ║");
     eprintln!("║  Domain: clinical health (PK/PD, microbiome, biosignal)        ║");
+    eprintln!("║  Standard: GUIDESTONE_COMPOSITION_STANDARD v1.1.0             ║");
     eprintln!("╚══════════════════════════════════════════════════════════════════╝\n");
 
     eprintln!(
@@ -55,21 +59,27 @@ fn main() {
         std::env::consts::ARCH,
         std::env::consts::OS
     );
+    let family = std::env::var("FAMILY_ID").unwrap_or_else(|_| "default".to_owned());
+    eprintln!("family:    {family}");
     eprintln!("engine:    cpu-native (pure Rust, NUCLEUS auto-detected)\n");
 
     let mut v = ValidationResult::new("healthspring guideStone");
 
-    // ── Phase 1: Bare guideStone (Properties 1–5, no primals needed) ─────
+    // ── Tier 1: LOCAL_CAPABILITIES (always green, no IPC) ────────────────
 
-    v.section("Bare Properties (1–5)");
+    v.section("Tier 1: Bare Properties (1–5)");
     bare::validate_deterministic_output(&mut v);
     bare::validate_reference_traceable(&mut v);
+    bare::validate_self_verifying(&mut v);
     bare::validate_environment_agnostic(&mut v);
     bare::validate_tolerance_documented(&mut v);
 
-    // ── Phase 2: NUCLEUS additive layer (IPC parity) ─────────────────────
+    v.section("Tier 1: Domain Science (local)");
+    domain::validate_domain_science(&mut v);
 
-    v.section("NUCLEUS Discovery");
+    // ── Tier 2: IPC-WIRED (skip when primals absent) ─────────────────────
+
+    v.section("Tier 2: NUCLEUS Discovery");
     let mut ctx = CompositionContext::from_live_discovery_with_fallback();
     let alive = validate_liveness(
         &mut ctx,
@@ -78,23 +88,23 @@ fn main() {
     );
 
     if alive == 0 {
-        eprintln!("\nNo NUCLEUS primals discovered. Bare guideStone only.");
-        v.section("Summary (bare)");
+        eprintln!("\nNo NUCLEUS primals discovered. Tier 1 (bare) only.");
+        v.section("Summary (Tier 1 bare)");
         let code = bare_exit_code(&v);
         v.finish();
         std::process::exit(code);
     }
 
-    // ── Phase 3: Domain science via IPC ──────────────────────────────────
-
-    v.section("barraCuda Math IPC");
+    v.section("Tier 2: barraCuda Math IPC");
     domain::validate_barracuda_math_ipc(&mut ctx, &mut v);
 
-    v.section("Validation Capabilities (proto-nucleate manifest)");
+    v.section("Tier 2: Manifest Capabilities");
     domain::validate_manifest_capabilities(&mut ctx, &mut v);
 
-    v.section("Domain Science Parity");
-    domain::validate_domain_science(&mut v);
+    // ── Tier 3: FULL NUCLEUS (primal proof) ──────────────────────────────
+
+    v.section("Tier 3: Primal Proof — Science via IPC");
+    domain::validate_primal_proof(&mut ctx, &mut v);
 
     // ── Finish ───────────────────────────────────────────────────────────
 
@@ -102,8 +112,8 @@ fn main() {
     std::process::exit(v.exit_code());
 }
 
-/// Bare guideStone exit code: 0 if bare passed, 2 if any bare check failed
-/// (no primals to do full validation, but bare is fine).
+/// Bare guideStone exit code: 0 if bare passed, 2 if no primals
+/// (Tier 1 validated, but Tier 2/3 not exercised).
 const fn bare_exit_code(v: &ValidationResult) -> i32 {
     if v.failed == 0 && v.passed > 0 { 2 } else { 1 }
 }

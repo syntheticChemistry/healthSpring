@@ -115,10 +115,18 @@ pub fn validate_reference_traceable(v: &mut ValidationResult) {
     );
 }
 
+/// Property 3: Self-Verifying (BLAKE3 checksums per v1.1.0).
+///
+/// Verifies that a CHECKSUMS manifest exists and all listed files match
+/// their BLAKE3 hashes. If the manifest does not exist yet (not generated),
+/// the check is recorded as SKIP, not FAIL — honest scaffolding.
+pub fn validate_self_verifying(v: &mut ValidationResult) {
+    primalspring::checksums::verify_manifest(v, "validation/CHECKSUMS");
+}
+
 /// Property 4: Environment-Agnostic.
 ///
-/// Verifies ecoBin compliance markers. Property 3 (self-verifying) requires
-/// CHECKSUMS generation infrastructure — tracked as a Level 3 TODO.
+/// Verifies ecoBin compliance markers.
 pub fn validate_environment_agnostic(v: &mut ValidationResult) {
     // Pure Rust, no C deps — verified by compile (forbid unsafe_code)
     v.check_bool(

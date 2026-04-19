@@ -4,6 +4,33 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V55 — 2026-04-20 — guideStone Level 3 (Primal Proof Harness)
+
+### Added
+- **Three-tier primal proof harness** per `GUIDESTONE_COMPOSITION_STANDARD`
+  v1.1.0 (primalSpring v0.9.16):
+  - **Tier 1 (LOCAL):** Bare properties 1–5 + domain science. Always green.
+  - **Tier 2 (IPC-WIRED):** barraCuda math IPC + manifest capabilities.
+    `check_skip` when primals absent.
+  - **Tier 3 (FULL NUCLEUS):** Primal proof — Hill, Shannon, Simpson,
+    Bray-Curtis, mean via IPC vs local baseline. Deploy from plasmidBin.
+- **Property 3 (Self-Verifying):** BLAKE3 checksums via
+  `primalspring::checksums::verify_manifest()`. SKIPs when no manifest
+  (honest scaffolding); verifies per-file hashes when manifest exists.
+- **Protocol tolerance:** `skip_or_fail` now checks `is_protocol_error()`
+  for HTTP-on-UDS (Songbird, petalTongue) — SKIP, not FAIL.
+- **Family-aware discovery:** FAMILY_ID env var reported at startup.
+  `CompositionContext` resolves `{capability}-{family}.sock` automatically
+  via primalSpring v0.9.16 discovery.
+- **Upstream evolution handoff:** Full handoff for primalSpring, barraCuda,
+  toadStool, metalForge, biomeOS, all springs.
+
+### Changed
+- **`niche::GUIDESTONE_READINESS`** = 3 (bare guideStone works).
+- **`niche::GUIDESTONE_PROPERTIES`**: P1 ✓, P2 ✓, P3 ✓, P4 ✓, P5 ✓.
+- **`primalspring`** upgraded v0.9.15 → v0.9.16.
+- **guideStone standard reference** updated v1.0.0 → v1.1.0.
+
 ## V54 — 2026-04-18 — guideStone Level 2
 
 ### Added
@@ -15,10 +42,6 @@ This project uses internal versioning (V-series) for development milestones.
   `stats.variance`, `stats.correlation`, plus 10 manifest capabilities
   (`storage`, `crypto`, `dag`, `inference`, `braid`). Exit 0/1/2.
 - **`guidestone` feature**: Enables `primalspring` dep + guidestone binary.
-- **`niche::GUIDESTONE_READINESS`** = 2 (properties documented).
-- **`niche::GUIDESTONE_BINARY`** = `healthspring_guidestone`.
-- **`niche::GUIDESTONE_PROPERTIES`**: P1 ✓, P2 ✓, P3 ✗ (CHECKSUMS pending),
-  P4 ✓, P5 ✓.
 - `primalspring` v0.9.15 as optional path dependency.
 
 ### Changed

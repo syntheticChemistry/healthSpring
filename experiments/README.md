@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: April 18, 2026
-**Status**: V54 — guideStone Level 2. 94 experiments, 948+ tests. Eleven composition experiments (exp112–122): dispatch parity, proto-nucleate, wire round-trip, deploy graph, three live IPC experiments, plus Level 5 parity. `healthspring_guidestone` binary supersedes `exp122` as the official guideStone artifact (exp122 remains as the composition experiment).
+**Last Updated**: April 20, 2026
+**Status**: V55 — guideStone Level 3. 94 experiments, 948+ tests. Eleven composition experiments (exp112–122). `healthspring_guidestone` binary (three-tier primal proof harness per v1.1.0): Tier 1 local, Tier 2 IPC-wired, Tier 3 full NUCLEUS primal proof. P3 BLAKE3 checksums. primalSpring v0.9.16.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a six-tier pipeline:
 
