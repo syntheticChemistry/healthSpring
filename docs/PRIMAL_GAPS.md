@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-04-20
-**healthSpring version**: V55 (ecoBin 0.9.0, guideStone Level 3, primalSpring v0.9.16)
+**Date**: 2026-04-19
+**healthSpring version**: V56 (ecoBin 0.9.0, guideStone Level 4, primalSpring v0.9.16)
 
 ---
 
@@ -355,6 +355,30 @@ handlers) is withdrawn.
 
 ---
 
+## 19. barraCuda Wire Gaps: `stats.variance`, `stats.correlation`
+
+**Gap**: Live IPC testing against barraCuda (RTX 3070, FAMILY_ID=healthspring-validation)
+revealed that `stats.variance` and `stats.correlation` are not on barraCuda's
+JSON-RPC surface. Both return "Unknown method" errors.
+
+**Evidence**: guideStone run (49/49 after fix):
+- `stats.mean` — PASS (composition=5.5, local=5.5, diff=0.00e0)
+- `stats.std_dev` — PASS (composition=3.027…, local=3.027…, diff=0.00e0)
+- `stats.variance` — Unknown method (removed from guideStone, documented here)
+- `stats.correlation` — Unknown method (removed from guideStone, documented here)
+
+**Impact**: healthSpring's guideStone can validate `mean` and `std_dev` parity
+but cannot exercise variance or correlation through IPC. These are generic
+math primitives that belong on barraCuda's wire surface.
+
+**Proposed resolution**: barraCuda team adds `stats.variance` and
+`stats.correlation` to the JSON-RPC server surface. healthSpring will re-add
+them to Tier 2 once available.
+
+**Status**: Documented. Awaiting barraCuda wire evolution.
+
+---
+
 ## Summary Matrix
 
 | # | Gap | Blocked On | healthSpring Action | primalSpring Action |
@@ -377,3 +401,4 @@ handlers) is withdrawn.
 | 16 | Capability routing by domain | — | **Fixed V53**: `by_capability` domains | — |
 | 17 | barraCuda lib→IPC (Level 5) | — | **V54**: reframed — 9 methods are local domain compositions, not wire gaps. guideStone uses `CompositionContext` for generic IPC | None (V53 ask withdrawn) |
 | 18 | guideStone P3 (CHECKSUMS) | — | **Fixed V55**: BLAKE3 via `primalspring::checksums::verify_manifest()`. SKIP when no manifest (honest scaffolding). | — |
+| 19 | barraCuda: `stats.variance`, `stats.correlation` | barraCuda team | **V56**: documented, removed from Tier 2 pending wire | Add to JSON-RPC surface |

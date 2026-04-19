@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 20, 2026 (V55)
+**Date:** April 19, 2026 (V56)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V55 — guideStone Level 3 (bare works, three-tier primal proof harness). Levels 1–4 DONE. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). barraCuda v0.3.12, primalSpring v0.9.16. `healthspring_guidestone` binary: Tier 1 (local props 1–5 + domain science), Tier 2 (IPC-wired, skip when absent), Tier 3 (primal proof — science via NUCLEUS). P3 Self-Verifying via BLAKE3 checksums. Family-aware discovery. Protocol tolerance (HTTP-on-UDS → SKIP). ecoBin 0.9.0 at `infra/plasmidBin/`.
+**Status:** V56 — guideStone Level 4 (NUCLEUS validated, 49/49 checks pass). Live IPC parity against barraCuda RTX 3070: `stats.mean` 0.00e0 diff, `stats.std_dev` 0.00e0 diff. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). barraCuda v0.3.12, primalSpring v0.9.16. `healthspring_guidestone` three-tier harness: Tier 1 (local props 1–5 + domain science), Tier 2 (IPC-wired — barraCuda live), Tier 3 (primal proof — primitives via NUCLEUS + domain local). P3 Self-Verifying via BLAKE3 checksums (17 files). Family-aware discovery. Protocol tolerance (HTTP-on-UDS → SKIP). ecoBin 0.9.0 at `infra/plasmidBin/`.
 
 ---
 
@@ -33,7 +33,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V55** (guideStone Level 3 — three-tier primal proof harness, BLAKE3 P3, primalSpring v0.9.16) |
+| Version | **V56** (guideStone Level 4 — NUCLEUS validated, 49/49 live, barraCuda RTX 3070 parity, primalSpring v0.9.16) |
 | **Total tests** | **948+** (864 lib + proptest + IPC fuzz + 33 forge + 51 toadstool + 94 experiment bins) |
 | Experiments complete | 94 (84 science Tracks 1–9 + 11 composition Tier 3–5) |
 | Composition validation (Tier 3–5) | 11 experiments (exp112–122) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity. `healthspring_guidestone` supersedes exp122 as guideStone artifact. |

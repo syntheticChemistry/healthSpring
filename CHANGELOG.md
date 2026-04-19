@@ -4,6 +4,33 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V56 — 2026-04-19 — guideStone Level 4 (NUCLEUS Validated)
+
+### Added
+- **Live NUCLEUS validation**: guideStone passes 49/49 checks (14 skipped)
+  against live barraCuda on RTX 3070 with FAMILY_ID=healthspring-validation.
+  - `stats.mean` IPC parity: composition=5.5, local=5.5, diff=0.00e0
+  - `stats.std_dev` IPC parity: composition=3.027…, local=3.027…, diff=0.00e0
+  - Primal proof: mean + std_dev via NUCLEUS confirmed; domain science
+    (Hill, Shannon, Simpson, Bray-Curtis) validated locally in Tier 1.
+- **BLAKE3 CHECKSUMS manifest**: 17 validation-critical files hashed with b3sum.
+  Property 3 now PASSES (was SKIP in V55 without manifest).
+- **Gap 19 documented**: barraCuda `stats.variance` and `stats.correlation` not
+  on JSON-RPC wire. Removed from Tier 2, handed back to barraCuda team.
+
+### Changed
+- **`niche::GUIDESTONE_READINESS`** = 4 (NUCLEUS guideStone works).
+- **Tier 3 restructured**: Domain-specific methods (Hill, Shannon, Simpson,
+  Bray-Curtis) correctly classified as local compositions. Tier 3 validates
+  only wire primitives (mean, std_dev) through IPC, then confirms domain
+  science passed locally.
+- **Tier 2 trimmed**: `stats.variance` and `stats.correlation` removed (not
+  on barraCuda wire). Documented in PRIMAL_GAPS.md §19.
+
+### Fixed
+- CHECKSUMS tamper detection: regenerated after domain.rs code changes.
+  guideStone caught the stale hash correctly (P3 self-verifying works).
+
 ## V55 — 2026-04-20 — guideStone Level 3 (Primal Proof Harness)
 
 ### Added

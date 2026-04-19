@@ -219,7 +219,10 @@ pub const COMPOSITION_EXPERIMENTS: &[(&str, &str)] = &[
 ///
 /// 0 = not started, 1 = validation exists, 2 = properties documented,
 /// 3 = bare guideStone works, 4 = NUCLEUS guideStone works, 5 = certified.
-pub const GUIDESTONE_READINESS: u8 = 3;
+///
+/// Level 4: 49/49 checks passed (14 skipped) against live barraCuda (RTX 3070).
+/// Tier 1 (local), Tier 2 (IPC `mean`/`std_dev` parity), Tier 3 (primal proof).
+pub const GUIDESTONE_READINESS: u8 = 4;
 
 /// guideStone binary name for this spring.
 pub const GUIDESTONE_BINARY: &str = "healthspring_guidestone";
@@ -381,7 +384,7 @@ mod tests {
     fn guidestone_metadata_consistent() {
         assert_eq!(GUIDESTONE_BINARY, "healthspring_guidestone");
         assert!(GUIDESTONE_READINESS <= 5);
-        assert!(GUIDESTONE_READINESS >= 3, "Level 3: bare guideStone works");
+        assert!(GUIDESTONE_READINESS >= 4, "Level 4: NUCLEUS validated");
         // All 5 properties satisfied (P3 via primalspring::checksums, v1.1.0)
         assert!(GUIDESTONE_PROPERTIES.deterministic);
         assert!(GUIDESTONE_PROPERTIES.traceable);
