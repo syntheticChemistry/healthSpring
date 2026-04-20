@@ -4,12 +4,12 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
-## V57 — 2026-04-20 — guideStone Level 4 (Primal Proof Complete)
+## V57 — 2026-04-20 — guideStone Level 5 (Primal Proof)
 
 ### Added
-- **Full barraCuda math IPC parity**: guideStone passes 57/57 checks (10
-  skipped) against live NUCLEUS (barraCuda, beardog, nestgate). All four
-  generic math methods validated via IPC:
+- **guideStone Level 5 — primal proof**: `healthspring_guidestone` passes
+  57/57 checks (10 skipped) against live NUCLEUS (barraCuda, beardog,
+  nestgate). All four generic math methods validated via IPC:
   - `stats.mean` — PASS (diff=0.00e0)
   - `stats.std_dev` — PASS (diff=0.00e0)
   - `stats.variance` — PASS (diff=1.78e-15, Sprint 44)
@@ -21,6 +21,7 @@ This project uses internal versioning (V-series) for development milestones.
   for DAG/AI/commit domains (Gap 22).
 
 ### Changed
+- **`GUIDESTONE_READINESS`** = 5 (primal proof — first spring to reach L5).
 - **`primalspring`** upgraded v0.9.16 → v0.9.17.
 - **guideStone standard reference** updated v1.1.0 → v1.2.0.
 - **`niche::BARRACUDA_IPC_MIGRATION`**: added `stats.variance` and

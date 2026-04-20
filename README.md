@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 19, 2026 (V56)
+**Date:** April 20, 2026 (V57)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V56 — guideStone Level 4 (NUCLEUS validated, 49/49 checks pass). Live IPC parity against barraCuda RTX 3070: `stats.mean` 0.00e0 diff, `stats.std_dev` 0.00e0 diff. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). barraCuda v0.3.12, primalSpring v0.9.16. `healthspring_guidestone` three-tier harness: Tier 1 (local props 1–5 + domain science), Tier 2 (IPC-wired — barraCuda live), Tier 3 (primal proof — primitives via NUCLEUS + domain local). P3 Self-Verifying via BLAKE3 checksums (17 files). Family-aware discovery. Protocol tolerance (HTTP-on-UDS → SKIP). ecoBin 0.9.0 at `infra/plasmidBin/`.
+**Status:** V57 — guideStone **Level 5** (primal proof, 57/57 checks pass, 10 skipped). Live IPC parity against NUCLEUS (barraCuda + beardog + nestgate): `stats.mean` 0.00e0 diff, `stats.std_dev` 0.00e0 diff, `stats.variance` 1.78e-15 diff, `stats.correlation` 0.00e0 diff. Storage round-trip validated via nestgate. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). barraCuda v0.3.12, primalSpring v0.9.17. `healthspring_guidestone` three-tier harness per `GUIDESTONE_COMPOSITION_STANDARD` v1.2.0: Tier 1 (local props 1–5 + domain science), Tier 2 (IPC-wired — 4 math methods + storage), Tier 3 (primal proof — all primitives via NUCLEUS + domain local). P3 Self-Verifying via BLAKE3 checksums (17 files). Family-aware discovery. Protocol tolerance (HTTP-on-UDS → SKIP). ecoBin 0.9.0 at `infra/plasmidBin/`.
 
 ---
 
@@ -33,7 +33,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V56** (guideStone Level 4 — NUCLEUS validated, 49/49 live, barraCuda RTX 3070 parity, primalSpring v0.9.16) |
+| Version | **V57** (guideStone Level 5 — primal proof, 57/57 live, NUCLEUS parity: barraCuda + beardog + nestgate, primalSpring v0.9.17) |
 | **Total tests** | **948+** (864 lib + proptest + IPC fuzz + 33 forge + 51 toadstool + 94 experiment bins) |
 | Experiments complete | 94 (84 science Tracks 1–9 + 11 composition Tier 3–5) |
 | Composition validation (Tier 3–5) | 11 experiments (exp112–122) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity. `healthspring_guidestone` supersedes exp122 as guideStone artifact. |
@@ -54,9 +54,24 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 ---
 
+## V57 guideStone Level 5 — Primal Proof (from V56)
+
+V57 achieves **guideStone Level 5 (primal proof)** — the highest readiness level per `GUIDESTONE_COMPOSITION_STANDARD` v1.2.0. **57/57 checks pass** (10 skipped) against a live NUCLEUS: barraCuda (tensor math), beardog (security), and nestgate (storage). This is the first spring to reach Level 5 with full three-tier IPC validation.
+
+| Change | Impact |
+|--------|--------|
+| **4 math methods validated via IPC** | `stats.mean` 0.00e0, `stats.std_dev` 0.00e0, `stats.variance` 1.78e-15, `stats.correlation` 0.00e0 — all within `IPC_ROUND_TRIP_TOL` (1e-10). Sprint 44 resolved the variance/correlation wire gap (Gap 19). |
+| **Storage round-trip** | `storage.store` + `storage.retrieve` against live nestgate — PASS. |
+| **primalSpring v0.9.17** | Upgraded from v0.9.16. Brings `genomeBin v5.1`, family-aware discovery, `v1.2.0` standard. |
+| **Gap 19 resolved** | `stats.variance` and `stats.correlation` re-added to Tier 2 + Tier 3 after barraCuda Sprint 44. |
+| **Gaps 20–22 documented** | BTSP production mode (Gap 20), crypto probe schema (Gap 21), socket discovery for DAG/AI/commit (Gap 22). |
+| **`GUIDESTONE_READINESS`** = 5 | Primal proof complete. Exit code 0 with live NUCLEUS. |
+
+---
+
 ## V56 guideStone Level 4 — NUCLEUS Validated (from V55)
 
-V56 completes the leap from guideStone Level 3 (bare works) to Level 4 (NUCLEUS validated): **49/49 checks pass** against a live barraCuda primal running on an NVIDIA RTX 3070 GPU. This is the first healthSpring guideStone run with a real NUCLEUS primal responding to IPC.
+V56 completed the leap from guideStone Level 3 (bare works) to Level 4 (NUCLEUS validated): **49/49 checks pass** against a live barraCuda primal running on an NVIDIA RTX 3070 GPU.
 
 | Change | Impact |
 |--------|--------|
