@@ -42,7 +42,7 @@ capabilities over Unix sockets for biomeOS graph composition.
 - **Unsafe code**: 0 (`forbid(unsafe_code)` in workspace lints)
 - **MSRV**: 1.87 (Edition 2024)
 - **Crates**: 93 workspace members (3 lib + 90 experiments)
-- **GPU**: 6 WGSL shaders via barraCuda v0.3.11 (Hill, PopPK, Diversity, MM, SCFA, Beat); availability probe cached in `OnceLock`
+- **GPU**: 6 WGSL shaders via barraCuda v0.3.12 (Hill, PopPK, Diversity, MM, SCFA, Beat); availability probe cached in `OnceLock`
 - **Tracing**: library code uses `tracing` (no `println!` in lib)
 
 ## Key Capabilities (JSON-RPC)

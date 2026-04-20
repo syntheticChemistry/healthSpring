@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: April 18, 2026
-**Status**: V56 — guideStone Level 4 (NUCLEUS validated, 49/49 live). Levels 1–5 DONE. 948+ tests, 94 experiments, 84+ JSON-RPC capabilities, 54 Python baselines, 94 provenance entries. Live IPC parity via barraCuda RTX 3070. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.16. ecoBin 0.9.0. barraCuda v0.3.12.
+**Last Updated**: April 20, 2026
+**Status**: V57 — guideStone Level 5 (primal proof, 57/57 live, 10 skipped). 948+ tests, 94 experiments, 84+ JSON-RPC capabilities, 54 Python baselines, 94 provenance entries. Live IPC parity via NUCLEUS (barraCuda + beardog + nestgate): 4 math methods + storage round-trip. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.17. ecoBin 0.9.0. barraCuda v0.3.12.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---

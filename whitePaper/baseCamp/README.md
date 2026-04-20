@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** April 19, 2026
-**Status:** V56 — guideStone Level 4 (NUCLEUS validated, 49/49 live). Live IPC parity via barraCuda RTX 3070. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.16. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). Three-tier harness: Tier 1 local, Tier 2 IPC-wired (barraCuda live), Tier 3 primal proof. ecoBin 0.9.0. barraCuda v0.3.12. Zero clippy, zero unsafe.
+**Last Updated:** April 20, 2026
+**Status:** V57 — guideStone Level 5 (primal proof, 57/57 live, 10 skipped). Live IPC parity via NUCLEUS (barraCuda + beardog + nestgate): `stats.mean` 0.00e0, `stats.std_dev` 0.00e0, `stats.variance` 1.78e-15, `stats.correlation` 0.00e0 + storage round-trip. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.17. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). Three-tier harness per `GUIDESTONE_COMPOSITION_STANDARD` v1.2.0: Tier 1 local, Tier 2 IPC-wired (4 math + storage), Tier 3 primal proof. ecoBin 0.9.0. barraCuda v0.3.12. Zero clippy, zero unsafe.
 
 ---
 
@@ -118,7 +118,7 @@ Level 1: Python baseline        → peer-reviewed science (DOI-cited baselines) 
 Level 2: Rust validation        → faithful port, spring binary (the "Rust proof")    DONE
 Level 3: barraCuda CPU          → same math via primal WGSL shaders (CPU fallback)   DONE
 Level 4: barraCuda GPU          → sovereign shader execution, hardware validated     DONE
-Level 5: guideStone             → self-validating binary (bare + NUCLEUS IPC)       DONE (Level 4)
+Level 5: guideStone             → self-validating binary (bare + NUCLEUS IPC)       DONE (Level 5 — primal proof)
 Level 6: NUCLEUS deployment     → plasmidBin ecobins on clean machine                READY
 ```
 
@@ -126,18 +126,20 @@ Level 6: NUCLEUS deployment     → plasmidBin ecobins on clean machine         
 validation targets for the primal composition.** The science doesn't change —
 we prove the NUCLEUS composition patterns faithfully reproduce it at every layer.
 
-**V56 guideStone (Level 4)**: The `healthspring_guidestone` binary validates
-bare properties 1–5 (Deterministic, Traceable, Self-Verifying via BLAKE3,
-Env-Agnostic, Tolerance-Documented) without NUCLEUS (Tier 1). When NUCLEUS is
-deployed, it validates IPC parity via `primalspring::composition` for
-`stats.mean` and `stats.std_dev` (Tier 2), then confirms the primal proof —
-same primitives reproduce through NUCLEUS (Tier 3). **V56 achieved 49/49 checks
-against live barraCuda on RTX 3070 with zero-diff parity.**
+**V57 guideStone (Level 5 — primal proof)**: The `healthspring_guidestone`
+binary validates bare properties 1–5 (Deterministic, Traceable, Self-Verifying
+via BLAKE3, Env-Agnostic, Tolerance-Documented) without NUCLEUS (Tier 1). When
+NUCLEUS is deployed, it validates IPC parity via `primalspring::composition`
+for `stats.mean`, `stats.std_dev`, `stats.variance`, and `stats.correlation`
+(Tier 2), plus `storage.store`/`storage.retrieve` round-trip (nestgate), then
+confirms the primal proof — same primitives reproduce through NUCLEUS (Tier 3).
+**V57 achieved 57/57 checks against live NUCLEUS (barraCuda + beardog +
+nestgate).** Gap 19 (`stats.variance`/`stats.correlation`) resolved by
+barraCuda Sprint 44.
 
 Domain-specific functions (Hill, Shannon, Simpson, Bray-Curtis, etc.) are LOCAL
 compositions of barraCuda primitives — validated in Tier 1, not routed through
-IPC. `stats.variance` and `stats.correlation` are documented wire gaps
-awaiting barraCuda evolution (Gap §19).
+IPC. All four generic math primitives are now proven end-to-end via IPC.
 
 | Tier | Experiments | What it proves |
 |------|-------------|----------------|

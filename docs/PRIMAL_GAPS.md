@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-04-20
-**healthSpring version**: V57 (ecoBin 0.9.0, guideStone Level 4, primalSpring v0.9.17)
+**healthSpring version**: V57 (ecoBin 0.9.0, guideStone Level 5, primalSpring v0.9.17)
 
 ---
 

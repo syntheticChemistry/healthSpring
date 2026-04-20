@@ -1,7 +1,7 @@
 # healthSpring: Human Health Applications of Sovereign Scientific Computing
 
-**Version**: 0.16 (V56 — guideStone Level 4, NUCLEUS validated)
-**Date**: April 19, 2026
+**Version**: 0.17 (V57 — guideStone Level 5, primal proof)
+**Date**: April 20, 2026
 
 ---
 

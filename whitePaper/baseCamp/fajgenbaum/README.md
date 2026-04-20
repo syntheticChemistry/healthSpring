@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring vs. Every Cure MATRIX — Comparative Analysis
 
-**Last Updated**: April 10, 2026
-**Status**: V56 — guideStone Level 4 (NUCLEUS validated, 49/49 live). 948+ tests, 94 experiments, 84+ capabilities. ecoBin 0.9.0. barraCuda v0.3.12. primalSpring v0.9.16. Onboarding document for researchers whose work we have ingested and evolved —
+**Last Updated**: April 20, 2026
+**Status**: V57 — guideStone Level 5 (primal proof, 57/57 live). 948+ tests, 94 experiments, 84+ capabilities. ecoBin 0.9.0. barraCuda v0.3.12. primalSpring v0.9.17. Onboarding document for researchers whose work we have ingested and evolved —
 particularly Fajgenbaum (MATRIX), Lisabeth (ADDRC HTS), and collaborators entering the
 healthSpring ecosystem.
 **Audience**: Drug discovery researchers, pharmacologists, computational biologists, and anyone

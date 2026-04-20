@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: April 19, 2026
-**Status**: V56 — guideStone Level 4 (NUCLEUS validated). Live IPC parity: `stats.mean` 0.00e0, `stats.std_dev` 0.00e0 via barraCuda RTX 3070. Wire gaps: `stats.variance`, `stats.correlation` not on JSON-RPC surface (Gap 19). barraCuda v0.3.12. All six GPU ops LIVE. ecoBin 0.9.0. primalSpring v0.9.16.
+**Last Updated**: April 20, 2026
+**Status**: V57 — guideStone Level 5 (primal proof). Live IPC parity: `stats.mean` 0.00e0, `stats.std_dev` 0.00e0, `stats.variance` 1.78e-15, `stats.correlation` 0.00e0 via NUCLEUS. Gap 19 resolved (Sprint 44). barraCuda v0.3.12. All six GPU ops LIVE. ecoBin 0.9.0. primalSpring v0.9.17.
 
 ---
 
