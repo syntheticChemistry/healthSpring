@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-04-19
-**healthSpring version**: V56 (ecoBin 0.9.0, guideStone Level 4, primalSpring v0.9.16)
+**Date**: 2026-04-20
+**healthSpring version**: V57 (ecoBin 0.9.0, guideStone Level 4, primalSpring v0.9.17)
 
 ---
 
@@ -357,25 +357,96 @@ handlers) is withdrawn.
 
 ## 19. barraCuda Wire Gaps: `stats.variance`, `stats.correlation`
 
-**Gap**: Live IPC testing against barraCuda (RTX 3070, FAMILY_ID=healthspring-validation)
-revealed that `stats.variance` and `stats.correlation` are not on barraCuda's
-JSON-RPC surface. Both return "Unknown method" errors.
+**Gap**: ~~Live IPC testing against barraCuda revealed that `stats.variance` and
+`stats.correlation` were not on barraCuda's JSON-RPC surface.~~
 
-**Evidence**: guideStone run (49/49 after fix):
+**Status**: **RESOLVED in Sprint 44 / primalSpring v0.9.17.** barraCuda added
+`stats.variance` (sample variance, Bessel's N-1) and `stats.correlation`
+(Pearson r) to the wire. healthSpring's guideStone now validates both in
+Tier 2 (IPC-Wired) and Tier 3 (Primal Proof).
+
+**Evidence**: guideStone run (57/57, 10 skipped):
 - `stats.mean` — PASS (composition=5.5, local=5.5, diff=0.00e0)
 - `stats.std_dev` — PASS (composition=3.027…, local=3.027…, diff=0.00e0)
-- `stats.variance` — Unknown method (removed from guideStone, documented here)
-- `stats.correlation` — Unknown method (removed from guideStone, documented here)
+- `stats.variance` — PASS (composition=9.166…, local=9.166…, diff=1.78e-15)
+- `stats.correlation` — PASS (composition=1, local=1, diff=0.00e0)
 
-**Impact**: healthSpring's guideStone can validate `mean` and `std_dev` parity
-but cannot exercise variance or correlation through IPC. These are generic
-math primitives that belong on barraCuda's wire surface.
+---
 
-**Proposed resolution**: barraCuda team adds `stats.variance` and
-`stats.correlation` to the JSON-RPC server surface. healthSpring will re-add
-them to Tier 2 once available.
+## 20. BTSP Production Mode Breaks Primal IPC
 
-**Status**: Documented. Awaiting barraCuda wire evolution.
+**Gap**: When `FAMILY_SEED` (or `BEARDOG_FAMILY_SEED`) is set in the
+environment, `primalspring::ipc::Transport::connect` attempts a BTSP
+handshake before JSON-RPC. Primals that do not implement the BTSP server-side
+handshake (barraCuda, nestgate, etc.) reject or misparse the BTSP `ClientHello`,
+causing all IPC to fail with silent connection errors.
+
+**Impact**: Any deployment that sets `FAMILY_SEED` for BearDog production mode
+will break IPC to all non-BTSP primals. The guideStone must `unset FAMILY_SEED`
+to fall back to cleartext UDS.
+
+**Workaround**: Unset `FAMILY_SEED`, `BEARDOG_FAMILY_SEED`, and
+`RHIZOCRYPT_FAMILY_SEED` before running `healthspring_guidestone` or any
+`primalspring`-based client.
+
+**Proposed resolution**: `Transport::connect` should negotiate protocol support
+(e.g., probe for BTSP capability) rather than unconditionally attempting
+BTSP when `FAMILY_SEED` is present. Alternatively, non-BTSP primals should
+gracefully reject the handshake and fall back to cleartext.
+
+**Status**: Documented. Workaround in place. Needs primalSpring transport fix.
+
+---
+
+## 21. Crypto Capability Protocol Errors
+
+**Gap**: `crypto.hash` and `crypto.sign` (BearDog) return protocol errors during
+guideStone validation:
+- `crypto.hash`: "Invalid base64 data: Invalid symbol 45, offset 12"
+- `crypto.sign`: "Missing required parameter: message"
+
+The guideStone sends probe payloads that do not match BearDog's expected
+parameter schema.
+
+**Impact**: Crypto capabilities are SKIPped in Tier 2. Not a blocker for
+Level 5 (science validation), but prevents full manifest capability coverage.
+
+**Proposed resolution**: Align guideStone probe payloads with BearDog's actual
+JSON-RPC parameter schema once BearDog publishes method signatures in a
+wateringHole spec.
+
+**Status**: Documented. SKIPped in guideStone (10 skips).
+
+---
+
+## 22. Missing Socket Discovery: DAG, AI, Commit Capabilities
+
+**Gap**: guideStone cannot discover sockets for `capability:dag` (rhizocrypt
+DAG methods), `capability:ai` (squirrel inference), or `capability:commit`
+(sweetgrass braid). These primals either:
+- (a) do not register capability-keyed sockets in the standard
+  `$XDG_RUNTIME_DIR/biomeos/` directory, or
+- (b) use a different capability vocabulary than what `discover_by_capability`
+  searches for.
+
+**Evidence** (guideStone 57/57, 10 skipped):
+- `rhizocrypt.liveness`: SKIP — no socket for `capability:dag`
+- `sweetgrass.liveness`: SKIP — no socket for `capability:commit`
+- `inference.complete`: SKIP — no socket for `capability:ai`
+- `dag.session.create`, `dag.event.append`: SKIP — no socket for `capability:dag`
+- `braid.create`, `braid.commit`: SKIP — no socket for `capability:commit`
+
+**Impact**: 7 of 10 guideStone SKIPs are due to socket discovery misses for
+these three capability domains. Full NUCLEUS validation requires either
+capability-keyed socket registration or a discovery shim.
+
+**Proposed resolution**:
+- Rhizocrypt, Sweetgrass, and Squirrel register sockets with
+  `capability:{domain}` naming convention, OR
+- primalSpring's `discover_by_capability` adds fallback to primal-name-keyed
+  sockets (e.g., `rhizocrypt.sock` → capabilities `dag.*`)
+
+**Status**: Documented. Needs ecosystem socket registration standardization.
 
 ---
 
@@ -401,4 +472,7 @@ them to Tier 2 once available.
 | 16 | Capability routing by domain | — | **Fixed V53**: `by_capability` domains | — |
 | 17 | barraCuda lib→IPC (Level 5) | — | **V54**: reframed — 9 methods are local domain compositions, not wire gaps. guideStone uses `CompositionContext` for generic IPC | None (V53 ask withdrawn) |
 | 18 | guideStone P3 (CHECKSUMS) | — | **Fixed V55**: BLAKE3 via `primalspring::checksums::verify_manifest()`. SKIP when no manifest (honest scaffolding). | — |
-| 19 | barraCuda: `stats.variance`, `stats.correlation` | barraCuda team | **V56**: documented, removed from Tier 2 pending wire | Add to JSON-RPC surface |
+| 19 | barraCuda: `stats.variance`, `stats.correlation` | — | **RESOLVED V57**: Sprint 44 added both; guideStone validates in Tier 2+3 | — |
+| 20 | BTSP production mode breaks IPC | primalSpring transport | **V57**: documented, `FAMILY_SEED` workaround | Negotiate BTSP capability |
+| 21 | Crypto probe schema mismatch | BearDog method spec | **V57**: documented, SKIPped in guideStone | Publish method signatures |
+| 22 | Missing socket discovery (DAG/AI/commit) | Ecosystem socket std | **V57**: documented, SKIPped in guideStone | Standardize capability sockets |

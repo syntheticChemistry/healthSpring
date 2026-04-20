@@ -4,6 +4,39 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V57 — 2026-04-20 — guideStone Level 4 (Primal Proof Complete)
+
+### Added
+- **Full barraCuda math IPC parity**: guideStone passes 57/57 checks (10
+  skipped) against live NUCLEUS (barraCuda, beardog, nestgate). All four
+  generic math methods validated via IPC:
+  - `stats.mean` — PASS (diff=0.00e0)
+  - `stats.std_dev` — PASS (diff=0.00e0)
+  - `stats.variance` — PASS (diff=1.78e-15, Sprint 44)
+  - `stats.correlation` — PASS (diff=0.00e0, Sprint 44)
+- **Tier 2 storage round-trip**: `storage.store` + `storage.retrieve` against
+  live nestgate — PASS.
+- **Gaps 20–22 documented**: BTSP production mode breaks IPC (Gap 20),
+  crypto probe schema mismatch (Gap 21), missing capability socket discovery
+  for DAG/AI/commit domains (Gap 22).
+
+### Changed
+- **`primalspring`** upgraded v0.9.16 → v0.9.17.
+- **guideStone standard reference** updated v1.1.0 → v1.2.0.
+- **`niche::BARRACUDA_IPC_MIGRATION`**: added `stats.variance` and
+  `stats.correlation` entries.
+- **Tier 2 restored**: `stats.variance` and `stats.correlation` re-added to
+  Tier 2 (IPC-Wired) now that barraCuda Sprint 44 exposes them.
+- **Tier 3 expanded**: primal proof validates all four math methods + domain
+  science locality confirmation.
+
+### Fixed
+- **Gap 19 resolved**: `stats.variance` and `stats.correlation` now on
+  barraCuda wire (Sprint 44). guideStone validates both end-to-end.
+- **BTSP workaround**: `FAMILY_SEED` must be unset for guideStone runs to
+  avoid BTSP handshake failures with non-BTSP primals (Gap 20).
+- CHECKSUMS regenerated after domain.rs and main.rs updates.
+
 ## V56 — 2026-04-19 — guideStone Level 4 (NUCLEUS Validated)
 
 ### Added

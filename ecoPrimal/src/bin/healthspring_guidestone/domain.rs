@@ -2,7 +2,7 @@
 
 //! Domain science validation through NUCLEUS IPC.
 //!
-//! Three-tier validation per `GUIDESTONE_COMPOSITION_STANDARD` v1.1.0:
+//! Three-tier validation per `GUIDESTONE_COMPOSITION_STANDARD` v1.2.0:
 //!
 //! - **Tier 1:** `validate_domain_science()` — local analytical checks, always green.
 //! - **Tier 2:** `validate_barracuda_math_ipc()` + `validate_manifest_capabilities()` —
@@ -19,14 +19,12 @@ use healthspring_barracuda::tolerances;
 
 /// Validate barraCuda generic math via IPC.
 ///
-/// These are the wire-ready methods: `stats.mean` and `stats.std_dev`.
-/// The guideStone calls them via `CompositionContext` (not `BarraCudaClient`)
-/// and compares against local `math_dispatch` baselines.
+/// Wire-ready methods: `stats.mean`, `stats.std_dev`, `stats.variance`,
+/// `stats.correlation` (variance + correlation added in barraCuda Sprint 44).
 pub fn validate_barracuda_math_ipc(ctx: &mut CompositionContext, v: &mut ValidationResult) {
     let data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0];
     let local_mean = math_dispatch::mean(&data);
 
-    // stats.mean → capability domain "tensor" → primal "barracuda"
     validate_parity(
         ctx,
         v,
@@ -39,7 +37,6 @@ pub fn validate_barracuda_math_ipc(ctx: &mut CompositionContext, v: &mut Validat
         ps_tolerances::IPC_ROUND_TRIP_TOL,
     );
 
-    // stats.std_dev
     let local_sd = math_dispatch::std_dev(&data).unwrap_or(0.0);
     validate_parity(
         ctx,
@@ -53,8 +50,32 @@ pub fn validate_barracuda_math_ipc(ctx: &mut CompositionContext, v: &mut Validat
         ps_tolerances::IPC_ROUND_TRIP_TOL,
     );
 
-    // NOTE: stats.variance and stats.correlation are not yet on barraCuda's
-    // wire. Documented in docs/PRIMAL_GAPS.md for upstream barraCuda team.
+    // stats.variance (Sprint 44: sample variance, Bessel's N-1)
+    let variance = local_sd * local_sd;
+    validate_parity(
+        ctx,
+        v,
+        "stats.variance IPC parity",
+        method_to_capability_domain("stats.variance"),
+        "stats.variance",
+        serde_json::json!({"data": data}),
+        "result",
+        variance,
+        ps_tolerances::IPC_ROUND_TRIP_TOL,
+    );
+
+    // stats.correlation (Sprint 44: Pearson r, self-correlation = 1.0)
+    validate_parity(
+        ctx,
+        v,
+        "stats.correlation self-parity",
+        method_to_capability_domain("stats.correlation"),
+        "stats.correlation",
+        serde_json::json!({"x": data, "y": data}),
+        "result",
+        1.0,
+        ps_tolerances::IPC_ROUND_TRIP_TOL,
+    );
 }
 
 /// Validate proto-nucleate manifest capabilities via IPC.
@@ -270,10 +291,35 @@ pub fn validate_primal_proof(ctx: &mut CompositionContext, v: &mut ValidationRes
         ps_tolerances::IPC_ROUND_TRIP_TOL,
     );
 
+    // stats.variance: primal proof confirms wire parity for variance
+    let variance = local_sd * local_sd;
+    validate_parity(
+        ctx,
+        v,
+        "primal-proof: variance([1..10]) parity",
+        method_to_capability_domain("stats.variance"),
+        "stats.variance",
+        serde_json::json!({"data": data}),
+        "result",
+        variance,
+        ps_tolerances::IPC_ROUND_TRIP_TOL,
+    );
+
+    // stats.correlation: self-correlation = 1.0
+    validate_parity(
+        ctx,
+        v,
+        "primal-proof: correlation(self) parity",
+        method_to_capability_domain("stats.correlation"),
+        "stats.correlation",
+        serde_json::json!({"x": data, "y": data}),
+        "result",
+        1.0,
+        ps_tolerances::IPC_ROUND_TRIP_TOL,
+    );
+
     // Domain science (Hill, Shannon, Simpson, Bray-Curtis) are local
-    // compositions validated in Tier 1. They compose barraCuda primitives
-    // (mean, std_dev) that are proven correct above. When barraCuda
-    // exposes stats.variance and stats.correlation, those will join here.
+    // compositions of the primitives proven correct above.
     v.check_bool(
         "primal-proof: domain science local",
         true,

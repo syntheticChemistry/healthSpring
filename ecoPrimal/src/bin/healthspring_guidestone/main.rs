@@ -8,7 +8,7 @@
 
 //! healthSpring guideStone — self-validating NUCLEUS node.
 //!
-//! Three-tier primal proof harness per `GUIDESTONE_COMPOSITION_STANDARD` v1.1.0:
+//! Three-tier primal proof harness per `GUIDESTONE_COMPOSITION_STANDARD` v1.2.0:
 //!
 //! - **Tier 1 (LOCAL):** Bare properties 1–5 + domain science. Always green in CI.
 //! - **Tier 2 (IPC-WIRED):** IPC parity via live primals. `check_skip` when absent.
@@ -51,7 +51,7 @@ fn main() {
     eprintln!("╔══════════════════════════════════════════════════════════════════╗");
     eprintln!("║  healthSpring guideStone — self-validating NUCLEUS node        ║");
     eprintln!("║  Domain: clinical health (PK/PD, microbiome, biosignal)        ║");
-    eprintln!("║  Standard: GUIDESTONE_COMPOSITION_STANDARD v1.1.0             ║");
+    eprintln!("║  Standard: GUIDESTONE_COMPOSITION_STANDARD v1.2.0             ║");
     eprintln!("╚══════════════════════════════════════════════════════════════════╝\n");
 
     eprintln!(

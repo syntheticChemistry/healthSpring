@@ -154,6 +154,8 @@ pub const PROTO_NUCLEATE_VALIDATION_CAPABILITIES: &[&str] = &[
 pub const BARRACUDA_IPC_MIGRATION: &[(&str, &str)] = &[
     ("barracuda::stats::mean", "stats.mean"),
     ("barracuda::stats::correlation::std_dev", "stats.std_dev"),
+    ("barracuda::stats::variance", "stats.variance"),
+    ("barracuda::stats::correlation", "stats.correlation"),
     ("barracuda::stats::hill", "stats.hill"),
     (
         "barracuda::stats::shannon_from_frequencies",
@@ -215,13 +217,14 @@ pub const COMPOSITION_EXPERIMENTS: &[(&str, &str)] = &[
 
 // ── guideStone metadata ──────────────────────────────────────────────────
 
-/// guideStone readiness level (per `GUIDESTONE_COMPOSITION_STANDARD` v1.1.0).
+/// guideStone readiness level (per `GUIDESTONE_COMPOSITION_STANDARD` v1.2.0).
 ///
 /// 0 = not started, 1 = validation exists, 2 = properties documented,
 /// 3 = bare guideStone works, 4 = NUCLEUS guideStone works, 5 = certified.
 ///
-/// Level 4: 49/49 checks passed (14 skipped) against live barraCuda (RTX 3070).
-/// Tier 1 (local), Tier 2 (IPC `mean`/`std_dev` parity), Tier 3 (primal proof).
+/// Level 4: 57/57 checks passed (10 skipped) against live NUCLEUS (3 primals).
+/// Tier 1 (local), Tier 2 (IPC `mean`/`std_dev`/`variance`/`correlation` parity,
+/// storage round-trip), Tier 3 (primal proof). primalSpring v0.9.17, v1.2.0 std.
 pub const GUIDESTONE_READINESS: u8 = 4;
 
 /// guideStone binary name for this spring.
@@ -248,7 +251,7 @@ pub struct GuideStoneProperties {
     pub deterministic: bool,
     /// P2: Every number traces to a paper or proof.
     pub traceable: bool,
-    /// P3: BLAKE3 checksums detect tampering (v1.1.0). SKIP when no manifest.
+    /// P3: BLAKE3 checksums detect tampering (v1.2.0). SKIP when no manifest.
     pub self_verifying: bool,
     /// P4: Pure Rust, ecoBin, no network, no sudo.
     pub env_agnostic: bool,
@@ -385,7 +388,7 @@ mod tests {
         assert_eq!(GUIDESTONE_BINARY, "healthspring_guidestone");
         assert!(GUIDESTONE_READINESS <= 5);
         assert!(GUIDESTONE_READINESS >= 4, "Level 4: NUCLEUS validated");
-        // All 5 properties satisfied (P3 via primalspring::checksums, v1.1.0)
+        // All 5 properties satisfied (P3 via primalspring::checksums, v1.2.0)
         assert!(GUIDESTONE_PROPERTIES.deterministic);
         assert!(GUIDESTONE_PROPERTIES.traceable);
         assert!(GUIDESTONE_PROPERTIES.self_verifying);
