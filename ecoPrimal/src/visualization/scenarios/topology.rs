@@ -6,7 +6,7 @@
 //! transfers as edges.
 
 use super::{ScenarioEdge, bar, edge, gauge, node, scaffold};
-use crate::visualization::types::HealthScenario;
+use crate::visualization::types::{HealthScenario, NodeStatus, NodeType};
 
 /// Build a petalTongue scenario from a NUCLEUS topology description.
 ///
@@ -59,16 +59,16 @@ pub fn topology_scenario(
             ];
 
             let status = if nest.available {
-                "healthy"
+                NodeStatus::Healthy
             } else {
-                "degraded"
+                NodeStatus::Degraded
             };
             let scenario_node = super::ScenarioNode {
                 id: nest_id.clone(),
                 name: nest.label.clone(),
-                node_type: nest.substrate.clone(),
+                node_type: NodeType::from_scenario_label(&nest.substrate),
                 family: "nucleus".into(),
-                status: status.into(),
+                status,
                 health: if nest.available { 100 } else { 50 },
                 confidence: 90,
                 position: None,
@@ -131,12 +131,12 @@ pub fn dispatch_scenario(
     let summary = node(
         "dispatch_summary",
         "Dispatch Plan",
-        "orchestrator",
+        NodeType::Integration,
         &["compute.dispatch"],
         vec![bar(
             "stage_timing",
             "Stage Timing",
-            stage_names,
+            &stage_names,
             stage_times,
             "μs",
         )],
@@ -148,7 +148,7 @@ pub fn dispatch_scenario(
         let stage_node = node(
             &format!("stage_{i}"),
             &stage.name,
-            &stage.substrate,
+            NodeType::from_scenario_label(&stage.substrate),
             &["compute.execute"],
             vec![
                 gauge(

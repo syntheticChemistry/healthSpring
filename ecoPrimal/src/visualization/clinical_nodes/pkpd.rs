@@ -4,7 +4,9 @@
 use crate::endocrine::{self, testosterone_cypionate as tc};
 use crate::visualization::clinical::{PatientTrtProfile, TrtProtocol};
 use crate::visualization::scenarios::{gauge, node, timeseries};
-use crate::visualization::types::{ClinicalRange, DataChannel, ScenarioNode};
+use crate::visualization::types::{
+    ClinicalRange, ClinicalStatus, DataChannel, NodeType, ScenarioNode,
+};
 
 #[expect(
     clippy::too_many_lines,
@@ -79,7 +81,7 @@ pub fn protocol_node(p: &PatientTrtProfile) -> ScenarioNode {
     node(
         "protocol",
         &format!("Treatment: {protocol_name}"),
-        "compute",
+        NodeType::Compute,
         &["clinical.treatment.testosterone_pk"],
         vec![
             timeseries(
@@ -88,7 +90,7 @@ pub fn protocol_node(p: &PatientTrtProfile) -> ScenarioNode {
                 "Time (days)",
                 "T (ng/mL)",
                 "ng/mL",
-                days,
+                &days,
                 pk_curve,
             ),
             gauge(
@@ -117,13 +119,13 @@ pub fn protocol_node(p: &PatientTrtProfile) -> ScenarioNode {
                 label: "Therapeutic window".into(),
                 min: 3.0,
                 max: 35.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Supraphysiologic".into(),
                 min: 35.0,
                 max: 60.0,
-                status: "warning".into(),
+                status: ClinicalStatus::Warning,
             },
         ],
     )
@@ -187,7 +189,7 @@ pub fn population_node(p: &PatientTrtProfile) -> ScenarioNode {
     node(
         "population",
         "Population Comparison (100 patients)",
-        "storage",
+        NodeType::Storage,
         &["clinical.population.pk_comparison"],
         vec![
             DataChannel::Distribution {
@@ -214,7 +216,7 @@ pub fn population_node(p: &PatientTrtProfile) -> ScenarioNode {
             label: "Population therapeutic range".into(),
             min: 3.0,
             max: 15.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         }],
     )
 }

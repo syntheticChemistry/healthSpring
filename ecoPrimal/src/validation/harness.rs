@@ -12,6 +12,36 @@ use super::sink::ValidationSink;
 
 static TRACING_INIT: Once = Once::new();
 
+/// Outcome of a validation run, returned by [`ValidationHarness::finish`].
+pub struct ValidationOutcome {
+    /// Harness / experiment name.
+    pub name: String,
+    /// Number of checks that passed.
+    pub passed: usize,
+    /// Number of checks that failed.
+    pub failed: usize,
+    /// Total checks registered.
+    pub total: usize,
+}
+
+impl ValidationOutcome {
+    /// Whether all checks passed.
+    #[must_use]
+    pub const fn all_passed(&self) -> bool {
+        self.failed == 0
+    }
+
+    /// Suggested process exit code (0 = pass, 1 = fail).
+    #[must_use]
+    pub const fn exit_code(&self) -> i32 {
+        if self.failed > 0 {
+            1
+        } else {
+            0
+        }
+    }
+}
+
 /// Initialize a minimal tracing subscriber for validation binary output.
 ///
 /// Called automatically by [`ValidationHarness::new`]. Safe to call multiple
@@ -204,13 +234,24 @@ impl ValidationHarness {
         self.checks.iter().filter(|c| !c.passed).count()
     }
 
-    /// Log summary and exit process with 0 (all pass) or 1 (any fail).
-    pub fn exit(&mut self) -> ! {
+    /// Log summary and return pass/fail counts without terminating the process.
+    pub fn finish(&mut self) -> ValidationOutcome {
         let total = self.checks.len();
         let passed = self.passed();
         let failed = self.failed();
         self.sink.summary(&self.name, passed, failed, total);
-        std::process::exit(i32::from(failed > 0));
+        ValidationOutcome {
+            name: self.name.clone(),
+            passed,
+            failed,
+            total,
+        }
+    }
+
+    /// Log summary and exit process with 0 (all pass) or 1 (any fail).
+    pub fn exit(&mut self) -> ! {
+        let code = self.finish().exit_code();
+        std::process::exit(code);
     }
 
     /// Exit with code 2 to indicate a skipped experiment.

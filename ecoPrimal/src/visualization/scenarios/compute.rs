@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{HealthScenario, ScenarioEdge};
+use super::super::types::{HealthScenario, NodeType, ScenarioEdge};
 use super::topology::{
     DispatchStageInfo, TopologyNest, TopologyNode, TopologyTransfer, dispatch_scenario,
     topology_scenario,
@@ -26,7 +26,7 @@ pub fn gpu_scaling_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "gpu_scaling",
         "V16 GPU Scaling",
-        "compute",
+        NodeType::Compute,
         &["compute.gpu.v16_scaling"],
         vec![
             timeseries(
@@ -35,7 +35,7 @@ pub fn gpu_scaling_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Batch Size",
                 "Time (ms)",
                 "ms",
-                scales.clone(),
+                &scales,
                 mm_times,
             ),
             timeseries(
@@ -44,7 +44,7 @@ pub fn gpu_scaling_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Batch Size",
                 "Time (ms)",
                 "ms",
-                scales.clone(),
+                &scales,
                 scfa_times,
             ),
             timeseries(
@@ -53,7 +53,7 @@ pub fn gpu_scaling_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Batch Size",
                 "Time (ms)",
                 "ms",
-                scales,
+                &scales,
                 beat_times,
             ),
             bar(

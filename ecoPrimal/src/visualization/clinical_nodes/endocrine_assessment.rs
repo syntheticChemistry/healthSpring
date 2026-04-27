@@ -4,12 +4,10 @@
 use crate::endocrine;
 use crate::visualization::clinical::PatientTrtProfile;
 use crate::visualization::scenarios::{gauge, timeseries};
-use crate::visualization::types::{ClinicalRange, DataChannel, ScenarioNode};
+use crate::visualization::types::{
+    ClinicalRange, ClinicalStatus, DataChannel, NodeStatus, NodeType, ScenarioNode,
+};
 
-#[expect(
-    clippy::too_many_lines,
-    reason = "assembles patient assessment node with multiple data channels — splitting would fragment a single logical unit"
-)]
 pub fn assessment_node(p: &PatientTrtProfile) -> (ScenarioNode, Vec<DataChannel>) {
     let t0 = endocrine::decline_params::T0_MEAN_NGDL;
     let ages: Vec<f64> = (300..=900).map(|i| f64::from(i) / 10.0).collect();
@@ -44,7 +42,7 @@ pub fn assessment_node(p: &PatientTrtProfile) -> (ScenarioNode, Vec<DataChannel>
             "Age (years)",
             "Testosterone (ng/dL)",
             "ng/dL",
-            ages,
+            &ages,
             decline_curve,
         ),
         gauge(
@@ -82,14 +80,9 @@ pub fn assessment_node(p: &PatientTrtProfile) -> (ScenarioNode, Vec<DataChannel>
     let n = ScenarioNode {
         id: "assessment".into(),
         name: format!("Patient Assessment: {}", p.name),
-        node_type: "sensor".into(),
+        node_type: NodeType::Sensor,
         family: "healthspring-clinical".into(),
-        status: if p.baseline_t_ng_dl < 300.0 {
-            "critical"
-        } else {
-            "active"
-        }
-        .into(),
+        status: NodeStatus::from_aggregate_health(health),
         health,
         confidence: 90,
         position: None,
@@ -103,19 +96,19 @@ pub fn assessment_node(p: &PatientTrtProfile) -> (ScenarioNode, Vec<DataChannel>
                 label: "Normal T".into(),
                 min: 300.0,
                 max: 1000.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Borderline low T".into(),
                 min: 200.0,
                 max: 300.0,
-                status: "warning".into(),
+                status: ClinicalStatus::Warning,
             },
             ClinicalRange {
                 label: "Clinical hypogonadism".into(),
                 min: 0.0,
                 max: 200.0,
-                status: "critical".into(),
+                status: ClinicalStatus::Critical,
             },
         ],
     };

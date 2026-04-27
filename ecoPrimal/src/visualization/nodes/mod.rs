@@ -16,7 +16,9 @@ use pkpd::build_pk_node;
 
 use crate::diagnostic::DiagnosticAssessment;
 
-use super::types::{DataChannel, ScenarioEdge, ScenarioNode};
+use super::types::{
+    DataChannel, EdgeType, NodeStatus, NodeType, ScenarioEdge, ScenarioNode,
+};
 use crate::PRIMAL_NAME;
 
 pub(super) fn risk_to_health(risk: f64) -> u8 {
@@ -29,14 +31,8 @@ pub(super) fn risk_to_health(risk: f64) -> u8 {
     h
 }
 
-pub(super) const fn health_to_status(health: u8) -> &'static str {
-    if health >= 90 {
-        "healthy"
-    } else if health >= 50 {
-        "warning"
-    } else {
-        "critical"
-    }
+pub(super) const fn health_to_status(health: u8) -> NodeStatus {
+    NodeStatus::from_aggregate_health(health)
 }
 
 pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<ScenarioNode> {
@@ -51,9 +47,9 @@ pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<S
         ScenarioNode {
             id: "patient".into(),
             name: patient_name.into(),
-            node_type: "patient".into(),
+            node_type: NodeType::Integration,
             family: PRIMAL_NAME.into(),
-            status: health_to_status(patient_health).into(),
+            status: health_to_status(patient_health),
             health: patient_health,
             confidence: 95,
             position: None,
@@ -77,9 +73,9 @@ pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<S
         ScenarioNode {
             id: "gut-trt-axis".into(),
             name: "Gut\u{2013}TRT Axis".into(),
-            node_type: "discovery".into(),
+            node_type: NodeType::Analytics,
             family: PRIMAL_NAME.into(),
-            status: health_to_status(gut_health).into(),
+            status: health_to_status(gut_health),
             health: gut_health,
             confidence: 80,
             position: None,
@@ -99,9 +95,9 @@ pub(super) fn build_nodes(a: &DiagnosticAssessment, patient_name: &str) -> Vec<S
         ScenarioNode {
             id: "hrv-cardiac".into(),
             name: "HRV\u{2013}Cardiac".into(),
-            node_type: "discovery".into(),
+            node_type: NodeType::Analytics,
             family: PRIMAL_NAME.into(),
-            status: health_to_status(hrv_health).into(),
+            status: health_to_status(hrv_health),
             health: hrv_health,
             confidence: 95,
             position: None,
@@ -126,49 +122,49 @@ pub(super) fn build_edges() -> Vec<ScenarioEdge> {
         ScenarioEdge {
             from: "patient".into(),
             to: "pk".into(),
-            edge_type: "feeds".into(),
+            edge_type: EdgeType::DataFlow,
             label: "demographics".into(),
         },
         ScenarioEdge {
             from: "patient".into(),
             to: "microbiome".into(),
-            edge_type: "feeds".into(),
+            edge_type: EdgeType::DataFlow,
             label: "gut sample".into(),
         },
         ScenarioEdge {
             from: "patient".into(),
             to: "biosignal".into(),
-            edge_type: "feeds".into(),
+            edge_type: EdgeType::DataFlow,
             label: "ECG/PPG/EDA".into(),
         },
         ScenarioEdge {
             from: "patient".into(),
             to: "endocrine".into(),
-            edge_type: "feeds".into(),
+            edge_type: EdgeType::DataFlow,
             label: "labs".into(),
         },
         ScenarioEdge {
             from: "microbiome".into(),
             to: "gut-trt-axis".into(),
-            edge_type: "influences".into(),
+            edge_type: EdgeType::Coordination,
             label: "evenness".into(),
         },
         ScenarioEdge {
             from: "endocrine".into(),
             to: "gut-trt-axis".into(),
-            edge_type: "influences".into(),
+            edge_type: EdgeType::Coordination,
             label: "TRT response".into(),
         },
         ScenarioEdge {
             from: "biosignal".into(),
             to: "hrv-cardiac".into(),
-            edge_type: "influences".into(),
+            edge_type: EdgeType::Coordination,
             label: "HRV".into(),
         },
         ScenarioEdge {
             from: "endocrine".into(),
             to: "hrv-cardiac".into(),
-            edge_type: "influences".into(),
+            edge_type: EdgeType::Coordination,
             label: "testosterone".into(),
         },
     ]
@@ -179,6 +175,7 @@ pub(super) fn build_edges() -> Vec<ScenarioEdge> {
 mod tests {
     use super::{build_edges, build_nodes, health_to_status, risk_to_health};
     use crate::diagnostic::{PatientProfile, Sex, assess_patient};
+    use crate::visualization::types::NodeStatus;
     use crate::visualization::DataChannel;
 
     fn sample_assessment() -> crate::diagnostic::DiagnosticAssessment {
@@ -205,12 +202,12 @@ mod tests {
 
     #[test]
     fn health_to_status_thresholds() {
-        assert_eq!(health_to_status(100), "healthy");
-        assert_eq!(health_to_status(90), "healthy");
-        assert_eq!(health_to_status(89), "warning");
-        assert_eq!(health_to_status(50), "warning");
-        assert_eq!(health_to_status(49), "critical");
-        assert_eq!(health_to_status(0), "critical");
+        assert_eq!(health_to_status(100), NodeStatus::Healthy);
+        assert_eq!(health_to_status(90), NodeStatus::Healthy);
+        assert_eq!(health_to_status(89), NodeStatus::Degraded);
+        assert_eq!(health_to_status(50), NodeStatus::Degraded);
+        assert_eq!(health_to_status(49), NodeStatus::Offline);
+        assert_eq!(health_to_status(0), NodeStatus::Offline);
     }
 
     #[test]

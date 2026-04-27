@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{ClinicalRange, DataChannel, HealthScenario, ScenarioEdge};
+use super::super::types::{ClinicalRange, ClinicalStatus, DataChannel, HealthScenario, NodeType, ScenarioEdge};
 use super::{bar, edge, gauge, node, scaffold, scatter3d, timeseries};
 use crate::pkpd;
 
@@ -29,7 +29,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             "Concentration (nM)",
             "Response",
             "fractional",
-            concs.clone(),
+            &concs,
             responses,
         ));
         let ec = pkpd::compute_ec_values(drug.ic50_jak1_nm, drug.hill_n);
@@ -39,14 +39,14 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     hill_channels.push(bar(
         "ec50_compare",
         "EC50 Comparison",
-        ec_cats,
+        &ec_cats,
         ec50_vals,
         "nM",
     ));
     s.ecosystem.primals.push(node(
         "hill",
         "Hill Dose-Response",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.hill_dose_response"],
         hill_channels,
         vec![],
@@ -63,7 +63,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "one_comp",
         "One-Compartment Oral PK",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.one_compartment_pk"],
         vec![
             timeseries(
@@ -72,7 +72,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                times,
+                &times,
                 oral_concs,
             ),
             gauge(
@@ -111,13 +111,13 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 label: "Therapeutic".into(),
                 min: 0.01,
                 max: 0.05,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Supratherapeutic".into(),
                 min: 0.05,
                 max: 0.08,
-                status: "warning".into(),
+                status: ClinicalStatus::Warning,
             },
         ],
     ));
@@ -133,7 +133,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "two_comp",
         "Two-Compartment IV PK",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.two_compartment_pk"],
         vec![
             timeseries(
@@ -142,7 +142,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                t2c,
+                &t2c,
                 central,
             ),
             gauge(
@@ -191,7 +191,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "mab",
         "mAb Cross-Species Transfer",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.allometric_scaling"],
         vec![
             timeseries(
@@ -200,7 +200,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (days)",
                 "C (mg/L)",
                 "mg/L",
-                t_days,
+                &t_days,
                 mab_concs,
             ),
             gauge(
@@ -257,7 +257,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "pop_pk",
         "Population PK (n=200)",
-        "storage",
+        NodeType::Storage,
         &["science.pkpd.population_pk"],
         vec![
             DataChannel::Distribution {
@@ -312,7 +312,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
         "Time (hr)",
         "C (mg/L)",
         "mg/L",
-        pbpk_times_ds,
+        &pbpk_times_ds,
         pbpk_venous_ds,
     )];
     for (i, name) in tp.tissue_names.iter().enumerate() {
@@ -322,14 +322,14 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             "Time (hr)",
             "C (mg/L)",
             "mg/L",
-            tp.times.clone(),
+            &tp.times,
             tp.profiles[i].clone(),
         ));
     }
     pbpk_channels.push(bar(
         "tissue_concs",
         "Tissue Concentrations (24 hr)",
-        tissue_names,
+        &tissue_names,
         tissue_concs,
         "mg/L",
     ));
@@ -357,7 +357,7 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "pbpk",
         "PBPK 5-Tissue Model",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.pbpk"],
         pbpk_channels,
         vec![],

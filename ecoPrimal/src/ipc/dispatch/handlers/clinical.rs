@@ -7,11 +7,10 @@ use crate::{diagnostic, endocrine, pkpd};
 
 use super::{f, fa, sz_or, sza};
 
-fn percentile_sorted(v: &mut [f64], p: f64) -> f64 {
+fn percentile_from_sorted(v: &[f64], p: f64) -> f64 {
     if v.is_empty() {
         return 0.0;
     }
-    v.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
     #[expect(
         clippy::cast_possible_truncation,
         clippy::cast_sign_loss,
@@ -137,12 +136,16 @@ pub fn dispatch_population_trt(params: &Value) -> Value {
     let n_f = crate::validation::len_f64(n_patients);
     let cmax_mean = cmax_arr.iter().sum::<f64>() / n_f;
     let auc_mean = auc_arr.iter().sum::<f64>() / n_f;
+    let mut sorted_cmax = cmax_arr.clone();
+    sorted_cmax.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+    let cmax_low_tail = percentile_from_sorted(&sorted_cmax, 5.0);
+    let cmax_high_tail = percentile_from_sorted(&sorted_cmax, 95.0);
     serde_json::json!({
         "n_patients": n_patients,
         "cmax_mean": cmax_mean,
         "auc_mean": auc_mean,
-        "cmax_p5": percentile_sorted(&mut cmax_arr.clone(), 5.0),
-        "cmax_p95": percentile_sorted(&mut cmax_arr.clone(), 95.0),
+        "cmax_p5": cmax_low_tail,
+        "cmax_p95": cmax_high_tail,
     })
 }
 

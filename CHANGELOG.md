@@ -4,6 +4,36 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V59 — 2026-04-27 — Deep Debt Resolution (Idiomatic Rust Evolution)
+
+### Changed
+- **`NodeType`, `NodeStatus`, `EdgeType`, `ClinicalStatus` enums**: Replaced
+  `String` fields with typed enums across `visualization/types.rs` and all
+  scenario/clinical-node call sites. Serde-compatible serialization preserved.
+  Eliminates stringly-typed dispatch for closed vocabularies.
+- **`timeseries()` x-values by reference**: Helper takes `&[f64]` instead of
+  `Vec<f64>` for shared x-axis data, eliminating ~30 `.clone()` calls across
+  8 scenario builders and 5 clinical-node builders.
+- **`bar()` categories by reference**: Takes `&[String]` instead of
+  `Vec<String>`, eliminating ~15 `.clone()` calls.
+- **Provenance status capability-based**: `handle_provenance_status()` in
+  routing.rs now uses capability domains (dag/ledger/attribution) instead of
+  hardcoded primal names (rhizocrypt/loamspine/sweetgrass).
+- **`NicheDependency.name` doc**: Clarified as socket-prefix fallback hint,
+  not primal identity assertion. Capability domain is the primary discovery key.
+- **Clinical `percentile_from_sorted`**: Extracted from `percentile_sorted`
+  to avoid double-clone and double-sort for cmax percentile computation.
+
+### Added
+- **`ValidationOutcome`**: New return type from `ValidationHarness::finish()`
+  — returns pass/fail/total counts without calling `process::exit()`. Library
+  code can now validate without terminating the process. `exit()` delegates
+  to `finish()` for binary use.
+
+### Fixed
+- All clippy errors resolved (0 warnings, 0 errors).
+- BLAKE3 CHECKSUMS regenerated for modified source files.
+
 ## V58 — 2026-04-27 — Phase 46 Composition Template (Full NUCLEUS)
 
 ### Added

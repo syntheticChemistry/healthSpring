@@ -3,7 +3,7 @@
 
 use crate::endocrine;
 use crate::visualization::scenarios::{bar, gauge, node};
-use crate::visualization::types::{ClinicalRange, ScenarioNode};
+use crate::visualization::types::{ClinicalRange, ClinicalStatus, NodeType, ScenarioNode};
 
 pub fn gut_health_node(diversity: f64) -> ScenarioNode {
     let communities = [
@@ -43,7 +43,7 @@ pub fn gut_health_node(diversity: f64) -> ScenarioNode {
     node(
         "gut_health",
         "Gut Health Factor (Cross-Track)",
-        "compute",
+        NodeType::Compute,
         &[
             "clinical.predictor.gut_diversity",
             "clinical.predictor.metabolic_response",
@@ -52,7 +52,7 @@ pub fn gut_health_node(diversity: f64) -> ScenarioNode {
             bar(
                 "gut_response",
                 "Expected Weight Loss by Gut Diversity",
-                cats,
+                &cats,
                 responses,
                 "kg",
             ),
@@ -82,13 +82,13 @@ pub fn gut_health_node(diversity: f64) -> ScenarioNode {
                 label: "Diverse gut".into(),
                 min: 0.6,
                 max: 1.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Low diversity".into(),
                 min: 0.0,
                 max: 0.4,
-                status: "critical".into(),
+                status: ClinicalStatus::Critical,
             },
         ],
     )

@@ -5,7 +5,7 @@
 
 use super::*;
 use crate::tolerances;
-use crate::visualization::{DataChannel, HealthScenario, ScenarioEdge};
+use crate::visualization::{DataChannel, EdgeType, HealthScenario, NodeStatus, NodeType, ScenarioEdge};
 
 fn assert_study_invariants(
     scenario: &HealthScenario,
@@ -467,7 +467,7 @@ fn timeseries_produces_timeseries_channel() {
         "X",
         "Y",
         "u",
-        vec![1.0, 2.0],
+        &[1.0, 2.0],
         vec![10.0, 20.0],
     );
     match &ch {
@@ -496,7 +496,7 @@ fn bar_produces_bar_channel() {
     let ch = super::bar(
         "b1",
         "Test Bar",
-        vec!["A".into(), "B".into()],
+        &["A".into(), "B".into()],
         vec![1.0, 2.0],
         "u",
     );
@@ -521,12 +521,12 @@ fn bar_produces_bar_channel() {
 
 #[test]
 fn node_produces_scenario_node() {
-    let n = super::node("n1", "Node Name", "compute", &["cap1"], vec![], vec![]);
+    let n = super::node("n1", "Node Name", NodeType::Compute, &["cap1"], vec![], vec![]);
     assert_eq!(n.id, "n1");
     assert_eq!(n.name, "Node Name");
-    assert_eq!(n.node_type, "compute");
+    assert_eq!(n.node_type, NodeType::Compute);
     assert_eq!(n.family, "healthspring");
-    assert_eq!(n.status, "healthy");
+    assert_eq!(n.status, NodeStatus::Healthy);
     assert_eq!(n.health, 100);
     assert_eq!(n.confidence, 95);
     assert!(
@@ -541,7 +541,7 @@ fn edge_produces_scenario_edge() {
     let e = super::edge("a", "b", "a to b");
     assert_eq!(e.from, "a");
     assert_eq!(e.to, "b");
-    assert_eq!(e.edge_type, "data-flow");
+    assert_eq!(e.edge_type, EdgeType::DataFlow);
     assert_eq!(e.label, "a to b");
 }
 

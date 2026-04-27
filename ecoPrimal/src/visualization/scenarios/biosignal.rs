@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{ClinicalRange, HealthScenario, ScenarioEdge};
+use super::super::types::{
+    ClinicalRange, ClinicalStatus, HealthScenario, NodeType, ScenarioEdge,
+};
 use super::{bar, edge, gauge, node, scaffold, spectrum, timeseries};
 use crate::biosignal;
 use crate::wfdb;
@@ -97,7 +99,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "qrs",
         "Pan-Tompkins QRS Detection",
-        "compute",
+        NodeType::Compute,
         &["science.biosignal.pan_tompkins"],
         vec![
             timeseries(
@@ -106,7 +108,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (s)",
                 "Amplitude",
                 "mV",
-                ecg_t_ds.clone(),
+                &ecg_t_ds,
                 ecg_ds,
             ),
             timeseries(
@@ -115,7 +117,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (s)",
                 "Amplitude",
                 "mV",
-                ecg_t_ds.clone(),
+                &ecg_t_ds,
                 bp_ds,
             ),
             timeseries(
@@ -124,7 +126,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (s)",
                 "Amplitude",
                 "mV/s",
-                ecg_t_ds.clone(),
+                &ecg_t_ds,
                 deriv_ds,
             ),
             timeseries(
@@ -133,7 +135,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (s)",
                 "Amplitude",
                 "mV²",
-                ecg_t_ds.clone(),
+                &ecg_t_ds,
                 squared_ds,
             ),
             timeseries(
@@ -142,7 +144,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (s)",
                 "Amplitude",
                 "a.u.",
-                ecg_t_ds,
+                &ecg_t_ds,
                 mwi_ds,
             ),
             gauge(
@@ -180,7 +182,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             label: "Normal HR".into(),
             min: 60.0,
             max: 100.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         }],
     ));
 
@@ -202,7 +204,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "hrv",
         "HRV Metrics",
-        "compute",
+        NodeType::Compute,
         &["science.biosignal.hrv"],
         vec![
             timeseries(
@@ -211,7 +213,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Beat #",
                 "RR Interval",
                 "ms",
-                rr_x,
+                &rr_x,
                 rr_intervals,
             ),
             spectrum(
@@ -268,7 +270,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "spo2",
         "PPG SpO2",
-        "compute",
+        NodeType::Compute,
         &["science.biosignal.ppg_spo2"],
         vec![
             timeseries(
@@ -277,7 +279,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "R-value",
                 "SpO2",
                 "%",
-                r_sweep,
+                &r_sweep,
                 spo2_sweep,
             ),
             gauge(
@@ -296,13 +298,13 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 label: "Normal SpO2".into(),
                 min: 95.0,
                 max: 100.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Hypoxemia".into(),
                 min: 70.0,
                 max: 90.0,
-                status: "critical".into(),
+                status: ClinicalStatus::Critical,
             },
         ],
     ));
@@ -317,7 +319,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "fusion",
         "Multi-Channel Fusion",
-        "compute",
+        NodeType::Compute,
         &["science.biosignal.fusion"],
         vec![
             timeseries(
@@ -326,7 +328,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (s)",
                 "SCL",
                 "µS",
-                eda_t.clone(),
+                &eda_t,
                 scl,
             ),
             timeseries(
@@ -335,7 +337,7 @@ pub fn biosignal_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (s)",
                 "Phasic",
                 "µS",
-                eda_t,
+                &eda_t,
                 phasic,
             ),
             gauge(
@@ -463,7 +465,7 @@ fn build_wfdb_ecg_node(s: &mut HealthScenario) {
     s.ecosystem.primals.push(node(
         "wfdb_ecg",
         "WFDB ECG Format Parser",
-        "compute",
+        NodeType::Compute,
         &["science.biosignal.wfdb_format212"],
         vec![
             timeseries(
@@ -472,13 +474,13 @@ fn build_wfdb_ecg_node(s: &mut HealthScenario) {
                 "Time (s)",
                 "Voltage",
                 "mV",
-                time_axis,
+                &time_axis,
                 physical,
             ),
             bar(
                 "beat_types",
                 "Beat Type Distribution",
-                beat_labels,
+                &beat_labels,
                 beat_vals,
                 "count",
             ),

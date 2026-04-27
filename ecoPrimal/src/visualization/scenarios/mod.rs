@@ -16,8 +16,8 @@ pub mod topology;
 mod v16;
 
 use super::types::{
-    Animations, CapReqs, ClinicalRange, DataChannel, Ecosystem, HealthScenario, NeuralApi,
-    Performance, ScenarioEdge, ScenarioNode, SensoryConfig, UiConfig,
+    Animations, CapReqs, ClinicalRange, DataChannel, Ecosystem, EdgeType, HealthScenario, NeuralApi,
+    NodeStatus, NodeType, Performance, ScenarioEdge, ScenarioNode, SensoryConfig, UiConfig,
 };
 
 pub use biosignal::biosignal_study;
@@ -103,7 +103,7 @@ pub(crate) fn timeseries(
     x_label: &str,
     y_label: &str,
     unit: &str,
-    xs: Vec<f64>,
+    xs: impl AsRef<[f64]>,
     ys: Vec<f64>,
 ) -> DataChannel {
     DataChannel::TimeSeries {
@@ -112,7 +112,7 @@ pub(crate) fn timeseries(
         x_label: x_label.into(),
         y_label: y_label.into(),
         unit: unit.into(),
-        x_values: xs,
+        x_values: xs.as_ref().to_vec(),
         y_values: ys,
     }
 }
@@ -120,14 +120,14 @@ pub(crate) fn timeseries(
 pub(crate) fn bar(
     id: &str,
     label: &str,
-    cats: Vec<String>,
+    cats: impl AsRef<[String]>,
     vals: Vec<f64>,
     unit: &str,
 ) -> DataChannel {
     DataChannel::Bar {
         id: id.into(),
         label: label.into(),
-        categories: cats,
+        categories: cats.as_ref().to_vec(),
         values: vals,
         unit: unit.into(),
     }
@@ -190,7 +190,7 @@ pub(crate) fn scatter3d(
 pub(crate) fn node(
     id: &str,
     name: &str,
-    node_type: &str,
+    node_type: impl Into<NodeType>,
     caps: &[&str],
     channels: Vec<DataChannel>,
     ranges: Vec<ClinicalRange>,
@@ -200,7 +200,7 @@ pub(crate) fn node(
         name: name.into(),
         node_type: node_type.into(),
         family: crate::PRIMAL_NAME.into(),
-        status: "healthy".into(),
+        status: NodeStatus::Healthy,
         health: 100,
         confidence: 95,
         position: None,
@@ -214,7 +214,7 @@ pub(crate) fn edge(from: &str, to: &str, label: &str) -> ScenarioEdge {
     ScenarioEdge {
         from: from.into(),
         to: to.into(),
-        edge_type: "data-flow".into(),
+        edge_type: EdgeType::DataFlow,
         label: label.into(),
     }
 }

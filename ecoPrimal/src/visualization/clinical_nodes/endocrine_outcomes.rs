@@ -3,7 +3,7 @@
 
 use crate::endocrine;
 use crate::visualization::scenarios::{gauge, node, timeseries};
-use crate::visualization::types::{ClinicalRange, ScenarioNode};
+use crate::visualization::types::{ClinicalRange, ClinicalStatus, NodeType, ScenarioNode};
 
 pub fn metabolic_node() -> ScenarioNode {
     let months: Vec<f64> = (0..=600).map(|i| f64::from(i) / 10.0).collect();
@@ -47,7 +47,7 @@ pub fn metabolic_node() -> ScenarioNode {
     node(
         "metabolic",
         "Metabolic Response (Saad 2013, n=411)",
-        "compute",
+        NodeType::Compute,
         &[
             "clinical.outcome.weight",
             "clinical.outcome.waist",
@@ -60,7 +60,7 @@ pub fn metabolic_node() -> ScenarioNode {
                 "Month",
                 "Weight Change (kg)",
                 "kg",
-                months.clone(),
+                &months,
                 weight_curve,
             ),
             timeseries(
@@ -69,7 +69,7 @@ pub fn metabolic_node() -> ScenarioNode {
                 "Month",
                 "Waist Change (cm)",
                 "cm",
-                months.clone(),
+                &months,
                 waist_curve,
             ),
             timeseries(
@@ -78,7 +78,7 @@ pub fn metabolic_node() -> ScenarioNode {
                 "Month",
                 "BMI Change",
                 "units",
-                months,
+                &months,
                 bmi_curve,
             ),
         ],
@@ -87,13 +87,13 @@ pub fn metabolic_node() -> ScenarioNode {
                 label: "Weight loss on track".into(),
                 min: -20.0,
                 max: -5.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Waist target (<102cm men)".into(),
                 min: 0.0,
                 max: 102.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
         ],
     )
@@ -156,7 +156,7 @@ pub fn cardiovascular_node() -> ScenarioNode {
     node(
         "cardiovascular",
         "Cardiovascular (Sharma 2015, n=83,010)",
-        "compute",
+        NodeType::Compute,
         &[
             "clinical.outcome.lipids",
             "clinical.outcome.bp",
@@ -169,7 +169,7 @@ pub fn cardiovascular_node() -> ScenarioNode {
                 "Month",
                 "LDL (mg/dL)",
                 "mg/dL",
-                months.clone(),
+                &months,
                 ldl,
             ),
             timeseries(
@@ -178,7 +178,7 @@ pub fn cardiovascular_node() -> ScenarioNode {
                 "Month",
                 "HDL (mg/dL)",
                 "mg/dL",
-                months.clone(),
+                &months,
                 hdl,
             ),
             timeseries(
@@ -187,7 +187,7 @@ pub fn cardiovascular_node() -> ScenarioNode {
                 "Month",
                 "CRP (mg/dL)",
                 "mg/dL",
-                months.clone(),
+                &months,
                 crp,
             ),
             timeseries(
@@ -196,7 +196,7 @@ pub fn cardiovascular_node() -> ScenarioNode {
                 "Month",
                 "SBP (mmHg)",
                 "mmHg",
-                months,
+                &months,
                 sbp,
             ),
             gauge(
@@ -215,31 +215,31 @@ pub fn cardiovascular_node() -> ScenarioNode {
                 label: "LDL optimal".into(),
                 min: 0.0,
                 max: 130.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "LDL borderline".into(),
                 min: 130.0,
                 max: 160.0,
-                status: "warning".into(),
+                status: ClinicalStatus::Warning,
             },
             ClinicalRange {
                 label: "HDL protective".into(),
                 min: 40.0,
                 max: 100.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "SBP normal".into(),
                 min: 90.0,
                 max: 130.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "CRP low risk".into(),
                 min: 0.0,
                 max: 1.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
         ],
     )
@@ -282,7 +282,7 @@ pub fn diabetes_node(hba1c_baseline: f64) -> ScenarioNode {
     node(
         "diabetes",
         "Glycemic Response (Kapoor 2006 RCT)",
-        "compute",
+        NodeType::Compute,
         &["clinical.outcome.hba1c", "clinical.outcome.homa"],
         vec![
             timeseries(
@@ -291,7 +291,7 @@ pub fn diabetes_node(hba1c_baseline: f64) -> ScenarioNode {
                 "Month",
                 "HbA1c (%)",
                 "%",
-                months.clone(),
+                &months,
                 hba1c_curve,
             ),
             timeseries(
@@ -300,7 +300,7 @@ pub fn diabetes_node(hba1c_baseline: f64) -> ScenarioNode {
                 "Month",
                 "HOMA-IR",
                 "index",
-                months,
+                &months,
                 homa_curve,
             ),
             gauge(
@@ -319,13 +319,13 @@ pub fn diabetes_node(hba1c_baseline: f64) -> ScenarioNode {
                 label: "HbA1c target".into(),
                 min: 4.0,
                 max: 7.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "HbA1c prediabetic".into(),
                 min: 7.0,
                 max: 8.0,
-                status: "warning".into(),
+                status: ClinicalStatus::Warning,
             },
         ],
     )

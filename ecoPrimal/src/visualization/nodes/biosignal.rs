@@ -2,7 +2,9 @@
 //! Biosignal visualization nodes.
 
 use crate::diagnostic::DiagnosticAssessment;
-use crate::visualization::types::{ClinicalRange, DataChannel, ScenarioNode};
+use crate::visualization::types::{
+    ClinicalRange, ClinicalStatus, DataChannel, NodeType, ScenarioNode,
+};
 
 use super::health_to_status;
 use crate::PRIMAL_NAME;
@@ -11,9 +13,9 @@ pub(super) fn build_biosignal_node(a: &DiagnosticAssessment, health: u8) -> Scen
     ScenarioNode {
         id: "biosignal".into(),
         name: "Biosignal Monitor".into(),
-        node_type: "compute".into(),
+        node_type: NodeType::Compute,
         family: PRIMAL_NAME.into(),
-        status: health_to_status(health).into(),
+        status: health_to_status(health),
         health,
         confidence: 92,
         position: None,
@@ -27,19 +29,19 @@ pub(super) fn build_biosignal_node(a: &DiagnosticAssessment, health: u8) -> Scen
                 label: "HR normal".into(),
                 min: 60.0,
                 max: 100.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "SpO2 normal".into(),
                 min: 95.0,
                 max: 100.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "SDNN healthy".into(),
                 min: 50.0,
                 max: 200.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
         ],
     }

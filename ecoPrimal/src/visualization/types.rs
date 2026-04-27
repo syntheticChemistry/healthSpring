@@ -128,10 +128,131 @@ pub enum DataChannel {
     },
 }
 
+/// Semantic node kind for petalTongue ecosystem graphs (closed vocabulary).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum NodeType {
+    /// Compute / processing primal.
+    Compute,
+    /// Sensing or measurement source.
+    Sensor,
+    /// Persistence or data reservoir.
+    Storage,
+    /// Networking or messaging.
+    Network,
+    /// Security or policy enforcement.
+    Security,
+    /// Analytics, inference, or discovery.
+    Analytics,
+    /// Orchestration or cross-cutting integration.
+    Integration,
+}
+
+impl NodeType {
+    /// Map scenario / hardware labels (e.g. `cpu`, `gpu`, `orchestrator`) to the closed vocabulary.
+    #[must_use]
+    pub fn from_scenario_label(s: &str) -> Self {
+        match s.to_ascii_lowercase().as_str() {
+            "sensor" => Self::Sensor,
+            "storage" | "data" => Self::Storage,
+            "network" => Self::Network,
+            "security" => Self::Security,
+            "analytics" | "discovery" => Self::Analytics,
+            "integration" | "patient" | "orchestrator" => Self::Integration,
+            _ => Self::Compute,
+        }
+    }
+}
+
+impl From<&str> for NodeType {
+    fn from(s: &str) -> Self {
+        Self::from_scenario_label(s)
+    }
+}
+
+/// Coarse health or lifecycle state for a scenario node.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum NodeStatus {
+    /// Nominal operation.
+    Healthy,
+    /// Reduced performance or elevated risk.
+    Degraded,
+    /// Unavailable or failed.
+    Offline,
+}
+
+impl NodeStatus {
+    /// Map an aggregate 0–100 health score to a coarse status (diagnostic / scenario nodes).
+    #[must_use]
+    pub const fn from_aggregate_health(health: u8) -> Self {
+        if health >= 90 {
+            Self::Healthy
+        } else if health >= 50 {
+            Self::Degraded
+        } else {
+            Self::Offline
+        }
+    }
+}
+
+impl From<&str> for NodeStatus {
+    fn from(s: &str) -> Self {
+        match s.to_ascii_lowercase().as_str() {
+            "degraded" | "warning" | "critical" => Self::Degraded,
+            "offline" | "down" => Self::Offline,
+            _ => Self::Healthy,
+        }
+    }
+}
+
+/// Relationship kind between two scenario nodes.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum EdgeType {
+    /// Primary data path between nodes.
+    #[serde(rename = "data-flow")]
+    DataFlow,
+    /// Upstream/downstream dependency.
+    #[serde(rename = "dependency")]
+    Dependency,
+    /// Coordination or influence without direct data flow.
+    #[serde(rename = "coordination")]
+    Coordination,
+}
+
+impl From<&str> for EdgeType {
+    fn from(s: &str) -> Self {
+        match s.to_ascii_lowercase().as_str() {
+            "dependency" | "depends" => Self::Dependency,
+            "coordination" | "influences" | "coordinate" => Self::Coordination,
+            _ => Self::DataFlow,
+        }
+    }
+}
+
+/// Clinical band status for threshold styling.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ClinicalStatus {
+    /// Within expected range.
+    Normal,
+    /// Borderline or actionable.
+    Warning,
+    /// Severe or urgent.
+    Critical,
+}
+
+impl From<&str> for ClinicalStatus {
+    fn from(s: &str) -> Self {
+        match s.to_ascii_lowercase().as_str() {
+            "warning" => Self::Warning,
+            "critical" | "crit" => Self::Critical,
+            _ => Self::Normal,
+        }
+    }
+}
+
 /// Clinical reference range for threshold coloring.
-///
-/// `status` is `String` to match petalTongue's upstream `ClinicalRange`
-/// (which needs `Deserialize`). healthSpring serializes, petalTongue deserializes.
 #[derive(Debug, Clone, Serialize)]
 pub struct ClinicalRange {
     /// Human-readable band name (e.g. "Normal", "Critical").
@@ -141,7 +262,7 @@ pub struct ClinicalRange {
     /// Upper bound of the inclusive range.
     pub max: f64,
     /// petalTongue status token for styling (e.g. normal vs warning).
-    pub status: String,
+    pub status: ClinicalStatus,
 }
 
 /// A node in the scenario graph.
@@ -151,13 +272,13 @@ pub struct ScenarioNode {
     pub id: String,
     /// Display name for graph labels and panels.
     pub name: String,
-    /// Semantic node kind string (e.g. compute, sensor) for petalTongue.
+    /// Semantic node kind (e.g. compute, sensor) for petalTongue.
     #[serde(rename = "type")]
-    pub node_type: String,
+    pub node_type: NodeType,
     /// Grouping or subsystem label for layout and filtering.
     pub family: String,
-    /// Coarse health or lifecycle state as a string token.
-    pub status: String,
+    /// Coarse health or lifecycle state.
+    pub status: NodeStatus,
     /// 0–100 aggregate health score for visualization.
     pub health: u8,
     /// 0–100 confidence score for the node's outputs or inference.
@@ -193,7 +314,7 @@ pub struct ScenarioEdge {
     /// Destination node id.
     pub to: String,
     /// Relationship kind (e.g. data flow, dependency).
-    pub edge_type: String,
+    pub edge_type: EdgeType,
     /// Short caption or flow description for the link.
     pub label: String,
 }
@@ -343,9 +464,9 @@ mod tests {
         let node = ScenarioNode {
             id: "test-node".into(),
             name: "Test Node".into(),
-            node_type: "compute".into(),
+            node_type: NodeType::Compute,
             family: "healthspring".into(),
-            status: "healthy".into(),
+            status: NodeStatus::Healthy,
             health: 100,
             confidence: 95,
             position: None,
@@ -363,7 +484,7 @@ mod tests {
         let edge = ScenarioEdge {
             from: "a".into(),
             to: "b".into(),
-            edge_type: "feeds".into(),
+            edge_type: EdgeType::DataFlow,
             label: "data".into(),
         };
         assert_eq!(edge.from, "a");
@@ -415,7 +536,7 @@ mod tests {
             label: "Normal".into(),
             min: 0.0,
             max: 10.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         };
         let json = serde_json::to_string(&cr).expect("serialize");
         assert!(json.contains("\"label\":\"Normal\""));

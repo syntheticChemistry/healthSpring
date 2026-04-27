@@ -3,15 +3,17 @@
 
 use crate::PRIMAL_NAME;
 use crate::diagnostic::DiagnosticAssessment;
-use crate::visualization::types::{ClinicalRange, DataChannel, ScenarioNode};
+use crate::visualization::types::{
+    ClinicalRange, ClinicalStatus, DataChannel, NodeStatus, NodeType, ScenarioNode,
+};
 
 pub(super) fn build_pk_node(a: &DiagnosticAssessment) -> ScenarioNode {
     ScenarioNode {
         id: "pk".into(),
         name: "PK/PD Engine".into(),
-        node_type: "compute".into(),
+        node_type: NodeType::Compute,
         family: PRIMAL_NAME.into(),
-        status: "healthy".into(),
+        status: NodeStatus::Healthy,
         health: 100,
         confidence: 100,
         position: None,
@@ -64,13 +66,13 @@ pub(super) fn build_pk_node(a: &DiagnosticAssessment) -> ScenarioNode {
                 label: "Cmax therapeutic".into(),
                 min: 0.05,
                 max: 0.3,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Cmax high".into(),
                 min: 0.3,
                 max: 0.5,
-                status: "warning".into(),
+                status: ClinicalStatus::Warning,
             },
         ],
     }

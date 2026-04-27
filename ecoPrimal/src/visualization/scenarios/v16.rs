@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{ClinicalRange, HealthScenario, ScenarioEdge};
+use super::super::types::{
+    ClinicalRange, ClinicalStatus, HealthScenario, NodeType, ScenarioEdge,
+};
 use super::{bar, edge, gauge, node, scaffold, timeseries};
 use crate::biosignal::classification;
 use crate::biosignal::stress;
@@ -53,7 +55,7 @@ fn build_mm_nonlinear_pk(s: &mut HealthScenario) {
             "Time (days)",
             "C (mg/L)",
             "mg/L",
-            times,
+            &times,
             concs,
         ));
     }
@@ -66,7 +68,7 @@ fn build_mm_nonlinear_pk(s: &mut HealthScenario) {
     channels.push(bar(
         "mm_auc_compare",
         "AUC vs Dose (nonlinear increase)",
-        auc_cats,
+        &auc_cats,
         auc_vals,
         "mg·day/L",
     ));
@@ -86,7 +88,7 @@ fn build_mm_nonlinear_pk(s: &mut HealthScenario) {
     s.ecosystem.primals.push(node(
         "mm_nonlinear_pk",
         "Michaelis-Menten Nonlinear PK",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.michaelis_menten_nonlinear"],
         channels,
         vec![
@@ -94,13 +96,13 @@ fn build_mm_nonlinear_pk(s: &mut HealthScenario) {
                 label: "Therapeutic (phenytoin)".into(),
                 min: 10.0,
                 max: 20.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Toxic".into(),
                 min: 20.0,
                 max: 40.0,
-                status: "critical".into(),
+                status: ClinicalStatus::Critical,
             },
         ],
     ));
@@ -131,7 +133,7 @@ fn build_antibiotic_perturbation(s: &mut HealthScenario) {
     s.ecosystem.primals.push(node(
         "abx_perturbation",
         "Antibiotic Perturbation",
-        "compute",
+        NodeType::Compute,
         &["science.microbiome.antibiotic_perturbation"],
         vec![
             timeseries(
@@ -140,7 +142,7 @@ fn build_antibiotic_perturbation(s: &mut HealthScenario) {
                 "Time (days)",
                 "Shannon H′",
                 "nats",
-                times,
+                &times,
                 diversity,
             ),
             gauge(
@@ -168,7 +170,7 @@ fn build_antibiotic_perturbation(s: &mut HealthScenario) {
             label: "Healthy Shannon".into(),
             min: 2.5,
             max: 4.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         }],
     ));
 }
@@ -204,27 +206,27 @@ fn build_scfa_production(s: &mut HealthScenario) {
     s.ecosystem.primals.push(node(
         "scfa_prod",
         "SCFA Production",
-        "compute",
+        NodeType::Compute,
         &["science.microbiome.scfa_production"],
         vec![
             bar(
                 "scfa_acetate",
                 "Acetate by Fiber",
-                level_labels.clone(),
+                &level_labels,
                 acetate_vals,
                 "mmol/L",
             ),
             bar(
                 "scfa_propionate",
                 "Propionate by Fiber",
-                level_labels.clone(),
+                &level_labels,
                 propionate_vals,
                 "mmol/L",
             ),
             bar(
                 "scfa_butyrate",
                 "Butyrate by Fiber",
-                level_labels,
+                &level_labels,
                 butyrate_vals,
                 "mmol/L",
             ),
@@ -234,7 +236,7 @@ fn build_scfa_production(s: &mut HealthScenario) {
                 "Fiber (g/L)",
                 "Total SCFA",
                 "mmol/L",
-                sweep_fibers,
+                &sweep_fibers,
                 sweep_total,
             ),
             gauge(
@@ -252,7 +254,7 @@ fn build_scfa_production(s: &mut HealthScenario) {
             label: "Healthy SCFA total".into(),
             min: 50.0,
             max: 150.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         }],
     ));
 }
@@ -281,20 +283,20 @@ fn build_gut_brain_serotonin(s: &mut HealthScenario) {
     s.ecosystem.primals.push(node(
         "gut_serotonin",
         "Gut-Brain Serotonin Axis",
-        "compute",
+        NodeType::Compute,
         &["science.microbiome.gut_brain_serotonin"],
         vec![
             bar(
                 "serotonin_by_diversity",
                 "Serotonin Production",
-                cats.clone(),
+                &cats,
                 serotonin_vals,
                 "µmol/L",
             ),
             bar(
                 "trp_by_diversity",
                 "Tryptophan Availability",
-                cats,
+                &cats,
                 trp_vals,
                 "µmol/L",
             ),
@@ -361,7 +363,7 @@ fn build_eda_stress(s: &mut HealthScenario) {
     s.ecosystem.primals.push(node(
         "eda_stress",
         "EDA Stress Detection",
-        "compute",
+        NodeType::Compute,
         &[
             "science.biosignal.eda_stress_detection",
             "science.biosignal.eda_analysis",
@@ -373,7 +375,7 @@ fn build_eda_stress(s: &mut HealthScenario) {
                 "Time (s)",
                 "Conductance",
                 "µS",
-                eda_t,
+                &eda_t,
                 eda,
             ),
             timeseries(
@@ -382,7 +384,7 @@ fn build_eda_stress(s: &mut HealthScenario) {
                 "Time (s)",
                 "SCL",
                 "µS",
-                scl_t,
+                &scl_t,
                 scl,
             ),
             timeseries(
@@ -391,7 +393,7 @@ fn build_eda_stress(s: &mut HealthScenario) {
                 "Time (s)",
                 "Phasic",
                 "µS",
-                phasic_t,
+                &phasic_t,
                 phasic,
             ),
             gauge(
@@ -407,7 +409,7 @@ fn build_eda_stress(s: &mut HealthScenario) {
             bar(
                 "scr_per_epoch",
                 "SCR Count per 15s Epoch",
-                epoch_labels,
+                &epoch_labels,
                 epoch_scr,
                 "count",
             ),
@@ -416,7 +418,7 @@ fn build_eda_stress(s: &mut HealthScenario) {
             label: "Low Stress".into(),
             min: 0.0,
             max: 40.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         }],
     ));
 }
@@ -471,7 +473,7 @@ fn build_arrhythmia_classify(s: &mut HealthScenario) {
     s.ecosystem.primals.push(node(
         "arrhythmia_classify",
         "Arrhythmia Beat Classification",
-        "compute",
+        NodeType::Compute,
         &["science.biosignal.arrhythmia_classification"],
         vec![
             timeseries(
@@ -480,7 +482,7 @@ fn build_arrhythmia_classify(s: &mut HealthScenario) {
                 "Sample",
                 "Amplitude",
                 "mV",
-                sample_x.clone(),
+                &sample_x,
                 normal_tmpl,
             ),
             timeseries(
@@ -489,7 +491,7 @@ fn build_arrhythmia_classify(s: &mut HealthScenario) {
                 "Sample",
                 "Amplitude",
                 "mV",
-                sample_x.clone(),
+                &sample_x,
                 pvc_template,
             ),
             timeseries(
@@ -498,7 +500,7 @@ fn build_arrhythmia_classify(s: &mut HealthScenario) {
                 "Sample",
                 "Amplitude",
                 "mV",
-                sample_x,
+                &sample_x,
                 pac_template,
             ),
             bar(

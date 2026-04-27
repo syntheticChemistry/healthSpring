@@ -97,9 +97,9 @@ pub fn annotate_population(mut scenario: HealthScenario, pop: &PopulationResult)
     let pop_node = ScenarioNode {
         id: "population".into(),
         name: format!("Population (n={})", pop.n_patients),
-        node_type: "storage".into(),
+        node_type: NodeType::Storage,
         family: PRIMAL_NAME.into(),
-        status: "healthy".into(),
+        status: NodeStatus::Healthy,
         health: 100,
         confidence: 99,
         position: None,

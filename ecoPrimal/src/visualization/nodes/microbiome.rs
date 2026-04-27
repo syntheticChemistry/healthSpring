@@ -2,7 +2,9 @@
 //! Microbiome visualization nodes.
 
 use crate::diagnostic::DiagnosticAssessment;
-use crate::visualization::types::{ClinicalRange, DataChannel, ScenarioNode};
+use crate::visualization::types::{
+    ClinicalRange, ClinicalStatus, DataChannel, NodeType, ScenarioNode,
+};
 
 use super::health_to_status;
 use crate::PRIMAL_NAME;
@@ -11,9 +13,9 @@ pub(super) fn build_microbiome_node(a: &DiagnosticAssessment, health: u8) -> Sce
     ScenarioNode {
         id: "microbiome".into(),
         name: "Microbiome Risk".into(),
-        node_type: "data".into(),
+        node_type: NodeType::Storage,
         family: PRIMAL_NAME.into(),
-        status: health_to_status(health).into(),
+        status: health_to_status(health),
         health,
         confidence: 88,
         position: None,
@@ -54,13 +56,13 @@ pub(super) fn build_microbiome_node(a: &DiagnosticAssessment, health: u8) -> Sce
                 label: "Shannon healthy".into(),
                 min: 2.5,
                 max: 4.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Shannon dysbiotic".into(),
                 min: 0.0,
                 max: 1.5,
-                status: "critical".into(),
+                status: ClinicalStatus::Critical,
             },
         ],
     }

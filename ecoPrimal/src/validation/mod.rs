@@ -15,7 +15,7 @@ mod or_exit;
 mod sink;
 
 pub use check::{Check, ToleranceMode};
-pub use harness::ValidationHarness;
+pub use harness::{ValidationHarness, ValidationOutcome};
 pub use metrics::{LengthMismatch, index_of_agreement, len_f64, mae, nse, r_squared, rmse};
 pub use or_exit::OrExit;
 pub use sink::{CollectingSink, ValidationSink};

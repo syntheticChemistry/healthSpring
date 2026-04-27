@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{ClinicalRange, DataChannel, HealthScenario, ScenarioEdge};
+use super::super::types::{ClinicalRange, ClinicalStatus, DataChannel, HealthScenario, NodeType, ScenarioEdge};
 use super::{bar, edge, gauge, node, scaffold, scatter3d, timeseries};
 use crate::pkpd;
 
@@ -99,19 +99,20 @@ fn build_population_node(
             "Time (hr)",
             "C (mg/L)",
             "mg/L",
-            subj.times.clone(),
+            &subj.times,
             pred,
         ));
     }
 
     let param_names = ["ln(CL)", "ln(Vd)", "ln(ka)"];
+    let theta_bar_cats: Vec<String> = param_names
+        .iter()
+        .flat_map(|&n| [format!("{n} est"), format!("{n} true")])
+        .collect();
     channels.push(bar(
         "theta_est",
         "Estimated vs True Theta",
-        param_names
-            .iter()
-            .flat_map(|&n| [format!("{n} est"), format!("{n} true")])
-            .collect(),
+        &theta_bar_cats,
         result
             .theta
             .iter()
@@ -124,10 +125,7 @@ fn build_population_node(
     channels.push(bar(
         "omega_est",
         "Estimated vs True Omega (BSV)",
-        param_names
-            .iter()
-            .flat_map(|&n| [format!("{n} est"), format!("{n} true")])
-            .collect(),
+        &theta_bar_cats,
         result
             .omega_diag
             .iter()
@@ -202,7 +200,7 @@ fn build_population_node(
     scenario.ecosystem.primals.push(node(
         "nlme_population",
         "NLME Population PK (FOCE)",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.nlme_foce", "science.pkpd.population_pk"],
         channels,
         vec![],
@@ -222,7 +220,7 @@ fn build_nca_node(scenario: &mut HealthScenario) {
     scenario.ecosystem.primals.push(node(
         "nca_metrics",
         "Non-Compartmental Analysis",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.nca"],
         vec![
             timeseries(
@@ -231,7 +229,7 @@ fn build_nca_node(scenario: &mut HealthScenario) {
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                times,
+                &times,
                 concs,
             ),
             gauge(
@@ -309,7 +307,7 @@ fn build_nca_node(scenario: &mut HealthScenario) {
             label: "Therapeutic testosterone".into(),
             min: 300.0,
             max: 1000.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         }],
     ));
 }
@@ -325,7 +323,7 @@ fn build_cwres_node(
     scenario.ecosystem.primals.push(node(
         "cwres_diagnostics",
         "CWRES Diagnostics",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.nlme_diagnostics"],
         vec![
             timeseries(
@@ -334,7 +332,7 @@ fn build_cwres_node(
                 "Time (hr)",
                 "CWRES",
                 "standardized",
-                summary.all_times.clone(),
+                &summary.all_times,
                 summary.all_residuals.clone(),
             ),
             DataChannel::Distribution {
@@ -372,13 +370,13 @@ fn build_cwres_node(
                 label: "Well-specified model".into(),
                 min: -2.0,
                 max: 2.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Model misspecification".into(),
                 min: -4.0,
                 max: -2.0,
-                status: "warning".into(),
+                status: ClinicalStatus::Warning,
             },
         ],
     ));
@@ -403,7 +401,7 @@ fn build_vpc_node(
     scenario.ecosystem.primals.push(node(
         "vpc_check",
         "Visual Predictive Check",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.nlme_diagnostics"],
         vec![
             timeseries(
@@ -412,7 +410,7 @@ fn build_vpc_node(
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                vpc.time_bins.clone(),
+                &vpc.time_bins,
                 vpc.obs_p5,
             ),
             timeseries(
@@ -421,7 +419,7 @@ fn build_vpc_node(
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                vpc.time_bins.clone(),
+                &vpc.time_bins,
                 vpc.obs_p50,
             ),
             timeseries(
@@ -430,7 +428,7 @@ fn build_vpc_node(
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                vpc.time_bins.clone(),
+                &vpc.time_bins,
                 vpc.obs_p95,
             ),
             timeseries(
@@ -439,7 +437,7 @@ fn build_vpc_node(
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                vpc.time_bins.clone(),
+                &vpc.time_bins,
                 vpc.sim_p5,
             ),
             timeseries(
@@ -448,7 +446,7 @@ fn build_vpc_node(
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                vpc.time_bins.clone(),
+                &vpc.time_bins,
                 vpc.sim_p50,
             ),
             timeseries(
@@ -457,7 +455,7 @@ fn build_vpc_node(
                 "Time (hr)",
                 "C (mg/L)",
                 "mg/L",
-                vpc.time_bins,
+                &vpc.time_bins,
                 vpc.sim_p95,
             ),
         ],
@@ -475,7 +473,7 @@ fn build_gof_node(
     scenario.ecosystem.primals.push(node(
         "gof_fit",
         "Goodness-of-Fit",
-        "compute",
+        NodeType::Compute,
         &["science.pkpd.nlme_diagnostics"],
         vec![
             timeseries(
@@ -484,7 +482,7 @@ fn build_gof_node(
                 "IPRED (mg/L)",
                 "Observed (mg/L)",
                 "mg/L",
-                gof.individual_predicted.clone(),
+                &gof.individual_predicted,
                 gof.observed.clone(),
             ),
             timeseries(
@@ -493,7 +491,7 @@ fn build_gof_node(
                 "PPRED (mg/L)",
                 "Observed (mg/L)",
                 "mg/L",
-                gof.population_predicted,
+                &gof.population_predicted,
                 gof.observed,
             ),
             timeseries(
@@ -502,7 +500,7 @@ fn build_gof_node(
                 "Time (hr)",
                 "IWRES",
                 "standardized",
-                gof.times,
+                &gof.times,
                 gof.individual_residuals,
             ),
             gauge(

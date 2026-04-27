@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{ClinicalRange, HealthScenario, ScenarioEdge};
+use super::super::types::{
+    ClinicalRange, ClinicalStatus, HealthScenario, NodeType, ScenarioEdge,
+};
 use super::{bar, edge, gauge, node, scaffold, timeseries};
 use crate::endocrine;
 
@@ -32,7 +34,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "t_im",
         "Testosterone IM PK",
-        "compute",
+        NodeType::Compute,
         &["science.endocrine.testosterone_im"],
         vec![
             timeseries(
@@ -41,7 +43,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Time (days)",
                 "C (ng/mL)",
                 "ng/mL",
-                days,
+                &days,
                 single_curve,
             ),
             gauge(
@@ -69,7 +71,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             label: "Therapeutic T".into(),
             min: 10.0,
             max: 35.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         }],
     ));
 
@@ -90,7 +92,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "t_pellet",
         "Testosterone Pellet PK",
-        "compute",
+        NodeType::Compute,
         &["science.endocrine.testosterone_pellet"],
         vec![timeseries(
             "pellet_pk",
@@ -98,7 +100,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             "Time (days)",
             "C (ng/mL)",
             "ng/mL",
-            pellet_days,
+            &pellet_days,
             pellet_curve,
         )],
         vec![],
@@ -130,7 +132,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "age_decline",
         "Age-Related T Decline",
-        "compute",
+        NodeType::Compute,
         &["science.endocrine.testosterone_decline"],
         vec![
             timeseries(
@@ -139,7 +141,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Age (yr)",
                 "T (ng/dL)",
                 "ng/dL",
-                ages.clone(),
+                &ages,
                 t_low,
             ),
             timeseries(
@@ -148,7 +150,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Age (yr)",
                 "T (ng/dL)",
                 "ng/dL",
-                ages.clone(),
+                &ages,
                 t_mid,
             ),
             timeseries(
@@ -157,7 +159,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Age (yr)",
                 "T (ng/dL)",
                 "ng/dL",
-                ages,
+                &ages,
                 t_high,
             ),
             gauge(
@@ -175,7 +177,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             label: "Clinical low T".into(),
             min: 0.0,
             max: 300.0,
-            status: "critical".into(),
+            status: ClinicalStatus::Critical,
         }],
     ));
 
@@ -206,7 +208,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "trt_weight",
         "TRT Weight Trajectory",
-        "compute",
+        NodeType::Compute,
         &["science.endocrine.trt_weight"],
         vec![
             timeseries(
@@ -215,7 +217,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Month",
                 "ΔWeight (kg)",
                 "kg",
-                months.clone(),
+                &months,
                 weight_curve,
             ),
             timeseries(
@@ -224,7 +226,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Month",
                 "ΔWaist (cm)",
                 "cm",
-                months.clone(),
+                &months,
                 waist_curve,
             ),
         ],
@@ -257,7 +259,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "trt_cardio",
         "TRT Cardiovascular",
-        "compute",
+        NodeType::Compute,
         &["science.endocrine.trt_cardiovascular"],
         vec![
             timeseries(
@@ -266,7 +268,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Month",
                 "LDL (mg/dL)",
                 "mg/dL",
-                months.clone(),
+                &months,
                 ldl_curve,
             ),
             timeseries(
@@ -275,7 +277,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Month",
                 "SBP (mmHg)",
                 "mmHg",
-                months,
+                &months,
                 sbp_curve,
             ),
         ],
@@ -284,13 +286,13 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 label: "LDL optimal".into(),
                 min: 0.0,
                 max: 130.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "SBP normal".into(),
                 min: 90.0,
                 max: 130.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
         ],
     ));
@@ -311,7 +313,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "trt_diabetes",
         "TRT Diabetes Outcomes",
-        "compute",
+        NodeType::Compute,
         &["science.endocrine.trt_diabetes"],
         vec![timeseries(
             "hba1c",
@@ -319,14 +321,14 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             "Month",
             "HbA1c (%)",
             "%",
-            dm_months,
+            &dm_months,
             hba1c_curve,
         )],
         vec![ClinicalRange {
             label: "HbA1c target".into(),
             min: 4.0,
             max: 7.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         }],
     ));
 
@@ -349,12 +351,12 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "gut_axis",
         "Testosterone-Gut Axis",
-        "compute",
+        NodeType::Compute,
         &["science.endocrine.gut_trt_axis"],
         vec![bar(
             "gut_response",
             "Metabolic Response by Gut Health",
-            gut_cats,
+            &gut_cats,
             gut_resp,
             "kg weight change",
         )],
@@ -372,7 +374,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     s.ecosystem.primals.push(node(
         "hrv_cardiac",
         "HRV × TRT Cardiovascular",
-        "compute",
+        NodeType::Compute,
         &["science.endocrine.hrv_trt"],
         vec![
             timeseries(
@@ -381,7 +383,7 @@ pub fn endocrine_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Month",
                 "SDNN (ms)",
                 "ms",
-                hrv_months,
+                &hrv_months,
                 sdnn_curve,
             ),
             bar(

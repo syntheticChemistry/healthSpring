@@ -2,7 +2,9 @@
 //! Endocrine visualization nodes.
 
 use crate::diagnostic::DiagnosticAssessment;
-use crate::visualization::types::{ClinicalRange, DataChannel, ScenarioNode};
+use crate::visualization::types::{
+    ClinicalRange, ClinicalStatus, DataChannel, NodeType, ScenarioNode,
+};
 
 use super::health_to_status;
 use crate::PRIMAL_NAME;
@@ -11,9 +13,9 @@ pub(super) fn build_endocrine_node(a: &DiagnosticAssessment, health: u8) -> Scen
     ScenarioNode {
         id: "endocrine".into(),
         name: "Endocrine Outcomes".into(),
-        node_type: "compute".into(),
+        node_type: NodeType::Compute,
         family: PRIMAL_NAME.into(),
-        status: health_to_status(health).into(),
+        status: health_to_status(health),
         health,
         confidence: 97,
         position: None,
@@ -55,13 +57,13 @@ pub(super) fn build_endocrine_node(a: &DiagnosticAssessment, health: u8) -> Scen
                 label: "T normal male".into(),
                 min: 300.0,
                 max: 1000.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "T low".into(),
                 min: 0.0,
                 max: 300.0,
-                status: "warning".into(),
+                status: ClinicalStatus::Warning,
             },
         ],
     }

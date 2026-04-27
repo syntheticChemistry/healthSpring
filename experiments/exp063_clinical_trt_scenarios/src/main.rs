@@ -10,7 +10,7 @@
 //! for multiple patient archetypes.
 
 use healthspring_barracuda::validation::ValidationHarness;
-use healthspring_barracuda::visualization::DataChannel;
+use healthspring_barracuda::visualization::{DataChannel, NodeStatus};
 use healthspring_barracuda::visualization::clinical::{
     PatientTrtProfile, TrtProtocol, trt_clinical_json, trt_clinical_scenario,
 };
@@ -225,7 +225,7 @@ fn main() {
         .primals
         .iter()
         .find(|n| n.id == "assessment")
-        .is_some_and(|a_low| a_low.status == "critical" && a_low.health <= 50);
+        .is_some_and(|a_low| a_low.status == NodeStatus::Offline && a_low.health <= 50);
     h.check_bool("low T flags critical", low_t_ok);
 
     // Check: high vs low gut diversity → different response predictions

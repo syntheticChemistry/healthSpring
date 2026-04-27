@@ -194,7 +194,7 @@ pub fn trt_clinical_json(p: &PatientTrtProfile) -> String {
 #[cfg(test)]
 #[expect(clippy::unwrap_used, clippy::expect_used, reason = "test code")]
 mod tests {
-    use super::super::types::{DataChannel, ScenarioNode};
+    use super::super::types::{DataChannel, NodeStatus, ScenarioNode};
     use super::*;
 
     fn sample_patient() -> PatientTrtProfile {
@@ -318,7 +318,7 @@ mod tests {
     }
 
     #[test]
-    fn low_baseline_t_flags_critical() {
+    fn low_baseline_t_flags_offline() {
         let p = PatientTrtProfile::new("Low", 60.0, 200.0, 180.0, TrtProtocol::ImWeekly);
         let (s, _) = trt_clinical_scenario(&p);
         let assess = s
@@ -327,7 +327,7 @@ mod tests {
             .iter()
             .find(|n| n.id == "assessment")
             .unwrap();
-        assert_eq!(assess.status, "critical");
+        assert_eq!(assess.status, NodeStatus::Offline);
         assert!(assess.health <= 50);
     }
 

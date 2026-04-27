@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{ClinicalRange, HealthScenario, ScenarioEdge};
+use super::super::types::{
+    ClinicalRange, ClinicalStatus, HealthScenario, NodeType, ScenarioEdge,
+};
 use super::{bar, edge, gauge, heatmap, node, scaffold, spectrum, timeseries};
 use crate::microbiome;
 
@@ -47,21 +49,21 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     scenario.ecosystem.primals.push(node(
         "diversity",
         "Diversity Indices",
-        "compute",
+        NodeType::Compute,
         &["science.microbiome.diversity"],
         vec![
-            bar("shannon", "Shannon H′", cats.clone(), shannon_vals, "nats"),
+            bar("shannon", "Shannon H′", &cats, shannon_vals, "nats"),
             bar(
                 "simpson",
                 "Simpson D",
-                cats.clone(),
+                &cats,
                 simpson_vals,
                 "probability",
             ),
             bar(
                 "pielou",
                 "Pielou J",
-                cats.clone(),
+                &cats,
                 pielou_vals.clone(),
                 "evenness",
             ),
@@ -79,13 +81,13 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 label: "Healthy Shannon".into(),
                 min: 2.5,
                 max: 4.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "Dysbiotic Shannon".into(),
                 min: 0.0,
                 max: 1.5,
-                status: "critical".into(),
+                status: ClinicalStatus::Critical,
             },
         ],
     ));
@@ -126,7 +128,7 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     scenario.ecosystem.primals.push(node(
         "anderson",
         "Anderson Gut Lattice",
-        "compute",
+        NodeType::Compute,
         &["science.microbiome.anderson_lattice"],
         vec![
             spectrum(
@@ -211,12 +213,12 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     scenario.ecosystem.primals.push(node(
         "cdiff",
         "C. diff Colonization Resistance",
-        "compute",
+        NodeType::Compute,
         &["science.microbiome.cdiff_resistance"],
         vec![bar(
             "cr_compare",
             "Colonization Resistance by Community",
-            cr_cats,
+            &cr_cats,
             cr_vals,
             "1/ξ",
         )],
@@ -224,7 +226,7 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             label: "Protective CR".into(),
             min: 0.05,
             max: 1.0,
-            status: "normal".into(),
+            status: ClinicalStatus::Normal,
         }],
     ));
 
@@ -244,7 +246,7 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     scenario.ecosystem.primals.push(node(
         "fmt",
         "FMT Engraftment",
-        "compute",
+        NodeType::Compute,
         &["science.microbiome.fmt"],
         vec![
             timeseries(
@@ -253,7 +255,7 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Engraftment",
                 "Shannon H′",
                 "nats",
-                eng_x.clone(),
+                &eng_x,
                 shannon_y,
             ),
             timeseries(
@@ -262,7 +264,7 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
                 "Engraftment",
                 "BC Dissimilarity",
                 "BC",
-                eng_x,
+                &eng_x,
                 bc_y,
             ),
         ],

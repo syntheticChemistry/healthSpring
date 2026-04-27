@@ -244,9 +244,9 @@ fn handle_provenance_status() -> serde_json::Value {
     serde_json::json!({
         "available": healthspring_barracuda::data::trio_available(),
         "trio": {
-            "rhizocrypt": "dag.* via capability.call",
-            "loamspine": "commit.* via capability.call",
-            "sweetgrass": "provenance.* via capability.call",
+            "dag": "dag.* via capability discovery",
+            "ledger": "commit.* via capability discovery",
+            "attribution": "provenance.* via capability discovery",
         },
         "degradation": "domain logic succeeds without provenance",
     })

@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 27, 2026 (V58)
+**Date:** April 27, 2026 (V59)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V58 — Phase 46 **NUCLEUS composition** (18/24 checks pass, 4 fail, 2 skip). Full 8-primal NUCLEUS deployed via `composition_nucleus.sh`: barraCuda 4/4 math IPC parity, bearDog crypto.sign, toadStool 16-core compute, petalTongue scene push. Provenance trio (rhizoCrypt/loamSpine/sweetGrass) accept UDS but return empty (Gap 23). guideStone **Level 5** (57/57, primalSpring v0.9.17, `GUIDESTONE_COMPOSITION_STANDARD` v1.2.0). 948+ tests, 94 experiments, 54 Python baselines. ecoBin 0.9.0.
+**Status:** V59 — **Deep debt resolved**: typed enums replace stringly-typed dispatch (`NodeType`, `NodeStatus`, `EdgeType`, `ClinicalStatus`), ~45 clone eliminations via borrow-based scenario helpers, `ValidationOutcome` replaces `process::exit` in library code, capability-first routing (no hardcoded primal names). 892 tests pass, 0 clippy warnings. Phase 46 NUCLEUS composition (18/24). guideStone **Level 5** (57/57, primalSpring v0.9.17, v1.2.0). ecoBin 0.9.0.
 
 ---
 
@@ -33,7 +33,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V58** (Phase 46 NUCLEUS composition — 18/24 checks pass; guideStone Level 5, 57/57, primalSpring v0.9.17) |
+| Version | **V59** (deep debt resolved — typed enums, clone reduction, capability-first routing; Phase 46 NUCLEUS 18/24; guideStone Level 5, 57/57, primalSpring v0.9.17) |
 | **Total tests** | **948+** (864 lib + proptest + IPC fuzz + 33 forge + 51 toadstool + 94 experiment bins) |
 | Experiments complete | 94 (84 science Tracks 1–9 + 11 composition Tier 3–5) |
 | Composition validation (Tier 3–5) | 11 experiments (exp112–122) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity. `healthspring_guidestone` supersedes exp122 as guideStone artifact. |
@@ -51,6 +51,12 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | TODO/FIXME in production | **0** |
 | Clippy | **0 warnings** (workspace `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V59 Deep Debt Resolution — Idiomatic Rust Evolution (from V58)
+
+V59 resolves structural debt across the codebase: stringly-typed visualization dispatch replaced with 4 typed enums (`NodeType`, `NodeStatus`, `EdgeType`, `ClinicalStatus`), ~45 `.clone()` calls eliminated via borrow-based scenario helpers, `ValidationOutcome` added so library code returns instead of calling `process::exit()`, and routing evolved from hardcoded primal names to capability-domain discovery. 892 tests pass, 0 clippy warnings.
 
 ---
 

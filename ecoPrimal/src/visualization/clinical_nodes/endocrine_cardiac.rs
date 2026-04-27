@@ -3,7 +3,7 @@
 
 use crate::endocrine;
 use crate::visualization::scenarios::{bar, gauge, node, timeseries};
-use crate::visualization::types::{ClinicalRange, ScenarioNode};
+use crate::visualization::types::{ClinicalRange, ClinicalStatus, NodeType, ScenarioNode};
 
 pub fn cardiac_monitor_node(sdnn_base: f64) -> ScenarioNode {
     let delta = 20.0;
@@ -22,7 +22,7 @@ pub fn cardiac_monitor_node(sdnn_base: f64) -> ScenarioNode {
     node(
         "cardiac",
         "Cardiac Monitoring (HRV + Composite Risk)",
-        "compute",
+        NodeType::Compute,
         &["clinical.monitor.hrv", "clinical.monitor.cardiac_risk"],
         vec![
             timeseries(
@@ -31,7 +31,7 @@ pub fn cardiac_monitor_node(sdnn_base: f64) -> ScenarioNode {
                 "Month",
                 "SDNN (ms)",
                 "ms",
-                months,
+                &months,
                 sdnn_curve,
             ),
             bar(
@@ -57,13 +57,13 @@ pub fn cardiac_monitor_node(sdnn_base: f64) -> ScenarioNode {
                 label: "SDNN healthy".into(),
                 min: 50.0,
                 max: 200.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             },
             ClinicalRange {
                 label: "SDNN reduced".into(),
                 min: 20.0,
                 max: 50.0,
-                status: "warning".into(),
+                status: ClinicalStatus::Warning,
             },
         ],
     )

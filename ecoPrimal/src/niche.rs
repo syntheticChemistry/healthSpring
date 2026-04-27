@@ -110,7 +110,9 @@ pub const CONSUMED_CAPABILITIES: &[&str] = &[
 
 /// A dependency on another primal in the ecosystem.
 pub struct NicheDependency {
-    /// Conventional socket-name prefix for this primal.
+    /// Socket-prefix fallback hint (used only when capability discovery fails).
+    /// At runtime, the capability domain in `self.capability` is the primary
+    /// discovery key — this name is never used to assert primal identity.
     pub name: &'static str,
     /// Role this primal fills in the composition.
     pub role: &'static str,

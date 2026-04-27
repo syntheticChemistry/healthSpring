@@ -53,17 +53,18 @@ mod tests {
     use std::path::PathBuf;
 
     use super::super::types::{
-        Animations, CapReqs, ClinicalRange, DataChannel as DataChannelType, Ecosystem,
-        HealthScenario, NeuralApi, Performance, ScenarioNode, SensoryConfig, UiConfig,
+        Animations, CapReqs, ClinicalRange, ClinicalStatus, DataChannel as DataChannelType,
+        Ecosystem, HealthScenario, NeuralApi, NodeStatus, NodeType, Performance, ScenarioNode,
+        SensoryConfig, UiConfig,
     };
 
     fn minimal_scenario() -> HealthScenario {
         let primal = ScenarioNode {
             id: "node-1".into(),
             name: "Test Node".into(),
-            node_type: "test".into(),
+            node_type: NodeType::Compute,
             family: "test".into(),
-            status: "ok".into(),
+            status: NodeStatus::Healthy,
             health: 100,
             confidence: 0,
             position: None,
@@ -82,7 +83,7 @@ mod tests {
                 label: "normal".into(),
                 min: 0.0,
                 max: 50.0,
-                status: "normal".into(),
+                status: ClinicalStatus::Normal,
             }],
         };
         HealthScenario {
