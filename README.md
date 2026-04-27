@@ -678,7 +678,7 @@ healthSpring/
 │   ├── discovery/       # exp090–094
 │   ├── comparative/     # exp100–106
 │   └── scripts/         # Benchmark scripts + timing JSON results
-├── experiments/         # 90 validation binaries
+├── experiments/         # 94 validation binaries
 │   ├── exp001–exp006/   # Track 1: PK/PD
 │   ├── exp010–exp013/   # Track 2: Microbiome
 │   ├── exp020–exp023/   # Track 3: Biosignal
@@ -733,7 +733,7 @@ healthSpring/
 ├── wateringHole/        # Cross-spring handoffs
 │   └── handoffs/        # → barraCuda, toadStool, petalTongue
 ├── scripts/             # Dashboard, visualization, sync scripts
-├── Cargo.toml           # Workspace (93 members)
+├── Cargo.toml           # Workspace (97 members)
 └── README.md            # This file
 ```
 
@@ -742,7 +742,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 985+ tests
+cargo test --workspace                  # 948+ tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

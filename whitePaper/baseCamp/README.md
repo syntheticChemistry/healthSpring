@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** April 20, 2026
-**Status:** V57 — guideStone Level 5 (primal proof, 57/57 live, 10 skipped). Live IPC parity via NUCLEUS (barraCuda + beardog + nestgate): `stats.mean` 0.00e0, `stats.std_dev` 0.00e0, `stats.variance` 1.78e-15, `stats.correlation` 0.00e0 + storage round-trip. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.17. 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). Three-tier harness per `GUIDESTONE_COMPOSITION_STANDARD` v1.2.0: Tier 1 local, Tier 2 IPC-wired (4 math + storage), Tier 3 primal proof. ecoBin 0.9.0. barraCuda v0.3.12. Zero clippy, zero unsafe.
+**Last Updated:** April 27, 2026
+**Status:** V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). ecoBin 0.9.0. barraCuda v0.3.12. Zero clippy, zero unsafe.
 
 ---
 
@@ -136,6 +136,18 @@ confirms the primal proof — same primitives reproduce through NUCLEUS (Tier 3)
 **V57 achieved 57/57 checks against live NUCLEUS (barraCuda + beardog +
 nestgate).** Gap 19 (`stats.variance`/`stats.correlation`) resolved by
 barraCuda Sprint 44.
+
+**V58 Phase 46 NUCLEUS composition**: healthSpring deployed against a full
+8-primal NUCLEUS using primalSpring's composition template tooling. The headless
+composition validates 18/24 checks across capability discovery, liveness probes,
+barraCuda math IPC, petalTongue scene rendering, bearDog crypto signing, and
+toadStool compute. Five new gaps documented (23–27).
+
+**V59 deep debt resolved**: Stringly-typed visualization dispatch replaced with
+4 typed enums (`NodeType`, `NodeStatus`, `EdgeType`, `ClinicalStatus`), ~45
+clone eliminations via borrow-based scenario helpers, `ValidationOutcome` added
+so library code returns instead of `process::exit()`, routing evolved from
+hardcoded primal names to capability-domain discovery. 892 tests pass, 0 clippy.
 
 Domain-specific functions (Hill, Shannon, Simpson, Bray-Curtis, etc.) are LOCAL
 compositions of barraCuda primitives — validated in Tier 1, not routed through

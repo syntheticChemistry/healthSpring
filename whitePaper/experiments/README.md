@@ -2,8 +2,8 @@
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V57 — guideStone Level 5 (primal proof, 57/57 live). 94 experiments (84 science + 11 composition Tier 3–5), 948+ tests, 84+ JSON-RPC capabilities (62 science + 22 infra), 94 provenance entries (100% coverage). Six-level validation: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone (primal proof) → L6 NUCLEUS deploy. primalSpring v0.9.17.
-**Last Updated**: April 20, 2026
+**Status**: V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 94 experiments (84 science + 11 composition Tier 3–5), 948+ tests, 84+ JSON-RPC capabilities, 94 provenance entries (100% coverage).
+**Last Updated**: April 27, 2026
 
 ---
 

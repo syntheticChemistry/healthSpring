@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: April 20, 2026
-**Status**: V57 — guideStone Level 5 (primal proof, 57/57 live). 94 experiments, 948+ tests. `healthspring_guidestone` three-tier harness per v1.2.0: Tier 1 local, Tier 2 IPC-wired (4 math + storage), Tier 3 primal proof. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.17.
+**Last Updated**: April 27, 2026
+**Status**: V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 94 experiments, 948+ tests.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a six-tier pipeline:
 

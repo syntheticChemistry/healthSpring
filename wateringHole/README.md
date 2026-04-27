@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V57 — guideStone Level 5 (primal proof, 57/57 live, 10 skipped). Live IPC parity via NUCLEUS (barraCuda + beardog + nestgate): 4 math methods + storage. BLAKE3 CHECKSUMS (17 files). primalSpring v0.9.17. 948+ tests, 94 experiments. Three-tier harness per v1.2.0: Tier 1 local, Tier 2 IPC-wired (4 math + storage), Tier 3 primal proof. Family-aware discovery. Protocol tolerance. barraCuda v0.3.12. ecoBin 0.9.0. Zero clippy, zero unsafe.
-**Last Updated**: April 20, 2026
+**Status**: V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 948+ tests, 94 experiments. ecoBin 0.9.0. barraCuda v0.3.12. Zero clippy, zero unsafe.
+**Last Updated**: April 27, 2026
 
 ---
 
@@ -22,6 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
+| **V59** | [Deep Debt + Composition Evolution](handoffs/HEALTHSPRING_V59_DEEP_DEBT_COMPOSITION_HANDOFF_APR27_2026.md) | Apr 27 | Deep debt resolved: typed enums, clone reduction, capability-first routing. Phase 46 NUCLEUS composition (18/24). Primal evolution patterns for upstream absorption. 27 gaps documented. |
+| **V58** | [Phase 46 Composition](handoffs/HEALTHSPRING_V58_PHASE46_COMPOSITION_HANDOFF_APR27_2026.md) | Apr 27 | Full 8-primal NUCLEUS composition via primalSpring Phase 46 tooling. 18/24 checks. Gaps 23–27. |
 | **V57** | [Primal Proof — Level 5](handoffs/HEALTHSPRING_V57_PRIMAL_PROOF_HANDOFF_APR20_2026.md) | Apr 20 | guideStone Level 5: 57/57 live against NUCLEUS (barraCuda + beardog + nestgate). 4 math + storage. Gap 19 resolved. Gaps 20–22. primalSpring v0.9.17. |
 | **V56** | [NUCLEUS Validated](handoffs/HEALTHSPRING_V56_NUCLEUS_VALIDATED_HANDOFF_APR19_2026.md) | Apr 19 | guideStone Level 4: 49/49 live against barraCuda RTX 3070. BLAKE3 CHECKSUMS. Gap 19 open. |
 | **V55** | [Primal Proof Harness](handoffs/HEALTHSPRING_V55_PRIMAL_PROOF_HARNESS_HANDOFF_APR20_2026.md) | Apr 20 | Three-tier harness. P3 BLAKE3 checksums. Protocol tolerance. Family-aware discovery. primalSpring v0.9.16. |
