@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-04-20
-**healthSpring version**: V57 (ecoBin 0.9.0, guideStone Level 5, primalSpring v0.9.17)
+**Date**: 2026-04-27
+**healthSpring version**: V58 (ecoBin 0.9.0, guideStone Level 5, primalSpring v0.9.17, Phase 46 composition)
 
 ---
 
@@ -450,6 +450,115 @@ capability-keyed socket registration or a discovery shim.
 
 ---
 
+## 23. Provenance Trio Empty Responses on UDS (Phase 46 Composition)
+
+**Gap**: rhizoCrypt (`dag.session.create`), loamSpine (`spine.create`), and
+sweetGrass (`braid.create`) all accept UDS connections but return empty
+responses — no JSON-RPC result or error. The sockets are live (created by
+`composition_nucleus.sh`) and connections succeed, but no payload comes back.
+
+**Evidence** (healthSpring composition, 18/24 pass, 4 fail):
+- `rhizocrypt.dag.session.create`: empty response — FAIL
+- `loamspine.spine.create`: empty response — FAIL
+- `sweetgrass.braid.create`: empty response — FAIL
+
+This matches primalSpring's known PG-45 (rhizoCrypt) but extends it to
+loamSpine and sweetGrass, revealing a pattern: the provenance trio primals
+accept UDS but don't respond to JSON-RPC when started via
+`composition_nucleus.sh` with `--socket` and env var configuration.
+
+**Impact**: DAG state tracking, ledger sealing, and braid provenance are
+fully offline for shell compositions. Domain logic works; provenance is
+lost.
+
+**Proposed resolution**: Investigate whether the provenance trio requires
+additional startup configuration (BTSP, nestgate dependency, different
+server subcommand) or if their JSON-RPC handler needs a startup delay.
+
+**Status**: Documented. All three primals gracefully degraded — composition
+completed without provenance.
+
+---
+
+## 24. Songbird Crypto Provider Discovery Failure
+
+**Gap**: Songbird fails to start with `Error: Failed to discover crypto
+provider: No Crypto provider available` even when beardog's socket is
+active and `--beardog-socket` is passed.
+
+**Evidence**: `composition_nucleus.sh start` → songbird exits immediately
+after beardog is running and its socket is confirmed. Log shows songbird's
+internal discovery doesn't find beardog via the provided socket path or
+env vars.
+
+**Impact**: Discovery service offline. Composition falls back to
+`{cap}-{family}.sock` naming convention (which works), but no dynamic
+discovery.
+
+**Proposed resolution**: Songbird's internal crypto provider discovery
+may need a different env var name or startup sequence. This should be
+documented in songbird's CLI help or a wateringHole spec.
+
+**Status**: Documented. Composition works without songbird via the symlink
+alias pattern.
+
+---
+
+## 25. petalTongue Proprioception Unavailable in Server Mode
+
+**Gap**: `proprioception.get` returns no `frame_rate` field when petalTongue
+runs in `server` mode (headless, no GUI window). In `live` mode the
+proprioception endpoint reports fps, active scenes, and user interactivity.
+
+**Evidence**: healthSpring composition (headless) — petalTongue accepted
+scene pushes and interaction subscriptions, but proprioception.get returned
+no frame_rate data.
+
+**Impact**: Headless/CI compositions cannot monitor petalTongue health via
+proprioception. Scene push and interaction subscribe/poll still work.
+
+**Proposed resolution**: petalTongue server mode should return synthetic
+proprioception data (e.g., `frame_rate: 0.0`, `active_scenes: N`,
+`user_interactivity: "none"`) for monitoring even without a render loop.
+
+**Status**: Documented. Non-blocking.
+
+---
+
+## 26. NestGate Not in Default PRIMAL_LIST
+
+**Gap**: `composition_nucleus.sh` default `PRIMAL_LIST` does not include
+`nestgate`. Storage capability is offline unless explicitly added:
+`PRIMAL_LIST="beardog songbird toadstool barracuda rhizocrypt loamspine sweetgrass nestgate petaltongue"`.
+
+**Impact**: Storage round-trip tests skip. Springs that need storage must
+override `PRIMAL_LIST`.
+
+**Proposed resolution**: Add `nestgate` to the default `PRIMAL_LIST` in
+`composition_nucleus.sh`, or document the override pattern.
+
+**Status**: Documented. Workaround: set `PRIMAL_LIST` explicitly.
+
+---
+
+## 27. socat Dependency Not Documented
+
+**Gap**: `nucleus_composition_lib.sh` uses `socat` for all JSON-RPC
+transport (`send_rpc`), but `socat` is not universally installed and is
+not listed as a dependency.
+
+**Impact**: Compositions fail on systems without socat. healthSpring created
+a `nc -U` shim (`tools/socat`) as a workaround.
+
+**Proposed resolution**: Document socat as a required dependency in the
+DOWNSTREAM_COMPOSITION_EXPLORER_GUIDE, or make the lib detect and use
+`nc -U` / `ncat` as fallback.
+
+**Status**: Documented. healthSpring provides `tools/socat` shim using
+`nc -q 1 -U`.
+
+---
+
 ## Summary Matrix
 
 | # | Gap | Blocked On | healthSpring Action | primalSpring Action |
@@ -476,3 +585,8 @@ capability-keyed socket registration or a discovery shim.
 | 20 | BTSP production mode breaks IPC | primalSpring transport | **V57**: documented, `FAMILY_SEED` workaround | Negotiate BTSP capability |
 | 21 | Crypto probe schema mismatch | BearDog method spec | **V57**: documented, SKIPped in guideStone | Publish method signatures |
 | 22 | Missing socket discovery (DAG/AI/commit) | Ecosystem socket std | **V57**: documented, SKIPped in guideStone | Standardize capability sockets |
+| 23 | Provenance trio empty UDS responses | Primal startup config | **V58**: documented, composition degrades | Investigate trio UDS JSON-RPC handler |
+| 24 | Songbird crypto provider discovery | Songbird startup docs | **V58**: documented, symlink workaround | Document songbird startup deps |
+| 25 | petalTongue proprioception in server mode | petalTongue server | **V58**: documented, non-blocking | Add synthetic proprioception in server mode |
+| 26 | NestGate not in default PRIMAL_LIST | composition_nucleus.sh | **V58**: documented, PRIMAL_LIST override | Add nestgate to defaults |
+| 27 | socat dependency undocumented | Lib docs | **V58**: `nc -U` shim provided | Document dep or add fallback |

@@ -4,6 +4,46 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V58 — 2026-04-27 — Phase 46 Composition Template (Full NUCLEUS)
+
+### Added
+- **NUCLEUS composition**: healthSpring deployed and validated against a
+  full 8-primal NUCLEUS using primalSpring Phase 46 composition tooling
+  (`composition_nucleus.sh`, `nucleus_composition_lib.sh`).
+- **`tools/healthspring_composition.sh`**: Interactive composition with
+  petalTongue GUI, DAG state tracking, ledger sealing, and braid provenance.
+- **`tools/healthspring_composition_headless.sh`**: Headless/CI validation
+  runner — 24 automated checks across 8 capability domains.
+- **`tools/socat` shim**: `nc -q 1 -U` fallback for systems without socat.
+- **Gaps 23–27 documented**: Provenance trio empty UDS responses (Gap 23),
+  songbird crypto provider discovery failure (Gap 24), petalTongue
+  proprioception unavailable in server mode (Gap 25), nestgate not in
+  default PRIMAL_LIST (Gap 26), socat dependency undocumented (Gap 27).
+
+### Validated (18/24 pass, 4 fail, 2 skip)
+- **Capability discovery**: 7/8 capabilities found (storage offline, songbird
+  failed). beardog, toadstool, barracuda, rhizocrypt, loamspine, sweetgrass,
+  petaltongue all have live sockets with capability domain aliases.
+- **Liveness probes**: 4/4 — visualization, security, compute, tensor all
+  respond to JSON-RPC.
+- **barraCuda math IPC**: All 4 methods via composition_nucleus.sh NUCLEUS:
+  - `stats.mean` — PASS (diff=0.0)
+  - `stats.std_dev` — PASS (diff=0.0)
+  - `stats.variance` — PASS (diff=1.78e-15)
+  - `stats.correlation` — PASS (diff=0.0)
+- **petalTongue scene push**: Accepted in server (headless) mode.
+- **bearDog crypto.sign**: Ed25519 signature returned successfully.
+- **toadStool compute.capabilities**: 16 cores, 64GB RAM, distributed
+  coordinator active.
+- **FAIL**: rhizoCrypt, loamSpine, sweetGrass — accept UDS, return empty
+  (provenance trio pattern, extends known PG-45).
+- **FAIL**: petalTongue proprioception — no frame_rate in server mode.
+
+### Changed
+- **Composition tools copied from primalSpring**: `nucleus_composition_lib.sh`,
+  `composition_template.sh`, `composition_nucleus.sh` in `tools/`.
+- **PRIMAL_GAPS.md**: Updated to V58, added gaps 23–27.
+
 ## V57 — 2026-04-20 — guideStone Level 5 (Primal Proof)
 
 ### Added
