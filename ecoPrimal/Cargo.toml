@@ -16,12 +16,18 @@ categories = ["science", "command-line-utilities"]
 workspace = true
 
 [features]
-default = []
-gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck"]
+default = ["barracuda-lib"]
+# barraCuda library link — enables direct Rust imports of barracuda::stats,
+# barracuda::health, barracuda::special, etc. Disable for sovereign NUCLEUS
+# deployment where all math routes through JSON-RPC IPC to the barraCuda
+# ecobin primal. When off, math_dispatch routes everything via IPC and
+# GPU/science modules that require the library are excluded from compilation.
+barracuda-lib = ["dep:barracuda", "dep:barracuda-core"]
+gpu = ["dep:wgpu", "dep:tokio", "dep:bytemuck", "barracuda-lib"]
 barracuda-ops = ["gpu"]
 # Sovereign dispatch via barraCuda SovereignDevice: WGSL → coralReef compile →
 # toadStool dispatch → native binary. Replaces strip_f64_enable() workaround.
-sovereign-dispatch = ["gpu", "barracuda/sovereign-dispatch"]
+sovereign-dispatch = ["gpu", "barracuda-lib", "barracuda/sovereign-dispatch"]
 # Level 5 primal proof: routes wire-ready math calls (stats.mean, stats.std_dev)
 # through barraCuda's JSON-RPC surface over UDS instead of library imports.
 # The library dep stays for Level 2 comparison; domain-specific functions
@@ -39,11 +45,11 @@ nestgate = ["dep:ureq"]
 npu = []
 
 [dependencies]
-# Validated against barraCuda v0.3.12 (workspace current).
+# Validated against barraCuda v0.3.13 (workspace current).
 # Path dep for local development; CI should pin to a known-good rev.
 # barracuda-core is required for barraCuda's internal feature resolution.
-barracuda-core = { path = "../../../primals/barraCuda/crates/barracuda-core", default-features = false }
-barracuda = { path = "../../../primals/barraCuda/crates/barracuda", default-features = false }
+barracuda-core = { path = "../../../primals/barraCuda/crates/barracuda-core", default-features = false, optional = true }
+barracuda = { path = "../../../primals/barraCuda/crates/barracuda", default-features = false, optional = true }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
@@ -65,6 +71,10 @@ name = "healthspring_primal"
 path = "src/bin/healthspring_primal/main.rs"
 
 [[bin]]
+name = "validate_pk_models"
+path = "src/bin/validate_pk_models.rs"
+
+[[bin]]
 name = "healthspring_guidestone"
 path = "src/bin/healthspring_guidestone/main.rs"
 required-features = ["guidestone"]
@@ -73,6 +83,7 @@ required-features = ["guidestone"]
 approx = "0.5"
 criterion = { version = "0.5", features = ["html_reports"] }
 proptest = "1"
+toml = "0.8"
 
 [[bench]]
 name = "cpu_parity"
@@ -81,6 +92,11 @@ harness = false
 [[bench]]
 name = "kokkos_parity"
 harness = false
+
+[[bench]]
+name = "gpu_parity"
+harness = false
+required-features = ["gpu"]
 
 [[bench]]
 name = "upstream_parity"

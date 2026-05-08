@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** April 27, 2026
-**Status:** V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 948+ tests, 94 experiments (84 science + 11 composition Tier 3–5), 54 Python baselines, 94 provenance entries (100% coverage). ecoBin 0.9.0. barraCuda v0.3.12. Zero clippy, zero unsafe.
+**Last Updated:** May 8, 2026
+**Status:** V60 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 1,002 tests, 95 experiments (83 science + 12 composition Tier 3–5), 53 Python baseline scripts + 53 paired `.ipynb` notebooks, 95+ provenance entries (100% coverage). ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 
 ---
 
@@ -103,7 +103,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | **metalForge tests** | — | — | **33** | 33 |
 | **toadStool tests** | — | — | **30** | 30 |
 | **Doc-tests** | — | — | **9** | 9 |
-| **Criterion benchmarks** | — | — | **14** | 14 |
+| **Criterion benchmarks** (incl. gpu_parity) | — | — | **14** | 14 |
 | **Total** | **688** | **287+** (Tier 0) | **936** (tests) | **2,900+** |
 
 ---
@@ -147,7 +147,7 @@ toadStool compute. Five new gaps documented (23–27).
 4 typed enums (`NodeType`, `NodeStatus`, `EdgeType`, `ClinicalStatus`), ~45
 clone eliminations via borrow-based scenario helpers, `ValidationOutcome` added
 so library code returns instead of `process::exit()`, routing evolved from
-hardcoded primal names to capability-domain discovery. 892 tests pass, 0 clippy.
+hardcoded primal names to capability-domain discovery. 1,002 tests pass, 0 clippy.
 
 Domain-specific functions (Hill, Shannon, Simpson, Bray-Curtis, etc.) are LOCAL
 compositions of barraCuda primitives — validated in Tier 1, not routed through

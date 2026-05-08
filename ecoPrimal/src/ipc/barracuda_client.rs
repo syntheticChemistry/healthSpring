@@ -26,10 +26,15 @@ impl BarraCudaClient {
         }
     }
 
-    /// Discover barraCuda via socket dir scan.
+    /// Discover barraCuda via capability-first then name fallback.
+    ///
+    /// Tries `stats` capability discovery (any primal advertising `stats.*`
+    /// methods), then falls back to the `barracuda` name-based socket scan.
     #[must_use]
     pub fn discover() -> Option<Self> {
-        super::socket::discover_primal("barracuda").map(Self::new)
+        super::socket::discover_by_capability_public("stats")
+            .or_else(|| super::socket::discover_primal("barracuda"))
+            .map(Self::new)
     }
 
     /// The underlying socket path.

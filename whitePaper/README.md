@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** April 27, 2026
-**Status:** V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone (primal proof) → L6 NUCLEUS. 94 experiments, 948+ tests, 84+ JSON-RPC capabilities (62 science + 22 infra), 54 Python baselines, 94 provenance entries (100% coverage). ecoBin 0.9.0. barraCuda v0.3.12. Zero clippy, zero unsafe.
+**Date:** May 8, 2026
+**Status:** V60 — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone (primal proof) → L6 NUCLEUS. 95 experiments (83 science + 12 composition exp112–123), 1,002 tests, 83 JSON-RPC capabilities, 53 Python baseline scripts + 53 paired `.ipynb` notebooks, 95+ provenance entries (100% coverage). ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -51,7 +51,7 @@ without establishing causality.
 
 | Order | Document | What you'll learn |
 |:-----:|----------|------------------|
-| 4 | [baseCamp/README.md](baseCamp/README.md) | All 90 experiments, validation counts, per-track status |
+| 4 | [baseCamp/README.md](baseCamp/README.md) | All 95 experiments, validation counts, per-track status |
 | 5 | [baseCamp/gonzales/README.md](baseCamp/gonzales/README.md) | PK/PD sub-thesis: Gonzales canine → human → drug discovery pipeline |
 | 6 | [baseCamp/EXTENSION_PLAN.md](baseCamp/EXTENSION_PLAN.md) | Where we're going: Tracks 6–7, datasets, QS gene profiling, living systems |
 
@@ -242,8 +242,8 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 
 | Metric | Value |
 |--------|-------|
-| Experiments | 94 complete (84 science + 11 composition Tier 3–5) |
-| Rust tests | 948+ (lib + proptest + IPC fuzz + doc + integration + experiment bins) |
+| Experiments | 95 complete (83 science + 12 composition Tier 3–5, exp112–123) |
+| Rust tests | 1,002 (lib + proptest + IPC fuzz + doc + integration + experiment bins) |
 | Python checks | 194 cross-validation |
 | Paper queue | 30/30 complete, 15 new queued |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |

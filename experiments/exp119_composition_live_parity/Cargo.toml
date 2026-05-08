@@ -8,6 +8,10 @@ rust-version.workspace = true
 license.workspace = true
 publish = false
 
+[[bin]]
+name = "exp119_composition_live_parity"
+path = "src/main.rs"
+
 [lints]
 workspace = true
 

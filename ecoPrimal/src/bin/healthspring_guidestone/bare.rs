@@ -6,6 +6,7 @@ use primalspring::validation::ValidationResult;
 
 use healthspring_barracuda::math_dispatch;
 use healthspring_barracuda::niche;
+use healthspring_barracuda::tolerances;
 
 /// Property 1: Deterministic Output.
 ///
@@ -17,7 +18,7 @@ pub fn validate_deterministic_output(v: &mut ValidationResult) {
     let mean = math_dispatch::mean(&data);
     v.check_bool(
         "P1: mean([1..10]) == 5.5",
-        (mean - 5.5).abs() < 1e-15,
+        (mean - 5.5).abs() < tolerances::MACHINE_EPSILON_STRICT,
         &format!("got {mean}, expected 5.5"),
     );
 
@@ -25,7 +26,7 @@ pub fn validate_deterministic_output(v: &mut ValidationResult) {
     let hill = math_dispatch::hill(10.0, 10.0, 1.0);
     v.check_bool(
         "P1: Hill(x=K, n=1) == 0.5",
-        (hill - 0.5).abs() < 1e-15,
+        (hill - 0.5).abs() < tolerances::MACHINE_EPSILON_STRICT,
         &format!("got {hill}, expected 0.5"),
     );
 
@@ -34,7 +35,7 @@ pub fn validate_deterministic_output(v: &mut ValidationResult) {
     let expected_shannon = 4.0_f64.ln();
     v.check_bool(
         "P1: Shannon(uniform_4) == ln(4)",
-        (shannon - expected_shannon).abs() < 1e-10,
+        (shannon - expected_shannon).abs() < tolerances::MACHINE_EPSILON,
         &format!("got {shannon}, expected {expected_shannon}"),
     );
 

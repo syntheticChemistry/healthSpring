@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: April 27, 2026
-**Status**: V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 94 experiments, 948+ tests.
+**Last Updated**: May 8, 2026
+**Status**: V60 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 95 experiments (83 science + 12 composition exp112–123), 1,002 tests.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a six-tier pipeline:
 
@@ -12,7 +12,7 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 - **Tier 4**: Composition validation (IPC dispatch vs direct Rust — the primal composition surface)
 - **Tier 5**: Deploy graph validation (TOML graph ↔ proto-nucleate ↔ capability surface consistency)
 
-**All 94 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
+**All 95 experiments** use the standardized `ValidationHarness` pattern (zero ad-hoc validation).
 
 ---
 
@@ -229,6 +229,12 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | Exp | Binary | Domain | Checks |
 |-----|--------|--------|:------:|
 | 122 | `exp122_primal_proof_barracuda_parity` | `math_dispatch` known-values, `BarraCudaClient` IPC vs local (stats.mean, stats.std_dev, rng.uniform), wire-pending inventory | 10+ |
+
+### Tier 5: NUCLEUS composition parity (Exp123) — V60
+
+| Exp | Binary | Domain | Checks |
+|-----|--------|--------|:------:|
+| 123 | `exp123_nucleus_parity` | NUCLEUS composition parity: full Tower+Node+Nest+cross-atomic pipeline for healthSpring niche | ValidationHarness |
 
 ---
 

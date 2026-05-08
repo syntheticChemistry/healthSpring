@@ -7,6 +7,15 @@ use super::*;
 use crate::tolerances;
 use crate::visualization::{DataChannel, EdgeType, HealthScenario, NodeStatus, NodeType, ScenarioEdge};
 
+#[path = "tests_biosignal.rs"]
+mod tests_biosignal;
+#[path = "tests_endocrine.rs"]
+mod tests_endocrine;
+#[path = "tests_microbiome.rs"]
+mod tests_microbiome;
+#[path = "tests_pkpd.rs"]
+mod tests_pkpd;
+
 fn assert_study_invariants(
     scenario: &HealthScenario,
     edges: &[ScenarioEdge],
@@ -59,187 +68,6 @@ fn assert_json_roundtrips(scenario: &HealthScenario, edges: &[ScenarioEdge]) {
     assert!(parsed.get("ecosystem").is_some());
     assert!(parsed.get("edges").is_some());
     assert!(parsed["edges"].is_array());
-}
-
-#[test]
-fn pkpd_study_structure() {
-    let (scenario, edges) = pkpd_study();
-    assert_study_invariants(
-        &scenario,
-        &edges,
-        &["hill", "one_comp", "two_comp", "mab", "pop_pk", "pbpk"],
-        5,
-    );
-}
-
-#[test]
-fn pkpd_study_capabilities() {
-    let (scenario, _) = pkpd_study();
-    let caps: std::collections::HashSet<String> = scenario
-        .ecosystem
-        .primals
-        .iter()
-        .flat_map(|n| n.capabilities.clone())
-        .collect();
-    assert!(caps.contains("science.pkpd.hill_dose_response"));
-    assert!(caps.contains("science.pkpd.one_compartment_pk"));
-    assert!(caps.contains("science.pkpd.two_compartment_pk"));
-    assert!(caps.contains("science.pkpd.allometric_scaling"));
-    assert!(caps.contains("science.pkpd.population_pk"));
-    assert!(caps.contains("science.pkpd.pbpk"));
-}
-
-#[test]
-fn pkpd_study_json_roundtrips() {
-    let (scenario, edges) = pkpd_study();
-    assert_json_roundtrips(&scenario, &edges);
-}
-
-#[test]
-fn microbiome_study_structure() {
-    let (scenario, edges) = microbiome_study();
-    assert_study_invariants(
-        &scenario,
-        &edges,
-        &["diversity", "anderson", "cdiff", "fmt"],
-        3,
-    );
-}
-
-#[test]
-fn microbiome_study_capabilities() {
-    let (scenario, _) = microbiome_study();
-    let caps: std::collections::HashSet<String> = scenario
-        .ecosystem
-        .primals
-        .iter()
-        .flat_map(|n| n.capabilities.clone())
-        .collect();
-    assert!(caps.contains("science.microbiome.diversity"));
-    assert!(caps.contains("science.microbiome.anderson_lattice"));
-    assert!(caps.contains("science.microbiome.cdiff_resistance"));
-    assert!(caps.contains("science.microbiome.fmt"));
-}
-
-#[test]
-fn microbiome_study_json_roundtrips() {
-    let (scenario, edges) = microbiome_study();
-    assert_json_roundtrips(&scenario, &edges);
-}
-
-#[test]
-fn biosignal_study_structure() {
-    let (scenario, edges) = biosignal_study();
-    assert_study_invariants(
-        &scenario,
-        &edges,
-        &["qrs", "hrv", "spo2", "fusion", "wfdb_ecg"],
-        4,
-    );
-}
-
-#[test]
-fn biosignal_study_capabilities() {
-    let (scenario, _) = biosignal_study();
-    let caps: std::collections::HashSet<String> = scenario
-        .ecosystem
-        .primals
-        .iter()
-        .flat_map(|n| n.capabilities.clone())
-        .collect();
-    assert!(caps.contains("science.biosignal.pan_tompkins"));
-    assert!(caps.contains("science.biosignal.hrv"));
-    assert!(caps.contains("science.biosignal.ppg_spo2"));
-    assert!(caps.contains("science.biosignal.fusion"));
-    assert!(caps.contains("science.biosignal.wfdb_format212"));
-}
-
-#[test]
-fn biosignal_study_json_roundtrips() {
-    let (scenario, edges) = biosignal_study();
-    assert_json_roundtrips(&scenario, &edges);
-}
-
-#[test]
-fn endocrine_study_structure() {
-    let (scenario, edges) = endocrine_study();
-    assert_study_invariants(
-        &scenario,
-        &edges,
-        &[
-            "t_im",
-            "t_pellet",
-            "age_decline",
-            "trt_weight",
-            "trt_cardio",
-            "trt_diabetes",
-            "gut_axis",
-            "hrv_cardiac",
-        ],
-        7,
-    );
-}
-
-#[test]
-fn endocrine_study_capabilities() {
-    let (scenario, _) = endocrine_study();
-    let caps: std::collections::HashSet<String> = scenario
-        .ecosystem
-        .primals
-        .iter()
-        .flat_map(|n| n.capabilities.clone())
-        .collect();
-    assert!(caps.contains("science.endocrine.testosterone_im"));
-    assert!(caps.contains("science.endocrine.testosterone_pellet"));
-    assert!(caps.contains("science.endocrine.testosterone_decline"));
-    assert!(caps.contains("science.endocrine.trt_weight"));
-    assert!(caps.contains("science.endocrine.trt_cardiovascular"));
-    assert!(caps.contains("science.endocrine.trt_diabetes"));
-    assert!(caps.contains("science.endocrine.gut_trt_axis"));
-    assert!(caps.contains("science.endocrine.hrv_trt"));
-}
-
-#[test]
-fn endocrine_study_json_roundtrips() {
-    let (scenario, edges) = endocrine_study();
-    assert_json_roundtrips(&scenario, &edges);
-}
-
-#[test]
-fn nlme_study_structure() {
-    let (scenario, edges) = nlme_study();
-    assert_study_invariants(
-        &scenario,
-        &edges,
-        &[
-            "nlme_population",
-            "nca_metrics",
-            "cwres_diagnostics",
-            "vpc_check",
-            "gof_fit",
-        ],
-        5,
-    );
-}
-
-#[test]
-fn nlme_study_capabilities() {
-    let (scenario, _) = nlme_study();
-    let caps: std::collections::HashSet<String> = scenario
-        .ecosystem
-        .primals
-        .iter()
-        .flat_map(|n| n.capabilities.clone())
-        .collect();
-    assert!(caps.contains("science.pkpd.nlme_foce"));
-    assert!(caps.contains("science.pkpd.nca"));
-    assert!(caps.contains("science.pkpd.nlme_diagnostics"));
-}
-
-#[test]
-fn nlme_study_json_roundtrips() {
-    let (scenario, edges) = nlme_study();
-    assert_json_roundtrips(&scenario, &edges);
 }
 
 #[test]
@@ -633,54 +461,6 @@ fn scatter3d_produces_scatter3d_channel() {
         }
         _ => panic!("expected Scatter3D, got {ch:?}"),
     }
-}
-
-#[test]
-fn biosignal_study_has_spectrum_channel() {
-    let (scenario, _) = biosignal_study();
-    let hrv_node = scenario
-        .ecosystem
-        .primals
-        .iter()
-        .find(|n| n.id == "hrv")
-        .expect("hrv node");
-    let has_spectrum = hrv_node
-        .data_channels
-        .iter()
-        .any(|ch| matches!(ch, DataChannel::Spectrum { id, .. } if id == "hrv_psd"));
-    assert!(has_spectrum, "HRV node should have a Spectrum channel");
-}
-
-#[test]
-fn microbiome_study_has_heatmap_channel() {
-    let (scenario, _) = microbiome_study();
-    let div_node = scenario
-        .ecosystem
-        .primals
-        .iter()
-        .find(|n| n.id == "diversity")
-        .expect("diversity node");
-    let has_heatmap = div_node
-        .data_channels
-        .iter()
-        .any(|ch| matches!(ch, DataChannel::Heatmap { id, .. } if id == "bray_curtis"));
-    assert!(has_heatmap, "Diversity node should have a Heatmap channel");
-}
-
-#[test]
-fn pkpd_study_has_scatter3d_channel() {
-    let (scenario, _) = pkpd_study();
-    let pop_node = scenario
-        .ecosystem
-        .primals
-        .iter()
-        .find(|n| n.id == "pop_pk")
-        .expect("pop_pk node");
-    let has_scatter = pop_node
-        .data_channels
-        .iter()
-        .any(|ch| matches!(ch, DataChannel::Scatter3D { id, .. } if id == "pop_pk_3d"));
-    assert!(has_scatter, "Pop PK node should have a Scatter3D channel");
 }
 
 #[test]

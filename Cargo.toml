@@ -105,6 +105,7 @@ members = [
     "experiments/exp120_composition_live_provenance",
     "experiments/exp121_composition_live_health",
     "experiments/exp122_primal_proof_barracuda_parity",
+    "experiments/exp123_nucleus_parity",
 ]
 
 [workspace.package]

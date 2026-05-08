@@ -177,7 +177,7 @@ impl Pipeline {
                         let elapsed_us = elapsed.as_nanos() as f64 / 1000.0;
                         let per_stage = elapsed_us / batch_indices.len().max(1) as f64;
 
-                        for (idx, gpu_result) in batch_indices.iter().zip(gpu_results.into_iter()) {
+                        for (idx, gpu_result) in batch_indices.iter().zip(gpu_results) {
                             let output = gpu::gpu_result_to_vec(&gpu_result);
                             total_time += per_stage;
                             input_data = Some(output.clone());
@@ -269,7 +269,7 @@ impl Pipeline {
                     let elapsed_us = elapsed.as_nanos() as f64 / 1000.0;
                     let per_stage = elapsed_us / gpu_stage_indices.len().max(1) as f64;
 
-                    for (idx, gpu_result) in gpu_stage_indices.iter().zip(gpu_results.into_iter()) {
+                    for (idx, gpu_result) in gpu_stage_indices.iter().zip(gpu_results) {
                         let output = gpu::gpu_result_to_vec(&gpu_result);
                         total_time += per_stage;
                         let _ = input_data.insert(output.clone());

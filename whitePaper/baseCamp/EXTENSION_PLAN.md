@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
-**Last Updated**: April 27, 2026
-**Status**: V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 94 experiments, 948+ tests, 84+ capabilities. barraCuda v0.3.12. ecoBin 0.9.0.
+**Last Updated**: May 8, 2026
+**Status**: V60 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 95 experiments, 1,002 tests, 83 capabilities. barraCuda v0.3.13. ecoBin 0.9.0.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and
@@ -364,7 +364,7 @@ All gates orchestrated via biomeOS. D4 cross-track Monte Carlo, Anderson 3D, rea
 ```
 Phase 1 (Now, Eastgate only):
   - Synthetic data, published parameters
-  - All existing 90 experiments (Tracks 1–9 + 7 Tier 4/5 composition)
+  - All existing 95 experiments (Tracks 1–9 + Tier 3–5 composition exp112–123)
   - FRONT-LOAD: MATRIX + Anderson scoring (DD-001) for ADDRC meeting
   - FRONT-LOAD: ADDRC 8K compound IC50 sweep (DD-003) — GPU Hill shader ready
   - FRONT-LOAD: Lisabeth Brucella screen analysis (DD-002)

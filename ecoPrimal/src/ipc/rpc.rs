@@ -91,8 +91,6 @@ pub fn extract_rpc_result_owned(response: &serde_json::Value) -> Option<serde_js
     response.get("result").cloned()
 }
 
-const READ_TIMEOUT_MS: u64 = 10_000;
-
 /// Send a JSON-RPC request with full error context.
 ///
 /// Uses the platform-agnostic transport layer — connects via Unix socket
@@ -112,7 +110,7 @@ pub fn try_send(
 
     let mut stream = super::transport::connect_path(socket_path)?;
     stream
-        .set_timeouts(Duration::from_secs(10))
+        .set_timeouts(Duration::from_millis(crate::tolerances::IPC_RPC_READ_TIMEOUT_MS))
         .map_err(IpcError::Connect)?;
 
     let request = serde_json::json!({
@@ -138,7 +136,7 @@ pub fn try_send(
     let mut line = String::new();
     reader.read_line(&mut line).map_err(|e| {
         if e.kind() == std::io::ErrorKind::TimedOut {
-            IpcError::Timeout(READ_TIMEOUT_MS)
+            IpcError::Timeout(crate::tolerances::IPC_RPC_READ_TIMEOUT_MS)
         } else {
             IpcError::Read(e.to_string())
         }
@@ -173,8 +171,8 @@ pub fn resilient_send(
 
     let policy = super::resilience::RetryPolicy::new(
         3,
-        Duration::from_millis(50),
-        Duration::from_millis(500),
+        Duration::from_millis(crate::tolerances::IPC_RETRY_INITIAL_MS),
+        Duration::from_millis(crate::tolerances::IPC_RETRY_CAP_MS),
     );
 
     let mut last_err = None;

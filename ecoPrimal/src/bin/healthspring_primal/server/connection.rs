@@ -14,8 +14,7 @@ use healthspring_barracuda::ipc::rpc;
 
 use super::routing::{PrimalState, dispatch_request};
 
-const READ_TIMEOUT_SECS: u64 = 60;
-const WRITE_TIMEOUT_SECS: u64 = 10;
+use healthspring_barracuda::tolerances;
 
 /// Handles a Unix domain socket client connection.
 #[expect(
@@ -24,10 +23,10 @@ const WRITE_TIMEOUT_SECS: u64 = 10;
 )]
 pub fn handle_unix_connection(stream: UnixStream, state: &PrimalState) {
     stream
-        .set_read_timeout(Some(Duration::from_secs(READ_TIMEOUT_SECS)))
+        .set_read_timeout(Some(Duration::from_secs(tolerances::SERVER_READ_TIMEOUT_SECS)))
         .ok();
     stream
-        .set_write_timeout(Some(Duration::from_secs(WRITE_TIMEOUT_SECS)))
+        .set_write_timeout(Some(Duration::from_secs(tolerances::SERVER_WRITE_TIMEOUT_SECS)))
         .ok();
 
     let reader = BufReader::new(&stream);
@@ -43,10 +42,10 @@ pub fn handle_unix_connection(stream: UnixStream, state: &PrimalState) {
 )]
 pub fn handle_tcp_connection(stream: TcpStream, state: &PrimalState) {
     stream
-        .set_read_timeout(Some(Duration::from_secs(READ_TIMEOUT_SECS)))
+        .set_read_timeout(Some(Duration::from_secs(tolerances::SERVER_READ_TIMEOUT_SECS)))
         .ok();
     stream
-        .set_write_timeout(Some(Duration::from_secs(WRITE_TIMEOUT_SECS)))
+        .set_write_timeout(Some(Duration::from_secs(tolerances::SERVER_WRITE_TIMEOUT_SECS)))
         .ok();
 
     let reader = BufReader::new(&stream);

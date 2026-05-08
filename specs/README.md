@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: April 27, 2026
-**Status**: V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 948+ tests, 94 experiments, 84+ JSON-RPC capabilities, 94 provenance entries. ecoBin 0.9.0. barraCuda v0.3.12.
+**Last Updated**: May 8, 2026
+**Status**: V60 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 1,002 tests, 95 experiments, 83 JSON-RPC capabilities, 95+ provenance entries. ecoBin 0.9.0. barraCuda v0.3.13.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -11,12 +11,12 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 948+ |
+| Rust tests (workspace) | 1,002 |
 | Python control checks | 54 baselines, 113/113 cross-validation (all 9 tracks) |
-| Experiments | 94 (84 science + 11 composition Tier 3–5) |
+| Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
-| Composition validation (Tier 3–5) | 11 experiments (exp112–122) — dispatch parity + proto-nucleate + wire round-trip + deploy graph + live IPC parity + provenance trio + health probes + **Level 5 barraCuda IPC parity** |
+| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — dispatch parity + proto-nucleate + wire round-trip + deploy graph + live IPC parity + provenance trio + health probes + **Level 5 barraCuda IPC parity** |
 | ecoBin | Static-PIE x86_64-musl, 3.2 MB, harvested to plasmidBin (v0.9.0) |
 | toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |
 | CPU parity | Rust 84× faster than Python (Exp084, 33+17 checks) |
@@ -151,7 +151,7 @@ See [BARRACUDA_REQUIREMENTS.md](BARRACUDA_REQUIREMENTS.md) for detailed primitiv
 | **groundSpring** | Error propagation, uncertainty quantification, spectral methods, tissue Anderson localization (Track 6 cross-tissue) |
 | **airSpring** | CytokineBrain visualization, sensor fusion patterns, immunological Anderson (Track 6 cross-species immune) |
 | **hotSpring** | Lattice methods (SU(3) → tissue lattice), Anderson spectral theory, BatchedEighGpu for 3D Anderson |
-| **barraCuda** | All GPU primitives (standalone math library, v0.3.7) |
+| **barraCuda** | All GPU primitives (standalone math library, v0.3.13) |
 | **toadStool** | Compute pipeline dispatch (CPU/GPU/NPU routing, streaming) |
 | **metalForge** | NUCLEUS topology, substrate capabilities, PCIe transfer planning |
 | **petalTongue** | Universal UI — 7 DataChannel types, streaming, interaction, domain theming |

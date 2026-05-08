@@ -1,7 +1,7 @@
 +++
 title = "healthSpring Validation Summary"
 description = "PK/PD, gut microbiome, biosignal, drug discovery — 795 checks across 7 clinical tracks, sovereign NLME"
-date = 2026-05-06
+date = 2026-05-08
 
 [taxonomies]
 primals = ["barracuda", "toadstool", "biomeos", "nestgate"]
@@ -19,10 +19,10 @@ springs = ["healthspring", "wetspring", "neuralspring", "groundspring"]
 ## Key Validation Binaries
 
 <!-- TODO: Update with actual binary names from target/release/ -->
-- `validate_pk_models` — Hill, PBPK, Michaelis-Menten
-- `validate_gut_microbiome` — Anderson lattice, C. diff, FMT
-- `validate_biosignal` — Pan-Tompkins, HRV
-- `validate_nlme` — FOCE/SAEM population PK
+- `validate_pk_models` — Hill, 1-compartment PK, PopPK, Michaelis-Menten (16 checks, exit 0/1)
+- `validate_gut_microbiome` — (planned) Anderson lattice, C. diff, FMT
+- `validate_biosignal` — (planned) Pan-Tompkins, HRV
+- `validate_nlme` — (planned) FOCE/SAEM population PK
 
 ## Workload TOMLs
 

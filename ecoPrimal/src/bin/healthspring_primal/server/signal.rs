@@ -27,7 +27,11 @@ pub fn install_signal_handler(running: &Arc<AtomicBool>) {
                 std::process::exit(1);
             }
         };
-        reader.set_read_timeout(Some(Duration::from_secs(1))).ok();
+        reader
+            .set_read_timeout(Some(Duration::from_secs(
+                healthspring_barracuda::tolerances::SIGNAL_POLL_INTERVAL_SECS,
+            )))
+            .ok();
         let mut buf = [0u8; 1];
         loop {
             let _ = reader.read(&mut buf);

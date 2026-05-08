@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** April 27, 2026 (V59)
+**Date:** May 8, 2026 (V60)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V59 — **Deep debt resolved**: typed enums replace stringly-typed dispatch (`NodeType`, `NodeStatus`, `EdgeType`, `ClinicalStatus`), ~45 clone eliminations via borrow-based scenario helpers, `ValidationOutcome` replaces `process::exit` in library code, capability-first routing (no hardcoded primal names). 892 tests pass, 0 clippy warnings. Phase 46 NUCLEUS composition (18/24). guideStone **Level 5** (57/57, primalSpring v0.9.17, v1.2.0). ecoBin 0.9.0.
+**Status:** V60 — **Deep debt evolution**: `barracuda-lib` optional deps (default on) for IPC-first sovereign NUCLEUS when disabled; timeouts/retry constants centralized in `tolerances.rs`; `BarraCudaClient::discover()` capability-first; **exp123** full NUCLEUS pipeline parity; **`validate_pk_models`** for projectNUCLEUS (Hill, 1-compartment, PopPK, MM). Typed enums + `ValidationOutcome` + capability-first routing retained from V59. 1,002 tests pass, 0 clippy warnings. Phase 46 NUCLEUS composition (18/24). guideStone **Level 5** (57/57, primalSpring v0.9.17, v1.2.0). ecoBin 0.9.0. barraCuda v0.3.13.
 
 ---
 
@@ -33,13 +33,13 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V59** (deep debt resolved — typed enums, clone reduction, capability-first routing; Phase 46 NUCLEUS 18/24; guideStone Level 5, 57/57, primalSpring v0.9.17) |
-| **Total tests** | **948+** (864 lib + proptest + IPC fuzz + 33 forge + 51 toadstool + 94 experiment bins) |
-| Experiments complete | 94 (84 science Tracks 1–9 + 11 composition Tier 3–5) |
-| Composition validation (Tier 3–5) | 11 experiments (exp112–122) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity. `healthspring_guidestone` supersedes exp122 as guideStone artifact. |
-| JSON-RPC capabilities | 84+ (62 science + 22 infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
+| Version | **V60** (deep debt evolution — `barracuda-lib` optional sovereign path, tolerance/timeout centralization, exp123 NUCLEUS parity, validate_pk_models; Phase 46 NUCLEUS 18/24; guideStone Level 5, 57/57, primalSpring v0.9.17) |
+| **Total tests** | **1,002** (849 lib + 100 integration) |
+| Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
+| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. `healthspring_guidestone` supersedes exp122 as guideStone artifact. |
+| JSON-RPC capabilities | 83 (`ALL_CAPABILITIES` in `capabilities.rs`; includes science + infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
-| Python baselines | **54** with structured provenance registry (90 total entries, 100% experiment coverage) |
+| Python baselines | **53 Python control scripts + 53 Jupyter notebooks** with structured provenance registry (**95+** provenance entries, 100% experiment coverage) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
 | ecoBin | Static-PIE x86_64-musl, 3.2 MB, harvested to `infra/plasmidBin/healthspring/` (v0.9.0) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity |
@@ -54,9 +54,15 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 ---
 
+## V60 Deep Debt Evolution — Sovereign NUCLEUS Parity (from V59)
+
+V60 extends sovereign deployment and parity: optional **`barracuda-lib`** feature (default on) gates barraCuda/barracuda-core; disabling yields an IPC-first NUCLEUS path with pure-Rust fallbacks in `math_dispatch.rs`. **`BarraCudaClient::discover()`** probes the `stats` capability first with a `barracuda` name fallback. Scattered timeouts and retries consolidate into **`tolerances.rs`**; inline literals in exp122 and guidestone bare.rs migrate to named tolerance constants. **`exp123_nucleus_parity`** validates full NUCLEUS pipeline parity (Tower+Node+Nest+cross-atomic) for the health niche; **`validate_pk_models`** supports projectNUCLEUS workloads (Hill, 1-compartment, PopPK, Michaelis-Menten). Criterion **`gpu_parity`** benchmarks are feature-gated behind `gpu`; dataset fetch scripts add BLAKE3 hashing; `records_infra.rs` and visualization scenario tests split for maintainability; capability registry and docs align with primalSpring. **1,002** tests pass, **0** clippy warnings.
+
+---
+
 ## V59 Deep Debt Resolution — Idiomatic Rust Evolution (from V58)
 
-V59 resolves structural debt across the codebase: stringly-typed visualization dispatch replaced with 4 typed enums (`NodeType`, `NodeStatus`, `EdgeType`, `ClinicalStatus`), ~45 `.clone()` calls eliminated via borrow-based scenario helpers, `ValidationOutcome` added so library code returns instead of calling `process::exit()`, and routing evolved from hardcoded primal names to capability-domain discovery. 892 tests pass, 0 clippy warnings.
+V59 resolves structural debt across the codebase: stringly-typed visualization dispatch replaced with 4 typed enums (`NodeType`, `NodeStatus`, `EdgeType`, `ClinicalStatus`), ~45 `.clone()` calls eliminated via borrow-based scenario helpers, `ValidationOutcome` added so library code returns instead of calling `process::exit()`, and routing evolved from hardcoded primal names to capability-domain discovery. 1,002 tests pass, 0 clippy warnings.
 
 ---
 
@@ -135,9 +141,9 @@ V53 completes the composition evolution spiral: Python baselines validated Rust 
 | **Zero `dyn` dispatch** | `Box<dyn ValidationSink>` replaced with `ValidationSink` enum dispatch — stadial zero-dyn compliance. |
 | **Typed errors** | `ServerError` and `TrioError` enums replace `Result<_, String>` in server and provenance IPC paths. |
 | **Capability routing by domain** | `ROUTED_CAPABILITIES` maps to `by_capability` domains, not hardcoded primal names. |
-| **`niche.rs` composition registry** | `COMPOSITION_EXPERIMENTS` constant maps all 11 composition experiments to validation tiers (Tier 3–5). |
-| **ecoBin 0.9.0** | 3.2 MB static-PIE x86_64-musl, harvested to `infra/plasmidBin/`. barraCuda v0.3.12. |
-| **948+ tests** | 94 experiments (84 science + 11 composition Tier 3–5). Zero clippy, zero `dyn`, zero `async-trait`. |
+| **`niche.rs` composition registry** | `COMPOSITION_EXPERIMENTS` constant maps all 12 composition experiments to validation tiers (Tier 3–5). |
+| **ecoBin 0.9.0** | 3.2 MB static-PIE x86_64-musl, harvested to `infra/plasmidBin/`. barraCuda v0.3.13. |
+| **1,002 tests** | 95 experiments (83 science + 12 composition Tier 3–5). Zero clippy, zero `dyn`, zero `async-trait`. |
 | **`math_dispatch` module** | Centralizes 11 `barracuda::` call sites. `primal-proof` feature routes 2 wire-ready methods via IPC. |
 | **`BarraCudaClient`** | Typed IPC client for barraCuda ecobin (stats.mean, stats.std_dev, rng.uniform). |
 | **`exp122` (Level 5)** | Primal proof: barraCuda IPC parity + wire-pending inventory. Superseded by `healthspring_guidestone` in V54. |
@@ -602,7 +608,7 @@ Tier 4: Primal composition (IPC dispatch vs direct Rust — the NUCLEUS composit
 Tier 5: Deploy graph validation (TOML graph ↔ proto-nucleate ↔ capability surface consistency)
 ```
 
-**Current state**: Tier 0+1 validation complete for **84** experiments (ValidationHarness **84/84**). **Tier 2 live**: 6 WGSL shaders (3 Tier A + 3 Tier B), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **Tier 4 live** (V47): 6 experiments (exp112–117), IPC dispatch parity, proto-nucleate alias resolution, wire protocol round-trip. **Tier 5 live** (V52): exp118, deploy graph vs proto-nucleate structural alignment (99 checks). **Three-layer validation**: Python → Rust (science), Rust → Python (baselines), NUCLEUS → composition (deploy graphs, fragments, bonding, capabilities).
+**Current state**: Tier 0+1 validation complete for **83** science experiments (ValidationHarness **83/83**). **Tier 2 live**: 6 WGSL shaders (3 Tier A + 3 Tier B), fused pipeline, CPU vs GPU parity matrix. **Tier 3 live**: metalForge NUCLEUS routing for all Workload variants, toadStool streaming dispatch, PCIe P2P bypass. **Tier 4 live** (V47): 6 experiments (exp112–117), IPC dispatch parity, proto-nucleate alias resolution, wire protocol round-trip. **Tier 5 live** (V52): exp118, deploy graph vs proto-nucleate structural alignment (99 checks). **Three-layer validation**: Python → Rust (science), Rust → Python (baselines), NUCLEUS → composition (deploy graphs, fragments, bonding, capabilities).
 
 ---
 
@@ -655,13 +661,17 @@ healthSpring/
 │       │   ├── species_params.rs
 │       │   ├── canine.rs
 │       │   └── feline.rs
-│       └── visualization/ # petalTongue integration
-│           ├── ipc_push.rs      # JSON-RPC client (render, append, replace, gauge, caps, interact)
-│           ├── stream.rs        # StreamSession with backpressure
-│           ├── clinical.rs      # Patient-parameterized TRT scenario builder (374 lines)
-│           ├── clinical_nodes.rs # TRT node builders (819 lines)
-│           ├── scenarios/       # Per-track + topology + dispatch scenario builders
-│           └── capabilities.rs  # Songbird capability announcement (glob-based discovery)
+│       ├── visualization/ # petalTongue integration
+│       │   ├── ipc_push.rs      # JSON-RPC client (render, append, replace, gauge, caps, interact)
+│       │   ├── stream.rs        # StreamSession with backpressure
+│       │   ├── clinical.rs      # Patient-parameterized TRT scenario builder (374 lines)
+│       │   ├── clinical_nodes.rs # TRT node builders (819 lines)
+│       │   ├── scenarios/       # Per-track + topology + dispatch scenario builders
+│       │   └── capabilities.rs  # Songbird capability announcement (glob-based discovery)
+│       └── bin/           # ecoPrimal binaries (`validate_pk_models`, `healthspring_primal`, `healthspring_guidestone`)
+│           ├── validate_pk_models.rs   # projectNUCLEUS PK workloads (Hill, 1-compartment, PopPK, MM)
+│           ├── healthspring_primal/    # UniBin-compliant biomeOS primal (`main.rs`)
+│           └── healthspring_guidestone/ # guideStone NUCLEUS proof harness (`main.rs`, `guidestone` feature)
 │   └── shaders/health/  # WGSL compute kernels (f64)
 │       ├── hill_dose_response_f64.wgsl
 │       ├── population_pk_f64.wgsl
@@ -678,7 +688,7 @@ healthSpring/
 │   ├── discovery/       # exp090–094
 │   ├── comparative/     # exp100–106
 │   └── scripts/         # Benchmark scripts + timing JSON results
-├── experiments/         # 94 validation binaries
+├── experiments/         # 95 validation binaries
 │   ├── exp001–exp006/   # Track 1: PK/PD
 │   ├── exp010–exp013/   # Track 2: Microbiome
 │   ├── exp020–exp023/   # Track 3: Biosignal
@@ -697,18 +707,7 @@ healthSpring/
 │   ├── exp085–exp087/   # GPU scaling + toadStool dispatch + NUCLEUS routing
 │   ├── exp088–exp089/   # petalTongue V16 visualization + patient explorer
 │   ├── exp090–exp096/   # Track 7: Drug Discovery (+ iPSC skin, niclosamide)
-│   ├── exp100–exp110/   # Track 6: Comparative Medicine (+ QS Anderson, real 16S, MIT-BIH, equine)
-│   ├── ipc/              # biomeOS IPC (JSON-RPC 2.0 dispatch)
-│   │   ├── mod.rs
-│   │   ├── dispatch/     # 79 method → science function routing
-│   │   │   ├── mod.rs    # Central dispatch table
-│   │   │   └── handlers/ # Domain handlers (pkpd, microbiome, biosignal, clinical)
-│   │   ├── rpc.rs        # JSON-RPC response helpers + client
-│   │   ├── socket.rs     # XDG socket path resolution + primal discovery
-│   │   ├── error.rs      # thiserror IpcError (8 variants + query helpers)
-│   │   └── resilience.rs # CircuitBreaker + RetryPolicy
-│   └── bin/
-│       └── healthspring_primal.rs  # UniBin-compliant biomeOS primal binary
+│   └── exp100–exp110/   # Track 6: Comparative Medicine (+ QS Anderson, real 16S, MIT-BIH, equine)
 ├── graphs/             # biomeOS niche definition + workflow graphs
 │   ├── healthspring_niche.toml              # Niche manifest
 │   ├── healthspring_niche_deploy.toml       # Primal startup order
@@ -733,7 +732,7 @@ healthSpring/
 ├── wateringHole/        # Cross-spring handoffs
 │   └── handoffs/        # → barraCuda, toadStool, petalTongue
 ├── scripts/             # Dashboard, visualization, sync scripts
-├── Cargo.toml           # Workspace (97 members)
+├── Cargo.toml           # Workspace (98 members)
 └── README.md            # This file
 ```
 
@@ -742,7 +741,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 948+ tests
+cargo test --workspace                  # 1,002 tests
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings
@@ -753,6 +752,7 @@ cargo build --workspace --release
 python3 control/pkpd/cross_validate.py
 
 # Run individual validation binaries
+cargo run --bin validate_pk_models       # projectNUCLEUS: Hill, 1-compartment, PopPK, Michaelis-Menten
 cargo run --bin exp050_diagnostic_pipeline
 cargo run --bin exp051_population_diagnostic
 cargo run --bin exp052_petaltongue_render

@@ -1,7 +1,7 @@
 # healthSpring baseCamp: Gonzales PK/PD → Human Therapeutics
 
 **Faculty**: Andrea J. Gonzales (MSU Pharmacology & Toxicology), Erika Lisabeth (ADDRC), Richard Neubig (Drug Discovery), Edmund Ellsworth (Medicinal Chemistry)
-**Status**: V59 — Deep debt resolved, Phase 46 NUCLEUS composition, guideStone Level 5 (primalSpring v0.9.17). 94 experiments, 948+ tests, 54 Python baselines with provenance. barraCuda v0.3.12. ecoBin 0.9.0.
+**Status**: V60 — Deep debt resolved, Phase 46 NUCLEUS composition, guideStone Level 5 (primalSpring v0.9.17). 95 experiments, 1,002 tests, 53 Python baseline scripts + 53 paired `.ipynb` notebooks with provenance. barraCuda v0.3.13. ecoBin 0.9.0.
 **Parent**: gen3/baseCamp Paper 12 (Immunological Anderson), gen3/baseCamp Paper 13 (Sovereign Human Health Computing)
 
 ---
@@ -82,7 +82,7 @@ Lokivetmab → nemolizumab/dupilumab via allometric scaling.
 - Population AUC mean within 0.07% of theoretical F*D/CL
 - Tmax 95% CI: [1.06, 3.41] hr (reasonable for oral)
 - Rust module: `pkpd::population_pk_cpu`, `pkpd::LognormalParam`, `pkpd::pop_baricitinib`
-- **GPU target**: Scale to 100K–1M patients via BarraCUDA (embarrassingly parallel, each patient = independent ODE)
+- **GPU target**: Scale to 100K–1M patients via barraCuda (embarrassingly parallel, each patient = independent ODE)
 
 ### Extension 6: PBPK Compartments (Gabrielsson & Weiner) — COMPLETE
 
@@ -115,7 +115,7 @@ Capacity-limited (nonlinear) elimination — the first model where half-life is 
 ### Extension 8: Population PK GPU Scale-Up
 
 - Scale Exp005 to 100K → 1M virtual patients
-- GPU dispatch via BarraCUDA (each patient = independent ODE, embarrassingly parallel)
+- GPU dispatch via barraCuda (each patient = independent ODE, embarrassingly parallel)
 - Dosing optimization: trough above EC90
 - Hardware target: Northgate RTX 5090 (32GB VRAM, ~100MB for 100K patients)
 

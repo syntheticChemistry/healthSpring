@@ -205,8 +205,16 @@ fn capability_call(
     });
 
     let mut stream = std::os::unix::net::UnixStream::connect(socket_path).map_err(TrioError::Io)?;
-    stream.set_read_timeout(Some(Duration::from_secs(10))).ok();
-    stream.set_write_timeout(Some(Duration::from_secs(10))).ok();
+    stream
+        .set_read_timeout(Some(Duration::from_secs(
+            crate::tolerances::PROVENANCE_STREAM_TIMEOUT_SECS,
+        )))
+        .ok();
+    stream
+        .set_write_timeout(Some(Duration::from_secs(
+            crate::tolerances::PROVENANCE_STREAM_TIMEOUT_SECS,
+        )))
+        .ok();
 
     let payload = serde_json::to_string(&request).map_err(TrioError::Json)?;
     stream

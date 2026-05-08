@@ -215,6 +215,10 @@ pub const COMPOSITION_EXPERIMENTS: &[(&str, &str)] = &[
         "exp122_primal_proof_barracuda_parity",
         "tier5_primal_proof_ipc",
     ),
+    (
+        "exp123_nucleus_parity",
+        "tier5_nucleus_composition_parity",
+    ),
 ];
 
 // ── guideStone metadata ──────────────────────────────────────────────────
@@ -408,6 +412,70 @@ mod tests {
                 ipc_method.contains('.'),
                 "{ipc_method} must be a dotted IPC method"
             );
+        }
+    }
+
+    #[test]
+    fn registry_toml_exists_and_parses() {
+        let registry_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace root")
+            .join("config/capability_registry.toml");
+        assert!(
+            registry_path.exists(),
+            "config/capability_registry.toml must exist — see parity handoff"
+        );
+        let content = std::fs::read_to_string(&registry_path)
+            .expect("read registry");
+        let table: toml::Value = content.parse().expect("valid TOML");
+        let table = table.as_table().expect("top-level table");
+        assert!(
+            table.len() >= 10,
+            "registry should have at least 10 domain sections, found {}",
+            table.len()
+        );
+    }
+
+    #[test]
+    fn registry_contains_all_niche_capabilities() {
+        let registry_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace root")
+            .join("config/capability_registry.toml");
+        let content = std::fs::read_to_string(&registry_path)
+            .expect("read registry");
+
+        for cap in CAPABILITIES {
+            assert!(
+                content.contains(cap),
+                "niche CAPABILITIES entry {cap:?} missing from capability_registry.toml"
+            );
+        }
+        for cap in CONSUMED_CAPABILITIES {
+            assert!(
+                content.contains(cap),
+                "niche CONSUMED_CAPABILITIES entry {cap:?} missing from capability_registry.toml"
+            );
+        }
+    }
+
+    #[test]
+    fn registry_contains_all_barracuda_ipc_methods() {
+        let registry_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace root")
+            .join("config/capability_registry.toml");
+        let content = std::fs::read_to_string(&registry_path)
+            .expect("read registry");
+
+        for (_, ipc_method) in BARRACUDA_IPC_MIGRATION {
+            if ipc_method.contains('.') {
+                let base = ipc_method.split('.').take(2).collect::<Vec<_>>().join(".");
+                assert!(
+                    content.contains(&base),
+                    "barraCuda IPC method {ipc_method:?} (base {base:?}) missing from registry"
+                );
+            }
         }
     }
 }

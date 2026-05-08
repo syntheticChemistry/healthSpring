@@ -1,9 +1,13 @@
+> **Note:** This index is maintained for historical reference. The canonical experiment inventory is [`/experiments/README.md`](../../experiments/README.md).
+
+---
+
 # healthSpring Experiments
 
 Validation experiments documenting the four-tier pipeline (Python → Rust CPU → GPU → metalForge) for each health application domain.
 
-**Status**: V59 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 94 experiments (84 science + 11 composition Tier 3–5), 948+ tests, 84+ JSON-RPC capabilities, 94 provenance entries (100% coverage).
-**Last Updated**: April 27, 2026
+**Status**: V60 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 95 experiments (83 science + 12 composition Tier 3–5), 1,002 tests, 83 JSON-RPC capabilities, 95+ provenance entries (100% coverage).
+**Last Updated**: May 8, 2026
 
 ---
 

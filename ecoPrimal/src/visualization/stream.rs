@@ -23,8 +23,8 @@ pub struct BackpressureConfig {
 impl Default for BackpressureConfig {
     fn default() -> Self {
         Self {
-            push_timeout: Duration::from_millis(500),
-            cooldown: Duration::from_millis(200),
+            push_timeout: Duration::from_millis(crate::tolerances::VIZ_PUSH_TIMEOUT_MS),
+            cooldown: Duration::from_millis(crate::tolerances::VIZ_COOLDOWN_MS),
             slow_threshold: 3,
         }
     }

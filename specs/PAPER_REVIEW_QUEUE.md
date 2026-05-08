@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: April 27, 2026
-**Status**: V59 — Deep debt resolved, Phase 46 NUCLEUS composition. guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 94 experiments (84 science + 11 composition Tier 3–5), 948+ tests, 45/45 papers complete. 94 provenance entries, 84+ capabilities. barraCuda v0.3.12.
+**Status**: V59 — Deep debt resolved, Phase 46 NUCLEUS composition. guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 94 experiments (84 science + 11 composition Tier 3–5), 948+ tests, 45/45 papers complete. 94 provenance entries, 84+ capabilities. barraCuda v0.3.13.
 
 ---
 
@@ -62,6 +62,8 @@
 | DD-004 | ChEMBL JAK inhibitor bioactivity panel | Exp093 | 21 | 21 | 0,1 |
 | CM-001 | Gonzales 2013 — Canine IL-31 serum kinetics | Exp100 | 14 | 14 | 0,1 |
 | CM-002 | Gonzales 2014 — Oclacitinib JAK1 selectivity | Exp101 | 15 | 15 | 0,1 |
+| CM-003 | Gonzales 2016 — IL-31 pruritus model in beagles | Exp102 | 13 | 13 | 0,1 |
+| CM-004 | Fleck/Gonzales 2021 — Lokivetmab dose-duration | Exp103 | 15 | 15 | 0,1 |
 | CM-005 | Cross-species allometric PK bridge | Exp104 | 15 | 15 | 0,1 |
 | DD-005 | Neubig Rho/MRTF/SRF fibrosis inhibitors | Exp094 | 15 | 15 | 0,1 |
 | DD-006 | Gonzales iPSC skin model validation | Exp095 | — | 15 | 0,1 |
@@ -155,8 +157,6 @@ testing human drugs on animals without causality.
 |----|---------------|-----------------|----------|
 | CM-001 | Gonzales 2013 — IL-31 elevated in AD dog serum | Canine IL-31 serum kinetics, pruritus dose-response (species-native model) | **P0** |
 | CM-002 | Gonzales 2014 — Oclacitinib JAK1 selectivity | Canine IC50 panel as independent validation (not just human bridge) | **P0** |
-| CM-003 | Gonzales 2016 — IL-31 pruritus model in beagles | Time-course pruritus recovery, treatment comparison (canine-native) | **P1** |
-| CM-004 | Fleck/Gonzales 2021 — Lokivetmab dose-duration | mAb PK in dogs: onset 3hr, duration 14/28/42 days dose-dependent | **P1** |
 | CM-005 | Cross-species allometric PK bridge | Species-agnostic PK refactor: canine ↔ human ↔ feline parameter scaling | **P1** |
 | CM-006 | Canine gut microbiome + AD severity | Cross-species Anderson: dog gut Pielou → W → colonization resistance | **P2** |
 | CM-007 | Feline hyperthyroidism PK (methimazole) | Species extension: capacity-limited PK in cats (MM kinetics) | **P2** |

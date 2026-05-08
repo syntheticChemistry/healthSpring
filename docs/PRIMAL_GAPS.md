@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-04-27
-**healthSpring version**: V59 (ecoBin 0.9.0, guideStone Level 5, primalSpring v0.9.17, Phase 46 composition, deep debt resolved)
+**Date**: 2026-05-08
+**healthSpring version**: V60 (ecoBin 0.9.0, guideStone Level 5, primalSpring v0.9.17, Phase 46 composition, deep debt resolved)
 
 ---
 
@@ -556,6 +556,26 @@ DOWNSTREAM_COMPOSITION_EXPLORER_GUIDE, or make the lib detect and use
 
 **Status**: Documented. healthSpring provides `tools/socat` shim using
 `nc -q 1 -U`.
+
+---
+
+## Deep Debt Evolution — May 8, 2026
+
+### New capabilities delivered this session
+
+- **capability_registry.toml** created with TOML + sync test against primalSpring
+- **exp123_nucleus_parity** validates full NUCLEUS pipeline for health niche
+- **barraCuda optional** (`barracuda-lib` feature) — IPC-first sovereign deployment path
+- **BarraCudaClient** evolved to capability-based discovery (`stats` capability first)
+- **Timeout centralization** — all IPC/server timeouts in `tolerances.rs`
+- **exp119–122** now have `[[bin]]` entries and are in CI composition loop
+
+### Gaps handed back to primalSpring
+
+- Gap #2 (ionic bridge): still blocked on BearDog + NestGate evolution
+- Gap #9 (Squirrel): blocked on Squirrel maturity
+- Gap #10 (BTSP server): client ready, blocked on BearDog BTSP server
+- Gaps #20–27: documented workarounds stable, await upstream primal evolution
 
 ---
 

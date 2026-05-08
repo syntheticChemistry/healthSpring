@@ -13,13 +13,17 @@
 //! The provenance registry enumerates all Python control scripts in
 //! `control/` for completeness verification.
 
+mod records_composition;
+mod records_discovery;
+mod records_gpu;
 mod records_infra;
 mod records_science;
 mod registry;
 
 pub use registry::{
-    PROVENANCE_INFRA, PROVENANCE_SCIENCE, all_records, distinct_tracks, record_for_experiment,
-    records_for_track, registry_len, tracks,
+    PROVENANCE_COMPOSITION, PROVENANCE_DISCOVERY, PROVENANCE_GPU, PROVENANCE_INFRA,
+    PROVENANCE_SCIENCE, all_records, distinct_tracks, record_for_experiment, records_for_track,
+    registry_len, tracks,
 };
 
 use serde::{Deserialize, Serialize};

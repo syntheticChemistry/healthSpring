@@ -437,8 +437,35 @@ pub const IPC_PROBE_BUF: usize = 8192;
 /// JSON-RPC response buffer size (bytes) for Songbird / petalTongue.
 pub const IPC_RESPONSE_BUF: usize = 4096;
 
-/// IPC socket read/write timeout (milliseconds).
+/// IPC socket read/write timeout for probes (milliseconds).
 pub const IPC_TIMEOUT_MS: u64 = 500;
+
+/// JSON-RPC client read timeout (milliseconds) — used by `rpc::try_send`.
+pub const IPC_RPC_READ_TIMEOUT_MS: u64 = 10_000;
+
+/// Server-side connection read timeout (seconds) — generous for slow clients.
+pub const SERVER_READ_TIMEOUT_SECS: u64 = 60;
+
+/// Server-side connection write timeout (seconds).
+pub const SERVER_WRITE_TIMEOUT_SECS: u64 = 10;
+
+/// Provenance stream socket timeout (seconds) — read and write.
+pub const PROVENANCE_STREAM_TIMEOUT_SECS: u64 = 10;
+
+/// Signal handler accept-loop poll interval (seconds).
+pub const SIGNAL_POLL_INTERVAL_SECS: u64 = 1;
+
+/// Visualization push timeout before considering a push slow (milliseconds).
+pub const VIZ_PUSH_TIMEOUT_MS: u64 = 500;
+
+/// Visualization backpressure cooldown after slow pushes (milliseconds).
+pub const VIZ_COOLDOWN_MS: u64 = 200;
+
+/// IPC retry initial backoff (milliseconds).
+pub const IPC_RETRY_INITIAL_MS: u64 = 50;
+
+/// IPC retry maximum backoff cap (milliseconds).
+pub const IPC_RETRY_CAP_MS: u64 = 500;
 
 // ── Test and guard constants ────────────────────────────────────────────
 

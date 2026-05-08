@@ -142,7 +142,7 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "barracuda"
-version = "0.3.12"
+version = "0.3.13"
 dependencies = [
  "barracuda-naga-exec",
  "blake3",
@@ -163,7 +163,7 @@ dependencies = [
 
 [[package]]
 name = "barracuda-core"
-version = "0.3.12"
+version = "0.3.13"
 dependencies = [
  "barracuda",
  "base64ct",
@@ -171,7 +171,9 @@ dependencies = [
  "chacha20poly1305",
  "clap",
  "futures",
+ "hkdf 0.12.4",
  "hmac 0.12.1",
+ "rand 0.9.2",
  "serde",
  "serde_json",
  "sha2 0.10.9",
@@ -186,7 +188,7 @@ dependencies = [
 
 [[package]]
 name = "barracuda-naga-exec"
-version = "0.3.12"
+version = "0.3.13"
 dependencies = [
  "naga",
  "thiserror",
@@ -694,7 +696,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1018,6 +1020,7 @@ dependencies = [
  "serde_json",
  "thiserror",
  "tokio",
+ "toml",
  "tracing",
  "tracing-subscriber",
  "ureq",
@@ -1756,6 +1759,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "healthspring-exp123"
+version = "0.1.0"
+dependencies = [
+ "healthspring-barracuda",
+ "serde_json",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "healthspring-forge"
 version = "0.1.0"
 dependencies = [
@@ -1791,6 +1804,15 @@ name = "hexf-parse"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dfa686283ad6dd069f105e5ab091b04c62850d3e4cf5d67debad1933f55023df"
+
+[[package]]
+name = "hkdf"
+version = "0.12.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7b5f8eb2ad728638ea2c7d47a21db23b7b58a72ed6a38256b8a1849f15fbbdf7"
+dependencies = [
+ "hmac 0.12.1",
+]
 
 [[package]]
 name = "hkdf"
@@ -1885,7 +1907,7 @@ checksum = "3640c1c38b8e4e43584d8df18be5fc6b0aa314ce6ebf51b53313d4306cca8e46"
 dependencies = [
  "hermit-abi",
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2388,14 +2410,14 @@ dependencies = [
 
 [[package]]
 name = "primalspring"
-version = "0.9.17"
+version = "0.9.25"
 dependencies = [
  "base64",
  "blake3",
  "chacha20poly1305",
  "clap",
  "getrandom 0.4.2",
- "hkdf",
+ "hkdf 0.13.0",
  "hmac 0.13.0",
  "serde",
  "serde_json",
@@ -2642,7 +2664,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2936,10 +2958,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.3.4",
+ "getrandom 0.4.2",
  "once_cell",
  "rustix",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3585,7 +3607,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

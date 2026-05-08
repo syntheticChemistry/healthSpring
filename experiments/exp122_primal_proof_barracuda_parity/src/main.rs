@@ -49,7 +49,7 @@ fn validate_math_dispatch_known_values(h: &mut ValidationHarness) {
         "math_dispatch::mean matches analytical (5.5)",
         dispatch_mean,
         expected_mean,
-        1e-15,
+        healthspring_barracuda::tolerances::MACHINE_EPSILON_STRICT,
     );
 
     let dispatch_sd = math_dispatch::std_dev(&data).unwrap_or(0.0);
@@ -63,7 +63,7 @@ fn validate_math_dispatch_known_values(h: &mut ValidationHarness) {
         "math_dispatch::hill(10, 10, 1) == 0.5",
         hill_val,
         0.5,
-        1e-15,
+        healthspring_barracuda::tolerances::MACHINE_EPSILON_STRICT,
     );
 
     let uniform = [0.25, 0.25, 0.25, 0.25];
@@ -72,7 +72,7 @@ fn validate_math_dispatch_known_values(h: &mut ValidationHarness) {
         "math_dispatch::shannon uniform(4) == ln(4)",
         shannon,
         4.0_f64.ln(),
-        1e-10,
+        healthspring_barracuda::tolerances::MACHINE_EPSILON,
     );
 
     h.check_bool(

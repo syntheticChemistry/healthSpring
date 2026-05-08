@@ -4,6 +4,35 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V60 — 2026-05-08 — Deep Debt Evolution
+
+### Architecture
+- **`barracuda-lib` feature**: barraCuda/barracuda-core now optional deps behind `barracuda-lib` (default on). IPC-first sovereign NUCLEUS deployment path when disabled. `math_dispatch.rs` provides pure-Rust fallbacks for all domain functions.
+- **Capability-based discovery**: `BarraCudaClient::discover()` uses `stats` capability first, `barracuda` name fallback.
+- **Timeout centralization**: All scattered timeout/retry constants (`rpc.rs`, `connection.rs`, `stream.rs`, `signal.rs`, `provenance.rs`) moved to `tolerances.rs`.
+- **Tolerance migration**: Inline `1e-15`/`1e-10` literals in exp122 and guidestone bare.rs replaced with named `tolerances::*` constants.
+
+### Experiments
+- **exp123_nucleus_parity**: Full NUCLEUS pipeline parity (Tower+Node+Nest+cross-atomic) for health niche, replicating primalSpring exp094.
+- **exp119-122 CI coverage**: Added `[[bin]]` entries; all 5 new experiments in CI composition job.
+- **validate_pk_models**: New binary for projectNUCLEUS workload (Hill, 1-compartment, PopPK, Michaelis-Menten).
+
+### Benchmarks & Data
+- **gpu_parity.rs**: Criterion GPU benchmarks (Hill, Diversity, PopPK, MM) feature-gated behind `gpu`.
+- **Dataset fetch scripts**: `fetch_mitbih.sh`, `fetch_chembl.sh`, `fetch_hmp_16s.sh`, `fetch_geo_ar.sh` with BLAKE3 hashing.
+
+### Code Quality
+- All clippy errors fixed (`map_unwrap_or`, `doc_markdown`, `format_collect`, `useless_conversion`).
+- barraCuda version comments updated from v0.3.12 to v0.3.13 across 17 active docs + CI.
+- `records_infra.rs` (777 LOC) split into 4 domain files: `records_discovery.rs`, `records_gpu.rs`, `records_composition.rs`, `records_infra.rs`.
+- `visualization/scenarios/tests.rs` (732 LOC) split into `tests_biosignal.rs`, `tests_pkpd.rs`, `tests_endocrine.rs`, `tests_microbiome.rs`.
+
+### Documentation
+- 53 Python control scripts converted to `.ipynb` notebooks with paper linkage via `tools/py_to_notebook.py`.
+- CM-003/CM-004 paper queue inconsistency resolved in `specs/PAPER_REVIEW_QUEUE.md`.
+- `docs/PRIMAL_GAPS.md` updated with May 8 evolution findings and upstream handback items.
+- `config/capability_registry.toml` created with sync test against primalSpring canonical registry.
+
 ## V59 — 2026-04-27 — Deep Debt Resolution (Idiomatic Rust Evolution)
 
 ### Changed

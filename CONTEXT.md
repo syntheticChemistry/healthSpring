@@ -29,20 +29,20 @@ capabilities over Unix sockets for biomeOS graph composition.
 ## Technical Facts
 
 - **Language**: 100% Rust, zero C dependencies (wgpu optional for GPU)
-- **Architecture**: workspace with 3 library crates + 94 experiment binaries
+- **Architecture**: workspace with 3 library crates + 95 experiment binaries
   - `healthspring-barracuda` — core science library
   - `healthspring-forge` — metalForge hardware dispatch
   - `healthspring-toadstool` — pipeline orchestration
-- **IPC**: JSON-RPC 2.0 over Unix domain sockets, 84+ capabilities (62 science + 22 infrastructure); `normalize_method()` maps legacy-prefixed names before routing
+- **IPC**: JSON-RPC 2.0 over Unix domain sockets, 83 capabilities per `ALL_CAPABILITIES` in `capabilities.rs`; `normalize_method()` maps legacy-prefixed names before routing
 - **License**: AGPL-3.0-or-later (scyBorg trio)
-- **Tests**: 948+ (lib + proptest + IPC fuzz + doc + integration + experiment bins)
+- **Tests**: 1,002 (lib + proptest + IPC fuzz + doc + integration + experiment bins)
 - **Coverage**: target 90% line (llvm-cov)
 - **Clippy**: 0 warnings, 0 errors (pedantic + nursery + doc-markdown, all promoted to error), workspace-level `[lints]`
 - **Validation harness**: `ValidationSink` trait (pluggable check output for experiments)
 - **Unsafe code**: 0 (`forbid(unsafe_code)` in workspace lints)
 - **MSRV**: 1.87 (Edition 2024)
-- **Crates**: 97 workspace members (3 lib + 94 experiments)
-- **GPU**: 6 WGSL shaders via barraCuda v0.3.12 (Hill, PopPK, Diversity, MM, SCFA, Beat); availability probe cached in `OnceLock`
+- **Crates**: 98 workspace members (3 lib + 95 experiments)
+- **GPU**: 6 WGSL shaders via barraCuda v0.3.13 (Hill, PopPK, Diversity, MM, SCFA, Beat); availability probe cached in `OnceLock`
 - **Tracing**: library code uses `tracing` (no `println!` in lib)
 
 ## Key Capabilities (JSON-RPC)
@@ -68,7 +68,7 @@ capabilities over Unix sockets for biomeOS graph composition.
 
 | Repo | Relationship |
 |------|-------------|
-| **barraCuda** | GPU math library (path dep, v0.3.12) |
+| **barraCuda** | GPU math library (path dep, v0.3.13) |
 | **coralReef** | WGSL compiler pipeline |
 | **toadStool** | Dispatch orchestration |
 | **primalSpring** | Composition framework (v0.9.17), guideStone standard, NUCLEUS tooling |

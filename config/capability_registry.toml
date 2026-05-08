@@ -1,0 +1,359 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Canonical Capability Registry — healthSpring
+#
+# Every JSON-RPC method string used in healthSpring source code (library,
+# guidestone, primal server, experiments) AND referenced in deploy graph TOML
+# files must appear in this registry.
+#
+# CI checks:
+#   tools/check_method_strings.sh — validates Rust source against this file
+#   cargo test -p healthspring-barracuda registry_cross_sync — validates
+#   against primalSpring's canonical config/capability_registry.toml
+#
+# Structure: [domain] with `methods = [...]` listing all known methods in
+# that domain. `owner` names the primal that serves them (or "healthspring"
+# for locally-served science). `locality` is "local" if healthSpring serves
+# the method in-process, "routed" if discovered via by_capability IPC, or
+# "consumed" if called outbound only.
+#
+# Adding a new method: add it here first, then use it in code.
+# Removing a method: grep the codebase, remove all uses, then remove here.
+
+# ── Science domains (served locally by healthSpring) ─────────────────────
+
+[science_pkpd]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.pkpd.hill_dose_response",
+    "science.pkpd.one_compartment_pk",
+    "science.pkpd.two_compartment_pk",
+    "science.pkpd.pbpk_simulate",
+    "science.pkpd.population_pk",
+    "science.pkpd.allometric_scale",
+    "science.pkpd.auc_trapezoidal",
+    "science.pkpd.nlme_foce",
+    "science.pkpd.nlme_saem",
+    "science.pkpd.nca_analysis",
+    "science.pkpd.cwres_diagnostics",
+    "science.pkpd.vpc_simulate",
+    "science.pkpd.gof_compute",
+    "science.pkpd.michaelis_menten_nonlinear",
+]
+
+[science_microbiome]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.microbiome.shannon_index",
+    "science.microbiome.simpson_index",
+    "science.microbiome.pielou_evenness",
+    "science.microbiome.chao1",
+    "science.microbiome.anderson_gut",
+    "science.microbiome.colonization_resistance",
+    "science.microbiome.fmt_blend",
+    "science.microbiome.bray_curtis",
+    "science.microbiome.antibiotic_perturbation",
+    "science.microbiome.scfa_production",
+    "science.microbiome.gut_brain_serotonin",
+    "science.microbiome.qs_gene_profile",
+    "science.microbiome.qs_effective_disorder",
+]
+
+[science_biosignal]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.biosignal.pan_tompkins",
+    "science.biosignal.hrv_metrics",
+    "science.biosignal.ppg_spo2",
+    "science.biosignal.eda_analysis",
+    "science.biosignal.eda_stress_detection",
+    "science.biosignal.arrhythmia_classification",
+    "science.biosignal.fuse_channels",
+    "science.biosignal.wfdb_decode",
+]
+
+[science_endocrine]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.endocrine.testosterone_pk",
+    "science.endocrine.trt_outcomes",
+    "science.endocrine.population_trt",
+    "science.endocrine.hrv_trt_response",
+    "science.endocrine.cardiac_risk",
+]
+
+[science_diagnostic]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.diagnostic.assess_patient",
+    "science.diagnostic.population_montecarlo",
+    "science.diagnostic.composite_risk",
+]
+
+[science_clinical]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.clinical.trt_scenario",
+    "science.clinical.patient_parameterize",
+    "science.clinical.risk_annotate",
+]
+
+[science_comparative]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.comparative.cross_species_pk",
+    "science.comparative.canine_il31",
+    "science.comparative.canine_jak1",
+]
+
+[science_discovery]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.discovery.matrix_score",
+    "science.discovery.hts_analysis",
+    "science.discovery.compound_library",
+    "science.discovery.fibrosis_pathway",
+]
+
+[science_toxicology]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.toxicology.biphasic_dose_response",
+    "science.toxicology.toxicity_landscape",
+    "science.toxicology.hormetic_optimum",
+]
+
+[science_simulation]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "science.simulation.mechanistic_fitness",
+    "science.simulation.ecosystem_simulate",
+]
+
+# ── Proto-nucleate aliases (health.* → science.*) ────────────────────────
+
+[health]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "health.pharmacology",
+    "health.genomics",
+    "health.clinical",
+    "health.de_identify",
+    "health.aggregate",
+    "health.liveness",
+    "health.readiness",
+    "health.check",
+]
+
+# ── Composition & identity (locally served) ──────────────────────────────
+
+[composition]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "composition.health_health",
+]
+
+[identity]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "identity.get",
+]
+
+[capability]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "capability.list",
+]
+
+[mcp]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "mcp.tools.list",
+]
+
+# ── Provenance wrappers (locally served, trio routing) ───────────────────
+
+[provenance]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "provenance.begin",
+    "provenance.record",
+    "provenance.complete",
+    "provenance.status",
+]
+
+# ── Cross-primal forwarding (locally served) ─────────────────────────────
+
+[primal]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "primal.forward",
+    "primal.discover",
+]
+
+# ── Routed capabilities (discovered via by_capability IPC) ───────────────
+
+[compute]
+owner = "toadstool"
+locality = "routed"
+methods = [
+    "compute.offload",
+    "compute.shader_compile",
+]
+
+[data]
+owner = "nestgate"
+locality = "routed"
+methods = [
+    "data.fetch",
+]
+
+[inference]
+owner = "squirrel"
+locality = "routed"
+methods = [
+    "model.inference_route",
+    "inference.complete",
+    "inference.embed",
+    "inference.models",
+    "inference.route",
+]
+
+# ── Consumed capabilities (called outbound, not advertised) ──────────────
+
+[crypto]
+owner = "beardog"
+locality = "consumed"
+methods = [
+    "crypto.hash",
+    "crypto.sign",
+    "crypto.ionic_bond",
+]
+
+[discovery]
+owner = "songbird"
+locality = "consumed"
+methods = [
+    "discovery.find_by_capability",
+]
+
+[storage]
+owner = "nestgate"
+locality = "consumed"
+methods = [
+    "storage.store",
+    "storage.retrieve",
+    "storage.egress_fence",
+]
+
+[shader]
+owner = "coralreef"
+locality = "consumed"
+methods = [
+    "shader.compile",
+]
+
+[dag]
+owner = "rhizocrypt"
+locality = "consumed"
+methods = [
+    "dag.create_session",
+    "dag.append_event",
+    "dag.dehydrate",
+]
+
+[commit]
+owner = "loamspine"
+locality = "consumed"
+methods = [
+    "commit.session",
+]
+
+[braid]
+owner = "sweetgrass"
+locality = "consumed"
+methods = [
+    "provenance.create_braid",
+]
+
+# ── barraCuda IPC migration surface ──────────────────────────────────────
+# Methods available on barraCuda's JSON-RPC surface that healthSpring
+# calls via library import today but validates via IPC in guideStone.
+
+[stats]
+owner = "barracuda"
+locality = "consumed"
+methods = [
+    "stats.mean",
+    "stats.std_dev",
+    "stats.variance",
+    "stats.correlation",
+    "stats.hill",
+    "stats.shannon_from_frequencies",
+    "stats.simpson",
+    "stats.chao1_classic",
+    "stats.bray_curtis",
+]
+
+[special]
+owner = "barracuda"
+locality = "consumed"
+methods = [
+    "special.anderson_diagonalize",
+]
+
+[rng]
+owner = "barracuda"
+locality = "consumed"
+methods = [
+    "rng.uniform",
+]
+
+# barraCuda health-domain compositions consumed by healthSpring
+[health_barracuda]
+owner = "barracuda"
+locality = "consumed"
+methods = [
+    "health.pkpd.mm_auc",
+    "health.microbiome.antibiotic_perturbation",
+    "health.biosignal.scr_rate",
+]
+
+# ── Test fixtures (excluded from drift checks) ───────────────────────────
+
+[test_fixtures]
+owner = "tests"
+methods = [
+    "test.method",
+    "foo.bar",
+]
+
+# ── False positives (dotted strings that are not RPC methods) ────────────
+
+[false_positives]
+owner = "none"
+methods = [
+    "test.sock",
+    "tests.rs",
+    "manifest.toml",
+    "baseline.json",
+    "biomeos.sock",
+    "mock_pt.sock",
+]

@@ -10,7 +10,7 @@
 # Size estimates are approximate pre-download values.
 
 [meta]
-last_updated = "2026-03-24"
+last_updated = "2026-05-08"
 maintainer = "ecoPrimals"
 # To populate sha256 checksums after download, run:
 #   python3 -c "import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())" <file>
@@ -46,6 +46,7 @@ sha256 = ""  # populated after first download
 description = "MIT-BIH Arrhythmia Database — 48 half-hour ECG recordings"
 source = "PhysioNet"
 url = "https://physionet.org/content/mitdb/1.0.0/"
+status = "scripted"
 accessions = [
     "100", "101", "102", "103", "104", "105", "106", "107",
     "108", "109", "111", "112", "113", "114", "115", "116",
@@ -59,7 +60,7 @@ size_estimate = "~100MB"
 output = "mitbih/"
 script = "fetch_mitbih.sh"
 tracks = [3]
-sha256 = ""  # populated after first download (directory hash)
+sha256 = ""  # populated after first download (directory hash); blake3 via fetch script stdout
 
 # ---------------------------------------------------------------------------
 # Track 1 + 7: PK/PD + Drug Discovery — ChEMBL Hill Panel
@@ -69,47 +70,48 @@ sha256 = ""  # populated after first download (directory hash)
 description = "IC50/Ki/EC50 bioactivity data for 50+ compounds (JAK inhibitors + repurposing candidates)"
 source = "ChEMBL REST API"
 url = "https://www.ebi.ac.uk/chembl/api/data/"
+status = "scripted"
 targets = [
     "JAK1 (CHEMBL2835)", "JAK2 (CHEMBL2971)", "JAK3 (CHEMBL2148)",
     "TYK2 (CHEMBL3905)",
 ]
 license = "CC-BY-SA 3.0"
 size_estimate = "~200MB (API responses)"
-output = "chembl_hill_panel.json"
-script = "fetch_chembl.py"
+output = "chembl/"
+script = "fetch_chembl.sh"
 tracks = [1, 7]
-sha256 = ""  # populated after first download
+sha256 = ""  # populated after first download; blake3 via fetch script stdout
 
 # ---------------------------------------------------------------------------
-# Track 2: Microbiome — HMP 16S Profiles (planned)
+# Track 2: Microbiome — HMP 16S Profiles (SRA run-info CSV via scripted fetch)
 # ---------------------------------------------------------------------------
 
 [datasets.hmp_16s]
 description = "Human Microbiome Project 16S rRNA amplicon sequencing"
 source = "NCBI SRA"
+status = "scripted"
 accessions = ["PRJNA48479", "PRJNA275349"]
 license = "Public domain (NIH)"
 size_estimate = "~50GB raw FASTQ"
-output = "hmp_16s/"
-script = "fetch_hmp_16s.py"
+output = "hmp/"
+script = "fetch_hmp_16s.sh"
 tracks = [2]
 sha256 = ""
-status = "planned"
 
 # ---------------------------------------------------------------------------
-# Track 4: Endocrinology — GEO Androgen Receptor Expression (planned)
+# Track 4: Endocrinology — GEO Androgen Receptor Expression (scripted matrix fetch)
 # ---------------------------------------------------------------------------
 
 [datasets.geo_androgen_receptor]
 description = "Androgen receptor expression across tissues (GEO series)"
 source = "NCBI GEO"
+status = "scripted"
 # Candidate series: GSE21034 (prostate AR ChIP-seq), GSE70627 (AR tissue panel),
 # GSE28680 (canine AR expression). Final selection pending track-4 experiment design.
-accessions = []
+accessions = ["GSE28680"]
 license = "Public domain (NCBI)"
 size_estimate = "~50GB raw"
-output = "geo_ar/"
-script = "fetch_geo_ar.py"
+output = "geo/"
+script = "fetch_geo_ar.sh"
 tracks = [4]
 sha256 = ""
-status = "planned"

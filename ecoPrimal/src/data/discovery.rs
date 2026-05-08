@@ -53,8 +53,7 @@ pub fn discover_data_provider_socket() -> Option<PathBuf> {
 #[must_use]
 pub fn is_enabled() -> bool {
     std::env::var("HEALTHSPRING_DATA_PROVIDER")
-        .map(|v| !v.is_empty())
-        .unwrap_or(false)
+        .is_ok_and(|v| !v.is_empty())
 }
 
 /// Discover NCBI API key from standard locations.
