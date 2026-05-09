@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring vs. Every Cure MATRIX — Comparative Analysis
 
-**Last Updated**: May 8, 2026
-**Status**: V60 — Deep debt resolved, Phase 46 NUCLEUS composition, guideStone Level 5 (primalSpring v0.9.17). 1,002 tests, 95 experiments, 83 capabilities. ecoBin 0.9.0. barraCuda v0.3.13. Onboarding document for researchers whose work we have ingested and evolved —
+**Last Updated**: May 9, 2026
+**Status**: V61 — Eukaryotic UniBin + certification organelle; IPC-first defaults (`default = []`, `barracuda-lib` opt-in); guideStone Level 5 via **`healthspring_unibin certify`**. **999 tests**, 95 experiments, 83 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Onboarding document for researchers whose work we have ingested and evolved —
 particularly Fajgenbaum (MATRIX), Lisabeth (ADDRC HTS), and collaborators entering the
 healthSpring ecosystem.
 **Audience**: Drug discovery researchers, pharmacologists, computational biologists, and anyone
@@ -297,5 +297,5 @@ Anderson tissue lattice modeling can.
 2. **Understand the validation chain**: [METHODOLOGY.md](../METHODOLOGY.md)
 3. **See your papers reproduced**: wetSpring Exp157/158 (Fajgenbaum), neuralSpring nS-601–605 (Gonzales)
 4. **See the extension**: healthSpring Exp001–006 (human PK/PD), Track 7 (drug discovery)
-5. **Run it yourself**: `cargo test --workspace` (1,002 tests, zero unsafe code)
+5. **Run it yourself**: `cargo test --workspace` (999 tests, zero unsafe code)
 6. **Explore the specs**: [PAPER_REVIEW_QUEUE.md](../../specs/PAPER_REVIEW_QUEUE.md) for Track 7 paper queue

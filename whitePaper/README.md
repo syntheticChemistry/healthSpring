@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** May 8, 2026
-**Status:** V60 — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone (primal proof) → L6 NUCLEUS. 95 experiments (83 science + 12 composition exp112–123), 1,002 tests, 83 JSON-RPC capabilities, 53 Python baseline scripts + 53 paired `.ipynb` notebooks, 95+ provenance entries (100% coverage). ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Date:** May 9, 2026
+**Status:** V61 — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone (primal proof via **`certification/`** + **`healthspring_unibin certify`**) → L6 NUCLEUS. **UniBin** (`certify`, `validate`, `serve`, `status`, `version`). 95 experiments (83 science + 12 composition exp112–123), **999 tests**, 83 JSON-RPC capabilities, 53 Python baseline scripts + 53 paired `.ipynb` notebooks, 95+ provenance entries (100% coverage). **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -243,7 +243,7 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 | Metric | Value |
 |--------|-------|
 | Experiments | 95 complete (83 science + 12 composition Tier 3–5, exp112–123) |
-| Rust tests | 1,002 (lib + proptest + IPC fuzz + doc + integration + experiment bins) |
+| Rust tests | 999 (868 lib + 131 integration/workspace; see root README) |
 | Python checks | 194 cross-validation |
 | Paper queue | 30/30 complete, 15 new queued |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |

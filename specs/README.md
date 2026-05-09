@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: May 8, 2026
-**Status**: V60 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 1,002 tests, 95 experiments, 83 JSON-RPC capabilities, 95+ provenance entries. ecoBin 0.9.0. barraCuda v0.3.13.
+**Last Updated**: May 9, 2026
+**Status**: V61 — Eukaryotic UniBin + **`certification/`** organelle + **`composition/`** + **`validation/scenarios/`**; IPC-first defaults (`default = []`, **`barracuda-lib`** opt-in). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 via **`healthspring_unibin certify`**. **999 tests**, 95 experiments, 83 JSON-RPC capabilities, 95+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -11,7 +11,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 1,002 |
+| Rust tests (workspace) | 999 |
 | Python control checks | 54 baselines, 113/113 cross-validation (all 9 tracks) |
 | Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |

@@ -150,4 +150,4 @@ Patterns ready for adoption by hotSpring, wetSpring, neuralSpring, ludoSpring, g
 
 ## Fossil Record
 
-V1–V52 archived in `wateringHole/handoffs/archive/`. V53–V58 archived in this release. V54_UPSTREAM_EVOLUTION and V59 remain active as baseline references for the V60 delta.
+V1–V52 archived in `wateringHole/handoffs/archive/`. V53–V58 archived in this release. At V60 publication, V54 upstream evolution and V59 deep-debt composition handoffs still sat beside this file at top level; **May 9, 2026:** both were moved into `handoffs/archive/` (superseded by V60/V61 — same filenames).

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Leverage Guide — Standalone, Trio, and Full Niche
 
-**Date**: May 8, 2026
-**Primal**: healthSpring V60 (`healthspring-barracuda` 0.1.0, ecoBin 0.9.0, guideStone Level 5)
+**Date**: May 9, 2026
+**Primal**: healthSpring V61 (`healthspring-barracuda` 0.1.0, ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**)
 **Audience**: All springs, all primals, biomeOS integrators
 **Status**: Active
 
@@ -12,7 +12,7 @@
 
 This document describes how healthSpring can be leveraged — alone and in composition with other primals — by springs and ecosystem consumers. Each primal in the ecosystem produces an equivalent guide. Together, these guides form a combinatorial recipe book for emergent behaviors.
 
-healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. 1,002 tests, 95 experiments, 83 capabilities (62 science + 21 infra). TCP + UDS listeners, BTSP handshake, typed IPC clients, structured discovery. barraCuda v0.3.13. `healthspring_guidestone` binary validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`. `math_dispatch` is a validation window (2 generic IPC + 9 local domain compositions). Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
+healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. **999 tests**, 95 experiments, 83 capabilities (62 science + 21 infra). TCP + UDS listeners, BTSP handshake, typed IPC clients, structured discovery. barraCuda v0.3.13. **`healthspring_unibin certify`** (plus `validate`, `serve`, `status`, `version`) validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`; standalone **`healthspring_guidestone`** remains a fossil entrypoint only — prefer UniBin. Library crates default **`default = []`** (IPC-first); enable **`barracuda-lib`** when linking barraCuda directly. `math_dispatch` is a validation window (2 generic IPC + 9 local domain compositions). Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
 
 **Philosophy**: Health science is sovereign. Hill dose-response, Shannon diversity, Pan-Tompkins QRS — these are universal primitives. healthSpring owns the biology; other primals own the hardware, the network, the storage, the identity. Discover at runtime, compose at will.
 
@@ -119,7 +119,14 @@ healthSpring's `Validator` + `OrExit<T>` pattern (absorbed from hotSpring):
 
 All 6 ops delegate to barraCuda upstream. Local WGSL shaders retained as validation targets.
 
-### 2.2 Feature Flags
+### 2.2 Workspace defaults & feature flags
+
+| Concern | Behavior |
+|---------|----------|
+| **`healthspring-barracuda` default features** | **`default = []`** — IPC-first builds omit direct `barracuda::` linkage unless you opt in |
+| **`barracuda-lib`** | Opt-in — links barraCuda crates / GPU library paths for direct imports + WGSL ops |
+
+Other Cargo features (unchanged):
 
 | Flag | Purpose |
 |------|---------|
@@ -143,7 +150,8 @@ healthSpring is a **niche**, not a node. The primal provides capabilities; graph
 
 | Component | Count |
 |-----------|-------|
-| Primal binary | `healthspring_primal` (UniBin: `serve`/`server`/`version`/`capabilities`, `--port` TCP) |
+| UniBin | **`healthspring_unibin`** — `certify` · `validate` · `serve` · `status` · `version` |
+| Primal niche server | **`healthspring_primal`** — JSON-RPC capabilities (`serve`, `--port` TCP, …) |
 | Capabilities | 83 |
 | Domain dispatchers | 6 (`pkpd`, `microbiome`, `biosignal`, `endocrine`, `diagnostic`, `clinical`) |
 | Workflow graphs | 5 |
@@ -202,9 +210,9 @@ Top capabilities by domain (62 science + 21 infra):
 
 ## 7. Evolution Status
 
-| Metric | V60 |
+| Metric | V61 |
 |--------|-----|
-| Tests | 1,002 |
+| Tests | 999 |
 | Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | Python baselines | 53 scripts + 53 notebooks |
 | Cross-validation | 113/113 |
@@ -214,7 +222,7 @@ Top capabilities by domain (62 science + 21 infra):
 | BTSP handshake | Client module ready |
 | Typed IPC clients | `PrimalClient`, `InferenceClient` |
 | Structured discovery | `DiscoveryResult` + `DiscoverySource` |
-| guideStone | `healthspring_guidestone` (bare P1–P5 + NUCLEUS IPC) |
+| guideStone / certify | **`healthspring_unibin certify`** (prefer); fossil **`healthspring_guidestone`** |
 | math_dispatch | Validation window (2 generic IPC + 9 local compositions) |
 | Unsafe blocks | 0 |
 | `#[allow()]` | 0 |
@@ -258,6 +266,7 @@ This guide tracks healthSpring's evolution. As capabilities are added, compositi
 
 | Version | Date | Changes |
 |---------|------|---------|
+| V61 | May 9, 2026 | UniBin (`certify`/`validate`/…); **`certification/`** organelle; **`composition/`** + **`validation/scenarios/`**; **`fossilRecord/`**; IPC-first **`default = []`** + **`barracuda-lib`** opt-in; primalSpring **v0.9.25** pinned. **999 tests**, 95 experiments. |
 | V60 | May 8, 2026 | Deep debt evolution: optional `barracuda-lib`, exp123 NUCLEUS parity, 53 paired notebooks via `tools/py_to_notebook.py`, `validate_pk_models`, `gpu_parity` Criterion benches, dataset fetch scripts with BLAKE3, IPC timeout constants in `tolerances.rs`, capability-first `BarraCudaClient::discover()`, tolerance constants in exp122/guidestone, `records_*` / viz test splits, exp119–122 CI bins. barraCuda v0.3.13. 1,002 tests, 95 experiments. |
 | V54 | April 18, 2026 | guideStone Level 2: `healthspring_guidestone` binary, bare properties 1–5, NUCLEUS IPC parity via `primalspring::composition`. `math_dispatch` reframed as validation window. 948+ tests, 94 experiments. |
 | V51 | April 11, 2026 | TCP listener, BTSP, typed clients, structured discovery, `identity.get`, `health.check`, LOCAL/ROUTED split. 976 tests, 84+ capabilities. |

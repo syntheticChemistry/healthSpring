@@ -1,7 +1,9 @@
 # healthSpring Experiments
 
-**Last Updated**: May 8, 2026
-**Status**: V60 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.17, v1.2.0). 95 experiments (83 science + 12 composition exp112–123), 1,002 tests.
+**Last Updated**: May 9, 2026
+**Status**: V61 — Eukaryotic UniBin + **`certification/`** + **`composition/`** + **`validation/scenarios/`**; IPC-first defaults (`default = []`, **`barracuda-lib`** opt-in); primalSpring **v0.9.25**. Phase 46 NUCLEUS composition (18/24). guideStone Level 5 lineage via **`healthspring_unibin certify`**. 95 experiments (83 science + 12 composition exp112–123), **999 tests**.
+
+**V61 note:** Sixteen former standalone experiment `main` targets were absorbed into **`validation/scenarios/`** (registry-backed scenarios); sources archived under **`fossilRecord/experiments_prokaryotic_may2026/`**.
 
 Each experiment is a standalone Rust binary that validates a specific scientific claim or system capability. Experiments follow a six-tier pipeline:
 

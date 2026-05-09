@@ -5,8 +5,22 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-08
-**healthSpring version**: V60 (ecoBin 0.9.0, guideStone Level 5, primalSpring v0.9.17, Phase 46 composition, deep debt resolved)
+**Date**: 2026-05-09
+**healthSpring version**: V61 (ecoBin 0.9.0, guideStone Level 5 lineage via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, UniBin + certification organelle + CompositionContext migration)
+
+---
+
+## V61 resolutions (May 9, 2026)
+
+The following items from earlier gap narratives are **closed or superseded in-tree** for V61:
+
+- **CompositionContext migration** — legacy primal-discovery helpers deprecated toward primalSpring `CompositionContext`; health-facing wrapper in **`composition/`** (`HealthCompositionContext`).
+- **Certification organelle** — standalone guidestone logic absorbed into **`certification/`**; **`healthspring_unibin certify`** is the supported entrypoint (fossil **`healthspring_guidestone`** retained under **`fossilRecord/`**).
+- **IPC-first defaults** — **`healthspring-barracuda`** uses **`default = []`**; opt into **`barracuda-lib`** for direct barraCuda linkage / GPU paths.
+- **Scenario absorption** — sixteen experiment mains moved to **`validation/scenarios/`** with sources archived under **`fossilRecord/experiments_prokaryotic_may2026/`**.
+- **UniBin surface** — **`healthspring_unibin`** exposes **`certify`**, **`validate`**, **`serve`**, **`status`**, **`version`** alongside **`healthspring_primal`**.
+
+Remaining ecosystem gaps below (ionic bridge, BTSP server, provenance trio behaviors, etc.) are unchanged unless a row explicitly says fixed.
 
 ---
 
@@ -345,8 +359,7 @@ generic primitives. They are NOT candidates for barraCuda IPC migration.
 barraCuda's 32 IPC methods are generic math (stats, linalg, tensor, spectral).
 
 The correct framing: `math_dispatch` is the "validation window" (temporary
-tooling per `GUIDESTONE_COMPOSITION_STANDARD`). The `healthspring_guidestone`
-binary uses `primalspring::composition::validate_parity` for generic IPC
+tooling per `GUIDESTONE_COMPOSITION_STANDARD`). **`healthspring_unibin certify`** (and the absorbed **`certification/`** organelle) use `primalspring::composition::validate_parity` for generic IPC
 (`stats.mean`, `stats.std_dev`, `stats.variance`, `stats.correlation`).
 Domain functions stay local.
 
@@ -386,7 +399,7 @@ will break IPC to all non-BTSP primals. The guideStone must `unset FAMILY_SEED`
 to fall back to cleartext UDS.
 
 **Workaround**: Unset `FAMILY_SEED`, `BEARDOG_FAMILY_SEED`, and
-`RHIZOCRYPT_FAMILY_SEED` before running `healthspring_guidestone` or any
+`RHIZOCRYPT_FAMILY_SEED` before running **`healthspring_unibin certify`** / fossil **`healthspring_guidestone`** or any
 `primalspring`-based client.
 
 **Proposed resolution**: `Transport::connect` should negotiate protocol support
@@ -559,7 +572,7 @@ DOWNSTREAM_COMPOSITION_EXPLORER_GUIDE, or make the lib detect and use
 
 ---
 
-## Deep Debt Evolution — May 8, 2026
+## Deep Debt Evolution — May 8, 2026 *(historical V60 notes)*
 
 ### New capabilities delivered this session
 
@@ -599,7 +612,7 @@ DOWNSTREAM_COMPOSITION_EXPLORER_GUIDE, or make the lib detect and use
 | 14 | Zero `dyn` dispatch | — | **Fixed V53**: enum `ValidationSink` | — |
 | 15 | Typed error returns | — | **Fixed V53**: `ServerError`, `TrioError` | — |
 | 16 | Capability routing by domain | — | **Fixed V53**: `by_capability` domains | — |
-| 17 | barraCuda lib→IPC (Level 5) | — | **V54**: reframed — 9 methods are local domain compositions, not wire gaps. guideStone uses `CompositionContext` for generic IPC | None (V53 ask withdrawn) |
+| 17 | barraCuda lib→IPC (Level 5) | — | **V54**: reframed — 9 methods are local domain compositions, not wire gaps. **`healthspring_unibin certify`** + **`certification/`** use `CompositionContext` for generic IPC | None (V53 ask withdrawn) |
 | 18 | guideStone P3 (CHECKSUMS) | — | **Fixed V55**: BLAKE3 via `primalspring::checksums::verify_manifest()`. SKIP when no manifest (honest scaffolding). | — |
 | 19 | barraCuda: `stats.variance`, `stats.correlation` | — | **RESOLVED V57**: Sprint 44 added both; guideStone validates in Tier 2+3 | — |
 | 20 | BTSP production mode breaks IPC | primalSpring transport | **V57**: documented, `FAMILY_SEED` workaround | Negotiate BTSP capability |
