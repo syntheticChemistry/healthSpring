@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "legacy discovery entrypoints delegate to each other within this module"
+)]
 //! Primal socket discovery and path resolution for `biomeOS` niche deployment.
 //!
 //! Follows XDG runtime conventions:
@@ -62,6 +66,7 @@ pub fn orchestrator_socket() -> PathBuf {
 }
 
 /// Discover another primal by name — scans the socket dir for matching sockets.
+#[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]
 pub fn discover_primal(primal_name: &str) -> Option<PathBuf> {
     let dir = resolve_socket_dir();
@@ -104,8 +109,7 @@ pub fn discover_all_primals() -> Vec<String> {
 /// 2. Explicit primal name via `HEALTHSPRING_COMPUTE_PRIMAL` env → socket scan
 /// 3. Scan socket dir for any primal advertising `compute.*` capability
 ///
-/// No hardcoded primal names — self-knowledge only. If the compute primal
-/// changes its name, capability discovery still works.
+#[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]
 pub fn discover_compute_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_COMPUTE_SOCKET") {
@@ -127,7 +131,7 @@ pub fn discover_compute_primal() -> Option<PathBuf> {
 /// 2. Explicit primal name via `HEALTHSPRING_DATA_PRIMAL` env → socket scan
 /// 3. Scan socket dir for any primal advertising `data.*` capability
 ///
-/// No hardcoded primal names — self-knowledge only.
+#[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]
 pub fn discover_data_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_DATA_SOCKET") {
@@ -149,7 +153,7 @@ pub fn discover_data_primal() -> Option<PathBuf> {
 /// 2. Explicit primal name via `HEALTHSPRING_SHADER_PRIMAL` env → socket scan
 /// 3. Scan socket dir for any primal advertising `shader.*` capability
 ///
-/// No hardcoded primal names — self-knowledge only.
+#[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]
 pub fn discover_shader_compiler() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_SHADER_SOCKET") {
@@ -171,7 +175,7 @@ pub fn discover_shader_compiler() -> Option<PathBuf> {
 /// 2. Explicit primal name via `HEALTHSPRING_INFERENCE_PRIMAL` env → socket scan
 /// 3. Scan socket dir for any primal advertising `model.*` capability
 ///
-/// No hardcoded primal names — self-knowledge only.
+#[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]
 pub fn discover_inference_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_INFERENCE_SOCKET") {
@@ -191,7 +195,7 @@ pub fn discover_inference_primal() -> Option<PathBuf> {
 /// Ephemeral sessions provide short-lived isolated compute contexts for
 /// sensitive data (patient records, trial data) that auto-destroy on timeout.
 ///
-/// No hardcoded primal names — capability-based discovery only.
+#[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]
 pub fn discover_ephemeral_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_EPHEMERAL_SOCKET") {
@@ -211,7 +215,7 @@ pub fn discover_ephemeral_primal() -> Option<PathBuf> {
 /// Permanence primals provide durable, content-addressed storage for
 /// validated results, provenance records, and baseline snapshots.
 ///
-/// No hardcoded primal names — capability-based discovery only.
+#[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]
 pub fn discover_permanence_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_PERMANENCE_SOCKET") {
@@ -231,7 +235,7 @@ pub fn discover_permanence_primal() -> Option<PathBuf> {
 /// Attribution primals track provenance chains, licensing, and contribution
 /// records across the ecosystem (SCYBORG trio compliance).
 ///
-/// No hardcoded primal names — capability-based discovery only.
+#[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]
 pub fn discover_attribution_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_ATTRIBUTION_SOCKET") {
@@ -250,7 +254,7 @@ pub fn discover_attribution_primal() -> Option<PathBuf> {
 ///
 /// Scans the socket directory for primals advertising capabilities that
 /// start with the given domain prefix. Used by Tower Atomic as a fallback
-/// when name-prefix scanning fails.
+#[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]
 pub fn discover_by_capability_public(domain: &str) -> Option<PathBuf> {
     discover_by_capability(domain)

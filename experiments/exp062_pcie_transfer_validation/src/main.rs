@@ -199,7 +199,7 @@ fn main() {
         let plan = plan_transfer(GPU, NPU, bytes_1mb, Some(&node));
         let time_us = plan.estimated_time_us();
         let bw_gbps = plan.estimated_bandwidth_gbps;
-        println!("  {pcie_gen:?}: {bw_gbps:.1} GB/s x16 lanes, 1 MB in {time_us:.2} us",);
+        println!("  {pcie_gen:?}: {bw_gbps:.1} GB/s x16 lanes, 1 MB in {time_us:.2} us");
 
         h.check_bool(
             &format!("{pcie_gen:?}: faster than previous gen"),

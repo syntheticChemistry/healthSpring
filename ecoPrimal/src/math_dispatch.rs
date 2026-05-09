@@ -1,4 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "math_dispatch primal-proof path uses BarraCudaClient until HealthCompositionContext integration"
+)]
+
 //! Centralized math dispatch — the "validation window" for guideStone evolution.
 //!
 //! This module wraps every `barracuda::` call site in healthSpring.
@@ -7,9 +12,9 @@
 //!
 //! | Feature combination | Behavior |
 //! |---------------------|----------|
-//! | `barracuda-lib` (default) | Library import: `barracuda::stats::*` etc. |
+//! | Default (no features) | IPC first when ecobin present; else pure-Rust structural fallbacks |
+//! | `barracuda-lib` | Library import: `barracuda::stats::*` etc. |
 //! | `barracuda-lib` + `primal-proof` | IPC first, library fallback |
-//! | neither (IPC-only sovereign) | IPC only, panics if ecobin unavailable |
 //!
 //! ## Method classification
 //!
@@ -73,7 +78,12 @@ pub fn mean(data: &[f64]) -> f64 {
     if let Some(c) = client() {
         match c.stats_mean(data) {
             Ok(v) => return v,
-            Err(e) => tracing::warn!("stats.mean IPC failed, falling back to library: {e}"),
+            Err(e) => {
+                #[cfg(feature = "barracuda-lib")]
+                tracing::warn!("stats.mean IPC failed, falling back to library: {e}");
+                #[cfg(not(feature = "barracuda-lib"))]
+                tracing::warn!("stats.mean IPC failed, falling back to structural mean: {e}");
+            }
         }
     }
     #[cfg(feature = "barracuda-lib")]
@@ -82,8 +92,7 @@ pub fn mean(data: &[f64]) -> f64 {
     }
     #[cfg(not(feature = "barracuda-lib"))]
     {
-        let _ = data;
-        0.0
+        pure_mean(data)
     }
 }
 
@@ -97,7 +106,12 @@ pub fn std_dev(data: &[f64]) -> Option<f64> {
     if let Some(c) = client() {
         match c.stats_std_dev(data) {
             Ok(v) => return Some(v),
-            Err(e) => tracing::warn!("stats.std_dev IPC failed, falling back to library: {e}"),
+            Err(e) => {
+                #[cfg(feature = "barracuda-lib")]
+                tracing::warn!("stats.std_dev IPC failed, falling back to library: {e}");
+                #[cfg(not(feature = "barracuda-lib"))]
+                tracing::warn!("stats.std_dev IPC failed, falling back to structural std_dev: {e}");
+            }
         }
     }
     #[cfg(feature = "barracuda-lib")]
@@ -106,9 +120,31 @@ pub fn std_dev(data: &[f64]) -> Option<f64> {
     }
     #[cfg(not(feature = "barracuda-lib"))]
     {
-        let _ = data;
-        None
+        pure_std_dev(data)
     }
+}
+
+/// Arithmetic mean — matches `barracuda::stats::mean` (0.0 when empty).
+#[must_use]
+#[cfg(not(feature = "barracuda-lib"))]
+fn pure_mean(values: &[f64]) -> f64 {
+    if values.is_empty() {
+        return 0.0;
+    }
+    values.iter().sum::<f64>() / values.len() as f64
+}
+
+/// Sample standard deviation (N−1), matching `barracuda::stats::correlation::std_dev`.
+#[must_use]
+#[cfg(not(feature = "barracuda-lib"))]
+fn pure_std_dev(x: &[f64]) -> Option<f64> {
+    if x.len() < 2 {
+        return None;
+    }
+    let n = x.len() as f64;
+    let m = x.iter().sum::<f64>() / n;
+    let var: f64 = x.iter().map(|&xi| (xi - m).powi(2)).sum::<f64>() / (n - 1.0);
+    Some(var.sqrt())
 }
 
 // ── Domain compositions: local science (require barracuda-lib) ──────────
@@ -215,6 +251,13 @@ pub fn anderson_diagonalize(disorder: &[f64], t_hop: f64) -> (Vec<f64>, Vec<f64>
     barracuda::special::anderson_diagonalize(disorder, t_hop)
 }
 
+/// Anderson localization diagonalization — local symmetric tridiagonal QL (same algorithm as barraCuda).
+#[must_use]
+#[cfg(not(feature = "barracuda-lib"))]
+pub fn anderson_diagonalize(disorder: &[f64], t_hop: f64) -> (Vec<f64>, Vec<f64>) {
+    crate::tridiagonal_ql_local::anderson_diagonalize(disorder, t_hop)
+}
+
 /// Michaelis-Menten AUC (numerical trapezoidal).
 #[must_use]
 #[cfg(feature = "barracuda-lib")]
@@ -229,10 +272,7 @@ pub fn mm_auc(concs: &[f64], dt: f64) -> f64 {
     if concs.len() < 2 {
         return 0.0;
     }
-    concs
-        .windows(2)
-        .map(|w| 0.5 * (w[0] + w[1]) * dt)
-        .sum()
+    concs.windows(2).map(|w| 0.5 * (w[0] + w[1]) * dt).sum()
 }
 
 /// Species-level antibiotic perturbation.
@@ -244,6 +284,22 @@ pub fn antibiotic_perturbation(
     duration_h: f64,
 ) -> Vec<f64> {
     barracuda::health::microbiome::antibiotic_perturbation(abundances, susceptibilities, duration_h)
+}
+
+/// Species-level antibiotic perturbation (structural fallback).
+#[must_use]
+#[cfg(not(feature = "barracuda-lib"))]
+pub fn antibiotic_perturbation(
+    abundances: &[f64],
+    susceptibilities: &[f64],
+    duration_h: f64,
+) -> Vec<f64> {
+    assert_eq!(abundances.len(), susceptibilities.len());
+    abundances
+        .iter()
+        .zip(susceptibilities)
+        .map(|(&a, &s)| (a * (-s * duration_h).exp()).max(0.0))
+        .collect()
 }
 
 /// SCR rate (events per minute).
@@ -292,7 +348,7 @@ mod tests {
         let data = [2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0];
         let dispatch = std_dev(&data);
         let library = barracuda::stats::correlation::std_dev(&data).ok();
-        assert_eq!(dispatch.map(|v| v.to_bits()), library.map(|v| v.to_bits()));
+        assert_eq!(dispatch.map(f64::to_bits), library.map(f64::to_bits));
     }
 
     #[test]

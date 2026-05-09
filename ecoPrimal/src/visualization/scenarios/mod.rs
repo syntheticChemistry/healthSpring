@@ -16,8 +16,9 @@ pub mod topology;
 mod v16;
 
 use super::types::{
-    Animations, CapReqs, ClinicalRange, DataChannel, Ecosystem, EdgeType, HealthScenario, NeuralApi,
-    NodeStatus, NodeType, Performance, ScenarioEdge, ScenarioNode, SensoryConfig, UiConfig,
+    Animations, CapReqs, ClinicalRange, DataChannel, Ecosystem, EdgeType, HealthScenario,
+    NeuralApi, NodeStatus, NodeType, Performance, ScenarioEdge, ScenarioNode, SensoryConfig,
+    UiConfig,
 };
 
 pub use biosignal::biosignal_study;

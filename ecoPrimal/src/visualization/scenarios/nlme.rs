@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{ClinicalRange, ClinicalStatus, DataChannel, HealthScenario, NodeType, ScenarioEdge};
+use super::super::types::{
+    ClinicalRange, ClinicalStatus, DataChannel, HealthScenario, NodeType, ScenarioEdge,
+};
 use super::{bar, edge, gauge, node, scaffold, scatter3d, timeseries};
 use crate::pkpd;
 

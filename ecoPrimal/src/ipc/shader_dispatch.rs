@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "shader dispatch discovers sockets via legacy helpers until CompositionContext integration"
+)]
 //! Typed client for shader compiler primal `shader.*` protocol.
 //!
 //! Discovery is capability-based — no hardcoded primal names.

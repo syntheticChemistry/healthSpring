@@ -12,6 +12,7 @@ mod check;
 mod harness;
 mod metrics;
 mod or_exit;
+pub mod scenarios;
 mod sink;
 
 pub use check::{Check, ToleranceMode};

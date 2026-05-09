@@ -4,6 +4,28 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V61 — 2026-05-09 — Interstadial Eukaryotic Evolution
+
+### Architecture & binaries
+- **primalSpring v0.9.25 pinned** — workspace dependency with version (replaces optional path-only v0.9.17 baseline).
+- **`healthspring_unibin`** — single UniBin entrypoint with `certify`, `validate`, `serve`, `status`, `version` subcommands (primalSpring UniBin pattern).
+- **`certification/` organelle** — absorbed legacy `healthspring_guidestone` binary into library module; fossils under `fossilRecord/guidestone_prokaryotic_may2026/`.
+- **`validation/scenarios/`** — 16 scenarios across 8 tracks (PkPd, Microbiome, Biosignal, Endocrine, Comparative, Discovery, Composition, Toxicology); absorbed experiment mains archived to `fossilRecord/experiments_prokaryotic_may2026/`.
+- **`composition/`** — `HealthCompositionContext` wraps primalSpring `CompositionContext` with health-domain typed accessors.
+
+### IPC & provenance
+- **CompositionContext migration** — `PrimalClient`, `InferenceClient`, `discover_primal()`, `discover_by_capability_public()` deprecated with `note` pointing callers at `CompositionContext`.
+- **IPC provenance trio** — dedicated modules: rhizocrypt (DAG), loamspine (ledger / Merkle), sweetgrass (braid / analytics).
+- **BarraCudaClient** — primal-proof surface expanded: `stats_variance`, `stats_correlation`, `rng_normal`.
+- **Default features flipped** — `default = []` (IPC-first); **`barracuda-lib`** opt-in for direct barraCuda library linkage and GPU library paths.
+
+### Quality & testing
+- **Parity tests** added (workspace IPC / composition coverage).
+- **Lint hygiene** — all bare `#[allow]` replaced with attributed suppressions including **`reason`**; all `#[deprecated]` include **`note`**.
+- **Debt markers** — zero `TODO` / `FIXME` / `HACK` / `DEBT` in production sources.
+- **Tests** — full workspace test suite passes.
+- **Clippy** — zero warnings across **`--workspace --all-targets`** (all targets; features as exercised in CI).
+
 ## V60 — 2026-05-08 — Deep Debt Evolution
 
 ### Architecture

@@ -17,6 +17,7 @@ use healthspring_barracuda::gpu::{GpuOp, GpuResult, execute_cpu};
 #[cfg(feature = "gpu")]
 use healthspring_barracuda::gpu::{execute_gpu, gpu_available};
 
+#[expect(clippy::expect_used, reason = "benchmark Tokio runtime initialization")]
 fn runtime() -> &'static tokio::runtime::Runtime {
     static RT: OnceLock<tokio::runtime::Runtime> = OnceLock::new();
     RT.get_or_init(|| {
@@ -41,10 +42,6 @@ fn dispatch_gpu_op(op: &GpuOp) -> GpuResult {
     execute_cpu(op)
 }
 
-#[expect(
-    clippy::cast_precision_loss,
-    reason = "benchmark indices fit f64 mantissa"
-)]
 fn bench_gpu_hill_batch_10k(c: &mut Criterion) {
     let concentrations: Vec<f64> = (0..10_000)
         .map(|i| 0.1 * 1000.0_f64.powf(f64::from(i) / 9_999.0))
@@ -60,9 +57,9 @@ fn bench_gpu_hill_batch_10k(c: &mut Criterion) {
     });
 }
 
-#[expect(
-    clippy::cast_precision_loss,
-    reason = "benchmark indices fit f64 mantissa"
+#[allow(
+    clippy::cast_possible_truncation,
+    reason = "benchmark loop bounds guarantee indices fit in u32"
 )]
 fn bench_gpu_diversity_fusion_batch_1k(c: &mut Criterion) {
     let communities: Vec<Vec<f64>> = (0..1_000)
@@ -70,7 +67,7 @@ fn bench_gpu_diversity_fusion_batch_1k(c: &mut Criterion) {
             let mut a = vec![0.0; 7];
             let mut total = 0.0;
             for (j, val) in a.iter_mut().enumerate() {
-                *val = ((i * 7 + j + 1) as f64).sqrt();
+                *val = f64::from((i * 7 + j + 1) as u32).sqrt();
                 total += *val;
             }
             for val in &mut a {
@@ -85,10 +82,6 @@ fn bench_gpu_diversity_fusion_batch_1k(c: &mut Criterion) {
     });
 }
 
-#[expect(
-    clippy::cast_precision_loss,
-    reason = "benchmark indices fit f64 mantissa"
-)]
 fn bench_gpu_population_pk_mc_batch_5k(c: &mut Criterion) {
     let n_patients = 5_000;
     let op = GpuOp::PopulationPkBatch {

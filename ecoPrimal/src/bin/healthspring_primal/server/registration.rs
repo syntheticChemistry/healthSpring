@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
+#![allow(
+    deprecated,
+    reason = "registration resolves fallback primal via legacy socket scan until CompositionContext integration"
+)]
 //! biomeOS registration, Songbird announcement, and heartbeat.
 //!
 //! Registers the primal with the orchestrator (or fallback), announces

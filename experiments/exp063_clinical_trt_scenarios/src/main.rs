@@ -10,10 +10,10 @@
 //! for multiple patient archetypes.
 
 use healthspring_barracuda::validation::ValidationHarness;
-use healthspring_barracuda::visualization::{DataChannel, NodeStatus};
 use healthspring_barracuda::visualization::clinical::{
     PatientTrtProfile, TrtProtocol, trt_clinical_json, trt_clinical_scenario,
 };
+use healthspring_barracuda::visualization::{DataChannel, NodeStatus};
 
 #[expect(
     clippy::too_many_lines,

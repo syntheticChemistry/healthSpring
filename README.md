@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** May 8, 2026 (V60)
+**Date:** May 9, 2026 (V61)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V60 — **Deep debt evolution**: `barracuda-lib` optional deps (default on) for IPC-first sovereign NUCLEUS when disabled; timeouts/retry constants centralized in `tolerances.rs`; `BarraCudaClient::discover()` capability-first; **exp123** full NUCLEUS pipeline parity; **`validate_pk_models`** for projectNUCLEUS (Hill, 1-compartment, PopPK, MM). Typed enums + `ValidationOutcome` + capability-first routing retained from V59. 1,002 tests pass, 0 clippy warnings. Phase 46 NUCLEUS composition (18/24). guideStone **Level 5** (57/57, primalSpring v0.9.17, v1.2.0). ecoBin 0.9.0. barraCuda v0.3.13.
+**Status:** V61 — **Eukaryotic evolution**: `healthspring_unibin` UniBin (`certify`, `validate`, `serve`, `status`, `version`); **`certification/`** organelle (absorbed guidestone); **`composition/`** + **`validation/scenarios/`** (16 scenarios across 8 tracks, absorbed from experiments); **`fossilRecord/`** archives prokaryotic guidestone + experiment mains; **IPC-first defaults** (`default = []`, `barracuda-lib` opt-in); **primalSpring v0.9.25** pinned (was optional path dep at v0.9.17); per-trio provenance IPC (**rhizocrypt**, **loamspine**, **sweetgrass**). Typed enums + `ValidationOutcome` + capability-first routing retained. 1,002 tests pass, 0 clippy warnings. guideStone **Level 5** lineage continues via certification. ecoBin 0.9.0. barraCuda v0.3.13.
 
 ---
 
@@ -33,10 +33,10 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V60** (deep debt evolution — `barracuda-lib` optional sovereign path, tolerance/timeout centralization, exp123 NUCLEUS parity, validate_pk_models; Phase 46 NUCLEUS 18/24; guideStone Level 5, 57/57, primalSpring v0.9.17) |
+| Version | **V61** (eukaryotic UniBin — `healthspring_unibin`; `certification/` / `composition/` / `validation/scenarios/`; `fossilRecord/`; IPC-first defaults + `barracuda-lib` opt-in; primalSpring v0.9.25 pinned) |
 | **Total tests** | **1,002** (849 lib + 100 integration) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
-| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. `healthspring_guidestone` supersedes exp122 as guideStone artifact. |
+| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: 16 registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
 | JSON-RPC capabilities | 83 (`ALL_CAPABILITIES` in `capabilities.rs`; includes science + infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **53 Python control scripts + 53 Jupyter notebooks** with structured provenance registry (**95+** provenance entries, 100% experiment coverage) |
@@ -44,13 +44,21 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | ecoBin | Static-PIE x86_64-musl, 3.2 MB, harvested to `infra/plasmidBin/healthspring/` (v0.9.0) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity |
 | CPU parity | Rust 84× faster than Python across V16 primitives |
-| biomeOS niche | **Live** — `UniBin`-compliant primal binary (`serve`/`server`/`version`/`capabilities`), `--port` TCP, domain symlink, SIGTERM/SIGINT |
+| biomeOS niche | **Live** — `healthspring_unibin` UniBin (`certify`, `validate`, `serve`, `status`, `version`) + `healthspring_primal`; `--port` TCP, domain symlink, SIGTERM/SIGINT |
 | NLME population PK | FOCE + SAEM estimation, NCA metrics, CWRES/VPC/GOF diagnostics |
 | Faculty | Gonzales (MSU Pharm/Tox), Lisabeth (ADDRC), Neubig (Drug Discovery), Ellsworth (Med Chem), Mok (Allure Medical) |
 | Unsafe blocks | **0** (`forbid(unsafe_code)` in `[workspace.lints]`) |
 | TODO/FIXME in production | **0** |
 | Clippy | **0 warnings** (workspace `deny(clippy::{all,pedantic,nursery,unwrap_used,expect_used})`) |
 | License | **AGPL-3.0-or-later** (scyBorg trio compliant across all .rs, .py, .sh, .toml, .md) |
+
+---
+
+## V61 Eukaryotic Architecture — UniBin & IPC-first (from V60)
+
+V61 completes the **eukaryotic** layout: a single **`healthspring_unibin`** surfaces certification, validation scenario runs, primal serve, status, and version — alongside the existing **`healthspring_primal`** niche server. **Library defaults are IPC-first** (`default = []`); link **`barracuda-lib`** when you need direct `barracuda::` imports or GPU library paths. **primalSpring v0.9.25** is pinned (workspace dependency with version), replacing the earlier optional path-only **v0.9.17** arrangement.
+
+New modules: **`certification/`** (guideStone logic absorbed from the standalone binary), **`composition/`** (`HealthCompositionContext` wrapping primalSpring’s **`CompositionContext`**), **`validation/scenarios/`** (16 scenarios in 8 tracks migrated out of one-off experiment mains). **Per-trio provenance** IPC lives under **`ipc/provenance/`** — **rhizocrypt** (DAG), **loamspine** (ledger / Merkle), **sweetgrass** (braid / analytics). Pre-extinction sources are preserved under **`fossilRecord/`** (`guidestone_prokaryotic_may2026/`, `experiments_prokaryotic_may2026/`).
 
 ---
 
@@ -616,6 +624,7 @@ Tier 5: Deploy graph validation (TOML graph ↔ proto-nucleate ↔ capability su
 
 ```
 healthSpring/
+├── fossilRecord/        # Archived prokaryotic sources (guidestone binary, absorbed experiment mains + READMEs)
 ├── ecoPrimal/           # Rust library — PK/PD, microbiome, biosignal, endocrine
 │   └── src/
 │       ├── lib.rs       # #![forbid(unsafe_code)]
@@ -642,8 +651,12 @@ healthSpring/
 │       │   ├── context.rs  # GpuContext (350 LOC — single-op + fused orchestrator)
 │       │   ├── fused.rs    # Per-op buffer prep + readback decode (extracted from context)
 │       │   └── sovereign.rs # Sovereign GPU dispatch via SovereignDevice
+│       ├── certification/ # GuideStone / certify engine (absorbed legacy binary)
+│       ├── composition/   # HealthCompositionContext — typed accessors over CompositionContext
+│       ├── validation/    # harness, checks — scenarios/ holds 16-track registry
 │       ├── ipc/          # JSON-RPC IPC infrastructure
 │       │   ├── mod.rs       # Module root
+│       │   ├── provenance/  # rhizocrypt, loamspine, sweetgrass clients
 │       │   ├── socket.rs    # XDG socket resolution + primal discovery
 │       │   ├── rpc.rs       # JSON-RPC response helpers + client
 │       │   ├── error.rs     # IpcError (8 variants + query helpers)
@@ -668,10 +681,11 @@ healthSpring/
 │       │   ├── clinical_nodes.rs # TRT node builders (819 lines)
 │       │   ├── scenarios/       # Per-track + topology + dispatch scenario builders
 │       │   └── capabilities.rs  # Songbird capability announcement (glob-based discovery)
-│       └── bin/           # ecoPrimal binaries (`validate_pk_models`, `healthspring_primal`, `healthspring_guidestone`)
+│       └── bin/           # ecoPrimal binaries (`healthspring_unibin`, `validate_pk_models`, `healthspring_primal`, legacy guidestone)
+│           ├── healthspring/           # `healthspring_unibin` — certify, validate, serve, status, version
 │           ├── validate_pk_models.rs   # projectNUCLEUS PK workloads (Hill, 1-compartment, PopPK, MM)
-│           ├── healthspring_primal/    # UniBin-compliant biomeOS primal (`main.rs`)
-│           └── healthspring_guidestone/ # guideStone NUCLEUS proof harness (`main.rs`, `guidestone` feature)
+│           ├── healthspring_primal/    # biomeOS primal JSON-RPC server (`main.rs`)
+│           └── healthspring_guidestone/ # legacy entrypoint; prefer `healthspring_unibin certify`
 │   └── shaders/health/  # WGSL compute kernels (f64)
 │       ├── hill_dose_response_f64.wgsl
 │       ├── population_pk_f64.wgsl
@@ -742,6 +756,7 @@ healthSpring/
 
 ```bash
 cargo test --workspace                  # 1,002 tests
+cargo run --bin healthspring_unibin -- --help   # certify · validate · serve · status · version
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs
 cargo doc --workspace --no-deps         # Zero warnings

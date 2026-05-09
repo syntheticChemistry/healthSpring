@@ -215,10 +215,7 @@ pub const COMPOSITION_EXPERIMENTS: &[(&str, &str)] = &[
         "exp122_primal_proof_barracuda_parity",
         "tier5_primal_proof_ipc",
     ),
-    (
-        "exp123_nucleus_parity",
-        "tier5_nucleus_composition_parity",
-    ),
+    ("exp123_nucleus_parity", "tier5_nucleus_composition_parity"),
 ];
 
 // ── guideStone metadata ──────────────────────────────────────────────────
@@ -315,6 +312,11 @@ pub const OPERATION_DEPENDENCIES: &[(&str, &[&str])] = &[
 ];
 
 #[cfg(test)]
+#[allow(
+    clippy::assertions_on_constants,
+    clippy::expect_used,
+    reason = "GuideStone constants and registry tests use filesystem fixtures"
+)]
 mod tests {
     use super::*;
 
@@ -425,8 +427,7 @@ mod tests {
             registry_path.exists(),
             "config/capability_registry.toml must exist — see parity handoff"
         );
-        let content = std::fs::read_to_string(&registry_path)
-            .expect("read registry");
+        let content = std::fs::read_to_string(&registry_path).expect("read registry");
         let table: toml::Value = content.parse().expect("valid TOML");
         let table = table.as_table().expect("top-level table");
         assert!(
@@ -442,8 +443,7 @@ mod tests {
             .parent()
             .expect("workspace root")
             .join("config/capability_registry.toml");
-        let content = std::fs::read_to_string(&registry_path)
-            .expect("read registry");
+        let content = std::fs::read_to_string(&registry_path).expect("read registry");
 
         for cap in CAPABILITIES {
             assert!(
@@ -465,8 +465,7 @@ mod tests {
             .parent()
             .expect("workspace root")
             .join("config/capability_registry.toml");
-        let content = std::fs::read_to_string(&registry_path)
-            .expect("read registry");
+        let content = std::fs::read_to_string(&registry_path).expect("read registry");
 
         for (_, ipc_method) in BARRACUDA_IPC_MIGRATION {
             if ipc_method.contains('.') {

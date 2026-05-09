@@ -111,6 +111,7 @@ pub fn parse_annotations(data: &[u8]) -> Result<Vec<Annotation>, WfdbError> {
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used, reason = "WFDB annotation parser tests")]
 mod tests {
     use super::*;
 

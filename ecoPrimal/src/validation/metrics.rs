@@ -147,6 +147,10 @@ pub fn index_of_agreement(observed: &[f64], predicted: &[f64]) -> Result<f64, Le
 }
 
 #[cfg(test)]
+#[allow(
+    clippy::expect_used,
+    reason = "metrics tests unwrap infallible Ok branches"
+)]
 mod tests {
     use crate::tolerances;
 

@@ -16,8 +16,7 @@
 //!    owned by other primals (unless healthSpring is the documented owner).
 
 /// Relative path from workspace root to primalSpring's canonical registry.
-const PRIMALSPRING_REGISTRY: &str =
-    "../primalSpring/config/capability_registry.toml";
+const PRIMALSPRING_REGISTRY: &str = "../primalSpring/config/capability_registry.toml";
 
 /// Relative path from workspace root to healthSpring's own registry.
 const HEALTHSPRING_REGISTRY: &str = "config/capability_registry.toml";
@@ -30,9 +29,10 @@ fn workspace_root() -> std::path::PathBuf {
 }
 
 fn load_registry_methods(path: &std::path::Path) -> Vec<String> {
-    let content = std::fs::read_to_string(path)
-        .unwrap_or_else(|e| panic!("read {}: {e}", path.display()));
-    let table: toml::Value = content.parse()
+    let content =
+        std::fs::read_to_string(path).unwrap_or_else(|e| panic!("read {}: {e}", path.display()));
+    let table: toml::Value = content
+        .parse()
         .unwrap_or_else(|e| panic!("parse {}: {e}", path.display()));
     let table = table.as_table().expect("top-level table");
 
@@ -54,12 +54,11 @@ fn load_registry_methods(path: &std::path::Path) -> Vec<String> {
     methods
 }
 
-fn load_registry_sections(
-    path: &std::path::Path,
-) -> Vec<(String, String, Vec<String>)> {
-    let content = std::fs::read_to_string(path)
-        .unwrap_or_else(|e| panic!("read {}: {e}", path.display()));
-    let table: toml::Value = content.parse()
+fn load_registry_sections(path: &std::path::Path) -> Vec<(String, String, Vec<String>)> {
+    let content =
+        std::fs::read_to_string(path).unwrap_or_else(|e| panic!("read {}: {e}", path.display()));
+    let table: toml::Value = content
+        .parse()
         .unwrap_or_else(|e| panic!("parse {}: {e}", path.display()));
     let table = table.as_table().expect("top-level table");
 
@@ -157,8 +156,7 @@ fn local_methods_dont_collide_with_primal_owners() {
         if let Some(arr) = value.get("methods").and_then(|v| v.as_array()) {
             for m in arr {
                 if let Some(s) = m.as_str() {
-                    canonical_owners
-                        .insert(s.to_string(), owner.to_string());
+                    canonical_owners.insert(s.to_string(), owner.to_string());
                 }
             }
         }

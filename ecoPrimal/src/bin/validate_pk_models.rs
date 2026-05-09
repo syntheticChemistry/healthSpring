@@ -13,8 +13,8 @@
 
 use healthspring_barracuda::math_dispatch;
 use healthspring_barracuda::pkpd::{
-    self, auc_trapezoidal, find_cmax_tmax, mm_pk_simulate, oral_tmax, pk_iv_bolus,
-    pk_oral_one_compartment, pop_baricitinib, population_pk_cpu, PHENYTOIN_PARAMS,
+    self, PHENYTOIN_PARAMS, auc_trapezoidal, find_cmax_tmax, mm_pk_simulate, oral_tmax,
+    pk_iv_bolus, pk_oral_one_compartment, pop_baricitinib, population_pk_cpu,
 };
 use healthspring_barracuda::tolerances;
 use healthspring_barracuda::validation::ValidationHarness;
@@ -54,9 +54,9 @@ fn validate_hill(h: &mut ValidationHarness) {
         .iter()
         .map(|&c| hill_response(c, drug.ic50_jak1_nm, drug.hill_n, 1.0))
         .collect();
-    let monotonic = responses.windows(2).all(|w| {
-        w[0] <= w[1] + tolerances::MACHINE_EPSILON_STRICT
-    });
+    let monotonic = responses
+        .windows(2)
+        .all(|w| w[0] <= w[1] + tolerances::MACHINE_EPSILON_STRICT);
     h.check_bool("Hill (dispatch): monotonic sweep", monotonic);
 
     let conc_sat = drug.ic50_jak1_nm * 100.0;
@@ -113,8 +113,7 @@ fn validate_one_compartment(h: &mut ValidationHarness) {
         tolerances::AUC_TRAPEZOIDAL,
     );
 
-    let c_oral_0 =
-        pk_oral_one_compartment(DOSE_ORAL, F_ORAL, VD_ORAL, KA_ORAL, k_e_oral, 0.0);
+    let c_oral_0 = pk_oral_one_compartment(DOSE_ORAL, F_ORAL, VD_ORAL, KA_ORAL, k_e_oral, 0.0);
     h.check_abs(
         "One-compartment oral: C(0) = 0",
         c_oral_0.abs(),
@@ -219,7 +218,9 @@ fn validate_michaelis_menten(h: &mut ValidationHarness) {
     }
 
     let (_, concs10) = mm_pk_simulate(params, 300.0, 10.0, 0.001);
-    let monotone = concs10.windows(2).all(|w| w[1] <= w[0] + tolerances::ANDERSON_IDENTITY);
+    let monotone = concs10
+        .windows(2)
+        .all(|w| w[1] <= w[0] + tolerances::ANDERSON_IDENTITY);
     h.check_bool("Michaelis-Menten: monotone decline", monotone);
 
     let t_half_low = pkpd::mm_apparent_half_life(params, 1.0);

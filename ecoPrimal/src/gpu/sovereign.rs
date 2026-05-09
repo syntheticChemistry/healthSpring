@@ -40,6 +40,10 @@ use super::{GpuOp, GpuResult};
 /// `Some(Err(_))`.
 #[cfg(feature = "gpu")]
 #[cfg(feature = "sovereign-dispatch")]
+#[allow(
+    deprecated,
+    reason = "sovereign GPU path probes shader primal via legacy discovery until CompositionContext integration"
+)]
 #[must_use]
 pub fn try_sovereign_dispatch(op: &GpuOp) -> Option<Result<GpuResult, super::GpuError>> {
     use crate::ipc::socket::discover_shader_compiler;

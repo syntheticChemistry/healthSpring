@@ -190,6 +190,7 @@ mod tests {
     /// same result as `hill_dose_response(x, k, n, 1.0)` for normalized
     /// Hill (emax=1). The upstream function was absorbed from neuralSpring
     /// and uses the same formula.
+    #[cfg(feature = "barracuda-lib")]
     #[test]
     fn cross_validate_hill_vs_upstream() {
         let concs = [0.1, 1.0, 5.0, 10.0, 50.0, 100.0, 1000.0];

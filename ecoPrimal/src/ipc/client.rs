@@ -15,11 +15,16 @@ use super::rpc;
 ///
 /// Wraps `rpc::try_send` with health probe fallback chains and method
 /// normalization per primalSpring's `PrimalClient` pattern.
+#[deprecated(
+    since = "0.10.0",
+    note = "use primalspring::composition::CompositionContext instead"
+)]
 pub struct PrimalClient {
     socket: PathBuf,
     name: String,
 }
 
+#[allow(deprecated, reason = "implementation of deprecated type")]
 impl PrimalClient {
     /// Connect to a primal at the given socket path.
     #[must_use]
@@ -143,10 +148,19 @@ impl PrimalClient {
 ///
 /// Follows primalSpring's `InferenceClient` pattern with discovery and
 /// method routing for `inference.*` capabilities.
+#[deprecated(
+    since = "0.10.0",
+    note = "use CompositionContext::call(\"inference\", ...) instead"
+)]
+#[allow(
+    deprecated,
+    reason = "InferenceClient embeds deprecated PrimalClient pending removal"
+)]
 pub struct InferenceClient {
     inner: PrimalClient,
 }
 
+#[allow(deprecated, reason = "implementation of deprecated type")]
 impl InferenceClient {
     /// Create an inference client from a discovered socket.
     #[must_use]
@@ -205,6 +219,7 @@ fn is_method_not_found(result: &serde_json::Value) -> bool {
 }
 
 #[cfg(test)]
+#[allow(deprecated, reason = "tests exercise deprecated IPC clients")]
 mod tests {
     use super::*;
 

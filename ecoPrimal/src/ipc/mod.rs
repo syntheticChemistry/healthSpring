@@ -19,6 +19,7 @@ pub mod mcp;
 #[cfg(test)]
 pub mod proptest_ipc;
 pub mod protocol;
+pub mod provenance;
 pub mod resilience;
 pub mod rpc;
 pub mod shader_dispatch;

@@ -5,7 +5,9 @@
 
 use super::*;
 use crate::tolerances;
-use crate::visualization::{DataChannel, EdgeType, HealthScenario, NodeStatus, NodeType, ScenarioEdge};
+use crate::visualization::{
+    DataChannel, EdgeType, HealthScenario, NodeStatus, NodeType, ScenarioEdge,
+};
 
 #[path = "tests_biosignal.rs"]
 mod tests_biosignal;
@@ -295,7 +297,7 @@ fn timeseries_produces_timeseries_channel() {
         "X",
         "Y",
         "u",
-        &[1.0, 2.0],
+        [1.0, 2.0],
         vec![10.0, 20.0],
     );
     match &ch {
@@ -349,7 +351,14 @@ fn bar_produces_bar_channel() {
 
 #[test]
 fn node_produces_scenario_node() {
-    let n = super::node("n1", "Node Name", NodeType::Compute, &["cap1"], vec![], vec![]);
+    let n = super::node(
+        "n1",
+        "Node Name",
+        NodeType::Compute,
+        &["cap1"],
+        vec![],
+        vec![],
+    );
     assert_eq!(n.id, "n1");
     assert_eq!(n.name, "Node Name");
     assert_eq!(n.node_type, NodeType::Compute);

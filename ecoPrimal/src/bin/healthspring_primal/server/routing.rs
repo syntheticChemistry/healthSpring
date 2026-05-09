@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
+#![allow(
+    deprecated,
+    reason = "server routing uses legacy socket discovery and PrimalClient for low-latency forwarding"
+)]
 //! Request dispatch and routing — maps JSON-RPC methods to handlers.
 //!
 //! Handles health probes, provenance trio, cross-primal forwarding,

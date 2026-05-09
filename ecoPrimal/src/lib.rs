@@ -32,6 +32,9 @@
 //! | [`cast`] | Safe numeric cast helpers (`usize_f64`, `u64_f64`, `f64_usize`) | — |
 //! | [`safe_cast`] | Checked casts returning `Result` (`usize_u32`, `usize_f64`, `f64_f32`) | — |
 
+#[cfg(not(feature = "barracuda-lib"))]
+mod tridiagonal_ql_local;
+
 /// Canonical primal identity — single source of truth for all modules.
 pub const PRIMAL_NAME: &str = "healthspring";
 /// The biomeOS domain this primal serves.
@@ -41,7 +44,9 @@ pub const QS_GENE_MATRIX_FILE: &str = "qs_gene_matrix.json";
 
 pub mod biosignal;
 pub mod cast;
+pub mod certification;
 pub mod comparative;
+pub mod composition;
 pub mod data;
 pub mod diagnostic;
 pub mod discovery;

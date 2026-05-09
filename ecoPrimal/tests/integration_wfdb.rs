@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#![expect(
+#![allow(
     clippy::unwrap_used,
     clippy::expect_used,
-    reason = "integration tests use unwrap/expect for concise assertions"
+    clippy::cast_possible_truncation,
+    reason = "WFDB integration tests: concise I/O and format-defined narrowing casts"
 )]
 //! WFDB format round-trip integration tests.
 //!
@@ -17,9 +18,9 @@ use healthspring_barracuda::wfdb;
 
 /// Encode a pair of 12-bit samples into WFDB Format 212 (3 bytes).
 ///
-/// This matches the PhysioNet specification: each sample pair occupies 3 bytes
+/// This matches the `PhysioNet` specification: each sample pair occupies 3 bytes
 /// with 12 bits per sample, sign-extended via two's complement offset by 4096.
-fn encode_format_212_pair(s1: i16, s2: i16) -> [u8; 3] {
+const fn encode_format_212_pair(s1: i16, s2: i16) -> [u8; 3] {
     let u1 = u16::from_ne_bytes((if s1 < 0 { s1 + 4096 } else { s1 }).to_ne_bytes());
     let u2 = u16::from_ne_bytes((if s2 < 0 { s2 + 4096 } else { s2 }).to_ne_bytes());
     [
@@ -36,16 +37,18 @@ fn format_212_encode_decode_roundtrip_identity() {
 
     let ch1: Vec<i16> = (0..n_samples)
         .map(|i| {
-            let t = i as f64 / 360.0;
+            let t = f64::from(u32::try_from(i).expect("sample index fits u32")) / 360.0;
             (200.0 * (2.0 * std::f64::consts::PI * 1.2 * t).sin()) as i16
         })
         .collect();
     let ch2: Vec<i16> = ch1.iter().map(|&s| s / 2).collect();
 
     let mut encoded = Vec::with_capacity(n_samples * 3);
-    for i in 0..n_samples {
-        encoded.extend_from_slice(&encode_format_212_pair(ch1[i], ch2[i]));
-    }
+    encoded.extend(
+        ch1.iter()
+            .zip(ch2.iter())
+            .flat_map(|(&c1, &c2)| encode_format_212_pair(c1, c2)),
+    );
 
     let decoded = wfdb::decode_format_212(&encoded, n_samples, n_channels).expect("decode");
     assert_eq!(decoded.len(), n_channels);
@@ -55,9 +58,12 @@ fn format_212_encode_decode_roundtrip_identity() {
     assert_eq!(decoded[1], ch2, "channel 1 round-trip identity");
 
     let mut re_encoded = Vec::with_capacity(n_samples * 3);
-    for i in 0..n_samples {
-        re_encoded.extend_from_slice(&encode_format_212_pair(decoded[0][i], decoded[1][i]));
-    }
+    re_encoded.extend(
+        decoded[0]
+            .iter()
+            .zip(decoded[1].iter())
+            .flat_map(|(&c1, &c2)| encode_format_212_pair(c1, c2)),
+    );
     assert_eq!(encoded, re_encoded, "binary round-trip identity");
 }
 
@@ -67,26 +73,36 @@ fn format_212_encode_decode_roundtrip_identity() {
 fn format_16_encode_decode_roundtrip_identity() {
     let n_samples = 300;
     let n_channels = 2;
-    let ch1: Vec<i16> = (0..n_samples).map(|i| (i as i16).wrapping_mul(7)).collect();
+    let ch1: Vec<i16> = (0..n_samples)
+        .map(|i| i16::try_from(i).expect("index fits i16").wrapping_mul(7))
+        .collect();
     let ch2: Vec<i16> = (0..n_samples)
-        .map(|i| (i as i16).wrapping_mul(13).wrapping_add(100))
+        .map(|i| {
+            i16::try_from(i)
+                .expect("index fits i16")
+                .wrapping_mul(13)
+                .wrapping_add(100)
+        })
         .collect();
 
     let mut encoded = Vec::with_capacity(n_samples * n_channels * 2);
-    for i in 0..n_samples {
-        encoded.extend_from_slice(&ch1[i].to_le_bytes());
-        encoded.extend_from_slice(&ch2[i].to_le_bytes());
-    }
+    encoded.extend(
+        ch1.iter()
+            .zip(ch2.iter())
+            .flat_map(|(c1, c2)| c1.to_le_bytes().into_iter().chain(c2.to_le_bytes())),
+    );
 
     let decoded = wfdb::decode_format_16(&encoded, n_samples, n_channels).expect("decode");
     assert_eq!(decoded[0], ch1, "format 16 channel 0 identity");
     assert_eq!(decoded[1], ch2, "format 16 channel 1 identity");
 
     let mut re_encoded = Vec::with_capacity(n_samples * n_channels * 2);
-    for i in 0..n_samples {
-        re_encoded.extend_from_slice(&decoded[0][i].to_le_bytes());
-        re_encoded.extend_from_slice(&decoded[1][i].to_le_bytes());
-    }
+    re_encoded.extend(
+        decoded[0]
+            .iter()
+            .zip(decoded[1].iter())
+            .flat_map(|(c1, c2)| c1.to_le_bytes().into_iter().chain(c2.to_le_bytes())),
+    );
     assert_eq!(encoded, re_encoded, "format 16 binary round-trip identity");
 }
 

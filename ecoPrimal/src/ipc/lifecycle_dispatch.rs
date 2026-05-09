@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "lifecycle dispatch uses legacy primal discovery until CompositionContext integration"
+)]
 //! Typed client for biomeOS orchestrator `lifecycle.*` and `capability.*`
 //! protocol.
 //!

@@ -16,9 +16,7 @@ use pkpd::build_pk_node;
 
 use crate::diagnostic::DiagnosticAssessment;
 
-use super::types::{
-    DataChannel, EdgeType, NodeStatus, NodeType, ScenarioEdge, ScenarioNode,
-};
+use super::types::{DataChannel, EdgeType, NodeStatus, NodeType, ScenarioEdge, ScenarioNode};
 use crate::PRIMAL_NAME;
 
 pub(super) fn risk_to_health(risk: f64) -> u8 {
@@ -175,8 +173,8 @@ pub(super) fn build_edges() -> Vec<ScenarioEdge> {
 mod tests {
     use super::{build_edges, build_nodes, health_to_status, risk_to_health};
     use crate::diagnostic::{PatientProfile, Sex, assess_patient};
-    use crate::visualization::types::NodeStatus;
     use crate::visualization::DataChannel;
+    use crate::visualization::types::NodeStatus;
 
     fn sample_assessment() -> crate::diagnostic::DiagnosticAssessment {
         let mut p = PatientProfile::minimal(55.0, 85.0, Sex::Male);

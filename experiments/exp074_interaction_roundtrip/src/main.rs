@@ -321,6 +321,7 @@ mod tests {
     }
 
     #[test]
+    #[expect(clippy::expect_used, reason = "Unix mock server fixture setup")]
     fn mock_server_roundtrip_receives_expected_requests() {
         let sock_dir = std::env::temp_dir().join(format!(
             "hs_exp074_{}_{}",

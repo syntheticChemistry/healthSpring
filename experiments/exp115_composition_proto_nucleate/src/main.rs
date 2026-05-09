@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
+#![allow(
+    deprecated,
+    reason = "composition proto-nucleate experiment uses legacy discovery helpers"
+)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
 #![deny(clippy::nursery)]

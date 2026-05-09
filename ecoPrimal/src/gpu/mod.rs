@@ -160,7 +160,8 @@ pub mod shaders {
         include_str!("../../shaders/health/beat_classify_batch_f64.wgsl");
 }
 
-/// Returns the barraCuda codegen'd WGSL shader for ODE-based ops.
+/// Returns the barraCuda codegen'd WGSL shader for ODE-based ops when
+/// `barracuda-lib` is enabled; otherwise returns [`None`].
 ///
 /// For `MichaelisMentenBatch`, this produces a generic RK4 shader via
 /// `BatchedOdeRK4::<MichaelisMentenOde>::generate_shader()` — replacing
@@ -168,6 +169,7 @@ pub mod shaders {
 ///
 /// Returns `None` for ops without an `OdeSystem` implementation.
 #[must_use]
+#[cfg(feature = "barracuda-lib")]
 pub fn codegen_shader_for_op(op: &GpuOp) -> Option<String> {
     use barracuda::numerical::BatchedOdeRK4;
 
@@ -177,6 +179,13 @@ pub fn codegen_shader_for_op(op: &GpuOp) -> Option<String> {
         }
         _ => None,
     }
+}
+
+/// Stub when `barracuda-lib` is disabled — ODE codegen requires the barraCuda crate.
+#[must_use]
+#[cfg(not(feature = "barracuda-lib"))]
+pub fn codegen_shader_for_op(_op: &GpuOp) -> Option<String> {
+    None
 }
 
 /// Shader descriptor: maps a `GpuOp` to its WGSL shader source.
@@ -367,6 +376,7 @@ mod tests {
         assert!(shaders::BEAT_CLASSIFY_BATCH.contains("beat_classify"));
     }
 
+    #[cfg(feature = "barracuda-lib")]
     #[test]
     fn mm_batch_codegen_shader_valid() {
         let op = GpuOp::MichaelisMentenBatch {

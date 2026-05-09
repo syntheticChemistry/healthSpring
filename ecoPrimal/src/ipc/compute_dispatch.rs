@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "compute dispatch discovers sockets via legacy helpers until CompositionContext integration"
+)]
 //! Typed client for toadStool `compute.dispatch.*` protocol.
 //!
 //! Absorbed from ludoSpring V22 / toadStool S156 patterns. Provides typed

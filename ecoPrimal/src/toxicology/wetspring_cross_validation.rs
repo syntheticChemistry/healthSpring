@@ -20,7 +20,7 @@
 //! the parameter regime where both agree.
 //!
 //! Reference: wetSpring `work/anderson_hormesis/JOINT_EXPERIMENT.md`
-//! Reference: wetSpring V130 handoff (ANDERSON_HORMESIS_FRAMEWORK)
+//! Reference: wetSpring V130 handoff (`ANDERSON_HORMESIS_FRAMEWORK`)
 
 #[cfg(test)]
 mod tests {
@@ -29,21 +29,20 @@ mod tests {
 
     /// Shared parameter set from joint experiment Exp379.
     /// These values are the intersection where both models agree
-    /// (stimulation Hill n_s = 1).
+    /// (stimulation Hill `n_s` = 1).
     const SHARED_BASELINE: f64 = 1.0;
     const SHARED_S_MAX: f64 = 0.3;
     const SHARED_K_STIM: f64 = 2.0;
     const SHARED_IC50: f64 = 50.0;
     const SHARED_HILL_N: f64 = 2.0;
 
-    /// wetSpring reference values (computed from the same formula with n_s=1).
+    /// wetSpring reference values (computed from the same formula with `n_s=1`).
     /// These are the expected outputs that wetSpring's `bio::hormesis` produces
     /// for the shared parameter set. If wetSpring changes its model, these
     /// values must be updated via a cross-spring handoff.
     fn wetspring_reference_biphasic(dose: f64) -> f64 {
         let stimulation = SHARED_S_MAX * dose / (SHARED_K_STIM + dose);
-        let inhibition =
-            dose.powf(SHARED_HILL_N) / (SHARED_IC50.powf(SHARED_HILL_N) + dose.powf(SHARED_HILL_N));
+        let inhibition = dose.powi(2) / SHARED_IC50.mul_add(SHARED_IC50, dose.powi(2));
         SHARED_BASELINE * (1.0 + stimulation) * (1.0 - inhibition)
     }
 
@@ -179,8 +178,7 @@ mod tests {
         let mut prev = SHARED_BASELINE;
         let mut found_peak = false;
         for i in 1..=100 {
-            #[expect(clippy::cast_precision_loss, reason = "scan step count small")]
-            let dose = (i as f64) * 0.1;
+            let dose = f64::from(i) * 0.1;
             let r = biphasic_dose_response(
                 dose,
                 SHARED_BASELINE,

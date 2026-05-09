@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{
-    ClinicalRange, ClinicalStatus, HealthScenario, NodeType, ScenarioEdge,
-};
+use super::super::types::{ClinicalRange, ClinicalStatus, HealthScenario, NodeType, ScenarioEdge};
 use super::{bar, edge, gauge, heatmap, node, scaffold, spectrum, timeseries};
 use crate::microbiome;
 
@@ -53,20 +51,8 @@ pub fn microbiome_study() -> (HealthScenario, Vec<ScenarioEdge>) {
         &["science.microbiome.diversity"],
         vec![
             bar("shannon", "Shannon H′", &cats, shannon_vals, "nats"),
-            bar(
-                "simpson",
-                "Simpson D",
-                &cats,
-                simpson_vals,
-                "probability",
-            ),
-            bar(
-                "pielou",
-                "Pielou J",
-                &cats,
-                pielou_vals.clone(),
-                "evenness",
-            ),
+            bar("simpson", "Simpson D", &cats, simpson_vals, "probability"),
+            bar("pielou", "Pielou J", &cats, pielou_vals.clone(), "evenness"),
             heatmap(
                 "bray_curtis",
                 "Bray-Curtis Dissimilarity",

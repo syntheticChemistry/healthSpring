@@ -527,10 +527,10 @@ mod tests {
             });
             let serialized = serde_json::to_string(&witness).unwrap();
             let parsed: serde_json::Value = serde_json::from_str(&serialized).unwrap();
-            prop_assert_eq!(parsed["kind"].as_str().unwrap(), &*kind);
-            prop_assert_eq!(parsed["encoding"].as_str().unwrap(), &*encoding);
-            prop_assert_eq!(parsed["algorithm"].as_str().unwrap(), &*algorithm);
-            prop_assert_eq!(parsed["tier"].as_str().unwrap(), &*tier);
+            prop_assert_eq!(parsed["kind"].as_str().unwrap(), kind);
+            prop_assert_eq!(parsed["encoding"].as_str().unwrap(), encoding);
+            prop_assert_eq!(parsed["algorithm"].as_str().unwrap(), algorithm);
+            prop_assert_eq!(parsed["tier"].as_str().unwrap(), tier);
         }
 
         /// DataProvenanceChain-shaped payloads serialize consistently.
@@ -551,7 +551,7 @@ mod tests {
             });
             let serialized = serde_json::to_string(&chain).unwrap();
             let parsed: serde_json::Value = serde_json::from_str(&serialized).unwrap();
-            prop_assert_eq!(parsed["status"].as_str().unwrap(), &*status);
+            prop_assert_eq!(parsed["status"].as_str().unwrap(), status);
             prop_assert_eq!(parsed["session_id"].as_str().unwrap(), session_id.as_str());
         }
 
@@ -576,8 +576,8 @@ mod tests {
             let extracted = extract_rpc_result(&resp);
             prop_assert!(extracted.is_some());
             let result = extracted.unwrap();
-            prop_assert_eq!(result["witness"]["kind"].as_str().unwrap(), &*kind);
-            prop_assert_eq!(result["witness"]["tier"].as_str().unwrap(), &*tier);
+            prop_assert_eq!(result["witness"]["kind"].as_str().unwrap(), kind);
+            prop_assert_eq!(result["witness"]["tier"].as_str().unwrap(), tier);
         }
 
         /// Arbitrary JSON as a witness context field never panics in extract.

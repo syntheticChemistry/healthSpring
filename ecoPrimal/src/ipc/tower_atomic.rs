@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "tower atomic bootstrap probes sockets via legacy discovery until CompositionContext integration"
+)]
 //! Tower Atomic bootstrap — `BearDog` (crypto) + `Songbird` (discovery).
 //!
 //! The Tower Atomic is the minimal NUCLEUS composition for a single machine:

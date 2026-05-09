@@ -34,11 +34,7 @@ impl ValidationOutcome {
     /// Suggested process exit code (0 = pass, 1 = fail).
     #[must_use]
     pub const fn exit_code(&self) -> i32 {
-        if self.failed > 0 {
-            1
-        } else {
-            0
-        }
+        if self.failed > 0 { 1 } else { 0 }
     }
 }
 

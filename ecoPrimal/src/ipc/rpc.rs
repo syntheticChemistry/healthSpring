@@ -110,7 +110,9 @@ pub fn try_send(
 
     let mut stream = super::transport::connect_path(socket_path)?;
     stream
-        .set_timeouts(Duration::from_millis(crate::tolerances::IPC_RPC_READ_TIMEOUT_MS))
+        .set_timeouts(Duration::from_millis(
+            crate::tolerances::IPC_RPC_READ_TIMEOUT_MS,
+        ))
         .map_err(IpcError::Connect)?;
 
     let request = serde_json::json!({

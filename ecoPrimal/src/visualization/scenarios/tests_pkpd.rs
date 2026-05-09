@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! PK/PD and dose-response scenario tests (including NLME).
 
-#![allow(unused_imports)]
+#![allow(unused_imports, reason = "shared test imports across scenario modules")]
 
 use super::*;
 use crate::tolerances;
-use crate::visualization::{DataChannel, EdgeType, HealthScenario, NodeStatus, NodeType, ScenarioEdge};
+use crate::visualization::{
+    DataChannel, EdgeType, HealthScenario, NodeStatus, NodeType, ScenarioEdge,
+};
 
 #[test]
 fn pkpd_study_structure() {

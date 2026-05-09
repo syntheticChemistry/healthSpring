@@ -419,8 +419,8 @@ fn exp_decay_transform_reduces_values() {
     let r = stage.execute(Some(&input));
     assert!(r.success);
     let factor = (-1.0_f64).exp();
-    assert!((r.output_data[0] - 10.0 * factor).abs() < MACHINE_EPSILON);
-    assert!((r.output_data[1] - 20.0 * factor).abs() < MACHINE_EPSILON);
+    assert!(10.0f64.mul_add(-factor, r.output_data[0]).abs() < MACHINE_EPSILON);
+    assert!(20.0f64.mul_add(-factor, r.output_data[1]).abs() < MACHINE_EPSILON);
 }
 
 #[test]

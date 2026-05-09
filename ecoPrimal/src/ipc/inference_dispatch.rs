@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "inference dispatch discovers sockets via legacy helpers until CompositionContext integration"
+)]
 //! Typed client for inference primal protocol.
 //!
 //! Supports both `model.*` and `inference.*` method namespaces for

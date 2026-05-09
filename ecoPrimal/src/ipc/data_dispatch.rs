@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "data dispatch discovers sockets via legacy helpers until CompositionContext integration"
+)]
 //! Typed client for data primal `data.*` protocol.
 //!
 //! Mirrors `compute_dispatch.rs` for consistency. Discovery is

@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "BarraCudaClient wraps deprecated PrimalClient pending HealthCompositionContext migration"
+)]
 //! Typed IPC client for the barraCuda ecobin primal.
 //!
 //! barraCuda exposes 32 JSON-RPC methods over UDS. This client provides
@@ -13,10 +17,15 @@ use super::error::IpcError;
 use super::rpc;
 
 /// Typed client for barraCuda's JSON-RPC surface.
+#[deprecated(
+    since = "0.10.0",
+    note = "use HealthCompositionContext::stats_mean() etc. instead"
+)]
 pub struct BarraCudaClient {
     inner: PrimalClient,
 }
 
+#[allow(deprecated, reason = "implementation of deprecated type")]
 impl BarraCudaClient {
     /// Connect to a barraCuda ecobin at the given socket path.
     #[must_use]
@@ -65,6 +74,28 @@ impl BarraCudaClient {
         extract_f64(&resp)
     }
 
+    /// `stats.variance` — sample variance of `data`.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if the call fails or the response is unparseable.
+    pub fn stats_variance(&self, data: &[f64]) -> Result<f64, IpcError> {
+        let params = serde_json::json!({ "data": data });
+        let resp = self.inner.try_call("stats.variance", &params)?;
+        extract_f64(&resp)
+    }
+
+    /// `stats.correlation` — Pearson correlation of `x` and `y`.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if the call fails or the response is unparseable.
+    pub fn stats_correlation(&self, x: &[f64], y: &[f64]) -> Result<f64, IpcError> {
+        let params = serde_json::json!({ "x": x, "y": y });
+        let resp = self.inner.try_call("stats.correlation", &params)?;
+        extract_f64(&resp)
+    }
+
     /// `rng.uniform` — batch uniform random samples.
     ///
     /// # Errors
@@ -84,6 +115,40 @@ impl BarraCudaClient {
             "seed": seed,
         });
         let resp = self.inner.try_call("rng.uniform", &params)?;
+        let result = rpc::extract_rpc_result(&resp).unwrap_or(&resp);
+        result
+            .as_array()
+            .map(|arr| arr.iter().filter_map(serde_json::Value::as_f64).collect())
+            .or_else(|| {
+                result
+                    .get("result")
+                    .and_then(serde_json::Value::as_array)
+                    .map(|arr| arr.iter().filter_map(serde_json::Value::as_f64).collect())
+            })
+            .ok_or(IpcError::EmptyResponse)
+    }
+
+    /// `rng.normal` — batch Gaussian random samples (mean, standard deviation).
+    ///
+    /// Wire contract matches barraCuda `rng.normal`: `n`, `mean`, `std_dev`, `seed`.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if the call fails or the response is unparseable.
+    pub fn rng_normal(
+        &self,
+        n: usize,
+        mean: f64,
+        std_dev: f64,
+        seed: u64,
+    ) -> Result<Vec<f64>, IpcError> {
+        let params = serde_json::json!({
+            "n": n,
+            "mean": mean,
+            "std_dev": std_dev,
+            "seed": seed,
+        });
+        let resp = self.inner.try_call("rng.normal", &params)?;
         let result = rpc::extract_rpc_result(&resp).unwrap_or(&resp);
         result
             .as_array()
@@ -118,6 +183,7 @@ fn extract_f64(resp: &serde_json::Value) -> Result<f64, IpcError> {
 }
 
 #[cfg(test)]
+#[allow(deprecated, reason = "tests exercise deprecated BarraCudaClient")]
 mod tests {
     use super::*;
 
@@ -136,15 +202,17 @@ mod tests {
     }
 
     #[test]
+    #[expect(clippy::unwrap_used, reason = "test assertion")]
     fn extract_f64_from_result_wrapper() {
-        let resp = serde_json::json!({"jsonrpc": "2.0", "result": 3.14, "id": 1});
-        assert!((extract_f64(&resp).unwrap() - 3.14).abs() < 1e-15);
+        let resp = serde_json::json!({"jsonrpc": "2.0", "result": std::f64::consts::PI, "id": 1});
+        assert!((extract_f64(&resp).unwrap() - std::f64::consts::PI).abs() < 1e-15);
     }
 
     #[test]
+    #[expect(clippy::unwrap_used, reason = "test assertion")]
     fn extract_f64_from_bare_number() {
-        let resp = serde_json::json!(2.718);
-        assert!((extract_f64(&resp).unwrap() - 2.718).abs() < 1e-15);
+        let resp = serde_json::json!(std::f64::consts::E);
+        assert!((extract_f64(&resp).unwrap() - std::f64::consts::E).abs() < 1e-15);
     }
 
     #[test]

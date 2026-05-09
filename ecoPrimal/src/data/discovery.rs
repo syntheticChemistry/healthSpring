@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "data tier discovers provider sockets via legacy helpers until CompositionContext integration"
+)]
 //! Socket discovery for `biomeOS` and data providers.
 //!
 //! Pure capability-based discovery — no hardcoded primal names in
@@ -52,8 +56,7 @@ pub fn discover_data_provider_socket() -> Option<PathBuf> {
 /// Returns `true` if the data provider is explicitly enabled via environment.
 #[must_use]
 pub fn is_enabled() -> bool {
-    std::env::var("HEALTHSPRING_DATA_PROVIDER")
-        .is_ok_and(|v| !v.is_empty())
+    std::env::var("HEALTHSPRING_DATA_PROVIDER").is_ok_and(|v| !v.is_empty())
 }
 
 /// Discover NCBI API key from standard locations.

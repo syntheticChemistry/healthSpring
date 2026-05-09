@@ -9,6 +9,30 @@
 //! Follows the pattern established by airSpring, wetSpring, and neuralSpring
 //! (`primal_names.rs`).
 
+/// Conventional socket-name prefix for `barraCuda` (tensor / stats).
+pub const BARRACUDA: &str = "barracuda";
+
+/// Conventional socket-name prefix for `coralReef` (shader compile).
+pub const CORALREEF: &str = "coralreef";
+
+/// Conventional socket-name prefix for `toadStool` (compute dispatch).
+pub const TOADSTOOL: &str = "toadstool";
+
+/// Conventional socket-name prefix for `NestGate` (storage).
+pub const NESTGATE: &str = "nestgate";
+
+/// Conventional socket-name prefix for `rhizoCrypt` (DAG).
+pub const RHIZOCRYPT: &str = "rhizocrypt";
+
+/// Conventional socket-name prefix for `loamSpine` (ledger / spine).
+pub const LOAMSPINE: &str = "loamspine";
+
+/// Conventional socket-name prefix for `sweetGrass` (commit / braid).
+pub const SWEETGRASS: &str = "sweetgrass";
+
+/// Conventional socket-name prefix for `Squirrel` (inference).
+pub const SQUIRREL: &str = "squirrel";
+
 /// Conventional socket-name prefix for the crypto primal.
 pub const BEARDOG: &str = "beardog";
 

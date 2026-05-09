@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "visualization push client discovers petalTongue via legacy capability probe until CompositionContext integration"
+)]
 //! `PetalTongue` push client: discovery, connection, and push methods.
 //!
 //! Springs discover petalTongue at runtime and push `DataChannel` payloads

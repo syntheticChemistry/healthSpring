@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![allow(
+    deprecated,
+    reason = "discovery module uses legacy socket helpers until CompositionContext integration"
+)]
 //! Structured primal discovery with source tracking.
 //!
 //! Follows primalSpring's `discover.rs` pattern: every discovery result

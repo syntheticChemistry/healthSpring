@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use super::super::types::{
-    ClinicalRange, ClinicalStatus, HealthScenario, NodeType, ScenarioEdge,
-};
+use super::super::types::{ClinicalRange, ClinicalStatus, HealthScenario, NodeType, ScenarioEdge};
 use super::{bar, edge, gauge, node, scaffold, timeseries};
 use crate::biosignal::classification;
 use crate::biosignal::stress;

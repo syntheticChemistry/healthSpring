@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Biosignal / ECG / HRV / PPG scenario tests.
 
-#![allow(unused_imports)]
+#![allow(unused_imports, reason = "shared test imports across scenario modules")]
 
 use super::*;
 use crate::tolerances;
-use crate::visualization::{DataChannel, EdgeType, HealthScenario, NodeStatus, NodeType, ScenarioEdge};
+use crate::visualization::{
+    DataChannel, EdgeType, HealthScenario, NodeStatus, NodeType, ScenarioEdge,
+};
 
 #[test]
 fn biosignal_study_structure() {

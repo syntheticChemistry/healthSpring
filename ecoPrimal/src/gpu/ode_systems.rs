@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#![cfg(feature = "barracuda-lib")]
 //! ODE system implementations for barraCuda's generic batched RK4 solver.
 //!
 //! Each struct implements `barracuda::numerical::OdeSystem`, providing:

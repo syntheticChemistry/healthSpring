@@ -28,9 +28,48 @@
 //!
 //! The LCG constants and step function originated in healthSpring V3
 //! and were absorbed into barraCuda during the absorption sprint.
-//! This module now consumes the canonical upstream version.
+//! With `barracuda-lib`, this module re-exports the canonical upstream API.
+//! When `barracuda-lib` is disabled, this module inlines the same LCG contract for IPC-default builds.
 
+#[cfg(feature = "barracuda-lib")]
 pub use barracuda::rng::{LCG_MULTIPLIER, lcg_step, state_to_f64, uniform_f64_sequence};
+
+/// Knuth LCG multiplier (64-bit); bitwise-identical to barraCuda `rng::LCG_MULTIPLIER`.
+#[cfg(not(feature = "barracuda-lib"))]
+pub const LCG_MULTIPLIER: u64 = 6_364_136_223_846_793_005;
+
+/// Advance the LCG state; bitwise-identical to barraCuda `rng::lcg_step`.
+#[must_use]
+#[inline]
+#[cfg(not(feature = "barracuda-lib"))]
+pub const fn lcg_step(state: u64) -> u64 {
+    state.wrapping_mul(LCG_MULTIPLIER).wrapping_add(1)
+}
+
+/// Map LCG state to `[0,1)` uniform; bitwise-identical to barraCuda `rng::state_to_f64`.
+#[must_use]
+#[inline]
+#[cfg(not(feature = "barracuda-lib"))]
+#[expect(
+    clippy::cast_precision_loss,
+    reason = "upper-31-bit extraction matches barracuda::rng::state_to_f64"
+)]
+pub fn state_to_f64(state: u64) -> f64 {
+    (state >> 33) as f64 / f64::from(u32::MAX)
+}
+
+/// Deterministic uniform sequence; bitwise-identical to barraCuda `rng::uniform_f64_sequence`.
+#[must_use]
+#[cfg(not(feature = "barracuda-lib"))]
+pub fn uniform_f64_sequence(seed: u64, n: usize) -> Vec<f64> {
+    let mut state = seed;
+    (0..n)
+        .map(|_| {
+            state = lcg_step(state);
+            state_to_f64(state)
+        })
+        .collect()
+}
 
 use crate::tolerances::BOX_MULLER_CLAMP;
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#![expect(
+#![allow(
     clippy::unwrap_used,
     clippy::expect_used,
     reason = "integration tests use unwrap/expect for concise assertions"
@@ -91,12 +91,7 @@ fn allometric_dispatch_matches_direct() {
 
 #[test]
 fn mm_dispatch_matches_direct() {
-    let p = pkpd::MichaelisMentenParams {
-        vmax: pkpd::PHENYTOIN_PARAMS.vmax,
-        km: pkpd::PHENYTOIN_PARAMS.km,
-        vd: pkpd::PHENYTOIN_PARAMS.vd,
-    };
-    let (_, concs) = pkpd::mm_pk_simulate(&p, 25.0, 72.0, 0.1);
+    let (_, concs) = pkpd::mm_pk_simulate(&pkpd::PHENYTOIN_PARAMS, 25.0, 72.0, 0.1);
     let direct_auc = pkpd::mm_auc(&concs, 0.1);
     assert_dispatch_f64(
         "science.pkpd.michaelis_menten_nonlinear",

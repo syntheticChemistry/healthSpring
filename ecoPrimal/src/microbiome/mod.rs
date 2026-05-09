@@ -421,6 +421,7 @@ mod tests {
 
     // Cross-validation: local implementations vs upstream barracuda::stats
 
+    #[cfg(feature = "barracuda-lib")]
     #[test]
     fn cross_validate_shannon_vs_upstream() {
         for ab in [
@@ -438,6 +439,7 @@ mod tests {
         }
     }
 
+    #[cfg(feature = "barracuda-lib")]
     #[test]
     fn cross_validate_bray_curtis_vs_upstream() {
         let local = bray_curtis(&HEALTHY_GUT, &DYSBIOTIC_GUT);
@@ -448,6 +450,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "barracuda-lib")]
     #[test]
     fn antibiotic_perturbation_abundances_delegates_to_barracuda() {
         let abundances = vec![1000.0, 500.0, 200.0];
@@ -515,6 +518,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "barracuda-lib")]
     #[test]
     fn cross_validate_anderson_vs_upstream() {
         let disorder = vec![1.0, -0.5, 0.3, 0.8, -0.2];

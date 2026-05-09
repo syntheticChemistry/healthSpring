@@ -1,6 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
+**Version:** V61 · **Date:** May 9, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`.
+
 ## What This Is
 
 healthSpring is a pure Rust health science compute library validating PK/PD,
@@ -23,14 +25,13 @@ promoted to GPU acceleration. It bridges five other springs:
 - **airSpring**: environmental chemical exposure, hygiene hypothesis
 - **groundSpring**: uncertainty propagation, ecological dose-response
 
-The runtime primal (`healthspring_primal`) exposes all science as JSON-RPC 2.0
-capabilities over Unix sockets for biomeOS graph composition.
+The runtime surface is **`healthspring_unibin`** (certify, validate, serve, status, version) and **`healthspring_primal`** — JSON-RPC 2.0 capabilities over Unix sockets for biomeOS graph composition.
 
 ## Technical Facts
 
 - **Language**: 100% Rust, zero C dependencies (wgpu optional for GPU)
-- **Architecture**: workspace with 3 library crates + 95 experiment binaries
-  - `healthspring-barracuda` — core science library
+- **Architecture**: Eukaryotic workspace layout — `certification/` (guideStone absorption), `composition/` (`HealthCompositionContext` over primalSpring `CompositionContext`), `validation/scenarios/` (16 scenarios / 8 tracks), `ipc/provenance/` (rhizocrypt, loamspine, sweetgrass), `fossilRecord/` (archived prokaryotic sources); 3 library crates + 95 experiment binaries
+  - `healthspring-barracuda` — core science library (`default = []`, IPC-first; enable **`barracuda-lib`** for direct barraCuda crates + GPU library paths)
   - `healthspring-forge` — metalForge hardware dispatch
   - `healthspring-toadstool` — pipeline orchestration
 - **IPC**: JSON-RPC 2.0 over Unix domain sockets, 83 capabilities per `ALL_CAPABILITIES` in `capabilities.rs`; `normalize_method()` maps legacy-prefixed names before routing
@@ -68,10 +69,10 @@ capabilities over Unix sockets for biomeOS graph composition.
 
 | Repo | Relationship |
 |------|-------------|
-| **barraCuda** | GPU math library (path dep, v0.3.13) |
+| **barraCuda** | GPU math library (optional **`barracuda-lib`** workspace feature — path dep, v0.3.13) |
 | **coralReef** | WGSL compiler pipeline |
 | **toadStool** | Dispatch orchestration |
-| **primalSpring** | Composition framework (v0.9.17), guideStone standard, NUCLEUS tooling |
+| **primalSpring** | Composition framework (**v0.9.25** pinned), ScenarioMeta / ValidationResult, CompositionContext, certification APIs |
 | **wetSpring** | Shared gut microbiome, hormesis framework |
 | **hotSpring** | Anderson spectral theory, lattice methods |
 | **wateringHole** | Ecosystem standards, handoffs, coordination |
@@ -80,7 +81,7 @@ capabilities over Unix sockets for biomeOS graph composition.
 
 ```
 Python baseline → Rust CPU → barraCuda GPU → coralReef/toadStool sovereign pipeline
-    → guideStone primal proof (Level 5) → NUCLEUS composition → biomeOS deployment
+    → guideStone primal proof (Level 5) → CompositionContext / UniBin eukaryotic layout → NUCLEUS composition → biomeOS deployment
 ```
 
 ## Design Philosophy

@@ -147,6 +147,7 @@ mod tests {
     }
 
     #[test]
+    #[expect(clippy::expect_used, reason = "test assertion")]
     fn handshake_message_serializes() {
         let hello = client_hello();
         let json = serde_json::to_string(&hello);

@@ -12,7 +12,7 @@
 //!
 //! All functions are pure, deterministic (given a seed), and `#[must_use]`.
 
-use barracuda::rng::lcg_step;
+use crate::rng::lcg_step;
 
 use crate::math_dispatch;
 use crate::rng::normal_sample;

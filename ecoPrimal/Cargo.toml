@@ -16,8 +16,8 @@ categories = ["science", "command-line-utilities"]
 workspace = true
 
 [features]
-default = ["barracuda-lib"]
-# barraCuda library link — enables direct Rust imports of barracuda::stats,
+default = []
+# Optional barraCuda library link — enables direct Rust imports of barracuda::stats,
 # barracuda::health, barracuda::special, etc. Disable for sovereign NUCLEUS
 # deployment where all math routes through JSON-RPC IPC to the barraCuda
 # ecobin primal. When off, math_dispatch routes everything via IPC and
@@ -34,10 +34,10 @@ sovereign-dispatch = ["gpu", "barracuda-lib", "barracuda/sovereign-dispatch"]
 # (hill, shannon, simpson, etc.) stay local — they compose from barraCuda
 # primitives rather than being generic IPC methods.
 primal-proof = []
-# guideStone binary: self-validating NUCLEUS node using primalspring
-# composition API. Validates domain science through IPC, certifies 5
-# guideStone properties, exit 0/1/2 semantics.
-guidestone = ["dep:primalspring"]
+# guideStone binary (legacy): primalspring is now always available.
+# This feature is retained for backward-compatible cargo invocations
+# but has no effect — primalspring is a required dependency.
+guidestone = []
 nestgate = ["dep:ureq"]
 # NPU dispatch is a future evolution — Akida driver will be discovered at
 # runtime via capability-based probing, not compiled in as a path dep.
@@ -62,9 +62,10 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"], optio
 bytemuck = { version = "1", features = ["derive"], optional = true }
 ureq = { version = "3", optional = true }
 
-# primalSpring composition API — used by the guideStone binary for
-# CompositionContext, validate_parity, validate_liveness, and tolerances.
-primalspring = { path = "../../primalSpring/ecoPrimal", optional = true }
+# primalSpring composition API — required for CompositionContext,
+# ScenarioMeta, ValidationResult, certification engine, and tolerances.
+# Pinned to v0.9.25 (interstadial eukaryotic evolution baseline).
+primalspring = { path = "../../primalSpring/ecoPrimal", version = "0.9.25" }
 
 [[bin]]
 name = "healthspring_primal"
@@ -78,6 +79,10 @@ path = "src/bin/validate_pk_models.rs"
 name = "healthspring_guidestone"
 path = "src/bin/healthspring_guidestone/main.rs"
 required-features = ["guidestone"]
+
+[[bin]]
+name = "healthspring_unibin"
+path = "src/bin/healthspring/main.rs"
 
 [dev-dependencies]
 approx = "0.5"
@@ -101,3 +106,4 @@ required-features = ["gpu"]
 [[bench]]
 name = "upstream_parity"
 harness = false
+required-features = ["barracuda-lib"]
