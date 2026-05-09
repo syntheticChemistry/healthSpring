@@ -19,9 +19,8 @@ use super::protocol::{
 use super::{DataChannel, PushError, PushResult};
 use crate::ipc::socket;
 use crate::primal_names;
+use crate::tolerances::IPC_VIZ_PUSH_RESPONSE_BUF;
 use crate::visualization::types::HealthScenario;
-
-const RPC_RESPONSE_BUF: usize = 65_536;
 
 /// Capability domain used for visualization primal discovery.
 const VISUALIZATION_CAPABILITY: &str = "visualization";
@@ -273,7 +272,7 @@ impl PetalTonguePushClient {
             .map_err(PushError::ConnectionFailed)?;
         stream.flush().map_err(PushError::ConnectionFailed)?;
 
-        let mut buf = vec![0u8; RPC_RESPONSE_BUF];
+        let mut buf = vec![0u8; IPC_VIZ_PUSH_RESPONSE_BUF];
         let n = stream.read(&mut buf).map_err(PushError::ConnectionFailed)?;
 
         let response: serde_json::Value = serde_json::from_slice(&buf[..n])

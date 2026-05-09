@@ -6,6 +6,12 @@
 
 use super::fft::{idx_to_f64, irfft, rfft, u64_to_f64};
 
+/// Converts milliseconds ↔ seconds when combining sampling rate (Hz) with timing in ms.
+const MS_PER_SECOND_F64: f64 = 1000.0;
+
+/// Seconds in one minute (heart-rate RR interval math).
+const SECONDS_PER_MINUTE_F64: f64 = 60.0;
+
 /// Pan-Tompkins default parameters (Pan & Tompkins, IEEE Trans. Biomed. Eng., 1985).
 pub mod pan_tompkins_params {
     /// Bandpass lower cutoff (Hz) — removes baseline wander.
@@ -101,7 +107,7 @@ pub fn moving_window_integration(signal: &[f64], window_size: usize) -> Vec<f64>
 #[expect(
     clippy::cast_possible_truncation,
     clippy::cast_sign_loss,
-    reason = "refractory_ms * fs / 1000 is small positive — safe truncation"
+    reason = "refractory_ms * fs / MS_PER_SECOND_F64 is small positive — safe truncation"
 )]
 pub fn detect_peaks(mwi: &[f64], fs: f64, refractory_ms: f64) -> Vec<usize> {
     let n = mwi.len();
@@ -110,7 +116,7 @@ pub fn detect_peaks(mwi: &[f64], fs: f64, refractory_ms: f64) -> Vec<usize> {
     }
     let threshold =
         pan_tompkins_params::PEAK_THRESHOLD_FRACTION * mwi.iter().copied().fold(0.0_f64, f64::max);
-    let refractory_samples = (refractory_ms * fs / 1000.0) as usize;
+    let refractory_samples = (refractory_ms * fs / MS_PER_SECOND_F64) as usize;
     let mut peaks = Vec::new();
     let mut last_peak: usize = 0;
 
@@ -241,7 +247,7 @@ pub fn generate_synthetic_ecg(
 ) -> (Vec<f64>, Vec<usize>) {
     let n_samples = (fs * duration_s) as usize;
     let mut ecg = vec![0.0; n_samples];
-    let rr = 60.0 / heart_rate_bpm;
+    let rr = SECONDS_PER_MINUTE_F64 / heart_rate_bpm;
     let mut r_peaks = Vec::new();
 
     let mut beat_time = 0.1;
@@ -359,7 +365,7 @@ mod tests {
             clippy::cast_sign_loss,
             reason = "constant arithmetic produces known-small positive result"
         )]
-        let tol = (75.0 * FS / 1000.0) as usize;
+        let tol = (pan_tompkins_params::DETECTION_TOLERANCE_MS * FS / MS_PER_SECOND_F64) as usize;
         let metrics = evaluate_detection(&result.peaks, &true_peaks, tol);
         assert!(metrics.sensitivity > 0.8, "Se={}", metrics.sensitivity);
         assert!(metrics.ppv > 0.8, "PPV={}", metrics.ppv);

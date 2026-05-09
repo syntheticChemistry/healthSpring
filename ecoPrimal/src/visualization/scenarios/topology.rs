@@ -5,6 +5,8 @@
 //! with dispatch plan assignments shown as node properties and PCIe/network
 //! transfers as edges.
 
+use std::borrow::Cow;
+
 use super::{ScenarioEdge, bar, edge, gauge, node, scaffold};
 use crate::visualization::types::{HealthScenario, NodeStatus, NodeType};
 
@@ -65,14 +67,14 @@ pub fn topology_scenario(
             };
             let scenario_node = super::ScenarioNode {
                 id: nest_id.clone(),
-                name: nest.label.clone(),
-                node_type: NodeType::from_scenario_label(&nest.substrate),
+                name: nest.label.clone().into_owned(),
+                node_type: NodeType::from_scenario_label(nest.substrate.as_ref()),
                 family: "nucleus".into(),
                 status,
                 health: if nest.available { 100 } else { 50 },
                 confidence: 90,
                 position: None,
-                capabilities: vec![nest.substrate.clone()],
+                capabilities: vec![nest.substrate.clone().into_owned()],
                 data_channels: channels,
                 clinical_ranges: vec![],
             };
@@ -91,7 +93,11 @@ pub fn topology_scenario(
                         "T{}.N{}.D{}",
                         tower_id, topo_node.node_id, topo_node.nests[j].device_id
                     );
-                    edges.push(edge(&src, &dst, &format!("PCIe {}", topo_node.pcie_gen)));
+                    edges.push(edge(
+                        &src,
+                        &dst,
+                        &format!("PCIe {}", topo_node.pcie_gen.as_ref()),
+                    ));
                 }
             }
         }
@@ -99,7 +105,11 @@ pub fn topology_scenario(
 
     // Transfer plan edges
     for transfer in transfers {
-        edges.push(edge(&transfer.src_id, &transfer.dst_id, &transfer.label));
+        edges.push(edge(
+            transfer.src_id.as_ref(),
+            transfer.dst_id.as_ref(),
+            transfer.label.as_ref(),
+        ));
     }
 
     (scenario, edges)
@@ -124,7 +134,7 @@ pub fn dispatch_scenario(
     );
     let mut edges = Vec::new();
 
-    let stage_names: Vec<String> = stages.iter().map(|s| s.name.clone()).collect();
+    let stage_names: Vec<String> = stages.iter().map(|s| s.name.clone().into_owned()).collect();
     let stage_times: Vec<f64> = stages.iter().map(|s| s.elapsed_us).collect();
 
     // Summary node with timing bar chart
@@ -147,8 +157,8 @@ pub fn dispatch_scenario(
     for (i, stage) in stages.iter().enumerate() {
         let stage_node = node(
             &format!("stage_{i}"),
-            &stage.name,
-            NodeType::from_scenario_label(&stage.substrate),
+            stage.name.as_ref(),
+            NodeType::from_scenario_label(stage.substrate.as_ref()),
             &["compute.execute"],
             vec![
                 gauge(
@@ -197,9 +207,9 @@ pub struct TopologyNest {
     /// Device index within the parent node.
     pub device_id: u16,
     /// Hardware substrate label (e.g. cpu, gpu, npu).
-    pub substrate: String,
+    pub substrate: Cow<'static, str>,
     /// Human-readable device label for display.
-    pub label: String,
+    pub label: Cow<'static, str>,
     /// Total device memory capacity in bytes.
     pub memory_total_bytes: u64,
     /// Currently used memory in bytes.
@@ -215,7 +225,7 @@ pub struct TopologyNode {
     /// Node index within the tower.
     pub node_id: u16,
     /// `PCIe` generation label for intra-node links (e.g. `Gen4`).
-    pub pcie_gen: String,
+    pub pcie_gen: Cow<'static, str>,
     /// Nests (devices) attached to this node.
     pub nests: Vec<TopologyNest>,
 }
@@ -223,19 +233,19 @@ pub struct TopologyNode {
 /// Description of a transfer for topology visualization.
 pub struct TopologyTransfer {
     /// Source nest or node id in scenario graph id space.
-    pub src_id: String,
+    pub src_id: Cow<'static, str>,
     /// Destination nest or node id in scenario graph id space.
-    pub dst_id: String,
+    pub dst_id: Cow<'static, str>,
     /// Edge label (e.g. `PCIe` P2P bandwidth).
-    pub label: String,
+    pub label: Cow<'static, str>,
 }
 
 /// Description of a stage in a dispatch plan for visualization.
 pub struct DispatchStageInfo {
     /// Stage name (e.g. pipeline step id).
-    pub name: String,
+    pub name: Cow<'static, str>,
     /// Substrate this stage ran on (cpu, gpu, etc.).
-    pub substrate: String,
+    pub substrate: Cow<'static, str>,
     /// Wall-clock time for the stage in microseconds.
     pub elapsed_us: f64,
     /// Number of output elements produced by the stage.
@@ -250,12 +260,12 @@ mod tests {
     fn test_topology() -> (Vec<TopologyNode>, Vec<TopologyTransfer>) {
         let nodes = vec![TopologyNode {
             node_id: 0,
-            pcie_gen: "Gen4".to_string(),
+            pcie_gen: "Gen4".into(),
             nests: vec![
                 TopologyNest {
                     device_id: 0,
-                    substrate: "cpu".to_string(),
-                    label: "CPU (16 cores)".to_string(),
+                    substrate: "cpu".into(),
+                    label: "CPU (16 cores)".into(),
                     memory_total_bytes: 64 * 1024 * 1024 * 1024,
                     memory_used_bytes: 8 * 1024 * 1024 * 1024,
                     utilization_pct: 15.0,
@@ -263,8 +273,8 @@ mod tests {
                 },
                 TopologyNest {
                     device_id: 1,
-                    substrate: "gpu".to_string(),
-                    label: "RTX 4090".to_string(),
+                    substrate: "gpu".into(),
+                    label: "RTX 4090".into(),
                     memory_total_bytes: 24 * 1024 * 1024 * 1024,
                     memory_used_bytes: 2 * 1024 * 1024 * 1024,
                     utilization_pct: 42.0,
@@ -272,8 +282,8 @@ mod tests {
                 },
                 TopologyNest {
                     device_id: 2,
-                    substrate: "npu".to_string(),
-                    label: "Akida AKD1000".to_string(),
+                    substrate: "npu".into(),
+                    label: "Akida AKD1000".into(),
                     memory_total_bytes: 256 * 1024 * 1024,
                     memory_used_bytes: 64 * 1024 * 1024,
                     utilization_pct: 0.0,
@@ -282,9 +292,9 @@ mod tests {
             ],
         }];
         let transfers = vec![TopologyTransfer {
-            src_id: "T0.N0.D2".to_string(),
-            dst_id: "T0.N0.D1".to_string(),
-            label: "PCIe P2P 31.5 GB/s".to_string(),
+            src_id: "T0.N0.D2".into(),
+            dst_id: "T0.N0.D1".into(),
+            label: "PCIe P2P 31.5 GB/s".into(),
         }];
         (nodes, transfers)
     }

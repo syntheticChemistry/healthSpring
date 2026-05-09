@@ -22,6 +22,10 @@ pub mod protocol;
 pub mod provenance;
 pub mod resilience;
 pub mod rpc;
+
+/// JSON-RPC result type used across all IPC dispatch modules.
+pub type RpcResult = Result<serde_json::Value, rpc::SendError>;
+
 pub mod shader_dispatch;
 pub mod socket;
 pub mod tower_atomic;

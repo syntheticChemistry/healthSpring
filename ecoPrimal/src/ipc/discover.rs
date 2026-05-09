@@ -25,7 +25,7 @@ pub enum DiscoverySource {
     CapabilityProbe,
     /// XDG convention path (socket dir + primal name pattern).
     XdgConvention,
-    /// Fallback `/tmp/biomeos` directory.
+    /// Last-resort socket directory ([`socket::FALLBACK_SOCKET_DIR`] / Tier 4 of [`socket::resolve_socket_dir`]).
     TempFallback,
     /// Primal was not found.
     NotFound,

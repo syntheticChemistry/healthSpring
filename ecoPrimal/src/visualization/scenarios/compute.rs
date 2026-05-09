@@ -88,12 +88,12 @@ pub fn gpu_scaling_study() -> (HealthScenario, Vec<ScenarioEdge>) {
 pub fn v16_topology_study() -> (HealthScenario, Vec<ScenarioEdge>) {
     let nodes = vec![TopologyNode {
         node_id: 0,
-        pcie_gen: "Gen4".to_string(),
+        pcie_gen: "Gen4".into(),
         nests: vec![
             TopologyNest {
                 device_id: 0,
-                substrate: "cpu".to_string(),
-                label: "CPU (16 cores, AVX-512)".to_string(),
+                substrate: "cpu".into(),
+                label: "CPU (16 cores, AVX-512)".into(),
                 memory_total_bytes: 64 * 1024 * 1024 * 1024,
                 memory_used_bytes: 8 * 1024 * 1024 * 1024,
                 utilization_pct: 12.0,
@@ -101,8 +101,8 @@ pub fn v16_topology_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             },
             TopologyNest {
                 device_id: 1,
-                substrate: "gpu".to_string(),
-                label: "RTX 4090 (24 GB VRAM)".to_string(),
+                substrate: "gpu".into(),
+                label: "RTX 4090 (24 GB VRAM)".into(),
                 memory_total_bytes: 24 * 1024 * 1024 * 1024,
                 memory_used_bytes: 512 * 1024 * 1024,
                 utilization_pct: 35.0,
@@ -110,8 +110,8 @@ pub fn v16_topology_study() -> (HealthScenario, Vec<ScenarioEdge>) {
             },
             TopologyNest {
                 device_id: 2,
-                substrate: "npu".to_string(),
-                label: "Akida AKD1000".to_string(),
+                substrate: "npu".into(),
+                label: "Akida AKD1000".into(),
                 memory_total_bytes: 256 * 1024 * 1024,
                 memory_used_bytes: 32 * 1024 * 1024,
                 utilization_pct: 0.0,
@@ -122,14 +122,14 @@ pub fn v16_topology_study() -> (HealthScenario, Vec<ScenarioEdge>) {
 
     let transfers = vec![
         TopologyTransfer {
-            src_id: "T0.N0.D1".to_string(),
-            dst_id: "T0.N0.D2".to_string(),
-            label: "PCIe P2P GPU→NPU 31.5 GB/s".to_string(),
+            src_id: "T0.N0.D1".into(),
+            dst_id: "T0.N0.D2".into(),
+            label: "PCIe P2P GPU→NPU 31.5 GB/s".into(),
         },
         TopologyTransfer {
-            src_id: "T0.N0.D2".to_string(),
-            dst_id: "T0.N0.D0".to_string(),
-            label: "PCIe P2P NPU→CPU 31.5 GB/s".to_string(),
+            src_id: "T0.N0.D2".into(),
+            dst_id: "T0.N0.D0".into(),
+            label: "PCIe P2P NPU→CPU 31.5 GB/s".into(),
         },
     ];
 

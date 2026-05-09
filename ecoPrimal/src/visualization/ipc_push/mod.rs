@@ -255,7 +255,7 @@ mod tests {
     fn mock_petaltongue_response(listener: &std::os::unix::net::UnixListener) -> serde_json::Value {
         use std::io::{Read, Write};
         let (mut stream, _) = listener.accept().expect("accept");
-        let mut buf = vec![0u8; 8192];
+        let mut buf = vec![0u8; tolerances::IPC_PROBE_BUF];
         let n = stream.read(&mut buf).expect("read");
         let request: serde_json::Value = serde_json::from_slice(&buf[..n]).expect("parse request");
         let response = serde_json::json!({
@@ -272,7 +272,7 @@ mod tests {
     fn mock_petaltongue_error(listener: &std::os::unix::net::UnixListener) {
         use std::io::{Read, Write};
         let (mut stream, _) = listener.accept().expect("accept");
-        let mut buf = vec![0u8; 8192];
+        let mut buf = vec![0u8; tolerances::IPC_PROBE_BUF];
         let _ = stream.read(&mut buf).expect("read");
         let response = serde_json::json!({
             "jsonrpc": "2.0",

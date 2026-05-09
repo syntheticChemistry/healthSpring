@@ -27,6 +27,7 @@ use healthspring_forge::Substrate;
 use healthspring_toadstool::pipeline::Pipeline;
 use healthspring_toadstool::stage::{ReduceKind, Stage, StageOp, TransformKind};
 use serde::Serialize;
+use std::borrow::Cow;
 use std::sync::{Arc, Mutex};
 
 const SESSION_ID: &str = "healthspring-compute-dashboard";
@@ -257,7 +258,7 @@ fn main() {
         let stages: Vec<DispatchStageInfo> = logs
             .iter()
             .map(|l| DispatchStageInfo {
-                name: l.name.clone(),
+                name: Cow::Owned(l.name.clone()),
                 substrate: infer_substrate(&l.name),
                 elapsed_us: l.elapsed_us,
                 output_elements: l.output_elements,
@@ -371,12 +372,12 @@ fn main() {
     h.exit();
 }
 
-fn infer_substrate(stage_name: &str) -> String {
+fn infer_substrate(stage_name: &str) -> Cow<'static, str> {
     if stage_name.contains("NPU") || stage_name.contains("Fusion") {
-        "npu".into()
+        Cow::Borrowed("npu")
     } else if stage_name.contains("GPU") {
-        "gpu".into()
+        Cow::Borrowed("gpu")
     } else {
-        "cpu".into()
+        Cow::Borrowed("cpu")
     }
 }

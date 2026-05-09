@@ -122,12 +122,12 @@ fn build_all_scenarios() -> Vec<(&'static str, HealthScenario, Vec<ScenarioEdge>
 
     let topo_nodes = vec![TopologyNode {
         node_id: 0,
-        pcie_gen: "Gen4".to_string(),
+        pcie_gen: "Gen4".into(),
         nests: vec![
             TopologyNest {
                 device_id: 0,
-                substrate: "cpu".to_string(),
-                label: "CPU (16 cores)".to_string(),
+                substrate: "cpu".into(),
+                label: "CPU (16 cores)".into(),
                 memory_total_bytes: 64 * 1024 * 1024 * 1024,
                 memory_used_bytes: 8 * 1024 * 1024 * 1024,
                 utilization_pct: 15.0,
@@ -135,8 +135,8 @@ fn build_all_scenarios() -> Vec<(&'static str, HealthScenario, Vec<ScenarioEdge>
             },
             TopologyNest {
                 device_id: 1,
-                substrate: "gpu".to_string(),
-                label: "GPU (RTX 4090)".to_string(),
+                substrate: "gpu".into(),
+                label: "GPU (RTX 4090)".into(),
                 memory_total_bytes: 24 * 1024 * 1024 * 1024,
                 memory_used_bytes: 2 * 1024 * 1024 * 1024,
                 utilization_pct: 0.0,
@@ -144,8 +144,8 @@ fn build_all_scenarios() -> Vec<(&'static str, HealthScenario, Vec<ScenarioEdge>
             },
             TopologyNest {
                 device_id: 2,
-                substrate: "npu".to_string(),
-                label: "NPU (Akida)".to_string(),
+                substrate: "npu".into(),
+                label: "NPU (Akida)".into(),
                 memory_total_bytes: 256 * 1024 * 1024,
                 memory_used_bytes: 0,
                 utilization_pct: 0.0,
@@ -154,28 +154,28 @@ fn build_all_scenarios() -> Vec<(&'static str, HealthScenario, Vec<ScenarioEdge>
         ],
     }];
     let topo_transfers = vec![TopologyTransfer {
-        src_id: "T0.N0.D2".to_string(),
-        dst_id: "T0.N0.D1".to_string(),
-        label: "PCIe P2P Gen4 31.5 GB/s".to_string(),
+        src_id: "T0.N0.D2".into(),
+        dst_id: "T0.N0.D1".into(),
+        label: "PCIe P2P Gen4 31.5 GB/s".into(),
     }];
     let (topo_scenario, topo_edges) = topology_scenario(0, &topo_nodes, &topo_transfers);
 
     let dispatch_stages = vec![
         DispatchStageInfo {
-            name: "ECG Streaming".to_string(),
-            substrate: "npu".to_string(),
+            name: "ECG Streaming".into(),
+            substrate: "npu".into(),
             elapsed_us: 50.0,
             output_elements: 360,
         },
         DispatchStageInfo {
-            name: "Population PK".to_string(),
-            substrate: "gpu".to_string(),
+            name: "Population PK".into(),
+            substrate: "gpu".into(),
             elapsed_us: 1200.0,
             output_elements: 5000,
         },
         DispatchStageInfo {
-            name: "Diagnostic Fusion".to_string(),
-            substrate: "cpu".to_string(),
+            name: "Diagnostic Fusion".into(),
+            substrate: "cpu".into(),
             elapsed_us: 10.0,
             output_elements: 1,
         },

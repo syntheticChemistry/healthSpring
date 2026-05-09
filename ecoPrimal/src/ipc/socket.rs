@@ -5,23 +5,40 @@
 )]
 //! Primal socket discovery and path resolution for `biomeOS` niche deployment.
 //!
-//! Follows XDG runtime conventions:
-//! 1. `HEALTHSPRING_SOCKET` environment override
-//! 2. `BIOMEOS_SOCKET_DIR` / `{PRIMAL_NAME}-{family_id}.sock`
-//! 3. `$XDG_RUNTIME_DIR/biomeos/{PRIMAL_NAME}-{family_id}.sock`
-//! 4. `/tmp/biomeos/{PRIMAL_NAME}-{family_id}.sock` (fallback)
+//! Per-socket paths use [`resolve_bind_path`]: optional `HEALTHSPRING_SOCKET`, otherwise
+//! [`resolve_socket_dir`] joined with `{PRIMAL_NAME}-{family_id}.sock`.
 
 use std::path::PathBuf;
 
 use crate::PRIMAL_NAME;
 use crate::ipc::rpc;
 
-/// Return the biomeOS socket directory, with XDG fallback.
+/// Last-resort biomeOS socket directory when no explicit env or user cache path applies.
+pub(crate) const FALLBACK_SOCKET_DIR: &str = "/tmp/biomeos";
+
+fn platform_runtime_socket_dir_under_home(home: &str) -> PathBuf {
+    let home = PathBuf::from(home);
+    #[cfg(target_os = "macos")]
+    {
+        home.join("Library").join("Caches").join("biomeos")
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        home.join(".cache").join("biomeos")
+    }
+}
+
+/// Return the biomeOS socket directory using a capability-oriented resolution hierarchy.
 ///
-/// Resolution order:
-/// 1. `BIOMEOS_SOCKET_DIR` environment variable (explicit override)
-/// 2. `$XDG_RUNTIME_DIR/biomeos` (XDG standard)
-/// 3. `/tmp/biomeos` (last-resort fallback — logged as warning)
+/// ## Resolution order
+///
+/// 1. **Tier 1 — `BIOMEOS_SOCKET_DIR`**: explicit sovereign configuration.
+/// 2. **Tier 2 — `XDG_RUNTIME_DIR/biomeos/`**: Linux/session standard when `XDG_RUNTIME_DIR` is set.
+/// 3. **Tier 3 — platform cache under `$HOME`**: macOS uses `~/Library/Caches/biomeos/`;
+///    other platforms use `$HOME/.cache/biomeos/` via [`std::env::var`] with `"HOME"`.
+///    Skipped when `HOME` is unset.
+/// 4. **Tier 4 — [`FALLBACK_SOCKET_DIR`]**: world-writable temp path; a [`tracing::warn!`] is
+///    emitted because this is intended for development convenience only.
 #[must_use]
 pub fn resolve_socket_dir() -> PathBuf {
     if let Ok(dir) = std::env::var("BIOMEOS_SOCKET_DIR") {
@@ -30,14 +47,20 @@ pub fn resolve_socket_dir() -> PathBuf {
     if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
         return PathBuf::from(runtime).join("biomeos");
     }
+    if let Ok(home) = std::env::var("HOME") {
+        return platform_runtime_socket_dir_under_home(&home);
+    }
     tracing::warn!(
-        "neither BIOMEOS_SOCKET_DIR nor XDG_RUNTIME_DIR set — \
-         falling back to /tmp/biomeos; set BIOMEOS_SOCKET_DIR for sovereign deployments"
+        "socket dir resolved to /tmp/biomeos (last resort). \
+         Set BIOMEOS_SOCKET_DIR for sovereign deployments."
     );
-    PathBuf::from("/tmp/biomeos")
+    PathBuf::from(FALLBACK_SOCKET_DIR)
 }
 
 /// Stable family identifier, overridable via `HEALTHSPRING_FAMILY_ID`.
+///
+/// When `HEALTHSPRING_FAMILY_ID` is unset, this returns `"default"`. That default is intentional
+/// for local development so sibling processes agree on a socket basename without extra setup.
 #[must_use]
 pub fn get_family_id() -> String {
     std::env::var("HEALTHSPRING_FAMILY_ID").unwrap_or_else(|_| "default".to_owned())

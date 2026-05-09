@@ -102,6 +102,11 @@ impl<T> DispatchOutcome<T> {
 mod tests {
     use super::*;
 
+    /// Example timeout for display / classification tests (milliseconds).
+    const TEST_LONG_TIMEOUT_MS: u64 = 5000;
+    /// Shorter example timeout for dispatch outcome tests (milliseconds).
+    const TEST_SHORT_TIMEOUT_MS: u64 = 1000;
+
     #[test]
     fn socket_not_found_is_connection_error() {
         let err = IpcError::SocketNotFound("toadstool".into());
@@ -119,7 +124,7 @@ mod tests {
 
     #[test]
     fn timeout_is_retriable_and_timeout_likely() {
-        let err = IpcError::Timeout(5000);
+        let err = IpcError::Timeout(TEST_LONG_TIMEOUT_MS);
         assert!(err.is_retriable());
         assert!(err.is_timeout_likely());
     }
@@ -136,7 +141,7 @@ mod tests {
 
     #[test]
     fn dispatch_outcome_protocol_should_retry() {
-        let outcome = DispatchOutcome::<()>::Protocol(IpcError::Timeout(1000));
+        let outcome = DispatchOutcome::<()>::Protocol(IpcError::Timeout(TEST_SHORT_TIMEOUT_MS));
         assert!(outcome.should_retry());
     }
 

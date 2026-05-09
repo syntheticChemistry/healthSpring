@@ -437,6 +437,9 @@ pub const IPC_PROBE_BUF: usize = 8192;
 /// JSON-RPC response buffer size (bytes) for Songbird / petalTongue.
 pub const IPC_RESPONSE_BUF: usize = 4096;
 
+/// JSON-RPC read buffer for visualization push responses — large scenario payloads.
+pub const IPC_VIZ_PUSH_RESPONSE_BUF: usize = 65_536;
+
 /// IPC socket read/write timeout for probes (milliseconds).
 pub const IPC_TIMEOUT_MS: u64 = 500;
 

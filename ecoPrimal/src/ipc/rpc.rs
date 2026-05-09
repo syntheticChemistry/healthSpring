@@ -11,6 +11,9 @@ pub const PARSE_ERROR: i64 = -32700;
 /// JSON-RPC 2.0 method not found code (`-32601`).
 pub const METHOD_NOT_FOUND: i64 = -32601;
 
+/// JSON-RPC error message when the peer omits `"message"`.
+const UNKNOWN_RPC_ERROR_MESSAGE: &str = "unknown";
+
 /// Normalize a JSON-RPC method name by stripping legacy primal prefixes.
 ///
 /// The ecosystem semantic naming standard v2.1 uses bare `{domain}.{operation}`
@@ -66,7 +69,7 @@ pub fn extract_rpc_error(error: &serde_json::Value) -> (i64, String) {
     let message = error
         .get("message")
         .and_then(serde_json::Value::as_str)
-        .unwrap_or("unknown")
+        .unwrap_or(UNKNOWN_RPC_ERROR_MESSAGE)
         .to_owned();
     (code, message)
 }
