@@ -1,7 +1,7 @@
 # healthSpring baseCamp: Gonzales PK/PD → Human Therapeutics
 
 **Faculty**: Andrea J. Gonzales (MSU Pharmacology & Toxicology), Erika Lisabeth (ADDRC), Richard Neubig (Drug Discovery), Edmund Ellsworth (Medicinal Chemistry)
-**Status**: V61 — Eukaryotic UniBin + certification organelle; primalSpring **v0.9.25**. 95 experiments, **999 tests**, 53 Python baseline scripts + 53 paired `.ipynb` notebooks with provenance. barraCuda v0.3.13. ecoBin 0.9.0.
+**Status**: V62 — Eukaryotic UniBin + certification organelle; primalSpring **v0.9.25**. 95 experiments, **999 tests**, 53 Python baseline scripts + 53 paired `.ipynb` notebooks with provenance. barraCuda v0.3.13. ecoBin 0.9.0.
 **Parent**: gen3/baseCamp Paper 12 (Immunological Anderson), gen3/baseCamp Paper 13 (Sovereign Human Health Computing)
 
 ---

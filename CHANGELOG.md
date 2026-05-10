@@ -4,6 +4,20 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V62 — May 10, 2026
+
+### Added
+- **CI cross-sync**: `health.monitor` + `health.probe` handlers complete 5/5 canonical `[health]` alignment with primalSpring's 403-method registry
+- **`skunkBat` audit wiring**: `ipc/audit.rs` with `audit_log()` / `audit_certification()` via `HealthCompositionContext`; `SKUNKBAT` in `primal_names.rs`; `"audit"` routed in composition
+- **biomeOS v3.51 absorption**: `composition.status` (primal health + resource pressure) and `method.register` (dynamic method registration) handlers
+- **Env-configurable NCBI**: `HEALTHSPRING_NCBI_EUTILS_BASE` and `HEALTHSPRING_NCBI_SRA_BASE` for air-gapped/proxy sovereign deployments
+
+### Changed
+- Niche `DEPENDENCIES` centralized from string literals to `primal_names::*` constants (single source of truth)
+- `BarraCudaClient::discover()` uses `primal_names::BARRACUDA` instead of hardcoded `"barracuda"`
+- Capabilities surface expanded: 83 → 87 methods (`health.monitor`, `health.probe`, `composition.status`, `method.register`)
+- `experiments/README.md` now documents Exp097 (affinity landscape), Exp098 (toxicity landscape), Exp099 (hormesis), Exp111 (causal terrarium)
+
 ## V61 — 2026-05-09 — Interstadial Eukaryotic Evolution
 
 ### Architecture & binaries

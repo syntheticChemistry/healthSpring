@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: May 8, 2026
-**Status**: V60 — Deep debt resolved. Phase 46 NUCLEUS composition. guideStone Level 5 (primal proof). All four math methods IPC-validated. Gap 19 resolved (Sprint 44). barraCuda v0.3.13. All six GPU ops LIVE. ecoBin 0.9.0. primalSpring v0.9.17.
+**Last Updated**: May 10, 2026
+**Status**: V62 — Deep debt resolved. Phase 46 NUCLEUS composition. guideStone Level 5 (primal proof). All four math methods IPC-validated. Gap 19 resolved (Sprint 44). barraCuda v0.3.13. All six GPU ops LIVE. ecoBin 0.9.0. primalSpring v0.9.25.
 
 ---
 

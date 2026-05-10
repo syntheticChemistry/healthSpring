@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** May 9, 2026 (V61)
+**Date:** May 10, 2026 (V62)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V61 — **Eukaryotic evolution**: `healthspring_unibin` UniBin (`certify`, `validate`, `serve`, `status`, `version`); **`certification/`** organelle (absorbed guidestone); **`composition/`** + **`validation/scenarios/`** (16 scenarios across 8 tracks, absorbed from experiments); **`fossilRecord/`** archives prokaryotic guidestone + experiment mains; **IPC-first defaults** (`default = []`, `barracuda-lib` opt-in); **primalSpring v0.9.25** pinned (was optional path dep at v0.9.17); per-trio provenance IPC (**rhizocrypt**, **loamspine**, **sweetgrass**). Typed enums + `ValidationOutcome` + capability-first routing retained. **999 tests** pass, 0 clippy warnings. guideStone **Level 5** lineage continues via certification. ecoBin 0.9.0. barraCuda v0.3.13.
+**Status:** V62 — **V61 eukaryotic base**: `healthspring_unibin` UniBin (`certify`, `validate`, `serve`, `status`, `version`); **`certification/`** organelle (absorbed guidestone); **`composition/`** + **`validation/scenarios/`** (16 scenarios across 8 tracks, absorbed from experiments); **`fossilRecord/`** archives prokaryotic guidestone + experiment mains; **IPC-first defaults** (`default = []`, `barracuda-lib` opt-in); **primalSpring v0.9.25** pinned (was optional path dep at v0.9.17); per-trio provenance IPC (**rhizocrypt**, **loamspine**, **sweetgrass**). Typed enums + `ValidationOutcome` + capability-first routing retained. **V62** adds CI **`[health]`** cross-sync (`health.monitor`, `health.probe`), **skunkBat** audit IPC (`audit.log` via **`HealthCompositionContext`**), **biomeOS v3.51** handlers (`composition.status`, `method.register`), env-configurable NCBI bases (`HEALTHSPRING_NCBI_EUTILS_BASE`, `HEALTHSPRING_NCBI_SRA_BASE`), and **`primal_names`** centralization for niche dependencies / **`BarraCudaClient::discover()`**. **999 tests** pass, 0 clippy warnings. guideStone **Level 5** lineage continues via certification. ecoBin 0.9.0. barraCuda v0.3.13.
 
 ---
 
@@ -33,11 +33,11 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V61** (eukaryotic UniBin — `healthspring_unibin`; `certification/` / `composition/` / `validation/scenarios/`; `fossilRecord/`; IPC-first defaults + `barracuda-lib` opt-in; primalSpring v0.9.25 pinned) |
+| Version | **V62** (V61 UniBin + CI **`[health]`** parity, skunkBat audit IPC, biomeOS v3.51 handlers, env NCBI bases, **`primal_names`** centralization; primalSpring v0.9.25 pinned) |
 | **Total tests** | **999** (868 lib + 131 integration/workspace) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
 | Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: 16 registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
-| JSON-RPC capabilities | 83 (`ALL_CAPABILITIES` in `capabilities.rs`; includes science + infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
+| JSON-RPC capabilities | 87 (`ALL_CAPABILITIES` in `capabilities.rs`; includes science + infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
 | Python baselines | **53 Python control scripts + 53 Jupyter notebooks** with structured provenance registry (**95+** provenance entries, 100% experiment coverage) |
 | Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
@@ -64,7 +64,7 @@ New modules: **`certification/`** (guideStone logic absorbed from the standalone
 
 ## V60 Deep Debt Evolution — Sovereign NUCLEUS Parity (from V59) *(historical)*
 
-> Snapshot of the **V60** milestone. Current workspace status is **V61** (May 9, 2026) — see above.
+> Snapshot of the **V60** milestone. Current workspace status is **V62** (May 10, 2026) — see above.
 
 V60 extends sovereign deployment and parity: optional **`barracuda-lib`** feature (default on) gates barraCuda/barracuda-core; disabling yields an IPC-first NUCLEUS path with pure-Rust fallbacks in `math_dispatch.rs`. **`BarraCudaClient::discover()`** probes the `stats` capability first with a `barracuda` name fallback. Scattered timeouts and retries consolidate into **`tolerances.rs`**; inline literals in exp122 and guidestone bare.rs migrate to named tolerance constants. **`exp123_nucleus_parity`** validates full NUCLEUS pipeline parity (Tower+Node+Nest+cross-atomic) for the health niche; **`validate_pk_models`** supports projectNUCLEUS workloads (Hill, 1-compartment, PopPK, Michaelis-Menten). Criterion **`gpu_parity`** benchmarks are feature-gated behind `gpu`; dataset fetch scripts add BLAKE3 hashing; `records_infra.rs` and visualization scenario tests split for maintainability; capability registry and docs align with primalSpring. **1,002** tests pass, **0** clippy warnings.
 

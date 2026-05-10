@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V61 · **Date:** May 9, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`.
+**Version:** V62 · **Date:** May 10, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`.
 
 ## What This Is
 
@@ -34,7 +34,7 @@ The runtime surface is **`healthspring_unibin`** (certify, validate, serve, stat
   - `healthspring-barracuda` — core science library (`default = []`, IPC-first; enable **`barracuda-lib`** for direct barraCuda crates + GPU library paths)
   - `healthspring-forge` — metalForge hardware dispatch
   - `healthspring-toadstool` — pipeline orchestration
-- **IPC**: JSON-RPC 2.0 over Unix domain sockets, 83 capabilities per `ALL_CAPABILITIES` in `capabilities.rs`; `normalize_method()` maps legacy-prefixed names before routing
+- **IPC**: JSON-RPC 2.0 over Unix domain sockets, 87 capabilities per `ALL_CAPABILITIES` in `capabilities.rs`; `normalize_method()` maps legacy-prefixed names before routing
 - **License**: AGPL-3.0-or-later (scyBorg trio)
 - **Tests**: 999 (868 lib + 20 integration/composition + 12 integration_wfdb + 3 integration_registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool)
 - **Coverage**: target 90% line (llvm-cov)

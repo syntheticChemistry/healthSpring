@@ -1,7 +1,7 @@
 +++
 title = "healthSpring Validation Summary"
 description = "PK/PD, gut microbiome, biosignal, drug discovery — sovereign NLME, UniBin certify/validate"
-date = 2026-05-09
+date = 2026-05-10
 
 [taxonomies]
 primals = ["barracuda", "toadstool", "biomeos", "nestgate"]

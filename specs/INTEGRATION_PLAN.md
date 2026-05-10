@@ -1,15 +1,15 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Integration Plan: NestGate + biomeOS + Atomic Stack
 
-**Last Updated**: May 8, 2026 (V60 — deep debt resolved, Phase 46 composition, guideStone Level 5; 1,002 tests, 95 experiments, 83 capabilities, barraCuda v0.3.13, primalSpring v0.9.17)
+**Last Updated**: May 10, 2026 (V62 — deep debt resolved, Phase 46 composition, guideStone Level 5; 999 tests, 95 experiments, 87 capabilities, barraCuda v0.3.13, primalSpring v0.9.25)
 
 ---
 
 ## 1. Current State
 
-healthSpring is a **biomeOS niche** — discoverable at runtime via capability probes. 95 experiments, 1,002 tests:
+healthSpring is a **biomeOS niche** — discoverable at runtime via capability probes. 95 experiments, 999 tests:
 - Python + NumPy (Tier 0 — 53 baselines with provenance, 113/113 cross-validation checks across all 9 tracks)
-- Rust + healthspring-barracuda crate (Tier 1 — 1,002 tests, 59 JSON-RPC capabilities (46 science + 13 infra))
+- Rust + healthspring-barracuda crate (Tier 1 — 999 tests, 87 JSON-RPC capabilities)
 - GPU via wgpu/WGSL (Tier 2 — 6 shaders, GpuContext, fused pipeline)
 - metalForge substrate routing (Tier 3 — 33 tests)
 - petalTongue IPC integration (Exp064 — Unix socket JSON-RPC push)

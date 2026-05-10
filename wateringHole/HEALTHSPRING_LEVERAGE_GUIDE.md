@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Leverage Guide — Standalone, Trio, and Full Niche
 
-**Date**: May 9, 2026
-**Primal**: healthSpring V61 (`healthspring-barracuda` 0.1.0, ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**)
+**Date**: May 10, 2026
+**Primal**: healthSpring V62 (`healthspring-barracuda` 0.1.0, ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**)
 **Audience**: All springs, all primals, biomeOS integrators
 **Status**: Active
 
@@ -12,7 +12,7 @@
 
 This document describes how healthSpring can be leveraged — alone and in composition with other primals — by springs and ecosystem consumers. Each primal in the ecosystem produces an equivalent guide. Together, these guides form a combinatorial recipe book for emergent behaviors.
 
-healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. **999 tests**, 95 experiments, 83 capabilities (62 science + 21 infra). TCP + UDS listeners, BTSP handshake, typed IPC clients, structured discovery. barraCuda v0.3.13. **`healthspring_unibin certify`** (plus `validate`, `serve`, `status`, `version`) validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`; standalone **`healthspring_guidestone`** remains a fossil entrypoint only — prefer UniBin. Library crates default **`default = []`** (IPC-first); enable **`barracuda-lib`** when linking barraCuda directly. `math_dispatch` is a validation window (2 generic IPC + 9 local domain compositions). Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
+healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. **999 tests**, 95 experiments, 87 capabilities (62 science + 21 infra). TCP + UDS listeners, BTSP handshake, typed IPC clients, structured discovery. barraCuda v0.3.13. **`healthspring_unibin certify`** (plus `validate`, `serve`, `status`, `version`) validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`; standalone **`healthspring_guidestone`** remains a fossil entrypoint only — prefer UniBin. Library crates default **`default = []`** (IPC-first); enable **`barracuda-lib`** when linking barraCuda directly. `math_dispatch` is a validation window (2 generic IPC + 9 local domain compositions). Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
 
 **Philosophy**: Health science is sovereign. Hill dose-response, Shannon diversity, Pan-Tompkins QRS — these are universal primitives. healthSpring owns the biology; other primals own the hardware, the network, the storage, the identity. Discover at runtime, compose at will.
 
@@ -210,13 +210,13 @@ Top capabilities by domain (62 science + 21 infra):
 
 ## 7. Evolution Status
 
-| Metric | V61 |
+| Metric | V62 |
 |--------|-----|
 | Tests | 999 |
 | Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | Python baselines | 53 scripts + 53 notebooks |
 | Cross-validation | 113/113 |
-| Capabilities | 83 JSON-RPC methods |
+| Capabilities | 87 JSON-RPC methods |
 | GPU ops (barraCuda) | 6/6 |
 | IPC transports | UDS + TCP (`--port`) |
 | BTSP handshake | Client module ready |
@@ -266,6 +266,7 @@ This guide tracks healthSpring's evolution. As capabilities are added, compositi
 
 | Version | Date | Changes |
 |---------|------|---------|
+| V62 | May 10, 2026 | CI `[health]` cross-sync (`health.monitor`, `health.probe`); **skunkBat** audit IPC; biomeOS v3.51 (`composition.status`, `method.register`); env-configurable NCBI bases; **`primal_names`** centralization; **87** capabilities. |
 | V61 | May 9, 2026 | UniBin (`certify`/`validate`/…); **`certification/`** organelle; **`composition/`** + **`validation/scenarios/`**; **`fossilRecord/`**; IPC-first **`default = []`** + **`barracuda-lib`** opt-in; primalSpring **v0.9.25** pinned. **999 tests**, 95 experiments. |
 | V60 | May 8, 2026 | Deep debt evolution: optional `barracuda-lib`, exp123 NUCLEUS parity, 53 paired notebooks via `tools/py_to_notebook.py`, `validate_pk_models`, `gpu_parity` Criterion benches, dataset fetch scripts with BLAKE3, IPC timeout constants in `tolerances.rs`, capability-first `BarraCudaClient::discover()`, tolerance constants in exp122/guidestone, `records_*` / viz test splits, exp119–122 CI bins. barraCuda v0.3.13. 1,002 tests, 95 experiments. |
 | V54 | April 18, 2026 | guideStone Level 2: `healthspring_guidestone` binary, bare properties 1–5, NUCLEUS IPC parity via `primalspring::composition`. `math_dispatch` reframed as validation window. 948+ tests, 94 experiments. |
