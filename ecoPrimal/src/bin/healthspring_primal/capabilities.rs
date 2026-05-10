@@ -96,11 +96,16 @@ pub const ALL_CAPABILITIES: &[&str] = &[
     "health.liveness",
     "health.readiness",
     "health.check",
+    "health.monitor",
+    "health.probe",
     // ── Identity (Capability Wire Standard April 2026) ───────────────
     "identity.get",
     // ── Niche deployment (`biomeOS` graph composition) ───────────────
     "capability.list",
     "mcp.tools.list",
+    // ── biomeOS v3.51 composition ──────────────────────────────────
+    "composition.status",
+    "method.register",
     // ── Compute offload (Node Atomic) ────────────────────────────────
     "compute.offload",
     "compute.shader_compile", // coralReef coordination
@@ -206,9 +211,13 @@ pub const LOCAL_CAPABILITIES: &[&str] = &[
     "health.liveness",
     "health.readiness",
     "health.check",
+    "health.monitor",
+    "health.probe",
     "identity.get",
     "capability.list",
     "mcp.tools.list",
+    "composition.status",
+    "method.register",
 ];
 
 /// Capabilities routed to external providers via IPC (not served locally).
@@ -256,6 +265,7 @@ pub fn handle_capability_list() -> serde_json::Value {
                 || c.starts_with("health.")
                 || c.starts_with("identity.")
                 || c.starts_with("mcp.")
+                || c.starts_with("method.")
         })
         .copied()
         .collect();

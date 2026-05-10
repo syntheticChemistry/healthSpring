@@ -42,6 +42,9 @@ pub const SONGBIRD: &str = "songbird";
 /// Conventional socket-name prefix for the visualization primal.
 pub const PETALTONGUE: &str = "petaltongue";
 
+/// Conventional socket-name prefix for `skunkBat` (audit).
+pub const SKUNKBAT: &str = "skunkbat";
+
 /// Conventional socket-name prefix for the orchestrator.
 pub const BIOMEOS: &str = "biomeOS";
 

@@ -154,6 +154,8 @@ methods = [
     "health.liveness",
     "health.readiness",
     "health.check",
+    "health.monitor",
+    "health.probe",
 ]
 
 # ── Composition & identity (locally served) ──────────────────────────────
@@ -163,6 +165,7 @@ owner = "healthspring"
 locality = "local"
 methods = [
     "composition.health_health",
+    "composition.status",
 ]
 
 [identity]
@@ -184,6 +187,13 @@ owner = "healthspring"
 locality = "local"
 methods = [
     "mcp.tools.list",
+]
+
+[method]
+owner = "healthspring"
+locality = "local"
+methods = [
+    "method.register",
 ]
 
 # ── Provenance wrappers (locally served, trio routing) ───────────────────
@@ -291,6 +301,13 @@ owner = "sweetgrass"
 locality = "consumed"
 methods = [
     "provenance.create_braid",
+]
+
+[audit]
+owner = "skunkbat"
+locality = "consumed"
+methods = [
+    "audit.log",
 ]
 
 # ── barraCuda IPC migration surface ──────────────────────────────────────

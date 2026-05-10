@@ -69,6 +69,12 @@ pub const DEPENDENCIES: &[NicheDependency] = &[
         required: false,
         capability: "inference",
     },
+    NicheDependency {
+        name: "skunkbat",
+        role: "audit",
+        required: false,
+        capability: "audit",
+    },
 ];
 
 /// Capabilities this niche advertises to the ecosystem.
@@ -76,6 +82,8 @@ pub const CAPABILITIES: &[&str] = &[
     "health.liveness",
     "health.readiness",
     "health.check",
+    "health.monitor",
+    "health.probe",
     "identity.get",
     "capability.list",
     "mcp.tools.list",
@@ -85,6 +93,8 @@ pub const CAPABILITIES: &[&str] = &[
     "health.clinical",
     "health.de_identify",
     "health.aggregate",
+    "composition.status",
+    "method.register",
 ];
 
 /// Capabilities this niche consumes from other primals.
@@ -106,6 +116,7 @@ pub const CONSUMED_CAPABILITIES: &[&str] = &[
     "dag.dehydrate",
     "commit.session",
     "provenance.create_braid",
+    "audit.log",
 ];
 
 /// A dependency on another primal in the ecosystem.
