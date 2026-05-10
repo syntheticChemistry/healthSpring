@@ -31,7 +31,7 @@ impl BarraCudaClient {
     #[must_use]
     pub fn new(socket: PathBuf) -> Self {
         Self {
-            inner: PrimalClient::new(socket, "barracuda"),
+            inner: PrimalClient::new(socket, crate::primal_names::BARRACUDA),
         }
     }
 
@@ -42,7 +42,7 @@ impl BarraCudaClient {
     #[must_use]
     pub fn discover() -> Option<Self> {
         super::socket::discover_by_capability_public("stats")
-            .or_else(|| super::socket::discover_primal("barracuda"))
+            .or_else(|| super::socket::discover_primal(crate::primal_names::BARRACUDA))
             .map(Self::new)
     }
 

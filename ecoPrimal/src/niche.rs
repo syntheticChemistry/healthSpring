@@ -34,43 +34,43 @@ pub const TRUST_MODEL: &str = "dual_tower_enclave";
 /// Primals this niche depends on (germination order matters).
 pub const DEPENDENCIES: &[NicheDependency] = &[
     NicheDependency {
-        name: "beardog",
+        name: crate::primal_names::BEARDOG,
         role: "security",
         required: true,
         capability: "crypto",
     },
     NicheDependency {
-        name: "songbird",
+        name: crate::primal_names::SONGBIRD,
         role: "discovery",
         required: true,
         capability: "discovery",
     },
     NicheDependency {
-        name: "nestgate",
+        name: crate::primal_names::NESTGATE,
         role: "storage",
         required: false,
         capability: "storage",
     },
     NicheDependency {
-        name: "toadstool",
+        name: crate::primal_names::TOADSTOOL,
         role: "compute",
         required: false,
         capability: "compute",
     },
     NicheDependency {
-        name: "barracuda",
+        name: crate::primal_names::BARRACUDA,
         role: "math",
         required: false,
         capability: "math",
     },
     NicheDependency {
-        name: "squirrel",
+        name: crate::primal_names::SQUIRREL,
         role: "inference",
         required: false,
         capability: "inference",
     },
     NicheDependency {
-        name: "skunkbat",
+        name: crate::primal_names::SKUNKBAT,
         role: "audit",
         required: false,
         capability: "audit",

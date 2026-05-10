@@ -10,10 +10,20 @@
 
 use super::DataError;
 
-const EUTILS_BASE: &str = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
-const SRA_RUN_INFO_BASE: &str = "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi";
+const DEFAULT_EUTILS_BASE: &str = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
+const DEFAULT_SRA_RUN_INFO_BASE: &str = "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi";
 const TOOL_NAME: &str = "healthspring";
 const TOOL_EMAIL: &str = "healthspring@ecoprimal.local";
+
+fn eutils_base() -> String {
+    std::env::var("HEALTHSPRING_NCBI_EUTILS_BASE")
+        .unwrap_or_else(|_| DEFAULT_EUTILS_BASE.to_owned())
+}
+
+fn sra_run_info_base() -> String {
+    std::env::var("HEALTHSPRING_NCBI_SRA_BASE")
+        .unwrap_or_else(|_| DEFAULT_SRA_RUN_INFO_BASE.to_owned())
+}
 
 /// Fetch a record from NCBI via `EFetch`.
 ///
@@ -25,8 +35,8 @@ const TOOL_EMAIL: &str = "healthspring@ecoprimal.local";
 /// Returns `DataError::NcbiHttp` on non-200 responses or
 /// `DataError::Io` on transport failures.
 pub fn efetch(db: &str, id: &str, api_key: &str) -> Result<String, DataError> {
-    let mut url =
-        format!("{EUTILS_BASE}/efetch.fcgi?db={db}&id={id}&tool={TOOL_NAME}&email={TOOL_EMAIL}");
+    let base = eutils_base();
+    let mut url = format!("{base}/efetch.fcgi?db={db}&id={id}&tool={TOOL_NAME}&email={TOOL_EMAIL}");
     if !api_key.is_empty() {
         url.push_str("&api_key=");
         url.push_str(api_key);
@@ -43,8 +53,9 @@ pub fn efetch(db: &str, id: &str, api_key: &str) -> Result<String, DataError> {
 /// `DataError::Parse` if the response doesn't contain ID list.
 pub fn esearch(db: &str, query: &str, max_results: u32) -> Result<Vec<String>, DataError> {
     let encoded_query = query.replace(' ', "+");
+    let base = eutils_base();
     let url = format!(
-        "{EUTILS_BASE}/esearch.fcgi?db={db}&term={encoded_query}&retmax={max_results}&retmode=json&tool={TOOL_NAME}&email={TOOL_EMAIL}"
+        "{base}/esearch.fcgi?db={db}&term={encoded_query}&retmax={max_results}&retmode=json&tool={TOOL_NAME}&email={TOOL_EMAIL}"
     );
 
     let body = http_get(&url)?;
@@ -73,7 +84,8 @@ pub fn esearch(db: &str, query: &str, max_results: u32) -> Result<Vec<String>, D
 ///
 /// Returns `DataError::NcbiHttp` on non-200 responses.
 pub fn sra_run_info(accession: &str) -> Result<String, DataError> {
-    let url = format!("{SRA_RUN_INFO_BASE}?save=efetch&db=sra&rettype=runinfo&term={accession}");
+    let base = sra_run_info_base();
+    let url = format!("{base}?save=efetch&db=sra&rettype=runinfo&term={accession}");
     http_get(&url)
 }
 
@@ -99,9 +111,9 @@ mod tests {
 
     #[test]
     fn eutils_url_format() {
-        let url = format!(
-            "{EUTILS_BASE}/efetch.fcgi?db=gene&id=12345&tool={TOOL_NAME}&email={TOOL_EMAIL}"
-        );
+        let base = eutils_base();
+        let url =
+            format!("{base}/efetch.fcgi?db=gene&id=12345&tool={TOOL_NAME}&email={TOOL_EMAIL}");
         assert!(url.contains("eutils.ncbi.nlm.nih.gov"));
         assert!(url.contains("db=gene"));
         assert!(url.contains("id=12345"));
@@ -109,8 +121,28 @@ mod tests {
 
     #[test]
     fn sra_url_format() {
-        let url = format!("{SRA_RUN_INFO_BASE}?save=efetch&db=sra&rettype=runinfo&term=SRP004311");
+        let base = sra_run_info_base();
+        let url = format!("{base}?save=efetch&db=sra&rettype=runinfo&term=SRP004311");
         assert!(url.contains("trace.ncbi.nlm.nih.gov"));
         assert!(url.contains("SRP004311"));
+    }
+
+    #[test]
+    fn env_override_eutils_base() {
+        std::env::set_var(
+            "HEALTHSPRING_NCBI_EUTILS_BASE",
+            "https://proxy.local/eutils",
+        );
+        let base = eutils_base();
+        assert_eq!(base, "https://proxy.local/eutils");
+        std::env::remove_var("HEALTHSPRING_NCBI_EUTILS_BASE");
+    }
+
+    #[test]
+    fn env_override_sra_base() {
+        std::env::set_var("HEALTHSPRING_NCBI_SRA_BASE", "https://proxy.local/sra");
+        let base = sra_run_info_base();
+        assert_eq!(base, "https://proxy.local/sra");
+        std::env::remove_var("HEALTHSPRING_NCBI_SRA_BASE");
     }
 }

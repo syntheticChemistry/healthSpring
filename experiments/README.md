@@ -184,6 +184,9 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 094 | `exp094_rho_mrtf_fibrosis` | Rho/MRTF/SRF fibrosis pathway scoring (Neubig) | 14 |
 | 095 | `exp095_ipsc_skin_model` | iPSC skin model (Gonzales/Ellsworth) | ValidationHarness |
 | 096 | `exp096_niclosamide_delivery` | Niclosamide delivery (Ellsworth med chem) | ValidationHarness |
+| 097 | `exp097_affinity_landscape` | Affinity landscape — low-affinity binding computational preprocessing | ValidationHarness |
+| 098 | `exp098_toxicity_landscape` | Toxicity landscape — burden of low-affinity binding | ValidationHarness |
+| 099 | `exp099_hormesis` | Hormesis — biphasic dose-response across domains | ValidationHarness |
 
 ### Track 6: Comparative Medicine (Exp100-110) — V25+
 
@@ -200,6 +203,7 @@ Each experiment is a standalone Rust binary that validates a specific scientific
 | 108 | `exp108_real_16s_anderson` | Real 16S Anderson (wetSpring integration) | ValidationHarness |
 | 109 | `exp109_mitbih_arrhythmia` | MIT-BIH arrhythmia classification | ValidationHarness |
 | 110 | `exp110_equine_laminitis` | Equine laminitis model | ValidationHarness |
+| 111 | `exp111_causal_terrarium` | Causal terrarium — tracing causality from molecular binding | ValidationHarness |
 
 ### Tier 4: Composition Validation (Exp112-117) — V48
 
