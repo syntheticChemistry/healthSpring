@@ -1,0 +1,73 @@
+{
+  "experiment": "ltee_symbiont_pkpd",
+  "paper": "Leonard2024",
+  "paper_id": "B5",
+  "litho_module": "ltee-symbiont-pk",
+  "description": "Symbiont PK/PD: engineered gut bacteria as drug delivery — pharmacokinetics of symbiont-produced molecules",
+  "doi": "10.1128/mbio.03342-23",
+  "journal": "mBio",
+  "year": 2024,
+  "authors": "Leonard SP, Perutka J, Powell JE, Geng P, Richhart DD, Byrom M, Kar S, Davies BW, Moran NA",
+  "title": "One-step genome engineering of E. coli colonizing the honeybee gut",
+  "organism": "Apis mellifera (honeybee)",
+  "symbiont": "Snodgrassella alvi (engineered)",
+  "model_parameters": {
+    "colonization": {
+      "description": "Snodgrassella alvi colonization dynamics in bee gut after inoculation",
+      "initial_cfu_per_gut": 1e5,
+      "carrying_capacity_cfu": 1e9,
+      "growth_rate_per_day": 1.2,
+      "doubling_time_hours": 13.9,
+      "model": "logistic",
+      "steady_state_days": 12
+    },
+    "production_kinetics": {
+      "description": "dsRNA production rate by engineered symbiont",
+      "production_rate_pg_per_cfu_per_day": 0.001,
+      "max_titer_ng_per_gut": 500.0,
+      "steady_state_production_rate_ng_per_day": 1000.0,
+      "model": "proportional_to_biomass"
+    },
+    "symbiont_pk": {
+      "description": "First-order elimination of symbiont-produced molecule in gut lumen",
+      "ke_per_day": 2.0,
+      "half_life_hours": 8.3,
+      "volume_of_distribution_uL": 50.0,
+      "bioavailability_gut": 0.85,
+      "model": "one_compartment_gut_lumen"
+    },
+    "efficacy": {
+      "description": "Target knockdown efficacy (dsRNA pathway)",
+      "ec50_ng_per_gut": 100.0,
+      "hill_n": 1.5,
+      "max_knockdown_fraction": 0.95,
+      "time_to_effect_days": 3
+    }
+  },
+  "expected_outcomes": {
+    "colonization_at_day_7_cfu": 3.1e8,
+    "colonization_at_day_7_tolerance": 0.2,
+    "steady_state_molecule_ng": 425.0,
+    "steady_state_molecule_tolerance": 0.15,
+    "knockdown_at_steady_state": 0.85,
+    "knockdown_tolerance": 0.1,
+    "time_to_half_max_colonization_days": 7.7,
+    "time_to_therapeutic_level_days": 8.0
+  },
+  "checks": [
+    "colonization_logistic_growth",
+    "colonization_carrying_capacity",
+    "production_proportional_to_biomass",
+    "gut_lumen_pk_first_order",
+    "efficacy_hill_dose_response",
+    "time_to_therapeutic_level",
+    "steady_state_molecule_concentration",
+    "colonization_doubling_time"
+  ],
+  "provenance": {
+    "created": "2026-05-11",
+    "ltee_queue_id": "B5",
+    "spring": "healthSpring",
+    "track": "LTEE GuideStone"
+  }
+}

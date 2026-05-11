@@ -1,0 +1,17 @@
+{
+  "paper_id": "B5",
+  "paper": "Leonard2024",
+  "colonization_day7_cfu": 307839277.31802374,
+  "colonization_final_cfu": 999494652.9352545,
+  "doubling_time_hours": 13.862943611198906,
+  "time_to_half_max_days": 7.675200305813208,
+  "steady_state_molecule_ng": 424.5087783804876,
+  "molecule_monotonic_post_d1": true,
+  "knockdown_steady_state": 0.8525282495038913,
+  "pk_half_life_hours": 8.317766166719343,
+  "_provenance": {
+    "date": "2026-05-11",
+    "python": "3.10.12 (main, May 27 2025, 17:12:29) [GCC 11.4.0]",
+    "numpy": "pure-python-fallback"
+  }
+}

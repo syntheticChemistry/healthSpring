@@ -12,7 +12,7 @@
 | Metric | Value |
 |--------|-------|
 | Rust tests (workspace) | 999 |
-| Python control checks | 54 baselines, 113/113 cross-validation (all 9 tracks) |
+| Python control checks | 53 baselines + 53 notebooks, 113/113 parity checks + 194 assertions (`cross_validate.py`, all 9 tracks) |
 | Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
@@ -21,7 +21,7 @@
 | toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |
 | CPU parity | Rust 84× faster than Python (Exp084, 33+17 checks) |
 | NLME population PK | FOCE + SAEM estimation, NCA, CWRES/VPC/GOF diagnostics |
-| Paper queue | **30/30 complete** (Tracks 1–5). Tracks 6–7 complete (10/10). |
+| Paper queue | **45/45 complete** (Tracks 1–7: 30 T1–T5 + 8 T6 + 7 T7). 3 LTEE queued (B5, E2, E4). |
 | Faculty | Gonzales (MSU), Lisabeth (ADDRC), Neubig (Drug Discovery), Ellsworth (Med Chem), Mok (Allure Medical) |
 | Domain scope | Health of living systems (species-agnostic mathematics) |
 

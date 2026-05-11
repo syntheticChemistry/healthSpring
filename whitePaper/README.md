@@ -245,7 +245,7 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 | Experiments | 95 complete (83 science + 12 composition Tier 3–5, exp112–123) |
 | Rust tests | 999 (868 lib + 131 integration/workspace; see root README) |
 | Python checks | 194 cross-validation |
-| Paper queue | 30/30 complete, 15 new queued |
+| Paper queue | 45/45 complete (Tracks 1–7), 3 LTEE queued (B5, E2, E4) |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |
 | CPU speedup | Rust 84× faster than Python |
 | Unsafe code | 0 blocks |

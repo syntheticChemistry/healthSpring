@@ -327,6 +327,6 @@ and `infra/whitePaper/attsi/non-anon/contact/*/PAPER_REVIEW_AND_SPRING_TARGETS.m
 
 | ID | Paper | What to Reproduce | Exp | Status |
 |----|-------|-------------------|-----|--------|
-| B5 | Leonard et al. 2024 "One-step genome engineering in bee gut" *mBio* | Symbiont PK/PD: engineered gut bacteria as drug delivery; pharmacokinetics of symbiont-produced molecules | TBD | QUEUED |
+| B5 | Leonard et al. 2024 "One-step genome engineering in bee gut" *mBio* | Symbiont PK/PD: engineered gut bacteria as drug delivery; pharmacokinetics of symbiont-produced molecules. **Tier 0 baseline complete** (`control/ltee_symbiont_pkpd/`, 8/8 checks pass). Models: logistic colonization, biomass-proportional production, one-compartment gut-lumen PK, Hill knockdown. | `control/ltee_symbiont_pkpd/` | **STARTED** |
 | E2 | Mardikoraem & Woldring 2025 "HOLIgraph" *J Cheminformatics* | OATP PK/PD bridge: protein-ligand binding predictions for drug transporter interactions | TBD | QUEUED |
 | E4 | Woldring Lab 2024 "Screening macrocyclic peptide libraries" *bioRxiv* | Cyclic peptide → ADDRC: macrocyclic peptide screening applied to anti-doping reference compounds | TBD | QUEUED |

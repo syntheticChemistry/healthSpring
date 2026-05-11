@@ -53,27 +53,30 @@ methods. Both namespaces coexist — `science.*` remains the primary surface.
 
 ---
 
-## 2. Ionic Bridge / Bonding Policy — No Implementation Path
+## 2. Ionic Bridge / Bonding Policy — Partially Resolved
 
 **Gap**: The proto-nucleate declares a dual-tower architecture with an ionic
 bridge between Tower A (patient data) and Tower B (analytics). The bonding
 policy specifies covalent intra-tower, ionic cross-family, and encryption
-tiers. No primal in the current ecosystem implements ionic bond enforcement,
-egress fences, or cross-family policy gates.
+tiers.
 
-**Impact**: The dual-tower security model is aspirational. Without BearDog
-ionic bond support and NestGate egress fence support, the enclave graph
-cannot enforce its own declared policy.
+**Resolution (partial)**: BearDog **Wave 97** (May 8, 2026) shipped ionic bond
+contract methods: `crypto.contract.propose`, `crypto.contract.countersign`,
+`crypto.contract.verify` — full propose→countersign→verify lifecycle with
+Ed25519 dual-signature verification. This resolves the healthSpring dual-tower
+ionic requirement. BearDog's `IonicBondHandler` provides 8 methods for
+cross-tower and cross-family trust establishment.
 
-**Primal evolution needed**:
-- **BearDog**: `crypto.ionic_bond`, `crypto.verify_family`, per-family key
-  management
+**Remaining**:
 - **NestGate**: `storage.egress_fence`, time-series egress policy, family-scoped
-  encryption at rest
+  encryption at rest — still needed for full enclave enforcement
+- **healthSpring**: Wire to BearDog `crypto.contract.*` methods via IPC for
+  dual-tower bond establishment. No structural changes needed — IPC client stubs
+  are sufficient.
 
-**Status**: Blocked on BearDog and NestGate evolution. healthSpring will wire
-to these capabilities once they exist; no healthSpring code changes needed
-beyond IPC client stubs.
+**Status**: BearDog ionic bond **LIVE** upstream. NestGate egress fence still
+blocked. healthSpring wiring deferred until NUCLEUS composition exercises the
+dual-tower topology.
 
 ---
 

@@ -38,9 +38,9 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
 | Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: 16 registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
 | JSON-RPC capabilities | 87 (`ALL_CAPABILITIES` in `capabilities.rs`; includes science + infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
-| Paper queue | **30/30 complete** (Tracks 1–5), 10 complete (Tracks 6–7), 5 queued |
+| Paper queue | **45/45 complete** (Tracks 1–7: 30 T1–T5 + 8 T6 + 7 T7), 3 LTEE queued (B5, E2, E4) |
 | Python baselines | **53 Python control scripts + 53 Jupyter notebooks** with structured provenance registry (**95+** provenance entries, 100% experiment coverage) |
-| Cross-validation | **113/113** checks (all tracks, `cross_validate.py`) |
+| Cross-validation | **113/113** parity checks (per-experiment, all tracks) + **194** individual assertions (`cross_validate.py`, Tracks 1–9) |
 | ecoBin | Static-PIE x86_64-musl, 3.2 MB, harvested to `infra/plasmidBin/healthspring/` (v0.9.0) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity |
 | CPU parity | Rust 84× faster than Python across V16 primitives |
@@ -64,7 +64,7 @@ New modules: **`certification/`** (guideStone logic absorbed from the standalone
 
 ## V60 Deep Debt Evolution — Sovereign NUCLEUS Parity (from V59) *(historical)*
 
-> Snapshot of the **V60** milestone. Current workspace status is **V62** (May 11, 2026) — see above.
+> Snapshot of the **V60** milestone. Current workspace status is **V63** (May 11, 2026) — see above.
 
 V60 extends sovereign deployment and parity: optional **`barracuda-lib`** feature (default on) gates barraCuda/barracuda-core; disabling yields an IPC-first NUCLEUS path with pure-Rust fallbacks in `math_dispatch.rs`. **`BarraCudaClient::discover()`** probes the `stats` capability first with a `barracuda` name fallback. Scattered timeouts and retries consolidate into **`tolerances.rs`**; inline literals in exp122 and guidestone bare.rs migrate to named tolerance constants. **`exp123_nucleus_parity`** validates full NUCLEUS pipeline parity (Tower+Node+Nest+cross-atomic) for the health niche; **`validate_pk_models`** supports projectNUCLEUS workloads (Hill, 1-compartment, PopPK, Michaelis-Menten). Criterion **`gpu_parity`** benchmarks are feature-gated behind `gpu`; dataset fetch scripts add BLAKE3 hashing; `records_infra.rs` and visualization scenario tests split for maintainability; capability registry and docs align with primalSpring. **1,002** tests pass, **0** clippy warnings.
 
