@@ -4,6 +4,7 @@ use primalspring::composition::CompositionContext;
 use primalspring::validation::ValidationResult;
 
 use crate::composition::capability_to_primal;
+use crate::primal_names;
 
 use super::registry::{Scenario, ScenarioMeta, Tier, Track};
 
@@ -29,17 +30,17 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
 
     v.check_bool(
         "dag_maps_rhizocrypt",
-        capability_to_primal("dag") == "rhizocrypt",
+        capability_to_primal("dag") == primal_names::RHIZOCRYPT,
         "dag → rhizoCrypt",
     );
     v.check_bool(
         "commit_maps_loamspine",
-        capability_to_primal("commit") == "loamspine",
+        capability_to_primal("commit") == primal_names::LOAMSPINE,
         "commit → loamSpine",
     );
     v.check_bool(
         "braid_maps_sweetgrass",
-        capability_to_primal("braid") == "sweetgrass",
+        capability_to_primal("braid") == primal_names::SWEETGRASS,
         "braid → sweetgrass",
     );
 
