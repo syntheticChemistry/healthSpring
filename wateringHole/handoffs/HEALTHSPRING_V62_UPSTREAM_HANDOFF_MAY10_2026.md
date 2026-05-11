@@ -1,12 +1,12 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # healthSpring V62 — Upstream Primal & Spring Handoff
 
-**Date**: May 10, 2026
+**Date**: May 11, 2026
 **Version**: V62
 **primalSpring**: v0.9.25 (pinned)
 **Tests**: 999 (868 lib + 131 integration/workspace)
 **Capabilities**: 87 JSON-RPC methods
-**Architecture**: Eukaryotic UniBin + IPC-first defaults + CI cross-sync
+**Architecture**: Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias) + IPC-first defaults + CI cross-sync + 4 NUCLEUS workloads
 
 ---
 
@@ -52,13 +52,42 @@ Registry sync integration tests: 3/3 pass, zero collisions, zero drift vs canoni
   - `HEALTHSPRING_NCBI_SRA_BASE` (default: `https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi`)
 - Air-gapped and proxy deployments can override without code changes
 
+### skunkBat in Deploy Graphs
+
+- `graphs/healthspring_niche_deploy.toml`: skunkBat node (order 8, binary `skunkbat_primal`, provides `defense.*`, required=false)
+- `graphs/healthspring_biomeos_deploy.toml`: Phase 2b verify-skunkbat node
+- `graphs/healthspring_niche.toml`: `skunkbat_primal` entry (provides `defense`, `audit`, optional=true)
+- Defense routing in `composition/routing.rs`: `"defense"` / `"defense.audit"` → `SKUNKBAT`
+- Canonical 413 alignment: `security.audit_log` + `defense.audit` in consumed capabilities
+
+**Status**: healthSpring is now fully wired for skunkBat in both library IPC and deploy graphs.
+
+### `healthspring` Binary Alias
+
+- `[[bin]]` entry in `Cargo.toml` pointing to same `src/bin/healthspring/main.rs` as `healthspring_unibin`
+- NUCLEUS workloads can invoke `healthspring validate` / `healthspring certify` as expected
+- Both `healthspring` and `healthspring_unibin` produce identical binaries
+
+### 4 NUCLEUS Workloads
+
+healthSpring now has 4 workloads in `projectNUCLEUS/workloads/healthspring/`:
+
+| Workload | Command | Domain |
+|----------|---------|--------|
+| `healthspring-pk-validation` | `healthspring validate` | PK/PD — Hill, PBPK, PopPK, MM |
+| `healthspring-biosignal-validation` | `healthspring validate --track biosignal` | Pan-Tompkins, HRV, PPG, EDA, arrhythmia |
+| `healthspring-microbiome-validation` | `healthspring validate --track microbiome` | Shannon, Anderson, colonization, SCFA, QS |
+| `healthspring-certification` | `healthspring certify` | guideStone 57/57 Tier 1-3 checks |
+
 ### Deep Debt Resolved
 
-- All `NicheDependency` entries in `niche.rs` now reference `primal_names::*` constants (was string literals)
+- All `NicheDependency` entries in `niche.rs` reference `primal_names::*` constants (was string literals)
 - `BarraCudaClient::discover()` uses `primal_names::BARRACUDA` (was hardcoded `"barracuda"`)
+- Last hardcoded primal names in `s_live_provenance.rs` replaced with `primal_names::RHIZOCRYPT` / `LOAMSPINE` / `SWEETGRASS` — zero hardcoded primal name strings remain anywhere in the codebase
 - Zero `TODO`/`FIXME`/`unimplemented!` in all Rust code
 - Zero unsafe code (`#![forbid(unsafe_code)]` crate-wide)
 - No files >800 lines; no mocks in production code; all dependencies Rust-native
+- 45/45 papers reviewed in review queue
 
 ---
 
@@ -148,7 +177,7 @@ Registry sync integration tests: 3/3 pass, zero collisions, zero drift vs canoni
 
 ### Deploy Graph Convention
 
-healthSpring uses 7+ deploy TOMLs following the `[graph]` metadata + ordered nodes pattern from projectNUCLEUS. Each node specifies `depends_on`, `by_capability`, and `health_method` (Wire Standard L3).
+healthSpring uses 7+ deploy TOMLs following the `[graph]` metadata + ordered nodes pattern from projectNUCLEUS (includes skunkBat node for audit). Each node specifies `depends_on`, `by_capability`, and `health_method` (Wire Standard L3). 4 NUCLEUS workloads are published for PK, biosignal, microbiome, and certification validation.
 
 ### neuralAPI Deployment
 
@@ -198,9 +227,8 @@ All `barracuda::` library usage is behind `#[cfg(feature = "barracuda-lib")]`. D
 
 ## Downstream References
 
-- **projectNUCLEUS**: `workloads/healthspring/healthspring-pk-validation.toml` (workload stub)
-- **foundation**: Thread 8 (Human Health/Clinical); `data/sources/thread08_health.toml`; Papers 13/22
-- **foundation gap**: `expressions/SOVEREIGN_HEALTH.md` referenced but not yet created
+- **projectNUCLEUS**: 4 workloads in `workloads/healthspring/` (PK, biosignal, microbiome, certification)
+- **foundation**: Thread 8 (Human Health/Clinical); `data/sources/thread08_health.toml`; Papers 13/22; `expressions/SOVEREIGN_HEALTH.md` (seeded); `data/targets/thread08_health_targets.toml` (12 validation targets seeded)
 
 ---
 

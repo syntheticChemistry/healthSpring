@@ -4,19 +4,24 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
-## V62 — May 10, 2026
+## V62 — May 11, 2026
 
 ### Added
 - **CI cross-sync**: `health.monitor` + `health.probe` handlers complete 5/5 canonical `[health]` alignment with primalSpring's 413-method registry
 - **`skunkBat` audit wiring**: `ipc/audit.rs` with `audit_log()` / `audit_certification()` via `HealthCompositionContext`; `SKUNKBAT` in `primal_names.rs`; `"audit"` routed in composition
 - **biomeOS v3.51 absorption**: `composition.status` (primal health + resource pressure) and `method.register` (dynamic method registration) handlers
 - **Env-configurable NCBI**: `HEALTHSPRING_NCBI_EUTILS_BASE` and `HEALTHSPRING_NCBI_SRA_BASE` for air-gapped/proxy sovereign deployments
+- **`skunkBat` in deploy graphs**: `graphs/healthspring_niche_deploy.toml` (order 8, `defense.*`), `healthspring_biomeos_deploy.toml` (Phase 2b verify), `healthspring_niche.toml` (optional `defense`+`audit`)
+- **`healthspring` binary alias**: `[[bin]]` entry in `Cargo.toml` — same `main.rs` as `healthspring_unibin`; NUCLEUS workloads can invoke `healthspring validate` / `healthspring certify`
+- **4 NUCLEUS workloads**: `healthspring-pk-validation`, `healthspring-biosignal-validation`, `healthspring-microbiome-validation`, `healthspring-certification` in `projectNUCLEUS/workloads/healthspring/`
 
 ### Changed
 - Niche `DEPENDENCIES` centralized from string literals to `primal_names::*` constants (single source of truth)
 - `BarraCudaClient::discover()` uses `primal_names::BARRACUDA` instead of hardcoded `"barracuda"`
+- Last hardcoded primal name strings in `s_live_provenance.rs` replaced with `primal_names::RHIZOCRYPT` / `LOAMSPINE` / `SWEETGRASS` — zero hardcoded primal names remain
 - Capabilities surface expanded: 83 → 87 methods (`health.monitor`, `health.probe`, `composition.status`, `method.register`)
 - `experiments/README.md` now documents Exp097 (affinity landscape), Exp098 (toxicity landscape), Exp099 (hormesis), Exp111 (causal terrarium)
+- Defense routing added to `composition/routing.rs`: `"defense"` / `"defense.audit"` → `SKUNKBAT`; canonical 413 alignment for `security.audit_log` + `defense.audit` in consumed capabilities
 
 ## V61 — 2026-05-09 — Interstadial Eukaryotic Evolution
 

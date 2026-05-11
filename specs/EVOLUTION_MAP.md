@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: May 10, 2026
+**Last Updated**: May 11, 2026
 **Status**: V62 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.25, v1.2.0). 95 experiments, 999 tests, 87 capabilities (science + infra), 95+ provenance entries. barraCuda v0.3.13. ecoBin 0.9.0.
 
 ---

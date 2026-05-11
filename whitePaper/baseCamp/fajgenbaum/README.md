@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring vs. Every Cure MATRIX — Comparative Analysis
 
-**Last Updated**: May 10, 2026
+**Last Updated**: May 11, 2026
 **Status**: V62 — Eukaryotic UniBin + certification organelle; IPC-first defaults (`default = []`, `barracuda-lib` opt-in); guideStone Level 5 via **`healthspring_unibin certify`**. **999 tests**, 95 experiments, 87 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Onboarding document for researchers whose work we have ingested and evolved —
 particularly Fajgenbaum (MATRIX), Lisabeth (ADDRC HTS), and collaborators entering the
 healthSpring ecosystem.

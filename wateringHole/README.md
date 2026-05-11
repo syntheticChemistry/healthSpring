@@ -3,7 +3,7 @@
 Cross-spring handoff documents and evolution coordination.
 
 **Status**: V62 — **UniBin** architecture (`healthspring_unibin`: `certify`, `validate`, `serve`, `status`, `version`) + IPC-first library defaults (`default = []`, **`barracuda-lib`** opt-in); primalSpring **v0.9.25**. guideStone Level 5 (57/57). **999 tests**, 95 experiments. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
-**Last Updated**: May 10, 2026
+**Last Updated**: May 11, 2026
 
 ---
 
