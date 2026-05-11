@@ -64,7 +64,7 @@ New modules: **`certification/`** (guideStone logic absorbed from the standalone
 
 ## V60 Deep Debt Evolution — Sovereign NUCLEUS Parity (from V59) *(historical)*
 
-> Snapshot of the **V60** milestone. Current workspace status is **V62** (May 10, 2026) — see above.
+> Snapshot of the **V60** milestone. Current workspace status is **V62** (May 11, 2026) — see above.
 
 V60 extends sovereign deployment and parity: optional **`barracuda-lib`** feature (default on) gates barraCuda/barracuda-core; disabling yields an IPC-first NUCLEUS path with pure-Rust fallbacks in `math_dispatch.rs`. **`BarraCudaClient::discover()`** probes the `stats` capability first with a `barracuda` name fallback. Scattered timeouts and retries consolidate into **`tolerances.rs`**; inline literals in exp122 and guidestone bare.rs migrate to named tolerance constants. **`exp123_nucleus_parity`** validates full NUCLEUS pipeline parity (Tower+Node+Nest+cross-atomic) for the health niche; **`validate_pk_models`** supports projectNUCLEUS workloads (Hill, 1-compartment, PopPK, Michaelis-Menten). Criterion **`gpu_parity`** benchmarks are feature-gated behind `gpu`; dataset fetch scripts add BLAKE3 hashing; `records_infra.rs` and visualization scenario tests split for maintainability; capability registry and docs align with primalSpring. **1,002** tests pass, **0** clippy warnings.
 

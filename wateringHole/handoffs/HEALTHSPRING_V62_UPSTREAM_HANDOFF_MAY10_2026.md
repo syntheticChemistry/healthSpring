@@ -224,16 +224,36 @@ All `barracuda::` library usage is behind `#[cfg(feature = "barracuda-lib")]`. D
 
 ---
 
+## Priority Upstream Blockers
+
+**NestGate is the critical missing link for full data/compute chains.** healthSpring's next evolution round requires sovereign data pipelines (MIMIC-IV, openFDA FAERS, DrugBank, PubChem) — every stage of the chain is live except NestGate storage:
+
+```
+fetch (ureq/sovereign) → store (NestGate) → compute (barraCuda IPC) → provenance (rhizoCrypt/loamSpine/sweetGrass) → audit (skunkBat)
+                              ↑ BLOCKED
+```
+
+| Blocker | Owner | Impact | Priority |
+|---------|-------|--------|----------|
+| **NestGate `storage.egress_fence`** | NestGate team | Blocks sovereign data fetch/store/egress for clinical datasets | **HIGH** |
+| **NestGate not in default `PRIMAL_LIST`** | biomeOS / primalSpring | Must explicitly add `nestgate` to composition scripts; omission causes silent storage-offline | **HIGH** |
+| **BearDog ionic bridge for NestGate** | BearDog + NestGate | Family-scoped encryption at rest for health data compliance (HIPAA-class) | **HIGH** |
+| **skunkBat Phase 3 forwarding** | skunkBat team | Audit events to rhizoCrypt DAG + sweetGrass braid — healthSpring wired and waiting | MEDIUM |
+| **guideStone L6** | primalSpring | NUCLEUS deployment validation — healthSpring has L5 (57/57) | MEDIUM |
+
+Once NestGate + BearDog ionic bridge ship, healthSpring can wire the full sovereign data pipeline: fetch credentialed datasets via `ureq` (env-configurable bases already in place), store through NestGate with egress policy, compute via barraCuda IPC, and provenance-seal via the rhizoCrypt/loamSpine/sweetGrass trio.
+
 ## Remaining Gaps (for upstream teams)
 
 | Gap | Owner | Description |
 |-----|-------|-------------|
+| NestGate storage pipeline | NestGate + BearDog | Full data fetch/store/egress chain for clinical datasets — see Priority Blockers above |
 | skunkBat Phase 3 | skunkBat team | Audit forwarding to rhizoCrypt DAG + sweetGrass braid — healthSpring is wired and waiting |
 | guideStone L6 | primalSpring | NUCLEUS deployment validation — healthSpring has L5 (57/57) and composition infrastructure for L6 |
 | GPU Tier 2 expansion | barraCuda | Anderson eigensolve, biosignal FFT, MM population on GPU |
 | NPU Tier 3 | toadStool/metalForge | Neural processing unit dispatch for ML-accelerated paths |
 | NLME on GPU | barraCuda | FOCE/SAEM population PK estimation with GPU acceleration |
-| MIMIC-IV / openFDA | ecosystem | Large clinical dataset integration when provenance pipeline matures |
+| MIMIC-IV / openFDA | ecosystem + NestGate | Large clinical dataset integration — blocked on NestGate storage pipeline |
 
 ---
 

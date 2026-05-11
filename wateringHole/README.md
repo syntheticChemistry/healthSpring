@@ -22,7 +22,7 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V62** | [CI Cross-Sync + Audit + Sovereignty](handoffs/HEALTHSPRING_V62_UPSTREAM_HANDOFF_MAY10_2026.md) | May 10 | CI cross-sync (5/5 canonical `[health]`); `skunkBat` audit wiring; biomeOS v3.51 absorption (`composition.status`, `method.register`); primal name centralization; env-configurable NCBI; 87 capabilities |
+| **V62** | [CI Cross-Sync + Audit + Sovereignty](handoffs/HEALTHSPRING_V62_UPSTREAM_HANDOFF_MAY10_2026.md) | May 11 | CI cross-sync (5/5 canonical `[health]`); `skunkBat` audit wiring + deploy graphs; biomeOS v3.51 absorption (`composition.status`, `method.register`); primal name centralization (zero hardcoded); env-configurable NCBI; `healthspring` binary alias; 4 NUCLEUS workloads; plasmidBin release binaries; 87 capabilities |
 | | *V1–V61 → `handoffs/archive/`* | | Fossil record (V54 upstream, V59 deep-debt, V60 deep debt evolution, V61 interstadial eukaryotic + upstream primal handoffs) |
 
 ## Archive
