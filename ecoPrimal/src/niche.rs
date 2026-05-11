@@ -117,6 +117,8 @@ pub const CONSUMED_CAPABILITIES: &[&str] = &[
     "commit.session",
     "provenance.create_braid",
     "audit.log",
+    "security.audit_log",
+    "defense.audit",
 ];
 
 /// A dependency on another primal in the ecosystem.

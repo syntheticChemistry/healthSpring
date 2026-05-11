@@ -174,11 +174,27 @@ capabilities = [
 TOADSTOOL_PRECISION = "auto"
 TOADSTOOL_MULTI_DEVICE = "true"
 
-# -- Node 8: healthSpring (health science primal) -------------------------
+# -- Node 8: skunkBat (audit event logging) --------------------------------
+[[graph.node]]
+name = "skunkbat"
+binary = "skunkbat_primal"
+order = 8
+required = false
+depends_on = ["beardog", "rhizocrypt"]
+health_method = "defense.health"
+by_capability = "defense"
+capabilities = [
+    "defense.audit",
+    "defense.events",
+    "defense.log",
+    "security.audit_log",
+]
+
+# -- Node 9: healthSpring (health science primal) -------------------------
 [[graph.node]]
 name = "healthspring"
 binary = "healthspring_primal"
-order = 8
+order = 9
 required = true
 depends_on = ["beardog", "songbird"]
 health_method = "health.check"

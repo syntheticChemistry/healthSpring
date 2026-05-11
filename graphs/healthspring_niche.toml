@@ -59,6 +59,12 @@ provides = ["visualization", "interaction"]
 requires = ["discovery"]
 optional = true
 
+[[primals]]
+binary = "skunkbat_primal"
+provides = ["defense", "audit"]
+requires = ["security"]
+optional = true
+
 # ═══════════════════════════════════════════════════════════════════════════
 # Graphs — the workflows biomeOS executes
 # ═══════════════════════════════════════════════════════════════════════════

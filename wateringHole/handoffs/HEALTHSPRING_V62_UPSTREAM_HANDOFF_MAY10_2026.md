@@ -12,7 +12,7 @@
 
 ## What Changed in V62
 
-### CI Cross-Sync (canonical 403 alignment)
+### CI Cross-Sync (canonical 413 alignment)
 
 healthSpring now implements all 5 methods from primalSpring's `[health]` domain:
 
@@ -24,7 +24,7 @@ healthSpring now implements all 5 methods from primalSpring's `[health]` domain:
 | `health.monitor` | **New V62** — uptime, request count, capability surface metrics |
 | `health.probe` | **New V62** — deep health probe with science dispatch readiness |
 
-Registry sync integration tests: 3/3 pass, zero collisions, zero drift vs canonical 403.
+Registry sync integration tests: 3/3 pass, zero collisions, zero drift vs canonical 413.
 
 ### skunkBat Audit Wiring
 
@@ -179,7 +179,7 @@ All `barracuda::` library usage is behind `#[cfg(feature = "barracuda-lib")]`. D
 
 5. **`composition.status` / `method.register`**: biomeOS v3.51 integration. Every spring should serve these for orchestration visibility.
 
-6. **Registry sync integration tests**: Validate local capabilities against primalSpring canonical 403. Catches drift early.
+6. **Registry sync integration tests**: Validate local capabilities against primalSpring canonical 413. Catches drift early.
 
 ---
 

@@ -308,6 +308,8 @@ owner = "skunkbat"
 locality = "consumed"
 methods = [
     "audit.log",
+    "security.audit_log",
+    "defense.audit",
 ]
 
 # ── barraCuda IPC migration surface ──────────────────────────────────────

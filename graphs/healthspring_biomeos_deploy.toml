@@ -76,6 +76,14 @@ action = "check_primal"
 params = { primal = "sweetgrass", required = false }
 depends_on = ["verify-loamspine"]
 
+# -- Phase 2b: Verify skunkBat audit (optional) --------------------------------
+
+[[nodes]]
+id = "verify-skunkbat"
+action = "check_primal"
+params = { primal = "skunkbat", required = false }
+depends_on = ["verify-tower"]
+
 # -- Phase 3: Start healthSpring ----------------------------------------------
 
 [[nodes]]

@@ -3,9 +3,9 @@
 #![expect(clippy::expect_used, reason = "test harness — expect is idiomatic")]
 
 //! Cross-sync healthSpring's `config/capability_registry.toml` against
-//! primalSpring's canonical `config/capability_registry.toml` (389+ methods).
+//! primalSpring's canonical `config/capability_registry.toml` (413 methods).
 //!
-//! Per the May 8, 2026 Cross-Spring Composition Parity Handoff, every spring
+//! Per the May 2026 Cross-Spring Composition Parity Handoff, every spring
 //! should CI-test its method strings against the ecosystem-wide canonical
 //! registry. This test validates that:
 //!

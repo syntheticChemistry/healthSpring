@@ -7,7 +7,7 @@ This project uses internal versioning (V-series) for development milestones.
 ## V62 — May 10, 2026
 
 ### Added
-- **CI cross-sync**: `health.monitor` + `health.probe` handlers complete 5/5 canonical `[health]` alignment with primalSpring's 403-method registry
+- **CI cross-sync**: `health.monitor` + `health.probe` handlers complete 5/5 canonical `[health]` alignment with primalSpring's 413-method registry
 - **`skunkBat` audit wiring**: `ipc/audit.rs` with `audit_log()` / `audit_certification()` via `HealthCompositionContext`; `SKUNKBAT` in `primal_names.rs`; `"audit"` routed in composition
 - **biomeOS v3.51 absorption**: `composition.status` (primal health + resource pressure) and `method.register` (dynamic method registration) handlers
 - **Env-configurable NCBI**: `HEALTHSPRING_NCBI_EUTILS_BASE` and `HEALTHSPRING_NCBI_SRA_BASE` for air-gapped/proxy sovereign deployments
