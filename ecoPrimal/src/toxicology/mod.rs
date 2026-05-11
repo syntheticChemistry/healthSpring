@@ -41,6 +41,17 @@ mod wetspring_cross_validation;
 
 use crate::tolerances;
 
+/// Binding and clearance model parameters for toxicity landscape computation.
+#[derive(Debug, Clone, Copy)]
+pub struct ToxicityModelParams {
+    /// Hill coefficient for receptor binding (steepness of dose-response).
+    pub hill_n: f64,
+    /// Michaelis-Menten Km for clearance (concentration at half-max clearance rate).
+    pub km: f64,
+    /// Maximum utilization fraction for linear clearance regime.
+    pub clearance_threshold: f64,
+}
+
 /// Per-tissue toxicity profile: binding load vs repair capacity.
 #[derive(Debug, Clone)]
 pub struct TissueToxProfile {
@@ -258,26 +269,17 @@ pub struct ToxicityLandscape {
 ///
 /// Panics if `tissue_ic50s`, `tissue_sensitivities`, and `tissue_repair_capacities`
 /// have different lengths.
-///
-/// # Arguments
-///
-/// - `concentration` — systemic concentration
-/// - `tissue_ic50s` — IC50 at each tissue (higher = weaker binding)
-/// - `tissue_sensitivities` — vulnerability weight per tissue
-/// - `tissue_repair_capacities` — local repair capacity per tissue
-/// - `hill_n` — Hill coefficient for binding
-/// - `km` — Michaelis-Menten Km for clearance
-/// - `clearance_threshold` — max utilization for linear regime
 #[must_use]
 pub fn compute_toxicity_landscape(
     concentration: f64,
     tissue_ic50s: &[f64],
     tissue_sensitivities: &[f64],
     tissue_repair_capacities: &[f64],
-    hill_n: f64,
-    km: f64,
-    clearance_threshold: f64,
+    model: &ToxicityModelParams,
 ) -> ToxicityLandscape {
+    let hill_n = model.hill_n;
+    let km = model.km;
+    let clearance_threshold = model.clearance_threshold;
     let n = tissue_ic50s.len();
     assert!(
         tissue_sensitivities.len() == n && tissue_repair_capacities.len() == n,
@@ -533,10 +535,16 @@ mod tests {
         );
     }
 
+    const DEFAULT_MODEL: ToxicityModelParams = ToxicityModelParams {
+        hill_n: 1.0,
+        km: 10.0,
+        clearance_threshold: 0.20,
+    };
+
     #[test]
     fn full_landscape_weak_distributed() {
         let landscape =
-            compute_toxicity_landscape(1.0, &[50.0; 8], &[1.0; 8], &[0.05; 8], 1.0, 10.0, 0.20);
+            compute_toxicity_landscape(1.0, &[50.0; 8], &[1.0; 8], &[0.05; 8], &DEFAULT_MODEL);
         assert!(
             landscape.localization_length > 6.0,
             "distributed: xi={}",
@@ -553,7 +561,7 @@ mod tests {
         let mut ic50s = vec![1000.0; 8];
         ic50s[0] = 0.5;
         let landscape =
-            compute_toxicity_landscape(1.0, &ic50s, &[1.0; 8], &[0.05; 8], 1.0, 10.0, 0.20);
+            compute_toxicity_landscape(1.0, &ic50s, &[1.0; 8], &[0.05; 8], &DEFAULT_MODEL);
         assert!(
             landscape.localization_length < 2.0,
             "localized: xi={}",

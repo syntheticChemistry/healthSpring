@@ -241,12 +241,10 @@ pub fn pkpd_study() -> (HealthScenario, Vec<ScenarioEdge>) {
         })
         .collect();
     let pop = pkpd::population_pk_cpu(
-        n_patients as usize,
         &cl_vals,
         &vd_vals,
         &ka_vals,
-        pkpd::pop_baricitinib::DOSE_MG,
-        pkpd::pop_baricitinib::F_BIOAVAIL,
+        &pkpd::pop_baricitinib::REGIMEN,
         &pop_times,
     );
     let aucs: Vec<f64> = pop.iter().map(|p| p.auc).collect();

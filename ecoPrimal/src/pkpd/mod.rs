@@ -64,6 +64,7 @@ pub use pbpk::{
     pbpk_iv_tissue_profiles, standard_human_tissues,
 };
 pub use population::{
-    LognormalParam, PatientExposure, pop_baricitinib, population_pk_cpu, population_pk_monte_carlo,
+    DosingRegimen, LognormalParam, PatientExposure, PopulationPkVariability, pop_baricitinib,
+    population_pk_cpu, population_pk_monte_carlo,
 };
 pub use util::{auc_trapezoidal, find_cmax_tmax, pk_multiple_dose};

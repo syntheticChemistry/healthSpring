@@ -12,7 +12,8 @@ use criterion::{Criterion, black_box, criterion_group, criterion_main};
 
 use healthspring_barracuda::microbiome::{pielou_evenness, shannon_index, simpson_index};
 use healthspring_barracuda::pkpd::{
-    auc_trapezoidal, hill_dose_response, pk_oral_one_compartment, population_pk_cpu,
+    auc_trapezoidal, hill_dose_response, pk_oral_one_compartment, pop_baricitinib,
+    population_pk_cpu,
 };
 
 fn hill_sweep(concs: &[f64], ic50: f64, hill_n: f64, e_max: f64) -> Vec<f64> {
@@ -127,12 +128,10 @@ fn bench_population_montecarlo_500(c: &mut Criterion) {
     c.bench_function("population_montecarlo_500", |b| {
         b.iter(|| {
             population_pk_cpu(
-                black_box(n),
                 black_box(&cl_params),
                 black_box(&vd_params),
                 black_box(&ka_params),
-                4.0,
-                0.79,
+                &pop_baricitinib::REGIMEN,
                 &times,
             )
         });
@@ -152,12 +151,10 @@ fn bench_population_montecarlo_5000(c: &mut Criterion) {
     c.bench_function("population_montecarlo_5000", |b| {
         b.iter(|| {
             population_pk_cpu(
-                black_box(n),
                 black_box(&cl_params),
                 black_box(&vd_params),
                 black_box(&ka_params),
-                4.0,
-                0.79,
+                &pop_baricitinib::REGIMEN,
                 &times,
             )
         });
@@ -187,10 +184,12 @@ fn bench_gut_serotonin(c: &mut Criterion) {
 
 fn bench_antibiotic_perturbation(c: &mut Criterion) {
     use healthspring_barracuda::microbiome;
+    let cfg = microbiome::AntibioticSimConfig {
+        h0: 2.2, depth: 0.5, k_decline: 0.3, k_recovery: 0.1,
+        treatment_days: 7.0, total_days: 42.0, dt: 0.1,
+    };
     c.bench_function("antibiotic_perturbation_42d", |b| {
-        b.iter(|| {
-            microbiome::antibiotic_perturbation(black_box(2.2), 0.5, 0.3, 0.1, 7.0, 42.0, 0.1)
-        });
+        b.iter(|| microbiome::antibiotic_perturbation(black_box(&cfg)));
     });
 }
 

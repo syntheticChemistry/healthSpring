@@ -162,12 +162,10 @@ fn validate_population_pk(h: &mut ValidationHarness) {
         .collect();
 
     let results = population_pk_cpu(
-        n_patients,
         &cl_vals,
         &vd_vals,
         &ka_vals,
-        pop_baricitinib::DOSE_MG,
-        pop_baricitinib::F_BIOAVAIL,
+        &pop_baricitinib::REGIMEN,
         &times,
     );
 

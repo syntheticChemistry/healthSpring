@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-11
-**healthSpring version**: V62 (ecoBin 0.9.0, guideStone Level 5 lineage via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, UniBin + certification organelle + CompositionContext migration)
+**healthSpring version**: V63 (ecoBin 0.9.0, guideStone Level 5 lineage via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, UniBin + certification organelle + CompositionContext migration + V63 param-struct + wire_prefix deep debt sweep)
 
 ---
 

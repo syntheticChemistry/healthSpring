@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: May 11, 2026
-**Status**: V62 — Deep debt resolved (typed enums, clone reduction, capability-first routing). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.25, v1.2.0). 95 experiments, 999 tests, 87 capabilities (science + infra), 95+ provenance entries. barraCuda v0.3.13. ecoBin 0.9.0.
+**Status**: V63 — Deep debt resolved (typed enums, clone reduction, capability-first routing; V63 param-struct + wire_prefix sweep). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.25, v1.2.0). 95 experiments, 999 tests, 87 capabilities (science + infra), 95+ provenance entries. barraCuda v0.3.13. ecoBin 0.9.0.
 
 ---
 

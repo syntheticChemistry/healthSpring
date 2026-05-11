@@ -107,23 +107,17 @@ fn build_mm_nonlinear_pk(s: &mut HealthScenario) {
 }
 
 fn build_antibiotic_perturbation(s: &mut HealthScenario) {
-    let h0 = 3.2;
-    let depth = 0.7;
-    let k_decline = 0.5;
-    let k_recovery = 0.08;
-    let treatment_days = 7.0;
-    let total_days = 30.0;
-    let dt = 0.1;
+    let cfg = microbiome::AntibioticSimConfig {
+        h0: 3.2,
+        depth: 0.7,
+        k_decline: 0.5,
+        k_recovery: 0.08,
+        treatment_days: 7.0,
+        total_days: 30.0,
+        dt: 0.1,
+    };
 
-    let trajectory = microbiome::antibiotic_perturbation(
-        h0,
-        depth,
-        k_decline,
-        k_recovery,
-        treatment_days,
-        total_days,
-        dt,
-    );
+    let trajectory = microbiome::antibiotic_perturbation(&cfg);
     let times: Vec<f64> = trajectory.iter().map(|&(t, _)| t).collect();
     let diversity: Vec<f64> = trajectory.iter().map(|&(_, h)| h).collect();
     let nadir = diversity.iter().copied().fold(f64::INFINITY, f64::min);
@@ -156,7 +150,7 @@ fn build_antibiotic_perturbation(s: &mut HealthScenario) {
             gauge(
                 "abx_baseline",
                 "Pre-Antibiotic Diversity",
-                h0,
+                cfg.h0,
                 0.0,
                 4.0,
                 "nats",

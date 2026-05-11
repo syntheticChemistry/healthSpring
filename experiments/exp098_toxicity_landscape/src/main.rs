@@ -104,15 +104,19 @@ fn study_2_repair_capacity_buffer(h: &mut ValidationHarness) {
     let repair = [0.05; 8];
     let sensitivities = [1.0, 1.0, 1.5, 0.5, 2.0, 0.8, 0.3, 1.0];
 
+    let model = toxicology::ToxicityModelParams {
+        hill_n,
+        km: 10.0,
+        clearance_threshold: 0.20,
+    };
+
     let weak_ic50s = [30.0; 8];
     let weak_landscape = toxicology::compute_toxicity_landscape(
         concentration,
         &weak_ic50s,
         &sensitivities,
         &repair,
-        hill_n,
-        10.0,
-        0.20,
+        &model,
     );
 
     println!(
@@ -127,9 +131,7 @@ fn study_2_repair_capacity_buffer(h: &mut ValidationHarness) {
         &strong_ic50s,
         &sensitivities,
         &repair,
-        hill_n,
-        10.0,
-        0.20,
+        &model,
     );
 
     println!(
@@ -284,14 +286,17 @@ fn study_5_disorder_modulated_landscape(h: &mut ValidationHarness) {
     let weak_ic50s: Vec<f64> = vec![40.0; n_tissues];
     let repair: Vec<f64> = vec![tolerances::TISSUE_REPAIR_CAPACITY; n_tissues];
 
+    let default_model = toxicology::ToxicityModelParams {
+        hill_n: 1.0,
+        km: 10.0,
+        clearance_threshold: 0.20,
+    };
     let landscape = toxicology::compute_toxicity_landscape(
         concentration,
         &weak_ic50s,
         &sensitivities,
         &repair,
-        1.0,
-        10.0,
-        0.20,
+        &default_model,
     );
 
     println!(
@@ -324,9 +329,7 @@ fn study_5_disorder_modulated_landscape(h: &mut ValidationHarness) {
         &very_weak_ic50s,
         &sensitivities,
         &repair,
-        1.0,
-        10.0,
-        0.20,
+        &default_model,
     );
 
     let hormetic = toxicology::in_hormetic_zone(

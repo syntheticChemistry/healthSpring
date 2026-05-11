@@ -77,12 +77,10 @@ fn main() {
         .collect();
 
     let results = pkpd::population_pk_cpu(
-        n,
         &cl_vals,
         &vd_vals,
         &ka_vals,
-        pop_baricitinib::DOSE_MG,
-        pop_baricitinib::F_BIOAVAIL,
+        &pop_baricitinib::REGIMEN,
         &times,
     );
 

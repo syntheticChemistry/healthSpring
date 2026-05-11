@@ -473,7 +473,11 @@ mod tests {
 
     #[test]
     fn antibiotic_perturbation_decline() {
-        let result = super::antibiotic_perturbation(2.2, 0.5, 0.3, 0.1, 7.0, 21.0, 0.1);
+        let cfg = super::AntibioticSimConfig {
+            h0: 2.2, depth: 0.5, k_decline: 0.3, k_recovery: 0.1,
+            treatment_days: 7.0, total_days: 21.0, dt: 0.1,
+        };
+        let result = super::antibiotic_perturbation(&cfg);
         assert!(result.len() > 1);
         let nadir = result.iter().map(|&(_, h)| h).fold(f64::INFINITY, f64::min);
         assert!(nadir < 2.2, "Shannon must decline during antibiotics");
@@ -481,7 +485,11 @@ mod tests {
 
     #[test]
     fn antibiotic_perturbation_recovery() {
-        let result = super::antibiotic_perturbation(2.2, 0.5, 0.3, 0.1, 7.0, 42.0, 0.1);
+        let cfg = super::AntibioticSimConfig {
+            h0: 2.2, depth: 0.5, k_decline: 0.3, k_recovery: 0.1,
+            treatment_days: 7.0, total_days: 42.0, dt: 0.1,
+        };
+        let result = super::antibiotic_perturbation(&cfg);
         let h_final = match result.last() {
             Some((_, h)) => *h,
             None => panic!("antibiotic_perturbation must return at least one point"),

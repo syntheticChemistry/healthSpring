@@ -15,7 +15,8 @@
 
 use healthspring_barracuda::microbiome::{pielou_evenness, shannon_index, simpson_index};
 use healthspring_barracuda::pkpd::{
-    auc_trapezoidal, hill_dose_response, pk_oral_one_compartment, population_pk_cpu,
+    DosingRegimen, auc_trapezoidal, hill_dose_response, pk_oral_one_compartment,
+    population_pk_cpu,
 };
 use healthspring_barracuda::validation::ValidationHarness;
 use serde::Serialize;
@@ -181,7 +182,7 @@ fn main() {
         "population_montecarlo_500",
         || {
             std::hint::black_box(population_pk_cpu(
-                n500, &cl_500, &vd_500, &ka_500, 4.0, 0.79, &times_pk,
+                &cl_500, &vd_500, &ka_500, &DosingRegimen { dose_mg: 4.0, f_bioavail: 0.79 }, &times_pk,
             ));
         },
         N_ITERATIONS.max(10) / 10,
@@ -205,7 +206,7 @@ fn main() {
         "population_montecarlo_5000",
         || {
             std::hint::black_box(population_pk_cpu(
-                n5000, &cl_5k, &vd_5k, &ka_5k, 4.0, 0.79, &times_pk,
+                &cl_5k, &vd_5k, &ka_5k, &DosingRegimen { dose_mg: 4.0, f_bioavail: 0.79 }, &times_pk,
             ));
         },
         N_ITERATIONS.max(20) / 20,

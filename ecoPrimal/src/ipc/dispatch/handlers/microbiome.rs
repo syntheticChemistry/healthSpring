@@ -76,26 +76,20 @@ pub fn dispatch_bray_curtis(params: &Value) -> Value {
 }
 
 pub fn dispatch_antibiotic(params: &Value) -> Value {
-    let h0 = f(params, "h0").unwrap_or(3.0);
-    let depth = f(params, "depth").unwrap_or(0.6);
-    let k_decline = f(params, "k_decline").unwrap_or(0.5);
-    let k_recovery = f(params, "k_recovery").unwrap_or(0.1);
-    let treatment_days = f(params, "treatment_days").unwrap_or(7.0);
-    let total_days = f(params, "total_days").unwrap_or(90.0);
-    let dt = f(params, "dt").unwrap_or(0.5);
-    let trajectory = microbiome::antibiotic_perturbation(
-        h0,
-        depth,
-        k_decline,
-        k_recovery,
-        treatment_days,
-        total_days,
-        dt,
-    );
-    let h_final = trajectory.last().map_or(h0, |&(_, h)| h);
+    let cfg = microbiome::AntibioticSimConfig {
+        h0: f(params, "h0").unwrap_or(3.0),
+        depth: f(params, "depth").unwrap_or(0.6),
+        k_decline: f(params, "k_decline").unwrap_or(0.5),
+        k_recovery: f(params, "k_recovery").unwrap_or(0.1),
+        treatment_days: f(params, "treatment_days").unwrap_or(7.0),
+        total_days: f(params, "total_days").unwrap_or(90.0),
+        dt: f(params, "dt").unwrap_or(0.5),
+    };
+    let trajectory = microbiome::antibiotic_perturbation(&cfg);
+    let h_final = trajectory.last().map_or(cfg.h0, |&(_, h)| h);
     serde_json::json!({
         "n_steps": trajectory.len(),
-        "h0": h0,
+        "h0": cfg.h0,
         "h_final": h_final,
         "h_nadir": trajectory.iter().map(|&(_, h)| h).fold(f64::INFINITY, f64::min),
     })

@@ -68,7 +68,7 @@ impl PetalTonguePushClient {
         if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
             let runtime = PathBuf::from(runtime);
 
-            let biomeos_dir = runtime.join("biomeos");
+            let biomeos_dir = runtime.join(primal_names::BIOMEOS_DIR_NAME);
             if biomeos_dir.is_dir() {
                 if let Ok(entries) = std::fs::read_dir(&biomeos_dir) {
                     for entry in entries.flatten() {

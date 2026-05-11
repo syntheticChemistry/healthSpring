@@ -15,8 +15,8 @@
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use healthspring_barracuda::microbiome::{shannon_index, simpson_index};
 use healthspring_barracuda::pkpd::{
-    NlmeConfig, SyntheticPopConfig, auc_trapezoidal, foce, generate_synthetic_population, nca_iv,
-    oral_one_compartment_model, population_pk_cpu,
+    DosingRegimen, NlmeConfig, SyntheticPopConfig, auc_trapezoidal, foce,
+    generate_synthetic_population, nca_iv, oral_one_compartment_model, population_pk_cpu,
 };
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -104,12 +104,10 @@ fn bench_montecarlo_pop_pk_1k(c: &mut Criterion) {
     c.bench_function("kokkos_montecarlo_popPK_1K", |b| {
         b.iter(|| {
             population_pk_cpu(
-                black_box(n),
                 black_box(&cl_params),
                 black_box(&vd_params),
                 black_box(&ka_params),
-                4.0,
-                0.79,
+                &DosingRegimen { dose_mg: 4.0, f_bioavail: 0.79 },
                 &times,
             )
         });

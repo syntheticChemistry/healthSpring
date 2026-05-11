@@ -1,6 +1,6 @@
 +++
-title = "healthSpring Validation Summary"
-description = "PK/PD, gut microbiome, biosignal, drug discovery — sovereign NLME, UniBin certify/validate"
+title = "healthSpring Validation Summary — V63"
+description = "PK/PD, gut microbiome, biosignal, drug discovery — sovereign NLME, UniBin certify/validate, V63 param-struct + wire_prefix deep debt sweep"
 date = 2026-05-11
 
 [taxonomies]

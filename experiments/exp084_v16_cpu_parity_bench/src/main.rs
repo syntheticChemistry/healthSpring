@@ -32,8 +32,8 @@ use healthspring_barracuda::biosignal::classification::{
 use healthspring_barracuda::biosignal::eda::{eda_detect_scr, eda_phasic, eda_scl};
 use healthspring_barracuda::biosignal::stress::compute_stress_index;
 use healthspring_barracuda::microbiome::{
-    SCFA_DYSBIOTIC_PARAMS, SCFA_HEALTHY_PARAMS, antibiotic_perturbation, gut_serotonin_production,
-    scfa_production, tryptophan_availability,
+    AntibioticSimConfig, SCFA_DYSBIOTIC_PARAMS, SCFA_HEALTHY_PARAMS, antibiotic_perturbation,
+    gut_serotonin_production, scfa_production, tryptophan_availability,
 };
 use healthspring_barracuda::pkpd;
 use healthspring_barracuda::tolerances;
@@ -164,7 +164,10 @@ fn main() {
     let result = bench(
         "antibiotic_perturb_30d",
         || {
-            std::hint::black_box(antibiotic_perturbation(2.2, 0.7, 5.0, 0.1, 5.0, 30.0, 0.01));
+            std::hint::black_box(antibiotic_perturbation(&AntibioticSimConfig {
+                h0: 2.2, depth: 0.7, k_decline: 5.0, k_recovery: 0.1,
+                treatment_days: 5.0, total_days: 30.0, dt: 0.01,
+            }));
         },
         N_ITER,
     );
@@ -178,7 +181,10 @@ fn main() {
     let result = bench(
         "antibiotic_perturb_365d",
         || {
-            std::hint::black_box(antibiotic_perturbation(2.2, 0.7, 5.0, 0.1, 5.0, 365.0, 0.1));
+            std::hint::black_box(antibiotic_perturbation(&AntibioticSimConfig {
+                h0: 2.2, depth: 0.7, k_decline: 5.0, k_recovery: 0.1,
+                treatment_days: 5.0, total_days: 365.0, dt: 0.1,
+            }));
         },
         N_ITER,
     );
@@ -189,7 +195,10 @@ fn main() {
     h.check_bool("antibiotic_365d_runs", result.mean_us > 0.0);
     benchmarks.push(result);
 
-    let trajectory = antibiotic_perturbation(2.2, 0.7, 5.0, 0.1, 5.0, 30.0, 0.01);
+    let trajectory = antibiotic_perturbation(&AntibioticSimConfig {
+        h0: 2.2, depth: 0.7, k_decline: 5.0, k_recovery: 0.1,
+        treatment_days: 5.0, total_days: 30.0, dt: 0.01,
+    });
     h.check_bool("antibiotic_perturbation_non_empty", !trajectory.is_empty());
     let (_, h_initial) = trajectory.first().copied().unwrap_or((0.0, 0.0));
     let (_, h_nadir) = trajectory

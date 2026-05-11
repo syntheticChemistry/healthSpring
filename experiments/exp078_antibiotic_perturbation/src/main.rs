@@ -22,23 +22,20 @@ fn main() {
     println!("healthSpring Exp078 — Antibiotic Perturbation Recovery");
     println!("{}", "=".repeat(72));
 
-    let h0 = 2.2;
-    let depth = 0.5;
-    let k_decline = 0.3;
-    let k_recovery = 0.1;
-    let treatment_days = 7.0;
-    let total_days = 42.0;
-    let dt = 0.1;
+    let cfg = microbiome::AntibioticSimConfig {
+        h0: 2.2,
+        depth: 0.5,
+        k_decline: 0.3,
+        k_recovery: 0.1,
+        treatment_days: 7.0,
+        total_days: 42.0,
+        dt: 0.1,
+    };
+    let h0 = cfg.h0;
+    let treatment_days = cfg.treatment_days;
+    let dt = cfg.dt;
 
-    let trajectory = microbiome::antibiotic_perturbation(
-        h0,
-        depth,
-        k_decline,
-        k_recovery,
-        treatment_days,
-        total_days,
-        dt,
-    );
+    let trajectory = microbiome::antibiotic_perturbation(&cfg);
 
     // Check 1: Starts at baseline
     println!("\n--- Check 1: Starts at baseline H0 ---");

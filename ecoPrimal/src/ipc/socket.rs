@@ -12,19 +12,17 @@ use std::path::PathBuf;
 
 use crate::PRIMAL_NAME;
 use crate::ipc::rpc;
-
-/// Last-resort biomeOS socket directory when no explicit env or user cache path applies.
-pub(crate) const FALLBACK_SOCKET_DIR: &str = "/tmp/biomeos";
+use crate::primal_names;
 
 fn platform_runtime_socket_dir_under_home(home: &str) -> PathBuf {
     let home = PathBuf::from(home);
     #[cfg(target_os = "macos")]
     {
-        home.join("Library").join("Caches").join("biomeos")
+        home.join("Library").join("Caches").join(primal_names::BIOMEOS_DIR_NAME)
     }
     #[cfg(not(target_os = "macos"))]
     {
-        home.join(".cache").join("biomeos")
+        home.join(".cache").join(primal_names::BIOMEOS_DIR_NAME)
     }
 }
 
@@ -37,7 +35,7 @@ fn platform_runtime_socket_dir_under_home(home: &str) -> PathBuf {
 /// 3. **Tier 3 — platform cache under `$HOME`**: macOS uses `~/Library/Caches/biomeos/`;
 ///    other platforms use `$HOME/.cache/biomeos/` via [`std::env::var`] with `"HOME"`.
 ///    Skipped when `HOME` is unset.
-/// 4. **Tier 4 — [`FALLBACK_SOCKET_DIR`]**: world-writable temp path; a [`tracing::warn!`] is
+/// 4. **Tier 4 — [`primal_names::FALLBACK_SOCKET_DIR`]**: world-writable temp path; a [`tracing::warn!`] is
 ///    emitted because this is intended for development convenience only.
 #[must_use]
 pub fn resolve_socket_dir() -> PathBuf {
@@ -45,16 +43,17 @@ pub fn resolve_socket_dir() -> PathBuf {
         return PathBuf::from(dir);
     }
     if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
-        return PathBuf::from(runtime).join("biomeos");
+        return PathBuf::from(runtime).join(primal_names::BIOMEOS_DIR_NAME);
     }
     if let Ok(home) = std::env::var("HOME") {
         return platform_runtime_socket_dir_under_home(&home);
     }
     tracing::warn!(
-        "socket dir resolved to /tmp/biomeos (last resort). \
-         Set BIOMEOS_SOCKET_DIR for sovereign deployments."
+        "socket dir resolved to {} (last resort). \
+         Set BIOMEOS_SOCKET_DIR for sovereign deployments.",
+        primal_names::FALLBACK_SOCKET_DIR,
     );
-    PathBuf::from(FALLBACK_SOCKET_DIR)
+    PathBuf::from(primal_names::FALLBACK_SOCKET_DIR)
 }
 
 /// Stable family identifier, overridable via `HEALTHSPRING_FAMILY_ID`.

@@ -48,6 +48,34 @@ pub const SKUNKBAT: &str = "skunkbat";
 /// Conventional socket-name prefix for the orchestrator.
 pub const BIOMEOS: &str = "biomeOS";
 
+/// Lowercase filesystem directory name for the orchestrator socket tree.
+///
+/// Filesystem conventions use lowercase (`/tmp/biomeos/`, `~/.cache/biomeos/`)
+/// even though the display name is `biomeOS`.
+pub const BIOMEOS_DIR_NAME: &str = "biomeos";
+
+/// Default fallback socket directory (development convenience).
+pub const FALLBACK_SOCKET_DIR: &str = "/tmp/biomeos";
+
+/// Wire-protocol method prefixes used for JSON-RPC method normalization.
+///
+/// Legacy callers may send `barracuda.stats.mean` or `biomeos.lifecycle.health`;
+/// these prefixes are stripped to produce the canonical bare form.
+pub mod wire_prefix {
+    pub const HEALTHSPRING: &str = "healthspring.";
+    pub const BARRACUDA: &str = "barracuda.";
+    pub const BIOMEOS: &str = "biomeos.";
+}
+
+/// Well-known Songbird socket paths relative to `XDG_RUNTIME_DIR`.
+///
+/// Songbird *is* the discovery service, so we locate it by convention
+/// rather than capability probe.
+pub const SONGBIRD_SOCKET_PATHS: &[&str] = &[
+    "biomeos/songbird.sock",
+    "songbird/songbird.sock",
+];
+
 /// Environment variable suffix convention: `{NAME}_SOCKET`.
 ///
 /// ```

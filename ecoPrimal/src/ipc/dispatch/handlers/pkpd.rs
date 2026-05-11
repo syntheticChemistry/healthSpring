@@ -119,11 +119,8 @@ pub fn dispatch_population_pk(params: &Value) -> Value {
     let results = pkpd::population_pk_monte_carlo(
         n,
         seed,
-        pkpd::pop_baricitinib::CL,
-        pkpd::pop_baricitinib::VD,
-        pkpd::pop_baricitinib::KA,
-        pkpd::pop_baricitinib::DOSE_MG,
-        pkpd::pop_baricitinib::F_BIOAVAIL,
+        &pkpd::pop_baricitinib::VARIABILITY,
+        &pkpd::pop_baricitinib::REGIMEN,
         &times,
     );
     #[expect(clippy::cast_precision_loss, reason = "population size fits f64")]

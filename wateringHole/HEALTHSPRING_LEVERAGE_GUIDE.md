@@ -2,7 +2,7 @@
 # healthSpring Leverage Guide — Standalone, Trio, and Full Niche
 
 **Date**: May 11, 2026
-**Primal**: healthSpring V62 (`healthspring-barracuda` 0.1.0, ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**)
+**Primal**: healthSpring V63 (`healthspring-barracuda` 0.1.0, ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**)
 **Audience**: All springs, all primals, biomeOS integrators
 **Status**: Active
 
@@ -266,6 +266,7 @@ This guide tracks healthSpring's evolution. As capabilities are added, compositi
 
 | Version | Date | Changes |
 |---------|------|---------|
+| V63 | May 11, 2026 | `wire_prefix` sub-module + `BIOMEOS_DIR_NAME` + `FALLBACK_SOCKET_DIR` + `SONGBIRD_SOCKET_PATHS` centralization; 4 domain param structs (`DosingRegimen`, `PopulationPkVariability`, `ToxicityModelParams`, `AntibioticSimConfig`) replace 7-8 param functions across 21 call sites; Foundation Thread 3 seeded. |
 | V62 | May 11, 2026 | CI `[health]` cross-sync (`health.monitor`, `health.probe`); **skunkBat** audit IPC + deploy graphs; biomeOS v3.51 (`composition.status`, `method.register`); env-configurable NCBI bases; **`primal_names`** centralization (zero hardcoded); **`healthspring`** binary alias; **4 NUCLEUS workloads**; **87** capabilities. |
 | V61 | May 9, 2026 | UniBin (`certify`/`validate`/…); **`certification/`** organelle; **`composition/`** + **`validation/scenarios/`**; **`fossilRecord/`**; IPC-first **`default = []`** + **`barracuda-lib`** opt-in; primalSpring **v0.9.25** pinned. **999 tests**, 95 experiments. |
 | V60 | May 8, 2026 | Deep debt evolution: optional `barracuda-lib`, exp123 NUCLEUS parity, 53 paired notebooks via `tools/py_to_notebook.py`, `validate_pk_models`, `gpu_parity` Criterion benches, dataset fetch scripts with BLAKE3, IPC timeout constants in `tolerances.rs`, capability-first `BarraCudaClient::discover()`, tolerance constants in exp122/guidestone, `records_*` / viz test splits, exp119–122 CI bins. barraCuda v0.3.13. 1,002 tests, 95 experiments. |

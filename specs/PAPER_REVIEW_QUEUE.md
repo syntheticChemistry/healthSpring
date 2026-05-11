@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: May 11, 2026
-**Status**: V62 — Eukaryotic UniBin + certification organelle + CompositionContext migration surface; primalSpring **v0.9.25**. Deep debt resolved, Phase 46 NUCLEUS composition. guideStone Level 5 (57/57). **95** experiments (83 science + 12 composition Tier 3–5), **999** tests, 45/45 papers complete. 95+ provenance entries, 87 capabilities. barraCuda v0.3.13.
+**Status**: V63 — Eukaryotic UniBin + certification organelle + CompositionContext migration surface; primalSpring **v0.9.25**. Deep debt resolved (V63: param-struct + wire_prefix sweep), Phase 46 NUCLEUS composition. guideStone Level 5 (57/57). **95** experiments (83 science + 12 composition Tier 3–5), **999** tests, 45/45 papers complete. 95+ provenance entries, 87 capabilities. barraCuda v0.3.13.
 
 ---
 

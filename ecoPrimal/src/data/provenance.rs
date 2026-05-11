@@ -82,7 +82,7 @@ fn data_provider_socket_path() -> Option<PathBuf> {
             .map(|d| PathBuf::from(d).join(&sock_name)),
         std::env::var("XDG_RUNTIME_DIR")
             .ok()
-            .map(|d| PathBuf::from(d).join("biomeos").join(&sock_name)),
+            .map(|d| PathBuf::from(d).join(crate::primal_names::BIOMEOS_DIR_NAME).join(&sock_name)),
     ]
     .into_iter()
     .flatten()

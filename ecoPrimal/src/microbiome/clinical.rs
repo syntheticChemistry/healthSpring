@@ -78,19 +78,30 @@ pub fn antibiotic_perturbation_abundances(
     crate::math_dispatch::antibiotic_perturbation(abundances, susceptibilities, duration_h)
 }
 
-/// Simulate Shannon diversity time course under antibiotic perturbation
-/// and recovery. Returns `(time, shannon)` pairs.
-///
-/// - `h0`: baseline Shannon H'
-/// - `depth`: fractional decline at nadir (0–1)
-/// - `k_decline`: decline rate constant (per day)
-/// - `k_recovery`: recovery rate constant (per day)
-/// - `treatment_days`: duration of antibiotic exposure
-/// - `total_days`: total simulation time
-/// - `dt`: time step
+/// Antibiotic perturbation simulation configuration.
 ///
 /// Reference: Dethlefsen & Relman 2011 (Nature) — ciprofloxacin causes
 /// 30-50% diversity decline with incomplete recovery.
+#[derive(Debug, Clone, Copy)]
+pub struct AntibioticSimConfig {
+    /// Baseline Shannon H'.
+    pub h0: f64,
+    /// Fractional decline at nadir (0–1).
+    pub depth: f64,
+    /// Decline rate constant (per day).
+    pub k_decline: f64,
+    /// Recovery rate constant (per day).
+    pub k_recovery: f64,
+    /// Duration of antibiotic exposure (days).
+    pub treatment_days: f64,
+    /// Total simulation time (days).
+    pub total_days: f64,
+    /// Time step (days).
+    pub dt: f64,
+}
+
+/// Simulate Shannon diversity time course under antibiotic perturbation
+/// and recovery. Returns `(time, shannon)` pairs.
 #[must_use]
 #[expect(clippy::cast_precision_loss, reason = "n_steps fits f64")]
 #[expect(
@@ -98,15 +109,16 @@ pub fn antibiotic_perturbation_abundances(
     clippy::cast_sign_loss,
     reason = "total_days / dt is small positive"
 )]
-pub fn antibiotic_perturbation(
-    h0: f64,
-    depth: f64,
-    k_decline: f64,
-    k_recovery: f64,
-    treatment_days: f64,
-    total_days: f64,
-    dt: f64,
-) -> Vec<(f64, f64)> {
+pub fn antibiotic_perturbation(cfg: &AntibioticSimConfig) -> Vec<(f64, f64)> {
+    let AntibioticSimConfig {
+        h0,
+        depth,
+        k_decline,
+        k_recovery,
+        treatment_days,
+        total_days,
+        dt,
+    } = *cfg;
     let n_steps = (total_days / dt) as usize;
     let mut result = Vec::with_capacity(n_steps + 1);
     let h_nadir = h0 * (1.0 - depth);

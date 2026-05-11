@@ -34,11 +34,8 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     let cohort = pkpd::population_pk_monte_carlo(
         n,
         seed,
-        pop_baricitinib::CL,
-        pop_baricitinib::VD,
-        pop_baricitinib::KA,
-        pop_baricitinib::DOSE_MG,
-        pop_baricitinib::F_BIOAVAIL,
+        &pop_baricitinib::VARIABILITY,
+        &pop_baricitinib::REGIMEN,
         &times,
     );
 

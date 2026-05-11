@@ -198,8 +198,10 @@ fn run_v16_analysis(params: &PatientParams, h: &mut ValidationHarness) {
         params.gut_diversity
     );
 
-    let abx_trajectory =
-        microbiome::antibiotic_perturbation(params.gut_diversity, 0.7, 0.5, 0.08, 7.0, 30.0, 0.1);
+    let abx_trajectory = microbiome::antibiotic_perturbation(&microbiome::AntibioticSimConfig {
+        h0: params.gut_diversity, depth: 0.7, k_decline: 0.5, k_recovery: 0.08,
+        treatment_days: 7.0, total_days: 30.0, dt: 0.1,
+    });
     h.check_bool(
         "Antibiotic: trajectory produced",
         abx_trajectory.len() > 100,

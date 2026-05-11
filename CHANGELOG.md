@@ -4,6 +4,34 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V63 — May 11, 2026
+
+### Added
+- **`primal_names` expansion**: `wire_prefix` sub-module (`HEALTHSPRING`, `BARRACUDA`, `BIOMEOS` — JSON-RPC method normalization prefixes); `BIOMEOS_DIR_NAME` (lowercase filesystem convention); `FALLBACK_SOCKET_DIR` (centralized `/tmp/biomeos`); `SONGBIRD_SOCKET_PATHS` (discovery service socket paths)
+- **`DosingRegimen`** struct — groups `dose_mg` + `f_bioavail` for oral PK modeling
+- **`PopulationPkVariability`** struct — groups `LognormalParam` priors (CL, Vd, Ka) for population PK IIV models
+- **`ToxicityModelParams`** struct — groups Hill coefficient + Km + clearance threshold for toxicity landscape computation
+- **`AntibioticSimConfig`** struct — groups all 7 antibiotic perturbation simulation parameters
+- **`pop_baricitinib::REGIMEN`** and **`pop_baricitinib::VARIABILITY`** convenience constants
+- **Foundation Thread 3** (Immunology/Drug Discovery) seeded in `sporeGarden/foundation` — `expressions/IMMUNO_DRUG_DISCOVERY.md` covering Papers 12, 13, 22 across 5 springs; `THREAD_INDEX.toml` wired (6/10 active threads toward 7+ exit gate)
+
+### Changed
+- `normalize_method()` PREFIXES array now uses `primal_names::wire_prefix::*` instead of raw string literals
+- `ipc/socket.rs` — all `"biomeos"` path segments replaced with `primal_names::BIOMEOS_DIR_NAME`; `FALLBACK_SOCKET_DIR` moved to `primal_names`
+- `visualization/capabilities.rs` — `SONGBIRD_PATHS` replaced with `primal_names::SONGBIRD_SOCKET_PATHS`
+- `visualization/ipc_push/client.rs` — `.join("biomeos")` replaced with `primal_names::BIOMEOS_DIR_NAME`
+- `data/provenance.rs` — `.join("biomeos")` replaced with `primal_names::BIOMEOS_DIR_NAME`
+- `population_pk_cpu` — removed redundant `n_patients` param (derived from slice length); uses `DosingRegimen`
+- `population_pk_monte_carlo` — uses `PopulationPkVariability` + `DosingRegimen` (8 params → 5)
+- `compute_toxicity_landscape` — uses `ToxicityModelParams` (7 params → 5)
+- `antibiotic_perturbation` — uses `AntibioticSimConfig` (7 params → 1 struct)
+- All 21 call sites across lib, bins, benchmarks, IPC handlers, viz scenarios, validation scenarios, and 6 experiment crates updated
+
+### Audit
+- Deep debt audit: zero files >800 lines, zero unsafe code, zero `unwrap()`/`panic!` in production, zero mocks in production, zero TODO/FIXME/HACK, zero clippy warnings
+- All external deps are standard Rust ecosystem (serde, tokio, clap, wgpu, thiserror, tracing, ureq) — no stale or unmaintained crates
+- Python baselines intentionally retained as Tier 0 controls (not targeted for removal)
+
 ## V62 — May 11, 2026
 
 ### Added

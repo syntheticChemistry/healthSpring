@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V62 — **UniBin** architecture (`healthspring_unibin`: `certify`, `validate`, `serve`, `status`, `version`) + IPC-first library defaults (`default = []`, **`barracuda-lib`** opt-in); primalSpring **v0.9.25**. guideStone Level 5 (57/57). **999 tests**, 95 experiments. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Status**: V63 — **UniBin** architecture (`healthspring_unibin`: `certify`, `validate`, `serve`, `status`, `version`) + IPC-first library defaults (`default = []`, **`barracuda-lib`** opt-in); primalSpring **v0.9.25**. guideStone Level 5 (57/57). **999 tests**, 95 experiments. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe. V63: wire_prefix + param-struct sweep; Foundation Thread 3 seeded.
 **Last Updated**: May 11, 2026
 
 ---
@@ -22,8 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V62** | [CI Cross-Sync + Audit + Sovereignty](handoffs/HEALTHSPRING_V62_UPSTREAM_HANDOFF_MAY10_2026.md) | May 11 | CI cross-sync (5/5 canonical `[health]`); `skunkBat` audit wiring + deploy graphs; biomeOS v3.51 absorption (`composition.status`, `method.register`); primal name centralization (zero hardcoded); env-configurable NCBI; `healthspring` binary alias; 4 NUCLEUS workloads; plasmidBin release binaries; 87 capabilities |
-| | *V1–V61 → `handoffs/archive/`* | | Fossil record (V54 upstream, V59 deep-debt, V60 deep debt evolution, V61 interstadial eukaryotic + upstream primal handoffs) |
+| **V63** | [Deep Debt Sweep + Param Structs + Foundation Thread 3](handoffs/HEALTHSPRING_V63_UPSTREAM_HANDOFF_MAY11_2026.md) | May 11 | `wire_prefix` + socket-path centralization; 4 domain param structs across 21 call sites; Foundation Thread 3 seeded; evolution patterns for all upstream teams |
+| | *V1–V62 → `handoffs/archive/`* | | Fossil record (V54 upstream, V59 deep-debt, V60 deep debt evolution, V61 interstadial eukaryotic, V62 CI cross-sync + audit) |
 
 ## Archive
 

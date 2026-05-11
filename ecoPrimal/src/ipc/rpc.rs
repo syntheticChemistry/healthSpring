@@ -5,6 +5,7 @@
 //! [`try_send`] for callers that need error context.
 
 use super::error::IpcError;
+use crate::primal_names;
 
 /// JSON-RPC 2.0 parse error code (`-32700`).
 pub const PARSE_ERROR: i64 = -32700;
@@ -22,7 +23,11 @@ const UNKNOWN_RPC_ERROR_MESSAGE: &str = "unknown";
 /// compatibility while keeping the canonical bare form.
 #[must_use]
 pub fn normalize_method(method: &str) -> &str {
-    const PREFIXES: &[&str] = &["healthspring.", "barracuda.", "biomeos."];
+    const PREFIXES: &[&str] = &[
+        primal_names::wire_prefix::HEALTHSPRING,
+        primal_names::wire_prefix::BARRACUDA,
+        primal_names::wire_prefix::BIOMEOS,
+    ];
     for prefix in PREFIXES {
         if let Some(stripped) = method.strip_prefix(prefix) {
             return stripped;

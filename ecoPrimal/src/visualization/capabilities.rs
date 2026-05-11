@@ -9,15 +9,8 @@ use std::io::{Read, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
 
+use crate::primal_names;
 use crate::tolerances::IPC_RESPONSE_BUF;
-
-/// Well-known Songbird socket paths (relative to `XDG_RUNTIME_DIR`).
-///
-/// Intentional exception to capability-based discovery: Songbird *is* the
-/// discovery service, so we must know where to find it by convention.
-/// Environment overrides (`HEALTHSPRING_SONGBIRD_SOCKET`, `SONGBIRD_SOCKET`)
-/// are checked first for testing and non-standard deployments.
-const SONGBIRD_PATHS: &[&str] = &["biomeos/songbird.sock", "songbird/songbird.sock"];
 
 /// All capabilities that healthSpring can announce.
 pub const CAPABILITIES: &[&str] = &[
@@ -206,7 +199,7 @@ fn discover_songbird() -> CapResult<PathBuf> {
     // it by well-known relative paths rather than capability probing.
     if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
         let runtime = PathBuf::from(runtime);
-        if let Some(p) = SONGBIRD_PATHS.iter().find_map(|rel| {
+        if let Some(p) = primal_names::SONGBIRD_SOCKET_PATHS.iter().find_map(|rel| {
             let path = runtime.join(rel);
             path.exists().then_some(path)
         }) {

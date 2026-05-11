@@ -30,17 +30,17 @@ pub fn dispatch_toxicity_landscape(params: &Value) -> Value {
     ) else {
         return missing("concentration, tissue_ic50s, tissue_sensitivities, tissue_repairs");
     };
-    let hill_n = f(params, "hill_n").unwrap_or(1.0);
-    let km = f(params, "km").unwrap_or(10.0);
-    let threshold = f(params, "clearance_threshold").unwrap_or(0.20);
+    let model = toxicology::ToxicityModelParams {
+        hill_n: f(params, "hill_n").unwrap_or(1.0),
+        km: f(params, "km").unwrap_or(10.0),
+        clearance_threshold: f(params, "clearance_threshold").unwrap_or(0.20),
+    };
     let landscape = toxicology::compute_toxicity_landscape(
         concentration,
         &ic50s,
         &sensitivities,
         &repairs,
-        hill_n,
-        km,
-        threshold,
+        &model,
     );
     serde_json::json!({
         "systemic_burden": landscape.systemic_burden,

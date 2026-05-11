@@ -31,7 +31,7 @@ impl LognormalParam {
 
 /// Population PK parameters for baricitinib-like oral dosing.
 pub mod pop_baricitinib {
-    use super::LognormalParam;
+    use super::{DosingRegimen, LognormalParam, PopulationPkVariability};
     /// Lognormal prior for clearance (typical + IIV).
     pub const CL: LognormalParam = LognormalParam {
         typical: 10.0,
@@ -51,6 +51,19 @@ pub mod pop_baricitinib {
     pub const F_BIOAVAIL: f64 = 0.79;
     /// Reference oral dose in mg.
     pub const DOSE_MG: f64 = 4.0;
+
+    /// Pre-built dosing regimen for baricitinib 4 mg oral.
+    pub const REGIMEN: DosingRegimen = DosingRegimen {
+        dose_mg: DOSE_MG,
+        f_bioavail: F_BIOAVAIL,
+    };
+
+    /// Pre-built population variability for baricitinib.
+    pub const VARIABILITY: PopulationPkVariability = PopulationPkVariability {
+        cl: CL,
+        vd: VD,
+        ka: KA,
+    };
 }
 
 /// Per-patient PK exposure metrics.
@@ -64,26 +77,47 @@ pub struct PatientExposure {
     pub auc: f64,
 }
 
+/// Oral dosing regimen parameters (dose + bioavailability).
+#[derive(Debug, Clone, Copy)]
+pub struct DosingRegimen {
+    /// Dose in mg.
+    pub dose_mg: f64,
+    /// Oral bioavailability fraction F (0–1).
+    pub f_bioavail: f64,
+}
+
+/// Inter-individual variability (IIV) model for population PK.
+///
+/// Groups the three lognormal priors (clearance, volume, absorption)
+/// that define a population's PK parameter distributions.
+#[derive(Debug, Clone, Copy)]
+pub struct PopulationPkVariability {
+    /// Lognormal prior for clearance.
+    pub cl: LognormalParam,
+    /// Lognormal prior for volume of distribution.
+    pub vd: LognormalParam,
+    /// Lognormal prior for absorption rate constant.
+    pub ka: LognormalParam,
+}
+
 /// Compute population PK for a cohort of patients (CPU, sequential).
 ///
 /// For each patient, uses provided PK parameters and computes the oral
-/// Bateman equation concentration-time curve.
+/// Bateman equation concentration-time curve. Cohort size is derived from
+/// the `cl_params` slice length.
 ///
 /// # Panics
 ///
-/// Panics if `cl_params`, `vd_params`, or `ka_params` length differs
-/// from `n_patients`.
+/// Panics if `cl_params`, `vd_params`, and `ka_params` have different lengths.
 #[must_use]
 pub fn population_pk_cpu(
-    n_patients: usize,
     cl_params: &[f64],
     vd_params: &[f64],
     ka_params: &[f64],
-    dose_mg: f64,
-    f_bioavail: f64,
+    regimen: &DosingRegimen,
     times: &[f64],
 ) -> Vec<PatientExposure> {
-    assert_eq!(cl_params.len(), n_patients);
+    let n_patients = cl_params.len();
     assert_eq!(vd_params.len(), n_patients);
     assert_eq!(ka_params.len(), n_patients);
 
@@ -96,7 +130,7 @@ pub fn population_pk_cpu(
 
             let concs: Vec<f64> = times
                 .iter()
-                .map(|&t| pk_oral_one_compartment(dose_mg, f_bioavail, vd, ka, ke, t))
+                .map(|&t| pk_oral_one_compartment(regimen.dose_mg, regimen.f_bioavail, vd, ka, ke, t))
                 .collect();
 
             let (cmax, tmax) = find_cmax_tmax(times, &concs);
@@ -112,23 +146,16 @@ pub fn population_pk_cpu(
 /// Uses the LCG PRNG with given `seed` for reproducible simulations.
 /// Same seed produces bit-identical results across runs.
 #[must_use]
-#[expect(
-    clippy::too_many_arguments,
-    reason = "PK/PD simulation API requires all pharmacokinetic params"
-)]
 pub fn population_pk_monte_carlo(
     n_patients: usize,
     seed: u64,
-    cl_param: LognormalParam,
-    vd_param: LognormalParam,
-    ka_param: LognormalParam,
-    dose_mg: f64,
-    f_bioavail: f64,
+    variability: &PopulationPkVariability,
+    regimen: &DosingRegimen,
     times: &[f64],
 ) -> Vec<PatientExposure> {
-    let (mu_cl, sigma_cl) = cl_param.to_normal_params();
-    let (mu_vd, sigma_vd) = vd_param.to_normal_params();
-    let (mu_ka, sigma_ka) = ka_param.to_normal_params();
+    let (mu_cl, sigma_cl) = variability.cl.to_normal_params();
+    let (mu_vd, sigma_vd) = variability.vd.to_normal_params();
+    let (mu_ka, sigma_ka) = variability.ka.to_normal_params();
 
     let mut rng = seed;
     let mut cl_params = Vec::with_capacity(n_patients);
@@ -148,9 +175,7 @@ pub fn population_pk_monte_carlo(
         ka_params.push(sigma_ka.mul_add(z_ka, mu_ka).exp().max(0.01));
     }
 
-    population_pk_cpu(
-        n_patients, &cl_params, &vd_params, &ka_params, dose_mg, f_bioavail, times,
-    )
+    population_pk_cpu(&cl_params, &vd_params, &ka_params, regimen, times)
 }
 
 #[cfg(test)]
@@ -173,15 +198,19 @@ mod tests {
         assert!(sigma > 0.0);
     }
 
+    const TEST_REGIMEN: DosingRegimen = DosingRegimen {
+        dose_mg: 4.0,
+        f_bioavail: 0.79,
+    };
+
     #[test]
     fn population_pk_cpu_basic() {
-        let n = 5;
         let cl = vec![10.0, 12.0, 8.0, 11.0, 9.0];
         let vd = vec![80.0, 85.0, 75.0, 82.0, 78.0];
         let ka = vec![1.5, 1.8, 1.2, 1.6, 1.4];
         let times: Vec<f64> = (0..200).map(|i| 24.0 * f64::from(i) / 199.0).collect();
-        let results = population_pk_cpu(n, &cl, &vd, &ka, 4.0, 0.79, &times);
-        assert_eq!(results.len(), n);
+        let results = population_pk_cpu(&cl, &vd, &ka, &TEST_REGIMEN, &times);
+        assert_eq!(results.len(), 5);
         for r in &results {
             assert!(r.auc > 0.0, "AUC > 0");
             assert!(r.cmax > 0.0, "Cmax > 0");
@@ -192,15 +221,15 @@ mod tests {
     #[test]
     fn population_pk_higher_cl_lower_auc() {
         let times: Vec<f64> = (0..500).map(|i| 24.0 * f64::from(i) / 499.0).collect();
-        let r_low = population_pk_cpu(1, &[5.0], &[80.0], &[1.5], 4.0, 0.79, &times);
-        let r_high = population_pk_cpu(1, &[20.0], &[80.0], &[1.5], 4.0, 0.79, &times);
+        let r_low = population_pk_cpu(&[5.0], &[80.0], &[1.5], &TEST_REGIMEN, &times);
+        let r_high = population_pk_cpu(&[20.0], &[80.0], &[1.5], &TEST_REGIMEN, &times);
         assert!(r_low[0].auc > r_high[0].auc, "lower CL → higher AUC");
     }
 
     #[test]
     fn population_pk_c_zero_at_t0() {
         let times = vec![0.0, 1.0, 2.0];
-        let results = population_pk_cpu(1, &[10.0], &[80.0], &[1.5], 4.0, 0.79, &times);
+        let results = population_pk_cpu(&[10.0], &[80.0], &[1.5], &TEST_REGIMEN, &times);
         let c0 = pk_oral_one_compartment(4.0, 0.79, 80.0, 1.5, 10.0 / 80.0, 0.0);
         assert!(
             c0.abs() < tolerances::TEST_ASSERTION_TIGHT,
@@ -215,15 +244,14 @@ mod tests {
         reason = "loop indices small — safe for f64"
     )]
     fn population_pk_deterministic() {
-        // Run the same population PK computation twice, verify identical results
         let n = 10;
         let cl: Vec<f64> = (0..n).map(|i| 0.3f64.mul_add(i as f64, 8.0)).collect();
         let vd: Vec<f64> = (0..n).map(|i| 2.0f64.mul_add(i as f64, 70.0)).collect();
         let ka: Vec<f64> = (0..n).map(|i| 0.1f64.mul_add(i as f64, 1.0)).collect();
         let times: Vec<f64> = (0..100).map(|i| 24.0 * f64::from(i) / 99.0).collect();
 
-        let run1 = population_pk_cpu(n, &cl, &vd, &ka, 4.0, 0.79, &times);
-        let run2 = population_pk_cpu(n, &cl, &vd, &ka, 4.0, 0.79, &times);
+        let run1 = population_pk_cpu(&cl, &vd, &ka, &TEST_REGIMEN, &times);
+        let run2 = population_pk_cpu(&cl, &vd, &ka, &TEST_REGIMEN, &times);
 
         for (r1, r2) in run1.iter().zip(run2.iter()) {
             assert_eq!(
@@ -246,28 +274,21 @@ mod tests {
 
     #[test]
     fn population_pk_monte_carlo_deterministic() {
-        // Same seed must produce bit-identical results across runs
         let seed = 42_u64;
         let times: Vec<f64> = (0..100).map(|i| 24.0 * f64::from(i) / 99.0).collect();
 
         let run1 = population_pk_monte_carlo(
             50,
             seed,
-            pop_baricitinib::CL,
-            pop_baricitinib::VD,
-            pop_baricitinib::KA,
-            pop_baricitinib::DOSE_MG,
-            pop_baricitinib::F_BIOAVAIL,
+            &pop_baricitinib::VARIABILITY,
+            &pop_baricitinib::REGIMEN,
             &times,
         );
         let run2 = population_pk_monte_carlo(
             50,
             seed,
-            pop_baricitinib::CL,
-            pop_baricitinib::VD,
-            pop_baricitinib::KA,
-            pop_baricitinib::DOSE_MG,
-            pop_baricitinib::F_BIOAVAIL,
+            &pop_baricitinib::VARIABILITY,
+            &pop_baricitinib::REGIMEN,
             &times,
         );
 
