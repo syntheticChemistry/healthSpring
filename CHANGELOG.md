@@ -14,6 +14,7 @@ This project uses internal versioning (V-series) for development milestones.
 - **`skunkBat` in deploy graphs**: `graphs/healthspring_niche_deploy.toml` (order 8, `defense.*`), `healthspring_biomeos_deploy.toml` (Phase 2b verify), `healthspring_niche.toml` (optional `defense`+`audit`)
 - **`healthspring` binary alias**: `[[bin]]` entry in `Cargo.toml` — same `main.rs` as `healthspring_unibin`; NUCLEUS workloads can invoke `healthspring validate` / `healthspring certify`
 - **4 NUCLEUS workloads**: `healthspring-pk-validation`, `healthspring-biosignal-validation`, `healthspring-microbiome-validation`, `healthspring-certification` in `projectNUCLEUS/workloads/healthspring/`
+- **plasmidBin release binaries**: stripped `healthspring` (2.9M), `healthspring_unibin` (2.9M), `healthspring_primal` (3.1M) staged to `infra/plasmidBin/springs/`; NUCLEUS workload-ready without source tree
 
 ### Changed
 - Niche `DEPENDENCIES` centralized from string literals to `primal_names::*` constants (single source of truth)

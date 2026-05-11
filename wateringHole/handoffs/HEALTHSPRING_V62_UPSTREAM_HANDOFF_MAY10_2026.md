@@ -89,6 +89,18 @@ healthSpring now has 4 workloads in `projectNUCLEUS/workloads/healthspring/`:
 - No files >800 lines; no mocks in production code; all dependencies Rust-native
 - 45/45 papers reviewed in review queue
 
+### plasmidBin Release Binaries
+
+Stripped release binaries staged to `infra/plasmidBin/springs/`:
+
+| Binary | Size | Purpose |
+|--------|------|---------|
+| `healthspring` | 2.9M | UniBin alias — `validate`, `certify`, `serve`, `status`, `version` |
+| `healthspring_unibin` | 2.9M | UniBin canonical name (identical to `healthspring`) |
+| `healthspring_primal` | 3.1M | JSON-RPC IPC server (87 methods) |
+
+NUCLEUS workloads can validate healthSpring science without a source tree. `plasmidBin/.gitignore` updated with all three binary names.
+
 ---
 
 ## Primal Usage and Asks
