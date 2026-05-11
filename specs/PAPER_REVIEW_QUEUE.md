@@ -316,3 +316,17 @@ All experiments use publicly accessible data. No proprietary dependencies.
 | Exp089 | Patient explorer (no new data) | Diagnostic pipeline + V16 primitives |
 
 See `specs/README.md` for full provenance table.
+
+---
+
+## LTEE GuideStone Queue (Barrick/Lenski + Eaves/Woldring)
+
+Targeted paper reproductions for the LTEE Targeted GuideStone artifact — a USB-deployable
+validation subsystem of projectNUCLEUS. See `infra/whitePaper/gen4/architecture/GUIDESTONE_LTEE.md`
+and `infra/whitePaper/attsi/non-anon/contact/*/PAPER_REVIEW_AND_SPRING_TARGETS.md`.
+
+| ID | Paper | What to Reproduce | Exp | Status |
+|----|-------|-------------------|-----|--------|
+| B5 | Leonard et al. 2024 "One-step genome engineering in bee gut" *mBio* | Symbiont PK/PD: engineered gut bacteria as drug delivery; pharmacokinetics of symbiont-produced molecules | TBD | QUEUED |
+| E2 | Mardikoraem & Woldring 2025 "HOLIgraph" *J Cheminformatics* | OATP PK/PD bridge: protein-ligand binding predictions for drug transporter interactions | TBD | QUEUED |
+| E4 | Woldring Lab 2024 "Screening macrocyclic peptide libraries" *bioRxiv* | Cyclic peptide → ADDRC: macrocyclic peptide screening applied to anti-doping reference compounds | TBD | QUEUED |
