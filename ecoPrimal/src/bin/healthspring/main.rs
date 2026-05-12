@@ -48,8 +48,15 @@ fn main() {
             tier,
             track,
             scenario,
+            format,
         } => {
-            validate::cmd_validate(tier.as_ref(), track.as_deref(), scenario.as_deref());
+            let json_mode = format.as_deref() == Some("json");
+            validate::cmd_validate(
+                tier.as_ref(),
+                track.as_deref(),
+                scenario.as_deref(),
+                json_mode,
+            );
         }
 
         cli::Command::Serve { port } => {

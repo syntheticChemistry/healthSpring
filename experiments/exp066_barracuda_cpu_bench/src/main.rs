@@ -69,10 +69,6 @@ fn bench<F: Fn()>(name: &str, func: F, n_iter: usize) -> BenchResult {
     }
 }
 
-#[expect(
-    clippy::cast_precision_loss,
-    reason = "index-to-f64 for log-spaced concentrations"
-)]
 fn main() {
     let mut h = ValidationHarness::new("exp066_barracuda_cpu_bench");
     let mut benchmarks = Vec::new();
@@ -175,9 +171,9 @@ fn main() {
     benchmarks.push(bench_result);
 
     let n500 = 500;
-    let cl_500: Vec<f64> = (0..n500).map(|i| (i as f64).mul_add(0.01, 8.0)).collect();
-    let vd_500: Vec<f64> = (0..n500).map(|i| (i as f64).mul_add(0.05, 70.0)).collect();
-    let ka_500: Vec<f64> = (0..n500).map(|i| (i as f64).mul_add(0.001, 1.2)).collect();
+    let cl_500: Vec<f64> = (0..n500).map(|i| f64::from(i).mul_add(0.01, 8.0)).collect();
+    let vd_500: Vec<f64> = (0..n500).map(|i| f64::from(i).mul_add(0.05, 70.0)).collect();
+    let ka_500: Vec<f64> = (0..n500).map(|i| f64::from(i).mul_add(0.001, 1.2)).collect();
     let bench_result = bench(
         "population_montecarlo_500",
         || {
@@ -195,12 +191,12 @@ fn main() {
     benchmarks.push(bench_result);
 
     let n5000 = 5_000;
-    let cl_5k: Vec<f64> = (0..n5000).map(|i| (i as f64).mul_add(0.001, 8.0)).collect();
+    let cl_5k: Vec<f64> = (0..n5000).map(|i| f64::from(i).mul_add(0.001, 8.0)).collect();
     let vd_5k: Vec<f64> = (0..n5000)
-        .map(|i| (i as f64).mul_add(0.005, 70.0))
+        .map(|i| f64::from(i).mul_add(0.005, 70.0))
         .collect();
     let ka_5k: Vec<f64> = (0..n5000)
-        .map(|i| (i as f64).mul_add(0.0001, 1.2))
+        .map(|i| f64::from(i).mul_add(0.0001, 1.2))
         .collect();
     let bench_result = bench(
         "population_montecarlo_5000",

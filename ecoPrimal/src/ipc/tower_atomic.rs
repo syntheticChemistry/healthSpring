@@ -185,6 +185,67 @@ impl TowerAtomic {
     pub fn is_available(&self) -> bool {
         self.crypto_socket.exists() && self.discovery_socket.exists()
     }
+
+    /// Propose an ionic bond contract for cross-tower trust establishment.
+    ///
+    /// Calls `BearDog`'s `crypto.contract.propose` — the first step in the
+    /// propose → countersign → verify lifecycle for ionic bridge bonds.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if `BearDog` is unreachable or rejects the proposal.
+    pub fn ionic_propose(
+        &self,
+        family_a: &str,
+        family_b: &str,
+        scope: &str,
+    ) -> Result<serde_json::Value, IpcError> {
+        let params = serde_json::json!({
+            "family_a": family_a,
+            "family_b": family_b,
+            "scope": scope,
+        });
+        super::rpc::try_send(&self.crypto_socket, "crypto.contract.propose", &params)
+    }
+
+    /// Countersign an ionic bond contract (second party approval).
+    ///
+    /// Calls `BearDog`'s `crypto.contract.countersign` with the contract ID
+    /// returned from a prior `ionic_propose` call.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if `BearDog` is unreachable or rejects the countersign.
+    pub fn ionic_countersign(&self, contract_id: &str) -> Result<serde_json::Value, IpcError> {
+        let params = serde_json::json!({
+            "contract_id": contract_id,
+        });
+        super::rpc::try_send(
+            &self.crypto_socket,
+            "crypto.contract.countersign",
+            &params,
+        )
+    }
+
+    /// Verify an ionic bond contract (dual-signature check).
+    ///
+    /// Calls `BearDog`'s `crypto.contract.verify` to confirm both parties
+    /// have signed the cross-family trust bond.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if `BearDog` is unreachable or the contract is invalid.
+    pub fn ionic_verify(&self, contract_id: &str) -> Result<bool, IpcError> {
+        let params = serde_json::json!({
+            "contract_id": contract_id,
+        });
+        let result =
+            super::rpc::try_send(&self.crypto_socket, "crypto.contract.verify", &params)?;
+        Ok(result
+            .get("valid")
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(false))
+    }
 }
 
 /// Discover a primal socket in a directory by name pattern.
@@ -288,5 +349,35 @@ mod tests {
                 .to_string_lossy()
                 .contains("discovery")
         );
+    }
+
+    #[test]
+    fn ionic_propose_fails_without_beardog() {
+        let tower = TowerAtomic {
+            crypto_socket: PathBuf::from("/tmp/nonexistent-beardog.sock"),
+            discovery_socket: PathBuf::from("/tmp/nonexistent-songbird.sock"),
+        };
+        let result = tower.ionic_propose("patient_enclave", "analytics", "aggregate");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn ionic_countersign_fails_without_beardog() {
+        let tower = TowerAtomic {
+            crypto_socket: PathBuf::from("/tmp/nonexistent-beardog.sock"),
+            discovery_socket: PathBuf::from("/tmp/nonexistent-songbird.sock"),
+        };
+        let result = tower.ionic_countersign("test-contract-id");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn ionic_verify_fails_without_beardog() {
+        let tower = TowerAtomic {
+            crypto_socket: PathBuf::from("/tmp/nonexistent-beardog.sock"),
+            discovery_socket: PathBuf::from("/tmp/nonexistent-songbird.sock"),
+        };
+        let result = tower.ionic_verify("test-contract-id");
+        assert!(result.is_err());
     }
 }

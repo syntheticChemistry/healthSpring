@@ -43,6 +43,10 @@ pub enum Command {
         /// Run a specific scenario by ID.
         #[arg(long)]
         scenario: Option<String>,
+
+        /// Output format: "json" for structured Tier 2 output.
+        #[arg(long)]
+        format: Option<String>,
     },
 
     /// Start the JSON-RPC 2.0 server.

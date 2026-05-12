@@ -184,7 +184,7 @@ pub fn codegen_shader_for_op(op: &GpuOp) -> Option<String> {
 /// Stub when `barracuda-lib` is disabled — ODE codegen requires the barraCuda crate.
 #[must_use]
 #[cfg(not(feature = "barracuda-lib"))]
-pub fn codegen_shader_for_op(_op: &GpuOp) -> Option<String> {
+pub const fn codegen_shader_for_op(_op: &GpuOp) -> Option<String> {
     None
 }
 

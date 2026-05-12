@@ -142,7 +142,7 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "barracuda"
-version = "0.3.13"
+version = "0.4.0"
 dependencies = [
  "barracuda-naga-exec",
  "blake3",
@@ -163,7 +163,7 @@ dependencies = [
 
 [[package]]
 name = "barracuda-core"
-version = "0.3.13"
+version = "0.4.0"
 dependencies = [
  "barracuda",
  "base64ct",
@@ -188,7 +188,7 @@ dependencies = [
 
 [[package]]
 name = "barracuda-naga-exec"
-version = "0.3.13"
+version = "0.4.0"
 dependencies = [
  "naga",
  "thiserror",

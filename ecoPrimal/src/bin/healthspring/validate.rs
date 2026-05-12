@@ -2,8 +2,10 @@
 
 //! Validate subcommand — runs scenarios from the registry.
 
+use std::sync::Arc;
+
 use primalspring::composition::CompositionContext;
-use primalspring::validation::ValidationResult;
+use primalspring::validation::{NullSink, ValidationResult};
 
 use healthspring_barracuda::validation::scenarios::{Tier, Track, build_registry};
 
@@ -55,6 +57,7 @@ pub fn cmd_validate(
     tier_filter: Option<&TierFilter>,
     track_filter: Option<&str>,
     scenario_filter: Option<&str>,
+    json_mode: bool,
 ) {
     let registry = build_registry();
     let track_parsed = track_filter.and_then(parse_track);
@@ -81,12 +84,18 @@ pub fn cmd_validate(
         })
         .collect();
 
-    eprintln!(
-        "healthSpring validate: {} scenario(s) selected\n",
-        filtered.len()
-    );
+    if !json_mode {
+        eprintln!(
+            "healthSpring validate: {} scenario(s) selected\n",
+            filtered.len()
+        );
+    }
 
-    let mut v = ValidationResult::new("healthspring validation");
+    let mut v = if json_mode {
+        ValidationResult::new("healthspring validation").with_sink(Arc::new(NullSink))
+    } else {
+        ValidationResult::new("healthspring validation")
+    };
     let mut ctx = CompositionContext::from_live_discovery_with_fallback();
 
     for scenario in &filtered {
@@ -97,7 +106,15 @@ pub fn cmd_validate(
         (scenario.run)(&mut v, &mut ctx);
     }
 
-    v.finish();
+    if json_mode {
+        let total = v.passed + v.failed + v.skipped;
+        println!(
+            "{{\"name\":\"healthspring_validate\",\"passed\":{},\"failed\":{},\"skipped\":{},\"total\":{}}}",
+            v.passed, v.failed, v.skipped, total
+        );
+    } else {
+        v.finish();
+    }
 
     if v.failed > 0 {
         std::process::exit(1);

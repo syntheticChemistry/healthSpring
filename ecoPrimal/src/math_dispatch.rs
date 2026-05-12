@@ -131,7 +131,9 @@ fn pure_mean(values: &[f64]) -> f64 {
     if values.is_empty() {
         return 0.0;
     }
-    values.iter().sum::<f64>() / values.len() as f64
+    #[expect(clippy::cast_precision_loss, reason = "sample counts fit f64")]
+    let n = values.len() as f64;
+    values.iter().sum::<f64>() / n
 }
 
 /// Sample standard deviation (N−1), matching `barracuda::stats::correlation::std_dev`.
@@ -141,6 +143,7 @@ fn pure_std_dev(x: &[f64]) -> Option<f64> {
     if x.len() < 2 {
         return None;
     }
+    #[expect(clippy::cast_precision_loss, reason = "sample counts fit f64")]
     let n = x.len() as f64;
     let m = x.iter().sum::<f64>() / n;
     let var: f64 = x.iter().map(|&xi| (xi - m).powi(2)).sum::<f64>() / (n - 1.0);
@@ -212,8 +215,11 @@ pub fn chao1_classic(counts: &[u64]) -> f64 {
 #[must_use]
 #[cfg(not(feature = "barracuda-lib"))]
 pub fn chao1_classic(counts: &[u64]) -> f64 {
+    #[expect(clippy::cast_precision_loss, reason = "species counts fit f64")]
     let s_obs = counts.iter().filter(|&&c| c > 0).count() as f64;
+    #[expect(clippy::cast_precision_loss, reason = "singleton counts fit f64")]
     let f1 = counts.iter().filter(|&&c| c == 1).count() as f64;
+    #[expect(clippy::cast_precision_loss, reason = "doubleton counts fit f64")]
     let f2 = counts.iter().filter(|&&c| c == 2).count() as f64;
     if f2 > 0.0 {
         s_obs + (f1 * f1) / (2.0 * f2)
@@ -287,6 +293,10 @@ pub fn antibiotic_perturbation(
 }
 
 /// Species-level antibiotic perturbation (structural fallback).
+///
+/// # Panics
+///
+/// Panics if `abundances` and `susceptibilities` have different lengths.
 #[must_use]
 #[cfg(not(feature = "barracuda-lib"))]
 pub fn antibiotic_perturbation(
@@ -316,7 +326,9 @@ pub fn scr_rate(n_scr_events: usize, duration_s: f64) -> f64 {
     if duration_s <= 0.0 {
         return 0.0;
     }
-    n_scr_events as f64 / (duration_s / 60.0)
+    #[expect(clippy::cast_precision_loss, reason = "event counts fit f64")]
+    let events = n_scr_events as f64;
+    events / (duration_s / 60.0)
 }
 
 // ── Wire status introspection ────────────────────────────────────────────

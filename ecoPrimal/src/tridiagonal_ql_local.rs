@@ -82,6 +82,7 @@ pub fn anderson_diagonalize(disorder: &[f64], t_hop: f64) -> (Vec<f64>, Vec<f64>
 }
 
 /// QL algorithm with implicit Wilkinson shifts and Givens rotations.
+#[expect(clippy::many_single_char_names, reason = "standard variable names in tridiagonal QL algorithm")]
 fn ql_implicit_shifts(d: &mut [f64], e: &mut [f64], z: &mut [f64], n: usize) {
     // Shift sub-diagonal down by one position (standard QL convention).
     for i in 1..n {
