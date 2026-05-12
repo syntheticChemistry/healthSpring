@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** May 12, 2026
-**Status:** V64 — V63 + `validate_ltee_b5` Rust binary (LTEE B5 Tier 0+1 complete, 8/8 checks), `--format json` on validation binaries for projectNUCLEUS Tier 2 ingestion, **17 validation scenarios** (s_toxicology added — Track::Toxicology was dead taxonomy slot), Foundation Threads 3+5+8 expressions wired → active, dead `npu` feature removed, exp primal-name centralization. **999 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Status:** V64 — V63 + `validate_ltee_b5` Rust binary (LTEE B5 Tier 0+1 complete, 8/8 checks), `--format json` on validation binaries for projectNUCLEUS Tier 2 ingestion, **17 validation scenarios** (s_toxicology added — Track::Toxicology was dead taxonomy slot), Foundation Threads 3+5+8 expressions wired → active, dead `npu` feature removed, exp primal-name centralization. **1,011 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 
 ---
 

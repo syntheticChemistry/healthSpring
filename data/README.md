@@ -26,14 +26,11 @@ export HEALTHSPRING_COLD_STORAGE="/mnt/westgate/healthspring/data"
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Fetch QS gene matrix (NCBI Gene/Protein, ~5 min)
-python fetch_qs_genes.py
-
 # Fetch MIT-BIH records (PhysioNet, ~2 min) — planned
 # bash fetch_mitbih.sh
 
 # Fetch ChEMBL Hill panel (ChEMBL REST API, ~10 min) — planned
-# python fetch_chembl.py
+# bash fetch_chembl.sh
 ```
 
 ---

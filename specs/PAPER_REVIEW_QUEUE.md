@@ -2,7 +2,7 @@
 # healthSpring Paper Review Queue
 
 **Last Updated**: May 12, 2026
-**Status**: V64 — V63 + `validate_ltee_b5` Rust binary (Tier 0+1 LTEE B5 complete), `--format json` on validation binaries, Foundation Threads 3+8 wired → active. primalSpring **v0.9.25**. guideStone Level 5 (57/57). **95** experiments (83 science + 12 composition Tier 3–5), **999** tests, 45/45 papers + 1 LTEE complete. 96+ provenance entries, 87 capabilities. barraCuda v0.3.13.
+**Status**: V64 — V63 + `validate_ltee_b5` Rust binary (Tier 0+1 LTEE B5 complete), `--format json` on validation binaries, Foundation Threads 3+8 wired → active. primalSpring **v0.9.25**. guideStone Level 5 (57/57). **95** experiments (83 science + 12 composition Tier 3–5), **1,011** tests, 45/45 papers + 1 LTEE complete. 96+ provenance entries, 87 capabilities. barraCuda v0.3.13.
 
 ---
 

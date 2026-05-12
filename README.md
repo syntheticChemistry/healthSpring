@@ -5,7 +5,7 @@
 **Date:** May 12, 2026 (V64)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V64 — **V63** deep debt complete + **V64**: `validate_ltee_b5` Rust binary (LTEE B5 Tier 0+1, 8/8 checks), `--format json` on validation binaries (projectNUCLEUS Tier 2), **17 validation scenarios** (`s_toxicology` fills Track::Toxicology dead slot), Foundation Threads 3+5+8 expressions wired → active (8/10 threads), dead `npu` feature removed, exp primal-name centralization complete. **999 tests** pass, 0 clippy warnings. guideStone **Level 5**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe, zero TODO.
+**Status:** V64 — **V63** deep debt complete + **V64**: `validate_ltee_b5` Rust binary (LTEE B5 Tier 0+1, 8/8 checks), `--format json` on validation binaries (projectNUCLEUS Tier 2), **17 validation scenarios** (`s_toxicology` fills Track::Toxicology dead slot), Foundation Threads 3+5+8 expressions wired → active (8/10 threads), dead `npu` feature removed, exp primal-name centralization complete. **1,011 tests** pass, 0 clippy warnings. guideStone **Level 5**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe, zero TODO.
 
 ---
 
@@ -34,7 +34,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Metric | Value |
 |--------|-------|
 | Version | **V64** (V63 + `validate_ltee_b5` Rust binary — LTEE B5 Tier 1 parity 8/8; `--format json` on both validate binaries; Foundation T3+T5+T8 expressions wired → active; `s_toxicology` scenario (17th); dead `npu` feature removed; exp115/118 primal-name centralization; deep debt audit clean) |
-| **Total tests** | **999** (868 lib + 131 integration/workspace) |
+| **Total tests** | **1,011** (871 lib + 9 doc + 131 integration/workspace) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
 | Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: 16 registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
 | JSON-RPC capabilities | 87 (`ALL_CAPABILITIES` in `capabilities.rs`; includes science + infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
@@ -757,7 +757,7 @@ healthSpring/
 ## Build
 
 ```bash
-cargo test --workspace                  # 999 tests
+cargo test --workspace                  # 1,011 tests
 cargo run --bin healthspring_unibin -- --help   # certify · validate · serve · status · version
 cargo clippy --workspace --all-targets --all-features -- -W clippy::pedantic -W clippy::nursery  # Zero warnings (pedantic denied at crate level)
 cargo fmt --check --all                 # Zero diffs

@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: May 12, 2026
-**Status**: V64 — 95 experiments + `validate_ltee_b5` Rust binary (LTEE B5 Tier 1, 8/8); 17 validation scenarios (`s_toxicology` added); `--format json` on validation binaries. **999 tests**. IPC-first defaults. primalSpring **v0.9.25**. All experiment call sites use domain param structs. exp115/exp118 primal names centralized to `primal_names::*`.
+**Status**: V64 — 95 experiments + `validate_ltee_b5` Rust binary (LTEE B5 Tier 1, 8/8); 17 validation scenarios (`s_toxicology` added); `--format json` on validation binaries. **1,011 tests**. IPC-first defaults. primalSpring **v0.9.25**. All experiment call sites use domain param structs. exp115/exp118 primal names centralized to `primal_names::*`.
 
 **V61 note:** Sixteen former standalone experiment `main` targets were absorbed into **`validation/scenarios/`** (registry-backed scenarios); sources archived under **`fossilRecord/experiments_prokaryotic_may2026/`**.
 

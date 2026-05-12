@@ -12,7 +12,7 @@
 
 This document describes how healthSpring can be leveraged — alone and in composition with other primals — by springs and ecosystem consumers. Each primal in the ecosystem produces an equivalent guide. Together, these guides form a combinatorial recipe book for emergent behaviors.
 
-healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. **999 tests**, 95 experiments, 87 capabilities (62 science + 21 infra). TCP + UDS listeners, BTSP handshake, typed IPC clients, structured discovery. barraCuda v0.3.13. **`healthspring_unibin certify`** (plus `validate`, `serve`, `status`, `version`) validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`; standalone **`healthspring_guidestone`** remains a fossil entrypoint only — prefer UniBin. Library crates default **`default = []`** (IPC-first); enable **`barracuda-lib`** when linking barraCuda directly. `math_dispatch` is a validation window (2 generic IPC + 9 local domain compositions). Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
+healthSpring provides **human health science computation** — PK/PD modeling, microbiome analytics, biosignal processing, endocrine models, toxicology, simulation, and diagnostic pipelines. Pure Rust, zero unsafe, zero `#[allow()]`, zero clippy warnings. 6 GPU ops rewired to barraCuda upstream. **1,011 tests**, 95 experiments, 87 capabilities (62 science + 21 infra). TCP + UDS listeners, BTSP handshake, typed IPC clients, structured discovery. barraCuda v0.3.13. **`healthspring_unibin certify`** (plus `validate`, `serve`, `status`, `version`) validates bare properties 1–5 + NUCLEUS IPC parity via `primalspring::composition`; standalone **`healthspring_guidestone`** remains a fossil entrypoint only — prefer UniBin. Library crates default **`default = []`** (IPC-first); enable **`barracuda-lib`** when linking barraCuda directly. `math_dispatch` is a validation window (2 generic IPC + 9 local domain compositions). Three-layer validation: Python → science, Rust → baselines, NUCLEUS → composition.
 
 **Philosophy**: Health science is sovereign. Hill dose-response, Shannon diversity, Pan-Tompkins QRS — these are universal primitives. healthSpring owns the biology; other primals own the hardware, the network, the storage, the identity. Discover at runtime, compose at will.
 
@@ -212,7 +212,7 @@ Top capabilities by domain (62 science + 21 infra):
 
 | Metric | V62 |
 |--------|-----|
-| Tests | 999 |
+| Tests | 1,011 |
 | Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | Python baselines | 53 scripts + 53 notebooks |
 | Cross-validation | 113/113 |

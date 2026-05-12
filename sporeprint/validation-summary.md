@@ -10,7 +10,7 @@ springs = ["healthspring", "wetspring", "neuralspring", "groundspring"]
 
 ## Status
 
-- **999 Rust workspace tests** — 868 lib + 20 integration/composition + 12 integration_wfdb + 3 integration_registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool
+- **1,011 Rust workspace tests** — 871 lib + 9 doc + 20 integration/composition + 12 integration_wfdb + 3 integration_registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool
 - **194 Python cross-validation checks** (`control/pkpd/cross_validate.py`, Tracks 1–9)
 - **7 clinical tracks**: PK/PD, microbiome, biosignal, endocrinology, NLME, comparative medicine, drug discovery
 - **Sovereign NLME** (FOCE/SAEM) replaces proprietary NONMEM/Monolix

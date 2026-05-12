@@ -24,7 +24,7 @@ This project uses internal versioning (V-series) for development milestones.
 - **Experiment primal name centralization**: exp115 + exp118 hardcoded `"biomeos"`, `"beardog"`, `"songbird"`, `"nestgate"`, `"rhizocrypt"`, `"loamspine"`, `"sweetgrass"`, `"toadstool"` replaced with `primal_names::*` constants
 
 ### Audit
-- 868 lib + 131 workspace = **999 tests pass**; zero clippy warnings; zero unsafe; zero TODO/FIXME in production
+- 871 lib + 9 doc + 131 workspace = **1,011 tests pass**; zero clippy warnings; zero unsafe; zero TODO/FIXME in production
 - `validate_ltee_b5` 8/8 PASS matches Python benchmark to <1e-4 relative tolerance on all numerics
 - Foundation Threads 3+5+8 now `active` with expressions wired — 10/10 threads active, 7/10 with expressions
 - **Deep debt sweep clean**: zero files >800L (max 597), zero unsafe, zero unwrap/expect/panic in production, zero mocks in production, zero hardcoded primal names in lib code

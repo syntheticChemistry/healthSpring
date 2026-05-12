@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary, `--format json`, `s_toxicology` scenario (17th), Foundation T3+T5+T8 active, dead `npu` feature removed, exp primal-name centralization. **999 tests**, 95 experiments. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary, `--format json`, `s_toxicology` scenario (17th), Foundation T3+T5+T8 active, dead `npu` feature removed, exp primal-name centralization. **1,011 tests**, 95 experiments. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 **Last Updated**: May 12, 2026
 
 ---

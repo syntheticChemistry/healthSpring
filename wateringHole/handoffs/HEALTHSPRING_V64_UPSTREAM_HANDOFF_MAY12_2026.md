@@ -4,7 +4,7 @@
 **Date**: May 12, 2026
 **Version**: V64
 **primalSpring**: v0.9.25 (pinned)
-**Tests**: 999 (868 lib + 131 integration/workspace)
+**Tests**: 1,011 (871 lib + 9 doc + 131 integration/workspace)
 **Capabilities**: 87 JSON-RPC methods
 **Architecture**: Eukaryotic UniBin + IPC-first defaults + 4 NUCLEUS workloads + 17 validation scenarios
 
@@ -97,7 +97,7 @@ in V63 — zero hardcoded primal name strings remain across the entire codebase.
 
 | Metric | Value |
 |--------|-------|
-| Tests | **999** (868 lib + 131 integration/workspace) |
+| Tests | **1,011** (871 lib + 9 doc + 131 integration/workspace) |
 | Clippy warnings | **0** |
 | Unsafe blocks | **0** (`forbid(unsafe_code)`) |
 | TODO/FIXME/HACK | **0** in production code |
