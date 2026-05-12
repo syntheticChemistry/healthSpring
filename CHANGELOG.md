@@ -4,6 +4,26 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64 — May 12, 2026
+
+### Added
+- **`validate_ltee_b5`** Rust validation binary — LTEE B5 (Leonard et al. 2024 symbiont PK/PD) Tier 1 parity with Python baseline (8/8 checks: logistic colonization, carrying capacity, doubling time, half-max timing, steady-state molecule, monotonic production, Hill knockdown, PK half-life)
+- **`--format json`** flag on `validate_pk_models` (16 checks) and `validate_ltee_b5` (8 checks) for projectNUCLEUS Tier 2 structured ingestion
+- **LTEE provenance entry** in `records_science.rs` — `ltee_b5` track with Leonard 2024 mBio reference
+- **Foundation Thread 3** (Immunology) expression wired in `THREAD_INDEX.toml` → `IMMUNO_DRUG_DISCOVERY.md`; Paper 22 added to `basecamp_papers`; status remains `active`
+- **Foundation Thread 8** (Human Health) expression wired in `THREAD_INDEX.toml` → `SOVEREIGN_HEALTH.md`; status promoted from `mapped` → `active`
+- `Status:` header lines added to both Thread 3 and Thread 8 expression docs for LTEE template parity
+
+### Changed
+- `primal_names::wire_prefix` constants now have `#[doc]` attributes (removes `-W missing-docs` warnings)
+- Provenance test `registry_covers_all_python_scripts` excludes `__init__.py` files (module markers, not science baselines)
+- PAPER_REVIEW_QUEUE LTEE B5 status: `STARTED` → `COMPLETE` (Tier 0+1 parity achieved)
+
+### Audit
+- 868 lib + 131 workspace = **999 tests pass**; zero clippy warnings; zero unsafe; zero TODO/FIXME in production
+- `validate_ltee_b5` 8/8 PASS matches Python benchmark to <1e-4 relative tolerance on all numerics
+- Foundation Threads 3+8 now `active` with expressions wired — 10/10 threads seeded, 8/10 with expressions
+
 ## V63 — May 11, 2026
 
 ### Added

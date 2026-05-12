@@ -241,12 +241,26 @@ fn validate_michaelis_menten(h: &mut ValidationHarness) {
 }
 
 fn main() {
-    let mut h = ValidationHarness::new("validate_pk_models");
+    let json_mode = std::env::args().any(|a| a == "--format" || a == "json")
+        && std::env::args().any(|a| a == "json" || a == "--format");
+
+    let mut h = if json_mode {
+        ValidationHarness::silent("validate_pk_models")
+    } else {
+        ValidationHarness::new("validate_pk_models")
+    };
 
     validate_hill(&mut h);
     validate_one_compartment(&mut h);
     validate_population_pk(&mut h);
     validate_michaelis_menten(&mut h);
 
-    h.exit();
+    let outcome = h.finish();
+    if json_mode {
+        println!(
+            "{{\"name\":\"{}\",\"passed\":{},\"failed\":{},\"total\":{}}}",
+            outcome.name, outcome.passed, outcome.failed, outcome.total,
+        );
+    }
+    std::process::exit(outcome.exit_code());
 }

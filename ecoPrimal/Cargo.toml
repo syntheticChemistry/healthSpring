@@ -76,6 +76,10 @@ name = "validate_pk_models"
 path = "src/bin/validate_pk_models.rs"
 
 [[bin]]
+name = "validate_ltee_b5"
+path = "src/bin/validate_ltee_b5.rs"
+
+[[bin]]
 name = "healthspring_guidestone"
 path = "src/bin/healthspring_guidestone/main.rs"
 required-features = ["guidestone"]

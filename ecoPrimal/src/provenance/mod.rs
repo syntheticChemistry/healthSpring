@@ -182,7 +182,9 @@ fn count_py_files(dir: &std::path::Path) -> usize {
         let path = entry.path();
         if path.is_dir() {
             n += count_py_files(&path);
-        } else if path.extension().is_some_and(|e| e == "py") {
+        } else if path.extension().is_some_and(|e| e == "py")
+            && path.file_name().is_some_and(|f| f != "__init__.py")
+        {
             n += 1;
         }
     }

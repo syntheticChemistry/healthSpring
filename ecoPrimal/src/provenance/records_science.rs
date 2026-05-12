@@ -455,4 +455,17 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         exact_command: "python3 control/comparative/exp106_feline_hyperthyroid.py",
         baseline_source: "Trepanier 2006 JVIM 20:18 (methimazole MM PK, T4 response)",
     },
+    // LTEE GuideStone
+    ProvenanceRecord {
+        track: "ltee",
+        experiment: "ltee_b5",
+        python_script: "control/ltee_symbiont_pkpd/ltee_symbiont_pkpd.py",
+        python_version: "3.10+",
+        description: "LTEE B5: Symbiont PK/PD — engineered S. alvi gut bacteria as drug delivery (Leonard et al. 2024)",
+        checks: 8,
+        git_commit: "ec9b2d5",
+        run_date: "2026-05-11",
+        exact_command: "python3 control/ltee_symbiont_pkpd/ltee_symbiont_pkpd.py",
+        baseline_source: "Leonard et al. 2024 mBio 15(3):e03342-23 doi:10.1128/mbio.03342-23",
+    },
 ];

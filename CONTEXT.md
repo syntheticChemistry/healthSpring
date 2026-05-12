@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V63 · **Date:** May 11, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V63: `wire_prefix` + socket-path centralization; 4 domain param structs (`DosingRegimen`, `PopulationPkVariability`, `ToxicityModelParams`, `AntibioticSimConfig`); Foundation Thread 3 seeded.
+**Version:** V64 · **Date:** May 12, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64: `validate_ltee_b5` Rust binary (Tier 1 LTEE B5 parity, 8/8); `--format json` on validation binaries for projectNUCLEUS Tier 2 ingestion; Foundation Threads 3+8 expressions wired → active.
 
 ## What This Is
 

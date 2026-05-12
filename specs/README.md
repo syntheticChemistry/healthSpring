@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: May 11, 2026
-**Status**: V63 — Eukaryotic UniBin + **`certification/`** organelle + **`composition/`** + **`validation/scenarios/`**; IPC-first defaults (`default = []`, **`barracuda-lib`** opt-in). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 via **`healthspring_unibin certify`**. **999 tests**, 95 experiments, 87 JSON-RPC capabilities, 95+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. V63 deep debt: param-struct refactoring + wire_prefix centralization.
+**Last Updated**: May 12, 2026
+**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary (8/8 LTEE B5 checks), `--format json` on validation binaries (projectNUCLEUS Tier 2), Foundation Threads 3+8 wired → active. **999 tests**, 95 experiments, 87 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---

@@ -62,8 +62,11 @@ pub const FALLBACK_SOCKET_DIR: &str = "/tmp/biomeos";
 /// Legacy callers may send `barracuda.stats.mean` or `biomeos.lifecycle.health`;
 /// these prefixes are stripped to produce the canonical bare form.
 pub mod wire_prefix {
+    /// Method prefix for healthSpring-originated JSON-RPC calls.
     pub const HEALTHSPRING: &str = "healthspring.";
+    /// Method prefix for barraCuda-originated JSON-RPC calls.
     pub const BARRACUDA: &str = "barracuda.";
+    /// Method prefix for biomeOS-originated JSON-RPC calls.
     pub const BIOMEOS: &str = "biomeos.";
 }
 

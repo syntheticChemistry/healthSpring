@@ -2,7 +2,7 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** May 11, 2026 (V63)
+**Date:** May 12, 2026 (V64)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
 **Status:** V63 — **V61 eukaryotic base**: `healthspring_unibin` UniBin (`certify`, `validate`, `serve`, `status`, `version`); **`certification/`** organelle (absorbed guidestone); **`composition/`** + **`validation/scenarios/`** (16 scenarios across 8 tracks, absorbed from experiments); **`fossilRecord/`** archives prokaryotic guidestone + experiment mains; **IPC-first defaults** (`default = []`, `barracuda-lib` opt-in); **primalSpring v0.9.25** pinned (was optional path dep at v0.9.17); per-trio provenance IPC (**rhizocrypt**, **loamspine**, **sweetgrass**). Typed enums + `ValidationOutcome` + capability-first routing retained. **V62** adds CI **`[health]`** cross-sync (`health.monitor`, `health.probe`), **skunkBat** audit IPC (`audit.log` via **`HealthCompositionContext`**), **biomeOS v3.51** handlers (`composition.status`, `method.register`), env-configurable NCBI bases (`HEALTHSPRING_NCBI_EUTILS_BASE`, `HEALTHSPRING_NCBI_SRA_BASE`), **`primal_names`** centralization for niche dependencies / **`BarraCudaClient::discover()`**, **skunkBat** node in deploy graphs (`graphs/*.toml`), **`healthspring`** binary alias for NUCLEUS workload compat, and **4 NUCLEUS workloads** (PK, biosignal, microbiome, certification). Zero hardcoded primal name strings remain. **plasmidBin release binaries** staged (2.9M `healthspring` + 3.1M `healthspring_primal`). **V63** adds `wire_prefix` module + `BIOMEOS_DIR_NAME` + `FALLBACK_SOCKET_DIR` + `SONGBIRD_SOCKET_PATHS` centralization in `primal_names`, parameter struct refactoring (`DosingRegimen`, `PopulationPkVariability`, `ToxicityModelParams`, `AntibioticSimConfig`), Foundation Thread 3 (Immunology/Drug Discovery) seeded. **999 tests** pass, 0 clippy warnings. guideStone **Level 5** lineage continues via certification. ecoBin 0.9.0. barraCuda v0.3.13.
@@ -33,12 +33,12 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V63** (V62 + `wire_prefix` / socket-path / param-struct deep debt sweep; Foundation Thread 3 seeded; 4 domain param structs replace 7-8 param functions) |
+| Version | **V64** (V63 + `validate_ltee_b5` Rust binary — LTEE B5 Tier 1 parity, 8/8 checks; `--format json` on both validate binaries for projectNUCLEUS Tier 2 ingestion; Foundation Threads 3+8 expressions wired → `active`; provenance registry covers LTEE track) |
 | **Total tests** | **999** (868 lib + 131 integration/workspace) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
 | Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: 16 registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
 | JSON-RPC capabilities | 87 (`ALL_CAPABILITIES` in `capabilities.rs`; includes science + infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
-| Paper queue | **45/45 complete** (Tracks 1–7: 30 T1–T5 + 8 T6 + 7 T7), 3 LTEE queued (B5, E2, E4) |
+| Paper queue | **45/45 complete** (Tracks 1–7: 30 T1–T5 + 8 T6 + 7 T7) + **1 LTEE complete** (B5 Tier 0+1), 2 LTEE queued (E2, E4) |
 | Python baselines | **53 Python control scripts + 53 Jupyter notebooks** with structured provenance registry (**95+** provenance entries, 100% experiment coverage) |
 | Cross-validation | **113/113** parity checks (per-experiment, all tracks) + **194** individual assertions (`cross_validate.py`, Tracks 1–9) |
 | ecoBin | Static-PIE x86_64-musl, 3.2 MB, harvested to `infra/plasmidBin/healthspring/` (v0.9.0) |
