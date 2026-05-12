@@ -5,7 +5,7 @@
 **Version**: V64
 **primalSpring**: v0.9.25 (pinned)
 **Tests**: 1,011 (871 lib + 9 doc + 131 integration/workspace)
-**Capabilities**: 87 JSON-RPC methods
+**Capabilities**: 88 JSON-RPC methods (58 science + 30 infra)
 **Architecture**: Eukaryotic UniBin + IPC-first defaults + 4 NUCLEUS workloads + 17 validation scenarios
 
 ---
@@ -129,7 +129,7 @@ Every healthSpring science claim follows this ladder. V64 extends it:
 
 ### biomeOS Deployment Model
 
-healthSpring deploys as a biomeOS niche via `healthspring_primal` (87 JSON-RPC
+healthSpring deploys as a biomeOS niche via `healthspring_primal` (88 JSON-RPC
 capabilities over Unix socket). The deployment graph
 (`graphs/healthspring_niche_deploy.toml`) specifies:
 

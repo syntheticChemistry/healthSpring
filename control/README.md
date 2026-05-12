@@ -23,8 +23,8 @@ numpy  == 2.1.3   (pinned in requirements.txt)
 | `validation/` | barraCuda CPU parity | exp040 |
 | `comparative/` | Track 6 baselines (exp100–106): canine IL-31, JAK1, pruritus, lokivetmab, cross-species PK, canine gut, feline PK | exp100–exp106 |
 | `discovery/` | Track 7 baselines (exp090–094): MATRIX scoring, ADDRC HTS, compound library, ChEMBL JAK, fibrosis | exp090–exp094 |
-| `toxicology/` | Track 9 — toxicity landscape, hormesis | exp097 |
-| `simulation/` | Track 9 — causal simulation | exp098–exp099 |
+| `toxicology/` | Track 9 — toxicity landscape, hormesis | exp098–exp099 |
+| `simulation/` | Track 9 — causal simulation | exp111 |
 | `ltee_symbiont_pkpd/` | LTEE B5 — Leonard 2024 symbiont PK/PD | validate_ltee_b5 |
 | `scripts/` | Benchmarks | CPU timing comparison |
 

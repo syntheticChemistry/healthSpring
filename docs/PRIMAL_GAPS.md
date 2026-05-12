@@ -29,8 +29,8 @@ Remaining ecosystem gaps below (ionic bridge, BTSP server, provenance trio behav
 **Gap**: The proto-nucleate declares `health.pharmacology`, `health.genomics`,
 `health.clinical`, `health.de_identify`, and `health.aggregate` as capabilities
 for the healthSpring node. healthSpring's actual capability surface uses
-`science.{domain}.{operation}` (61 science methods) plus infrastructure
-capabilities. There is no `health.*` science namespace — only `health.liveness`
+`science.{domain}.{operation}` (58 science methods) plus 30 infrastructure
+capabilities (88 total). There is no `health.*` science namespace — only `health.liveness`
 and `health.readiness` probes.
 
 **Impact**: biomeOS graph deployment that routes by `health.*` capabilities

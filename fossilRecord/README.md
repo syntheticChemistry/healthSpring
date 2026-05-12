@@ -11,10 +11,15 @@ authoritative, compiled code lives in `ecoPrimal/src/`.
 
 ## Contents
 
-| Directory | What Was Archived | When |
-|-----------|-------------------|------|
+Archived sources were consolidated upstream to `ecoPrimals/fossilRecord/` at V61.
+
+| Archive | What Was Archived | When |
+|---------|-------------------|------|
 | `experiments_prokaryotic_may2026/` | 16 experiment `main.rs` files absorbed into `validation/scenarios/` | V61 (May 2026) |
 | `guidestone_prokaryotic_may2026/` | Standalone `healthspring_guidestone` binary sources absorbed into `certification/` organelle | V61 (May 2026) |
+
+These directories lived here briefly during V61 migration, then moved to the
+ecosystem-level fossil record. This README remains as the provenance pointer.
 
 ## Policy
 

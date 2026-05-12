@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V64 · **Date:** May 12, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64: `validate_ltee_b5` Rust binary (Tier 1 LTEE B5 parity, 8/8); `--format json` on validation binaries for projectNUCLEUS Tier 2 ingestion; Foundation Threads 3+8 expressions wired → active.
+**Version:** V64 · **Date:** May 12, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64: `validate_ltee_b5` Rust binary (Tier 1 LTEE B5 parity, 8/8); `--format json` on validation binaries for projectNUCLEUS Tier 2 ingestion; Foundation Threads 3+5+8 expressions wired → active; 88 capabilities; 17 validation scenarios.
 
 ## What This Is
 
@@ -30,11 +30,11 @@ The runtime surface is **`healthspring_unibin`** (certify, validate, serve, stat
 ## Technical Facts
 
 - **Language**: 100% Rust, zero C dependencies (wgpu optional for GPU)
-- **Architecture**: Eukaryotic workspace layout — `certification/` (guideStone absorption), `composition/` (`HealthCompositionContext` over primalSpring `CompositionContext`), `validation/scenarios/` (16 scenarios / 8 tracks), `ipc/provenance/` (rhizocrypt, loamspine, sweetgrass), `fossilRecord/` (archived prokaryotic sources); 3 library crates + 95 experiment binaries
+- **Architecture**: Eukaryotic workspace layout — `certification/` (guideStone absorption), `composition/` (`HealthCompositionContext` over primalSpring `CompositionContext`), `validation/scenarios/` (17 scenarios / 8 tracks), `ipc/provenance/` (rhizocrypt, loamspine, sweetgrass), `fossilRecord/` (archived prokaryotic sources); 3 library crates + 95 experiment binaries
   - `healthspring-barracuda` — core science library (`default = []`, IPC-first; enable **`barracuda-lib`** for direct barraCuda crates + GPU library paths)
   - `healthspring-forge` — metalForge hardware dispatch
   - `healthspring-toadstool` — pipeline orchestration
-- **IPC**: JSON-RPC 2.0 over Unix domain sockets, 87 capabilities per `ALL_CAPABILITIES` in `capabilities.rs`; `normalize_method()` maps legacy-prefixed names before routing
+- **IPC**: JSON-RPC 2.0 over Unix domain sockets, 88 capabilities per `ALL_CAPABILITIES` in `capabilities.rs`; `normalize_method()` maps legacy-prefixed names before routing
 - **License**: AGPL-3.0-or-later (scyBorg trio)
 - **Tests**: 1,011 (871 lib + 9 doc + 20 integration/composition + 12 integration_wfdb + 3 integration_registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool)
 - **Coverage**: target 90% line (llvm-cov)

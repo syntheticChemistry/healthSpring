@@ -22,8 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V63** | [Deep Debt Sweep + Param Structs + Foundation Thread 3](handoffs/HEALTHSPRING_V63_UPSTREAM_HANDOFF_MAY11_2026.md) | May 11 | `wire_prefix` + socket-path centralization; 4 domain param structs across 21 call sites; Foundation Thread 3 seeded; evolution patterns for all upstream teams |
-| | *V1–V62 → `handoffs/archive/`* | | Fossil record (V54 upstream, V59 deep-debt, V60 deep debt evolution, V61 interstadial eukaryotic, V62 CI cross-sync + audit) |
+| **V64** | [LTEE B5 + Ionic Bridge + Format JSON + Foundation T3+T5+T8](handoffs/HEALTHSPRING_V64_UPSTREAM_HANDOFF_MAY12_2026.md) | May 12 | `validate_ltee_b5` Rust binary, `--format json` on validate binaries, `s_toxicology` scenario, ionic bridge IPC stubs, Foundation Threads 3+5+8 active, test count reconciled to 1,011 |
+| | *V1–V63 → `handoffs/archive/`* | | Fossil record (V54 upstream, V59 deep-debt, V60 deep debt evolution, V61 interstadial eukaryotic, V62 CI cross-sync + audit, V63 param structs + Thread 3) |
 
 ## Archive
 

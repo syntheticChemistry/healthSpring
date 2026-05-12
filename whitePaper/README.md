@@ -2,7 +2,7 @@
 # healthSpring White Paper
 
 **Date:** May 12, 2026
-**Status:** V64 — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone → L6 NUCLEUS. **UniBin** + 17 validation scenarios. 95 experiments, **1,011 tests**, 87 capabilities, 96+ provenance entries. `validate_ltee_b5` Tier 1 Rust binary (8/8 LTEE B5). `--format json` on validation binaries (projectNUCLEUS Tier 2). Foundation T3+T5+T8 active. **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Status:** V64 — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone → L6 NUCLEUS. **UniBin** + 17 validation scenarios. 95 experiments, **1,011 tests**, 88 capabilities, 96+ provenance entries. `validate_ltee_b5` Tier 1 Rust binary (8/8 LTEE B5). `--format json` on validation binaries (projectNUCLEUS Tier 2). Foundation T3+T5+T8 active. **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -244,7 +244,7 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 |--------|-------|
 | Experiments | 95 complete (83 science + 12 composition Tier 3–5, exp112–123) |
 | Rust tests | 1,011 (871 lib + 9 doc + 131 integration/workspace; see root README) |
-| Python checks | 194 cross-validation |
+| Python checks | 113 cross-validation |
 | Paper queue | 45/45 complete (Tracks 1–7), 3 LTEE queued (B5, E2, E4) |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |
 | CPU speedup | Rust 84× faster than Python |

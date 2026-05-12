@@ -36,11 +36,11 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 | Version | **V64** (V63 + `validate_ltee_b5` Rust binary — LTEE B5 Tier 1 parity 8/8; `--format json` on both validate binaries; Foundation T3+T5+T8 expressions wired → active; `s_toxicology` scenario (17th); dead `npu` feature removed; exp115/118 primal-name centralization; deep debt audit clean) |
 | **Total tests** | **1,011** (871 lib + 9 doc + 131 integration/workspace) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
-| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: 16 registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
-| JSON-RPC capabilities | 87 (`ALL_CAPABILITIES` in `capabilities.rs`; includes science + infrastructure — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
+| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: 17 registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
+| JSON-RPC capabilities | 88 (`ALL_CAPABILITIES` in `capabilities.rs`; 58 science + 30 infra — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **45/45 complete** (Tracks 1–7: 30 T1–T5 + 8 T6 + 7 T7) + **1 LTEE complete** (B5 Tier 0+1), 2 LTEE queued (E2, E4) |
 | Python baselines | **53 Python control scripts + 53 Jupyter notebooks** with structured provenance registry (**95+** provenance entries, 100% experiment coverage) |
-| Cross-validation | **113/113** parity checks (per-experiment, all tracks) + **194** individual assertions (`cross_validate.py`, Tracks 1–9) |
+| Cross-validation | **113** parity checks across all tracks (`cross_validate.py`, Tracks 1–9) |
 | ecoBin | Static-PIE x86_64-musl, 3.2 MB, harvested to `infra/plasmidBin/healthspring/` (v0.9.0) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity |
 | CPU parity | Rust 84× faster than Python across V16 primitives |
@@ -655,7 +655,7 @@ healthSpring/
 │       │   └── sovereign.rs # Sovereign GPU dispatch via SovereignDevice
 │       ├── certification/ # GuideStone / certify engine (absorbed legacy binary)
 │       ├── composition/   # HealthCompositionContext — typed accessors over CompositionContext
-│       ├── validation/    # harness, checks — scenarios/ holds 16-track registry
+│       ├── validation/    # harness, checks — scenarios/ holds 17-scenario registry (8 tracks)
 │       ├── ipc/          # JSON-RPC IPC infrastructure
 │       │   ├── mod.rs       # Module root
 │       │   ├── provenance/  # rhizocrypt, loamspine, sweetgrass clients
@@ -695,7 +695,7 @@ healthSpring/
 │       ├── michaelis_menten_batch_f64.wgsl
 │       ├── scfa_batch_f64.wgsl
 │       └── beat_classify_batch_f64.wgsl
-├── control/             # Python baselines (Tier 0) — 194 + 7 Track 6+7 cross-validation checks
+├── control/             # Python baselines (Tier 0) — 113 cross-validation checks across all tracks
 │   ├── pkpd/            # exp001–exp006, exp077 + cross_validate.py
 │   ├── microbiome/      # exp010–exp013, exp078–exp080
 │   ├── biosignal/       # exp020–exp023, exp081–exp082

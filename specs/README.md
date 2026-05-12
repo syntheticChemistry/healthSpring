@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: May 12, 2026
-**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary (8/8 LTEE B5 checks), `--format json` on validation binaries (projectNUCLEUS Tier 2), Foundation Threads 3+8 wired → active. **1,011 tests**, 95 experiments, 87 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13.
+**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary (8/8 LTEE B5 checks), `--format json` on validation binaries (projectNUCLEUS Tier 2), Foundation Threads 3+8 wired → active. **1,011 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -12,7 +12,7 @@
 | Metric | Value |
 |--------|-------|
 | Rust tests (workspace) | 1,011 |
-| Python control checks | 53 baselines + 53 notebooks, 113/113 parity checks + 194 assertions (`cross_validate.py`, all 9 tracks) |
+| Python control checks | 53 baselines + 53 notebooks, 113 parity checks (`cross_validate.py`, all 9 tracks) |
 | Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
