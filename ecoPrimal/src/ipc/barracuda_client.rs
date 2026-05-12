@@ -170,6 +170,48 @@ impl BarraCudaClient {
     pub fn health_liveness(&self) -> Result<serde_json::Value, IpcError> {
         self.inner.health_liveness()
     }
+
+    /// `precision.route` — query recommended precision tier for a physics domain.
+    ///
+    /// Wraps `barracuda.precision.route` (Tier 2 Live Science API). Returns the
+    /// recommended precision tier, hardware hint, and compiler requirements for
+    /// a given domain (e.g. `"population_pk"`, `"eigensolve"`, `"bioinformatics"`).
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if `barraCuda` is unreachable or rejects the query.
+    pub fn precision_route(&self, domain: &str) -> Result<PrecisionAdvisory, IpcError> {
+        let params = serde_json::json!({ "domain": domain });
+        let resp = self.inner.try_call("precision.route", &params)?;
+        let result = rpc::extract_rpc_result(&resp).unwrap_or(&resp);
+        Ok(PrecisionAdvisory {
+            tier: result
+                .get("tier")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or("FP64")
+                .to_owned(),
+            hardware_hint: result
+                .get("hardware_hint")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or("compute")
+                .to_owned(),
+            compiler_required: result
+                .get("compiler_required")
+                .and_then(serde_json::Value::as_bool)
+                .unwrap_or(false),
+        })
+    }
+}
+
+/// Precision routing advisory from `barracuda.precision.route`.
+#[derive(Debug, Clone)]
+pub struct PrecisionAdvisory {
+    /// Recommended precision tier (e.g. "FP32", "FP64", "DF64").
+    pub tier: String,
+    /// Hardware hint (e.g. "compute", "`tensor_core`").
+    pub hardware_hint: String,
+    /// Whether a shader compiler (coralReef) is required for this tier.
+    pub compiler_required: bool,
 }
 
 fn extract_f64(resp: &serde_json::Value) -> Result<f64, IpcError> {
@@ -219,5 +261,12 @@ mod tests {
     fn extract_f64_from_empty_object_returns_error() {
         let resp = serde_json::json!({});
         assert!(extract_f64(&resp).is_err());
+    }
+
+    #[test]
+    fn precision_route_fails_without_barracuda() {
+        let client = BarraCudaClient::new(PathBuf::from("/tmp/barracuda-nonexistent.sock"));
+        let result = client.precision_route("population_pk");
+        assert!(result.is_err());
     }
 }

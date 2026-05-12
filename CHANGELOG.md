@@ -4,6 +4,28 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64e — May 12, 2026
+
+### Tier 2 Wiring (Ecosystem Wave Sync Response)
+
+- **`toadstool.validate`**: `compute_dispatch::validate_workload()` wraps pre-flight workload validation (Tier 2 Live Science API)
+- **`toadstool.list_workloads`**: `compute_dispatch::list_workloads()` queries available compute workloads
+- **`barracuda.precision.route`**: `BarraCudaClient::precision_route()` queries recommended precision tier for physics domains (e.g. `population_pk`, `eigensolve`)
+- **`PrecisionAdvisory`** and **`ValidationReport`** structs for typed Tier 2 responses
+- 874 lib + 9 doc + 131 workspace = **1,014 tests pass**
+
+### Doc Reconciliation (V64c–V64d)
+
+- Test count reconciled: 999 → 1,011 → 1,014 across 19+ docs
+- Scenario count: 16 → 17 (s_toxicology was uncounted)
+- Capability count: 87 → 88 (58 science + 30 infra from `ALL_CAPABILITIES`)
+- Cross-validation: 194 → 113 (actual `cross_validate.py` output)
+- wateringHole active handoff: V63 → V64 (V63 was already archived)
+- Foundation Thread 3 expression re-wired (overwritten by upstream merge)
+- Foundation Thread 8 promoted seeded → active (V64 validated)
+- data/manifest.toml: phantom `fetch_qs_genes.py` marked unimplemented
+- control/README: toxicology exp IDs corrected
+
 ## V64 — May 12, 2026
 
 ### Added

@@ -128,6 +128,98 @@ pub fn capabilities() -> Vec<String> {
         .unwrap_or_default()
 }
 
+/// Pre-flight validation report from `toadstool.validate`.
+#[derive(Debug, Clone)]
+pub struct ValidationReport {
+    /// Whether the workload is compatible with the current environment.
+    pub valid: bool,
+    /// Whether a GPU is available for dispatch.
+    pub gpu_available: bool,
+    /// Recommended precision tier (e.g. "DF64", "FP32").
+    pub precision_tier: String,
+    /// Estimated dispatch time in milliseconds.
+    pub estimated_dispatch_time_ms: u64,
+    /// Any warnings about the workload configuration.
+    pub warnings: Vec<String>,
+    /// Capabilities required by the workload.
+    pub required_capabilities: Vec<String>,
+}
+
+/// Validate a workload TOML against the current compute environment
+/// without executing it. Wraps `toadstool.validate` (Tier 2 Live Science API).
+///
+/// # Errors
+///
+/// Returns [`DispatchError`] if no compute primal is available or the RPC
+/// call fails.
+pub fn validate_workload(workload_path: &str) -> Result<ValidationReport, DispatchError> {
+    let compute_socket = socket::discover_compute_primal().ok_or(DispatchError::NoComputePrimal)?;
+
+    let result = rpc::try_send(
+        &compute_socket,
+        "toadstool.validate",
+        &serde_json::json!({
+            "workload_path": workload_path,
+            "dry_run": true,
+        }),
+    )
+    .map_err(DispatchError::Send)?;
+
+    Ok(ValidationReport {
+        valid: result.get("valid").and_then(serde_json::Value::as_bool).unwrap_or(false),
+        gpu_available: result
+            .get("gpu_available")
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(false),
+        precision_tier: result
+            .get("precision_tier")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("unknown")
+            .to_owned(),
+        estimated_dispatch_time_ms: result
+            .get("estimated_dispatch_time_ms")
+            .and_then(serde_json::Value::as_u64)
+            .unwrap_or(0),
+        warnings: result
+            .get("warnings")
+            .and_then(serde_json::Value::as_array)
+            .map(|arr| arr.iter().filter_map(|v| v.as_str().map(str::to_owned)).collect())
+            .unwrap_or_default(),
+        required_capabilities: result
+            .get("required_capabilities")
+            .and_then(serde_json::Value::as_array)
+            .map(|arr| arr.iter().filter_map(|v| v.as_str().map(str::to_owned)).collect())
+            .unwrap_or_default(),
+    })
+}
+
+/// Query available workloads from the compute primal.
+/// Wraps `toadstool.list_workloads` (Tier 2 Live Science API).
+///
+/// Returns an empty vec if no compute primal is discovered.
+#[must_use]
+pub fn list_workloads() -> Vec<String> {
+    let Some(compute_socket) = socket::discover_compute_primal() else {
+        return Vec::new();
+    };
+    let Ok(result) = rpc::try_send(
+        &compute_socket,
+        "toadstool.list_workloads",
+        &serde_json::json!({}),
+    ) else {
+        return Vec::new();
+    };
+    result
+        .get("workloads")
+        .and_then(serde_json::Value::as_array)
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str().map(str::to_owned))
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -150,5 +242,17 @@ mod tests {
         assert_eq!(err.to_string(), "no compute primal discovered");
         let err = DispatchError::JobFailed("timeout".to_owned());
         assert_eq!(err.to_string(), "job failed: timeout");
+    }
+
+    #[test]
+    fn validate_workload_fails_without_compute_primal() {
+        let result = validate_workload("/path/to/workload.toml");
+        assert!(matches!(result, Err(DispatchError::NoComputePrimal)));
+    }
+
+    #[test]
+    fn list_workloads_returns_empty_without_primal() {
+        let wl = list_workloads();
+        assert!(wl.is_empty());
     }
 }
