@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** May 11, 2026
-**Status:** V63 — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone (primal proof via **`certification/`** + **`healthspring_unibin certify`**) → L6 NUCLEUS. **UniBin** (`certify`, `validate`, `serve`, `status`, `version`). 95 experiments (83 science + 12 composition exp112–123), **999 tests**, 87 JSON-RPC capabilities, 53 Python baseline scripts + 53 paired `.ipynb` notebooks, 95+ provenance entries (100% coverage). **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe. V63: domain param structs + wire_prefix centralization + Foundation Thread 3.
+**Date:** May 12, 2026
+**Status:** V64 — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone → L6 NUCLEUS. **UniBin** + 17 validation scenarios. 95 experiments, **999 tests**, 87 capabilities, 96+ provenance entries. `validate_ltee_b5` Tier 1 Rust binary (8/8 LTEE B5). `--format json` on validation binaries (projectNUCLEUS Tier 2). Foundation T3+T5+T8 active. **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---

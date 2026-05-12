@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # biomeOS NUCLEUS Local Integration Plan
 
-**Last Updated**: May 11, 2026
-**Status**: V63 — Eukaryotic UniBin + IPC-first defaults (`default = []`, **`barracuda-lib`** opt-in); primalSpring **v0.9.25**. Deep debt resolved (typed enums, clone reduction, capability-first routing; V63 param-struct + wire_prefix sweep). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57). **999 tests**, **95 experiments**, 87 JSON-RPC capabilities. ecoBin 0.9.0.
+**Last Updated**: May 12, 2026
+**Status**: V64 — V63 + `validate_ltee_b5` Tier 1, `--format json` on validation binaries (Tier 2 ingestion ready), `s_toxicology` scenario, Foundation T3+T5+T8 active. Phase 46 NUCLEUS composition (18/24). guideStone Level 5. **999 tests**, **95 experiments**, 87 capabilities. ecoBin 0.9.0.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

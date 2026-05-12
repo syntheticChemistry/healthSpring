@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-11
-**healthSpring version**: V63 (ecoBin 0.9.0, guideStone Level 5 lineage via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, UniBin + certification organelle + CompositionContext migration + V63 param-struct + wire_prefix deep debt sweep)
+**Date**: 2026-05-12
+**healthSpring version**: V64 (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64: `validate_ltee_b5` Tier 1, `--format json`, `s_toxicology`, Foundation T3+T5+T8 active, deep debt audit clean)
 
 ---
 

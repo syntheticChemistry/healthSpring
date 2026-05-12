@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: May 11, 2026
-**Status**: V63 — Eukaryotic UniBin + **`certification/`** + **`composition/`** + **`validation/scenarios/`**; IPC-first defaults (`default = []`, **`barracuda-lib`** opt-in); primalSpring **v0.9.25**. Phase 46 NUCLEUS composition (18/24). guideStone Level 5 lineage via **`healthspring_unibin certify`**. 95 experiments (83 science + 12 composition exp112–123), **999 tests**. V63: all experiment call sites use domain param structs (`DosingRegimen`, `AntibioticSimConfig`, `ToxicityModelParams`).
+**Last Updated**: May 12, 2026
+**Status**: V64 — 95 experiments + `validate_ltee_b5` Rust binary (LTEE B5 Tier 1, 8/8); 17 validation scenarios (`s_toxicology` added); `--format json` on validation binaries. **999 tests**. IPC-first defaults. primalSpring **v0.9.25**. All experiment call sites use domain param structs. exp115/exp118 primal names centralized to `primal_names::*`.
 
 **V61 note:** Sixteen former standalone experiment `main` targets were absorbed into **`validation/scenarios/`** (registry-backed scenarios); sources archived under **`fossilRecord/experiments_prokaryotic_may2026/`**.
 

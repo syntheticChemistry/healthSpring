@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
-**Last Updated**: May 11, 2026
-**Status**: V63 — Deep debt resolved (typed enums, clone reduction, capability-first routing, **V63** param-struct refactoring + wire_prefix centralization). Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57, primalSpring v0.9.25, v1.2.0). 95 experiments, 999 tests, 87 capabilities. barraCuda v0.3.13. ecoBin 0.9.0.
+**Last Updated**: May 12, 2026
+**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary, `--format json` validation output, `s_toxicology` scenario (17th), Foundation T3+T5+T8 active. Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57). 95 experiments, 999 tests, 87 capabilities. barraCuda v0.3.13. ecoBin 0.9.0.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and

@@ -1,7 +1,7 @@
 +++
-title = "healthSpring Validation Summary — V63"
-description = "PK/PD, gut microbiome, biosignal, drug discovery — sovereign NLME, UniBin certify/validate, V63 param-struct + wire_prefix deep debt sweep"
-date = 2026-05-11
+title = "healthSpring Validation Summary — V64"
+description = "PK/PD, gut microbiome, biosignal, drug discovery — LTEE B5 Tier 1, --format json, s_toxicology, Foundation T3+T5+T8 active, deep debt audit clean"
+date = 2026-05-12
 
 [taxonomies]
 primals = ["barracuda", "toadstool", "biomeos", "nestgate"]
@@ -20,7 +20,8 @@ springs = ["healthspring", "wetspring", "neuralspring", "groundspring"]
 ## Key validation binaries
 
 - **`healthspring_unibin`** — `certify`, `validate`, `serve`, `status`, `version`
-- **`validate_pk_models`** — Hill, 1-compartment PK, PopPK, Michaelis-Menten (projectNUCLEUS workloads)
+- **`validate_pk_models`** — Hill, 1-compartment PK, PopPK, Michaelis-Menten (`--format json` for projectNUCLEUS Tier 2)
+- **`validate_ltee_b5`** — LTEE B5 symbiont PK/PD (Leonard 2024): colonization, production, gut-lumen PK, Hill efficacy (8/8 checks, `--format json`)
 - **`healthspring_primal`** — biomeOS niche JSON-RPC server (`serve`, Unix socket + optional `--port` TCP)
 
 **Legacy:** `healthspring_guidestone` remains a Cargo bin for compatibility; prefer **`healthspring_unibin certify`**. V61 absorbed certification logic into the **`certification/`** organelle (`fossilRecord/guidestone_prokaryotic_may2026/` documents the migration).

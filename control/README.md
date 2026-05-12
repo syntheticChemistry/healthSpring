@@ -23,6 +23,9 @@ numpy  == 2.1.3   (pinned in requirements.txt)
 | `validation/` | barraCuda CPU parity | exp040 |
 | `comparative/` | Track 6 baselines (exp100–106): canine IL-31, JAK1, pruritus, lokivetmab, cross-species PK, canine gut, feline PK | exp100–exp106 |
 | `discovery/` | Track 7 baselines (exp090–094): MATRIX scoring, ADDRC HTS, compound library, ChEMBL JAK, fibrosis | exp090–exp094 |
+| `toxicology/` | Track 9 — toxicity landscape, hormesis | exp097 |
+| `simulation/` | Track 9 — causal simulation | exp098–exp099 |
+| `ltee_symbiont_pkpd/` | LTEE B5 — Leonard 2024 symbiont PK/PD | validate_ltee_b5 |
 | `scripts/` | Benchmarks | CPU timing comparison |
 
 ## Regenerating Baselines
@@ -37,7 +40,8 @@ python3 control/pkpd/exp001_hill_dose_response.py
 for py in control/pkpd/*.py control/microbiome/*.py \
           control/biosignal/*.py control/endocrine/*.py \
           control/validation/*.py control/discovery/*.py \
-          control/comparative/*.py; do
+          control/comparative/*.py control/toxicology/*.py \
+          control/simulation/*.py control/ltee_symbiont_pkpd/*.py; do
     [ "$(basename "$py")" = "cross_validate.py" ] && continue
     python3 "$py"
 done

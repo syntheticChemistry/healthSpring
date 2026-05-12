@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V63 — **UniBin** architecture (`healthspring_unibin`: `certify`, `validate`, `serve`, `status`, `version`) + IPC-first library defaults (`default = []`, **`barracuda-lib`** opt-in); primalSpring **v0.9.25**. guideStone Level 5 (57/57). **999 tests**, 95 experiments. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe. V63: wire_prefix + param-struct sweep; Foundation Thread 3 seeded.
-**Last Updated**: May 11, 2026
+**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary, `--format json`, `s_toxicology` scenario (17th), Foundation T3+T5+T8 active, dead `npu` feature removed, exp primal-name centralization. **999 tests**, 95 experiments. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Last Updated**: May 12, 2026
 
 ---
 
