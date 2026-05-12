@@ -20,6 +20,7 @@
 //! - Primal constants match deploy graph identity
 
 use healthspring_barracuda::ipc::dispatch::registered_capabilities;
+use healthspring_barracuda::primal_names;
 use healthspring_barracuda::validation::ValidationHarness;
 
 const DEPLOY_GRAPH: &str = include_str!("../../../graphs/healthspring_niche_deploy.toml");
@@ -103,7 +104,7 @@ fn validate_node_presence(h: &mut ValidationHarness) {
             .filter_map(|n| n.get("name").and_then(|v| v.as_str()))
             .collect();
 
-        let required_nodes = ["beardog", "songbird", "healthspring"];
+        let required_nodes = [primal_names::BEARDOG, primal_names::SONGBIRD, "healthspring"];
         for name in &required_nodes {
             h.check_bool(
                 &format!("Required node present: {name}"),
@@ -112,11 +113,11 @@ fn validate_node_presence(h: &mut ValidationHarness) {
         }
 
         let optional_nodes = [
-            "nestgate",
-            "rhizocrypt",
-            "loamspine",
-            "sweetgrass",
-            "toadstool",
+            primal_names::NESTGATE,
+            primal_names::RHIZOCRYPT,
+            primal_names::LOAMSPINE,
+            primal_names::SWEETGRASS,
+            primal_names::TOADSTOOL,
         ];
         for name in &optional_nodes {
             let present = node_names.iter().any(|n| n.contains(name));

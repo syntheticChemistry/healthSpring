@@ -17,6 +17,7 @@
 
 use healthspring_barracuda::ipc::dispatch::registered_capabilities;
 use healthspring_barracuda::ipc::socket;
+use healthspring_barracuda::primal_names;
 use healthspring_barracuda::validation::ValidationHarness;
 
 fn main() {
@@ -33,14 +34,14 @@ fn main() {
 
     let socket_dir = socket::resolve_socket_dir();
     let dir_str = socket_dir.to_string_lossy();
-    h.check_bool("Socket dir contains biomeos", dir_str.contains("biomeos"));
+    h.check_bool("Socket dir contains biomeos", dir_str.contains(primal_names::BIOMEOS_DIR_NAME));
 
     // ── Orchestrator socket resolution ──────────────────────────────
     let orch = socket::orchestrator_socket();
     let orch_str = orch.to_string_lossy();
     h.check_bool(
         "Orchestrator socket contains biomeOS",
-        orch_str.contains("biomeOS") || orch_str.contains("biomeos"),
+        orch_str.contains("biomeOS") || orch_str.contains(primal_names::BIOMEOS_DIR_NAME),
     );
 
     // ── Capability surface matches proto-nucleate expectations ──────

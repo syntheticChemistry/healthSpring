@@ -24,5 +24,6 @@ mod s_one_compartment_pk;
 mod s_pan_tompkins_qrs;
 mod s_population_pk;
 mod s_testosterone_pk;
+mod s_toxicology;
 
 pub use registry::{Scenario, Tier, Track, build_registry};

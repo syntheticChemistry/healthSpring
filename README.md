@@ -33,7 +33,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V64** (V63 + `validate_ltee_b5` Rust binary — LTEE B5 Tier 1 parity, 8/8 checks; `--format json` on both validate binaries for projectNUCLEUS Tier 2 ingestion; Foundation Threads 3+8 expressions wired → `active`; provenance registry covers LTEE track) |
+| Version | **V64** (V63 + `validate_ltee_b5` Rust binary — LTEE B5 Tier 1 parity 8/8; `--format json` on both validate binaries; Foundation T3+T5+T8 expressions wired → active; `s_toxicology` scenario (17th); dead `npu` feature removed; exp115/118 primal-name centralization; deep debt audit clean) |
 | **Total tests** | **999** (868 lib + 131 integration/workspace) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
 | Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: 16 registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |

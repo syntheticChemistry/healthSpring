@@ -11,18 +11,26 @@ This project uses internal versioning (V-series) for development milestones.
 - **`--format json`** flag on `validate_pk_models` (16 checks) and `validate_ltee_b5` (8 checks) for projectNUCLEUS Tier 2 structured ingestion
 - **LTEE provenance entry** in `records_science.rs` — `ltee_b5` track with Leonard 2024 mBio reference
 - **Foundation Thread 3** (Immunology) expression wired in `THREAD_INDEX.toml` → `IMMUNO_DRUG_DISCOVERY.md`; Paper 22 added to `basecamp_papers`; status remains `active`
+- **Foundation Thread 5** (LTEE) expression re-wired → `LTEE_EVOLUTIONARY_DYNAMICS.md` (lost during upstream rebase); healthSpring + airSpring added to springs list; B5/E2/E3/E4 entries added to reproduction papers table
 - **Foundation Thread 8** (Human Health) expression wired in `THREAD_INDEX.toml` → `SOVEREIGN_HEALTH.md`; status promoted from `mapped` → `active`
-- `Status:` header lines added to both Thread 3 and Thread 8 expression docs for LTEE template parity
+- `Status:` header lines added to Thread 3, 5, and 8 expression docs for template parity
+- **`s_toxicology` validation scenario** — 9 structural checks: toxicity landscape (tissue count, systemic burden, IPR bounds, clearance regime) + biphasic hormesis (zero/low/high dose, hormetic optimum existence and bounds). Track::Toxicology now has a registered scenario (was dead taxonomy slot)
 
 ### Changed
 - `primal_names::wire_prefix` constants now have `#[doc]` attributes (removes `-W missing-docs` warnings)
 - Provenance test `registry_covers_all_python_scripts` excludes `__init__.py` files (module markers, not science baselines)
 - PAPER_REVIEW_QUEUE LTEE B5 status: `STARTED` → `COMPLETE` (Tier 0+1 parity achieved)
+- **Dead `npu` feature gate removed** — was declared but had zero `#[cfg(feature = "npu")]` usage anywhere; NPU dispatch will use capability-based runtime discovery per design
+- **Experiment primal name centralization**: exp115 + exp118 hardcoded `"biomeos"`, `"beardog"`, `"songbird"`, `"nestgate"`, `"rhizocrypt"`, `"loamspine"`, `"sweetgrass"`, `"toadstool"` replaced with `primal_names::*` constants
 
 ### Audit
 - 868 lib + 131 workspace = **999 tests pass**; zero clippy warnings; zero unsafe; zero TODO/FIXME in production
 - `validate_ltee_b5` 8/8 PASS matches Python benchmark to <1e-4 relative tolerance on all numerics
-- Foundation Threads 3+8 now `active` with expressions wired — 10/10 threads seeded, 8/10 with expressions
+- Foundation Threads 3+5+8 now `active` with expressions wired — 10/10 threads active, 7/10 with expressions
+- **Deep debt sweep clean**: zero files >800L (max 597), zero unsafe, zero unwrap/expect/panic in production, zero mocks in production, zero hardcoded primal names in lib code
+- External deps: all standard Rust ecosystem (serde, clap, tracing, thiserror, wgpu, tokio, ureq) — no stale/unmaintained crates
+- Python CPU benchmarks exist: `bench_barracuda_cpu_vs_python.py` + `bench_v16_cpu_vs_python.py` (84x Rust speedup)
+- Kokkos-pattern benchmarks in `benches/kokkos_parity.rs` (conceptual parity, no library dependency)
 
 ## V63 — May 11, 2026
 

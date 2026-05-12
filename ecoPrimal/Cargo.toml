@@ -35,14 +35,10 @@ sovereign-dispatch = ["gpu", "barracuda-lib", "barracuda/sovereign-dispatch"]
 # primitives rather than being generic IPC methods.
 primal-proof = []
 # guideStone binary (legacy): primalspring is now always available.
-# This feature is retained for backward-compatible cargo invocations
-# but has no effect — primalspring is a required dependency.
+# Retained solely for `healthspring_guidestone` [[bin]] required-features
+# backward compat — the feature itself activates nothing in library code.
 guidestone = []
 nestgate = ["dep:ureq"]
-# NPU dispatch is a future evolution — Akida driver will be discovered at
-# runtime via capability-based probing, not compiled in as a path dep.
-# See metalForge::probe_npu() and specs/EVOLUTION_MAP.md.
-npu = []
 
 [dependencies]
 # Validated against barraCuda v0.3.13 (workspace current).
