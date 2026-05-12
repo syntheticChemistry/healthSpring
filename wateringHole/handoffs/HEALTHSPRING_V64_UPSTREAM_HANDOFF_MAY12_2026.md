@@ -4,9 +4,9 @@
 **Date**: May 12, 2026
 **Version**: V64
 **primalSpring**: v0.9.25 (pinned)
-**Tests**: 1,011 (871 lib + 9 doc + 131 integration/workspace)
+**Tests**: 1,014 (874 lib + 9 doc + 131 integration/workspace)
 **Capabilities**: 88 JSON-RPC methods (58 science + 30 infra)
-**Architecture**: Eukaryotic UniBin + IPC-first defaults + 4 NUCLEUS workloads + 17 validation scenarios
+**Architecture**: Eukaryotic UniBin + IPC-first defaults + 4 NUCLEUS workloads + 17 validation scenarios + Tier 2 wired
 
 ---
 
@@ -79,6 +79,33 @@ V64 ships `s_toxicology` with 9 structural checks:
 scenarios, fill them — dead taxonomy slots are tech debt that erodes trust in
 the scenario registry.
 
+### Tier 2 Wiring — `toadstool.validate` + `precision.route` (V64e)
+
+Ecosystem wave sync response: Tier 2 Live Science API is now unblocked.
+
+**`compute_dispatch.rs`** — two new typed IPC clients:
+- `validate_workload(path)` → `ValidationReport` — wraps `toadstool.validate` for workload pre-flight (valid, gpu_available, precision_tier, estimated_dispatch_time_ms, warnings, required_capabilities)
+- `list_workloads()` → `Vec<String>` — wraps `toadstool.list_workloads` for available compute workloads
+
+**`barracuda_client.rs`** — precision advisory:
+- `precision_route(domain)` → `PrecisionAdvisory` — wraps `barracuda.precision.route` for domain-aware precision tier recommendations (e.g. `population_pk` → FP64/compute, `eigensolve` → DF64/tensor_core)
+
+**Upstream relevance (all springs)**: Pattern to adopt — create typed IPC wrappers for `toadstool.validate` and `barracuda.precision.route`. Use `discover_compute_primal()` for capability-first socket discovery. The `ValidationReport` and `PrecisionAdvisory` structs model the full Tier 2 wire contract from `primalSpring/docs/LIVE_SCIENCE_API.md`.
+
+**Upstream relevance (toadStool)**: healthSpring calls `toadstool.validate` with `dry_run: true` and parses the S250 response schema. If the response shape changes, update `ValidationReport` fields.
+
+**Upstream relevance (barraCuda)**: healthSpring calls `precision.route` with `domain` param and parses `tier`, `hardware_hint`, `compiler_required`. The `population_pk`, `eigensolve`, `bioinformatics`, `statistics` domains are directly relevant to our science tracks.
+
+### Ionic Bridge IPC Stubs (V64b)
+
+`TowerAtomic` now has `ionic_propose`, `ionic_countersign`, and `ionic_verify` methods calling `BearDog`'s `crypto.contract.*` JSON-RPC methods. These are the first steps toward cross-tower/cross-family trust bonds. Tests verify graceful failure when BearDog is unavailable.
+
+**Upstream relevance (bearDog)**: healthSpring is ready to exercise the propose → countersign → verify lifecycle when bearDog ships `crypto.contract.*` handlers.
+
+### `healthspring_unibin validate --format json` (V64b)
+
+The UniBin `validate` subcommand now accepts `--format json`, producing structured output with pass/fail/skipped counts. Uses primalSpring's `NullSink` to suppress verbose output in JSON mode.
+
 ### Dead Feature Gate Cleanup
 
 The `npu = []` feature in `Cargo.toml` was declared but never used (no
@@ -97,7 +124,7 @@ in V63 — zero hardcoded primal name strings remain across the entire codebase.
 
 | Metric | Value |
 |--------|-------|
-| Tests | **1,011** (871 lib + 9 doc + 131 integration/workspace) |
+| Tests | **1,014** (874 lib + 9 doc + 131 integration/workspace) |
 | Clippy warnings | **0** |
 | Unsafe blocks | **0** (`forbid(unsafe_code)`) |
 | TODO/FIXME/HACK | **0** in production code |

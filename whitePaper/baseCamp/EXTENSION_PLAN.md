@@ -2,7 +2,7 @@
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
 **Last Updated**: May 12, 2026
-**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary, `--format json` validation output, `s_toxicology` scenario (17th), Foundation T3+T5+T8 active. Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57). 95 experiments, 1,011 tests, 88 capabilities. barraCuda v0.3.13. ecoBin 0.9.0.
+**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary, `--format json` validation output, `s_toxicology` scenario (17th), Foundation T3+T5+T8 active. Phase 46 NUCLEUS composition (18/24). guideStone Level 5 (57/57). 95 experiments, 1,014 tests, 88 capabilities. barraCuda v0.3.13. ecoBin 0.9.0.
 
 This document surveys how each track can extend beyond the current validated experiments
 using open datasets, new computational systems, cross-track integration, and

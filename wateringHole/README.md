@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary, `--format json`, `s_toxicology` scenario (17th), Foundation T3+T5+T8 active, dead `npu` feature removed, exp primal-name centralization. **1,011 tests**, 95 experiments. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary, `--format json`, `s_toxicology` scenario (17th), Foundation T3+T5+T8 active, dead `npu` feature removed, exp primal-name centralization. **1,014 tests**, 95 experiments. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 **Last Updated**: May 12, 2026
 
 ---
@@ -22,7 +22,7 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V64** | [LTEE B5 + Ionic Bridge + Format JSON + Foundation T3+T5+T8](handoffs/HEALTHSPRING_V64_UPSTREAM_HANDOFF_MAY12_2026.md) | May 12 | `validate_ltee_b5` Rust binary, `--format json` on validate binaries, `s_toxicology` scenario, ionic bridge IPC stubs, Foundation Threads 3+5+8 active, test count reconciled to 1,011 |
+| **V64** | [LTEE B5 + Ionic Bridge + Format JSON + Foundation T3+T5+T8](handoffs/HEALTHSPRING_V64_UPSTREAM_HANDOFF_MAY12_2026.md) | May 12 | `validate_ltee_b5` Rust binary, `--format json` on validate binaries, `s_toxicology` scenario, ionic bridge IPC stubs, Foundation Threads 3+5+8 active, Tier 2 wired (`toadstool.validate` + `precision.route`), 1,014 tests |
 | | *V1–V63 → `handoffs/archive/`* | | Fossil record (V54 upstream, V59 deep-debt, V60 deep debt evolution, V61 interstadial eukaryotic, V62 CI cross-sync + audit, V63 param structs + Thread 3) |
 
 ## Archive

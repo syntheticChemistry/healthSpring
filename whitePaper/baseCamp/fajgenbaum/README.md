@@ -2,7 +2,7 @@
 # healthSpring vs. Every Cure MATRIX — Comparative Analysis
 
 **Last Updated**: May 12, 2026
-**Status**: V64 — UniBin + LTEE B5 Tier 1 + Foundation T3+T8 active + `s_toxicology` scenario; guideStone Level 5. **1,011 tests**, 95 experiments, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Onboarding document for researchers whose work we have ingested and evolved —
+**Status**: V64 — UniBin + LTEE B5 Tier 1 + Foundation T3+T8 active + `s_toxicology` scenario; guideStone Level 5. **1,014 tests**, 95 experiments, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Onboarding document for researchers whose work we have ingested and evolved —
 particularly Fajgenbaum (MATRIX), Lisabeth (ADDRC HTS), and collaborators entering the
 healthSpring ecosystem.
 **Audience**: Drug discovery researchers, pharmacologists, computational biologists, and anyone
@@ -297,5 +297,5 @@ Anderson tissue lattice modeling can.
 2. **Understand the validation chain**: [METHODOLOGY.md](../METHODOLOGY.md)
 3. **See your papers reproduced**: wetSpring Exp157/158 (Fajgenbaum), neuralSpring nS-601–605 (Gonzales)
 4. **See the extension**: healthSpring Exp001–006 (human PK/PD), Track 7 (drug discovery)
-5. **Run it yourself**: `cargo test --workspace` (1,011 tests, zero unsafe code)
+5. **Run it yourself**: `cargo test --workspace` (1,014 tests, zero unsafe code)
 6. **Explore the specs**: [PAPER_REVIEW_QUEUE.md](../../specs/PAPER_REVIEW_QUEUE.md) for Track 7 paper queue
