@@ -69,5 +69,6 @@ pub fn build_registry() -> Vec<Scenario> {
         super::s_barracuda_parity::SCENARIO(),
         super::s_nucleus_parity::SCENARIO(),
         super::s_toxicology::SCENARIO(),
+        super::s_nest_atomic::SCENARIO(),
     ]
 }

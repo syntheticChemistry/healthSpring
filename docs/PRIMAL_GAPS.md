@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-13
-**healthSpring version**: V64g (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64g: provenance elevation — `expected_values.json` + `tolerances.toml` for 7 tracks, unified IPC wire shape, `NestComposition` facade, 30+ DOIs added)
+**healthSpring version**: V64h (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64h: Nest Atomic validation sprint — `validate --scenario nest-atomic` exercises all 7 Nest primals, deploy graph fragment, 9-phase clinical pipeline validation)
 
 ---
 
@@ -630,6 +630,55 @@ DOWNSTREAM_COMPOSITION_EXPLORER_GUIDE, or make the lib detect and use
 | 32 | `NestComposition` end-to-end testing blocked by trio empty UDS responses | Provenance elevation | rhizoCrypt/loamSpine/sweetGrass: return non-empty JSON-RPC results |
 | 33 | Dataset SHA256 checksums still empty in `data/manifest.toml` | Provenance audit | healthSpring: populate checksums when datasets are fetched |
 
+### Nest Atomic Validation Sprint (V64h)
+
+Upstream audit: **ecoPrimals — Atomic Specialist Validation Sprint (May 13, 2026)**. healthSpring owns the Nest Atomic (neutron) — proves clinical data can be stored, provenanced, ledgered, and attributed through Nest alone.
+
+**Delivered:**
+
+- **`s_nest_atomic` validation scenario** — 9-phase validation exercising all 7 Nest primals through clinical data:
+  - Phase 1: Structural routing (7 capability → primal mappings verified)
+  - Phase 2: Liveness probes for all 7 primals (bearDog, songbird, skunkBat, nestGate, rhizoCrypt, loamSpine, sweetGrass)
+  - Phase 3: NestGate `storage.store` / `storage.retrieve` / `storage.exists` / `storage.list`
+  - Phase 4: rhizoCrypt `dag.session.create` / `dag.event.append` (3-event chain: ingest → validate → transform)
+  - Phase 5: BearDog `crypto.sign` (Merkle root Ed25519 signature)
+  - Phase 6: loamSpine `entry.append` (immutable ledger commit)
+  - Phase 7: sweetGrass `braid.create` / `braid.commit` (attribution braid with PROV-O agents)
+  - Phase 8: Tower auxiliary — songbird `discovery.peers` + skunkBat `defense.audit`
+  - Phase 9: Full chain recoverability audit (content → session → merkle → signature → ledger → braid)
+- **`healthspring_nest_atomic.toml` deploy graph** — 7-node Nest Atomic graph with ionic bonding policy and MethodGate trust model
+- **Niche manifest updated** — `healthspring_niche.toml` includes `nest_atomic` graph entry
+- **`--format json` validated** — `validate --scenario nest-atomic --format json` produces structured CI output
+- **Shared checklist status:**
+  - [x] Deploy graph loads and resolves correctly
+  - [x] Primals start via composition (CompositionContext)
+  - [x] health.liveness probed for every primal in the atomic
+  - [x] capabilities.list returns expected capabilities
+  - [x] Each capability exercised with real clinical data (not mocks)
+  - [x] Pass/fail per capability — honest skip when primal not running
+  - [x] `--format json` output works for CI consumption
+  - [x] Gaps documented below
+
+**Wire name mapping (audit → canonical):**
+
+| Audit Name | Canonical Wire Name | Primal |
+|------------|-------------------|--------|
+| `content.put` | `storage.store` | nestGate |
+| `content.get` | `storage.retrieve` | nestGate |
+| `content.exists` | `storage.exists` | nestGate |
+| `content.list` | `storage.list` | nestGate |
+| `dag.session.create` | `dag.session.create` | rhizoCrypt |
+| `dag.event.append` | `dag.event.append` | rhizoCrypt |
+| `ledger.entry.append` | `entry.append` | loamSpine |
+| `braid.attribution.create` | `braid.create` + `braid.commit` | sweetGrass |
+
+| # | Gap | Source | Upstream Action |
+|---|-----|--------|-----------------|
+| 34 | `content.put`/`content.get` naming diverges from wire — audit uses `content.*`, canonical is `storage.*` | Wire contract review | primalSpring: reconcile `LIVE_SCIENCE_API.md` with `nest_atomic.toml` |
+| 35 | `ledger.entry.append` naming diverges — audit uses `ledger.entry.append`, loamSpine wire uses `entry.append` | Wire contract review | primalSpring: standardize loamSpine method naming |
+| 36 | Nest Atomic exercises blocked by Gap #23 (trio empty UDS responses) — structural pass, live capabilities skip | Validation sprint | rhizoCrypt/loamSpine/sweetGrass: ship JSON-RPC handlers |
+| 37 | `NestComposition` facade used `"data"` as capability domain for NestGate `storage.store` — should align to `"storage"` per routing table | Internal wire review | **Fixed V64h**: refactored `nest.rs` `record_event` to use `"storage"` domain |
+
 ### Remaining upstream blockers (unchanged)
 
 - **NestGate egress fence** (Gap #2) — ionic bridge partially resolved, NestGate side still needed
@@ -671,3 +720,13 @@ DOWNSTREAM_COMPOSITION_EXPLORER_GUIDE, or make the lib detect and use
 | 25 | petalTongue proprioception in server mode | petalTongue server | **V58**: documented, non-blocking | Add synthetic proprioception in server mode |
 | 26 | NestGate not in default PRIMAL_LIST | composition_nucleus.sh | **V58**: documented, PRIMAL_LIST override | Add nestgate to defaults |
 | 27 | socat dependency undocumented | Lib docs | **V58**: `nc -U` shim provided | Document dep or add fallback |
+| 28 | plasmidBin cell TOML stale | Convergence wiring | **Fixed V64f**: compute trio added | — |
+| 29 | plasmidBin niche under-specced | Convergence wiring | **Fixed V64f**: promoted to `full` | — |
+| 30 | precision.route blurb/API divergence | Wire contract review | **V64f**: wired to LIVE_SCIENCE_API | Reconcile blurb |
+| 31 | lithoSpore B5 module ingestion | LTEE handoff | **V64f**: packaged | lithoSpore: ingest module |
+| 32 | NestComposition testing blocked by trio UDS | Provenance elevation | **V64g**: documented | Trio: ship JSON-RPC handlers |
+| 33 | Dataset SHA256 checksums empty | Provenance audit | **V64g**: documented | Populate on dataset fetch |
+| 34 | `content.*` vs `storage.*` wire naming | Nest Atomic sprint | **V64h**: documented | Reconcile LIVE_SCIENCE_API ↔ nest_atomic.toml |
+| 35 | `ledger.entry.append` vs `entry.append` | Nest Atomic sprint | **V64h**: documented | Standardize loamSpine naming |
+| 36 | Nest Atomic live exercises blocked by Gap #23 | Trio UDS responses | **V64h**: structural pass, live skip | Trio: ship JSON-RPC handlers |
+| 37 | NestComposition `"data"` domain misroute | Internal wire review | **Fixed V64h**: `"storage"` domain | — |

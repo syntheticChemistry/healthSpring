@@ -101,6 +101,12 @@ coordination = "Sequential"
 description = "Microbiome pipeline: diversity → Anderson → colonization → QS profiling → SCFA"
 
 [[graphs]]
+name = "nest_atomic"
+path = "healthspring_nest_atomic.toml"
+coordination = "Sequential"
+description = "Nest Atomic (neutron) validation: Tower + NestGate + provenance trio (7 primals)"
+
+[[graphs]]
 name = "biosignal_monitor"
 path = "healthspring_biosignal_monitor.toml"
 coordination = "Continuous"

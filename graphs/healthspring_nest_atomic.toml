@@ -1,0 +1,105 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# healthSpring Nest Atomic Deploy Graph
+#
+# Validates the Nest Atomic (neutron) composition through clinical data
+# pipelines. Includes Tower (3 primals) + NestGate + provenance trio
+# (rhizoCrypt + loamSpine + sweetGrass) = 7 primals.
+#
+# Source: primalSpring/graphs/fragments/nest_atomic.toml v3.0.0
+# Particle model: Nest = Neutron
+
+[graph]
+name = "nest_atomic_validation"
+version = "1.0.0"
+description = "Nest Atomic end-to-end validation — clinical data provenance pipeline"
+coordination = "Sequential"
+particle = "neutron"
+
+[graph.bonding_policy]
+bond_type = "Ionic"
+trust_model = "MethodGate"
+
+# Tower Atomic (electron shell)
+
+[[graph.nodes]]
+name = "beardog"
+binary = "beardog"
+order = 1
+required = true
+health_method = "health.liveness"
+capabilities = [
+    "crypto.sign", "crypto.verify", "crypto.hash",
+    "crypto.encrypt_chacha20_poly1305", "crypto.generate_keypair",
+]
+
+[[graph.nodes]]
+name = "songbird"
+binary = "songbird"
+order = 2
+required = true
+depends_on = ["beardog"]
+health_method = "health.liveness"
+capabilities = [
+    "ipc.resolve", "ipc.register", "ipc.discover",
+    "discovery.peers", "discovery.announce",
+]
+
+[[graph.nodes]]
+name = "skunkbat"
+binary = "skunkbat"
+order = 3
+required = true
+depends_on = ["beardog"]
+health_method = "health.liveness"
+capabilities = ["defense.audit", "defense.recon", "defense.threat"]
+
+# Nest Atomic (neutron body)
+
+[[graph.nodes]]
+name = "nestgate"
+binary = "nestgate"
+order = 4
+required = true
+depends_on = ["beardog", "songbird"]
+health_method = "health.liveness"
+capabilities = [
+    "storage.store", "storage.retrieve",
+    "storage.list", "storage.exists",
+]
+
+[[graph.nodes]]
+name = "rhizocrypt"
+binary = "rhizocrypt"
+order = 5
+required = false
+depends_on = ["beardog"]
+health_method = "health.liveness"
+capabilities = [
+    "dag.session.create", "dag.event.append",
+    "dag.merkle.root", "dag.merkle.verify",
+]
+
+[[graph.nodes]]
+name = "loamspine"
+binary = "loamspine"
+order = 6
+required = false
+depends_on = ["beardog", "rhizocrypt"]
+health_method = "health.liveness"
+capabilities = [
+    "spine.create", "spine.seal",
+    "entry.append", "entry.get",
+]
+
+[[graph.nodes]]
+name = "sweetgrass"
+binary = "sweetgrass"
+order = 7
+required = false
+depends_on = ["beardog", "loamspine"]
+health_method = "health.liveness"
+capabilities = [
+    "braid.create", "braid.commit", "braid.get",
+    "anchoring.anchor", "anchoring.verify",
+]

@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V64g — Provenance Elevation: `expected_values.json` + `tolerances.toml` for 7 tracks, unified IPC wire shape, `NestComposition` facade, 30+ DOIs. **1,014+ tests**, 17 scenarios, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Status**: V64h — Nest Atomic Validation Sprint: `s_nest_atomic` 9-phase validation, `healthspring_nest_atomic.toml` deploy graph, NestComposition domain fix. **902+ tests**, 18 scenarios, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 **Last Updated**: May 13, 2026
 
 ---
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V64g** | [Provenance Elevation Handoff](handoffs/HEALTHSPRING_V64G_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Auditable data chains: expected_values.json + tolerances.toml for 7 tracks, unified IPC wire shape, NestComposition facade, 30+ DOIs, gaps #32-33 |
+| **V64h** | [Nest Atomic Validation Sprint](handoffs/HEALTHSPRING_V64H_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Nest Atomic (neutron) 9-phase validation, 7-node deploy graph, NestComposition domain fix, gaps #34-37 |
+| V64g | [Provenance Elevation Handoff](handoffs/HEALTHSPRING_V64G_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Auditable data chains: expected_values.json + tolerances.toml for 7 tracks, unified IPC wire shape, NestComposition facade, 30+ DOIs, gaps #32-33 |
 | V64f | [Tier 2 Convergence Handoff](handoffs/HEALTHSPRING_V64F_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Tier 2 wired, precision mapping, --list, LTEE B5 lithoSpore module, plasmidBin |
 | | *V1–V64 → `handoffs/archive/`* | | Fossil record |
 

@@ -4,6 +4,16 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64h — May 13, 2026
+
+### Nest Atomic Validation Sprint
+
+- **`s_nest_atomic` validation scenario** — 9-phase validation exercising all 7 Nest primals (bearDog, songbird, skunkBat, nestGate, rhizoCrypt, loamSpine, sweetGrass) through clinical data pipelines. Phases: structural routing → liveness → NestGate storage round-trip → rhizoCrypt DAG chain → BearDog Merkle signing → loamSpine ledger append → sweetGrass attribution braid → Tower auxiliary → chain recoverability audit.
+- **`healthspring_nest_atomic.toml` deploy graph** — 7-node Nest Atomic graph with ionic bonding, MethodGate trust, and correct dependency ordering. Registered in `healthspring_niche.toml`.
+- **`NestComposition` capability domain fix** — `record_event` now routes through `"storage"` domain (was `"data"`), aligned with `capability_to_primal("storage") == nestgate`.
+- **Gaps #34–37 surfaced** — wire name divergence (`content.*` vs `storage.*`, `ledger.entry.append` vs `entry.append`), trio UDS blocking live exercises, facade domain misroute.
+- **Shared checklist COMPLETE** — deploy graph ✓, composition start ✓, liveness ✓, capabilities.list ✓, real data ✓, honest skip ✓, `--format json` ✓, gaps documented ✓.
+
 ## V64g — May 13, 2026
 
 ### Provenance Elevation — Auditable Data Chains

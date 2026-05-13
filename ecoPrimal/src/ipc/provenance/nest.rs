@@ -142,7 +142,7 @@ impl<'a> NestComposition<'a> {
             .ctx
             .inner()
             .call(
-                "data",
+                "storage",
                 "storage.store",
                 serde_json::json!({
                     "content": data,

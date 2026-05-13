@@ -19,6 +19,7 @@ mod s_live_health;
 mod s_live_provenance;
 mod s_matrix_scoring;
 mod s_michaelis_menten;
+mod s_nest_atomic;
 mod s_nucleus_parity;
 mod s_one_compartment_pk;
 mod s_pan_tompkins_qrs;
