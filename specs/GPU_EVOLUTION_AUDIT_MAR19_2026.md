@@ -1,5 +1,9 @@
 # healthSpring GPU Evolution Readiness & barraCuda Dependency Audit
 
+> **FOSSIL RECORD** — March 19, 2026 snapshot. barraCuda was v0.3.7 at time of writing;
+> now at **v0.3.13** (May 2026). GPU integration is fully live with 6 WGSL shaders.
+> See root `README.md` for current V64l state. Retained for traceability.
+
 **Date**: March 19, 2026  
 **Scope**: ecoPrimal GPU integration, WGSL shaders, barraCuda dependency health, metalForge Tier 3 dispatch, toadStool pipeline  
 **Supersedes**: GPU_EVOLUTION_AUDIT_MAR16_2026.md

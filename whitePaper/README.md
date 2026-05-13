@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** May 12, 2026
-**Status:** V64 — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone → L6 NUCLEUS. **UniBin** + 17 validation scenarios. 95 experiments, **1,014 tests**, 88 capabilities, 96+ provenance entries. `validate_ltee_b5` Tier 1 Rust binary (8/8 LTEE B5). `--format json` on validation binaries (projectNUCLEUS Tier 2). Foundation T3+T5+T8 active. **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Date:** May 13, 2026
+**Status:** V64l — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone → L6 NUCLEUS. **UniBin** + 17 validation scenarios. 95 experiments, **1,018 tests**, 88 capabilities, 96+ provenance entries. Nest Atomic Specialist: 9-phase provenance pipeline (`s_nest_atomic`), `NestComposition` facade, deploy graphs. GAP-36 resolved (upstream alias tables). Wire hygiene: BearDog base64 `message`, skunkBat `security.audit_log`. `healthspring_cell.toml` for plasmidBin. Foundation Thread 10 (Provenance). **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -45,7 +45,7 @@ without establishing causality.
 |:-----:|----------|------------------|
 | 1 | **This file** | What healthSpring is, glossary, key insights |
 | 2 | [STUDY.md](STUDY.md) | The scientific narrative — why we built this, what domains we cover |
-| 3 | [METHODOLOGY.md](METHODOLOGY.md) | The four-tier validation protocol (Python → Rust → GPU → dispatch) |
+| 3 | [METHODOLOGY.md](METHODOLOGY.md) | The six-level validation ladder (Python → Rust → GPU → guideStone → NUCLEUS → plasmidBin) |
 
 ### For collaborators joining the project (1 hour)
 
@@ -243,7 +243,7 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 | Metric | Value |
 |--------|-------|
 | Experiments | 95 complete (83 science + 12 composition Tier 3–5, exp112–123) |
-| Rust tests | 1,014 (874 lib + 9 doc + 131 integration/workspace; see root README) |
+| Rust tests | 1,018 (878 lib + 9 doc + 12 integration + 20 composition + 3 registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool; see root README) |
 | Python checks | 113 cross-validation |
 | Paper queue | 45/45 complete (Tracks 1–7), 3 LTEE queued (B5, E2, E4) |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |

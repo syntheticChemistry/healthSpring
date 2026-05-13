@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: May 12, 2026
-**Status**: V64 — V63 + `validate_ltee_b5` Tier 1 Rust binary (8/8 LTEE B5 checks), `--format json` on validation binaries (projectNUCLEUS Tier 2), Foundation Threads 3+8 wired → active. **1,014 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13.
+**Last Updated**: May 13, 2026
+**Status**: V64l — Nest Atomic Specialist complete. 9-phase provenance validation, `NestComposition` facade, GAP-36 resolved, wire hygiene (BearDog base64 `message`, skunkBat `security.audit_log`), `healthspring_cell.toml` for plasmidBin, Foundation Thread 10 (Provenance). **1,018 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -11,14 +11,14 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 1,014 |
+| Rust tests (workspace) | 1,018 |
 | Python control checks | 53 baselines + 53 notebooks, 113 parity checks (`cross_validate.py`, all 9 tracks) |
 | Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |
 | metalForge validation (Tier 3) | 33 tests + Exp087 (35/35) — NUCLEUS dispatch with PCIe P2P bypass |
 | Composition validation (Tier 3–5) | 12 experiments (exp112–123) — dispatch parity + proto-nucleate + wire round-trip + deploy graph + live IPC parity + provenance trio + health probes + **Level 5 barraCuda IPC parity** |
 | ecoBin | Static-PIE x86_64-musl, 3.2 MB, harvested to plasmidBin (v0.9.0) |
-| toadStool validation | 30 tests + Exp086 (24/24) — V16 streaming dispatch |
+| toadStool validation | 51 tests + Exp086 (24/24) — V16 streaming dispatch |
 | CPU parity | Rust 84× faster than Python (Exp084, 33+17 checks) |
 | NLME population PK | FOCE + SAEM estimation, NCA, CWRES/VPC/GOF diagnostics |
 | Paper queue | **45/45 complete** (Tracks 1–7: 30 T1–T5 + 8 T6 + 7 T7). 3 LTEE queued (B5, E2, E4). |

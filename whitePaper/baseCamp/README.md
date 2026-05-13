@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** May 12, 2026
-**Status:** V64 — V63 + `validate_ltee_b5` Rust binary (LTEE B5 Tier 0+1 complete, 8/8 checks), `--format json` on validation binaries for projectNUCLEUS Tier 2 ingestion, **17 validation scenarios** (s_toxicology added — Track::Toxicology was dead taxonomy slot), Foundation Threads 3+5+8 expressions wired → active, dead `npu` feature removed, exp primal-name centralization. **1,014 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Last Updated:** May 13, 2026
+**Status:** V64l — Nest Atomic Specialist complete. V64h–V64l: 9-phase provenance pipeline (`s_nest_atomic`), `NestComposition` facade, GAP-36 resolved, wire hygiene (BearDog base64 `message`, skunkBat `security.audit_log`), `healthspring_cell.toml` for plasmidBin, Foundation Thread 10 (Provenance). **1,018 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 
 ---
 
@@ -99,12 +99,12 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | GPU Scaling Bench (Exp085) | — | 10 | 47 | 57 |
 | toadStool V16 Dispatch (Exp086) | — | — | 24 | 24 |
 | Mixed NUCLEUS V16 (Exp087) | — | — | 35 | 35 |
-| **Lib unit tests** | — | — | **772** | 772 |
+| **Lib unit tests** | — | — | **878** | 878 |
 | **metalForge tests** | — | — | **33** | 33 |
-| **toadStool tests** | — | — | **30** | 30 |
+| **toadStool tests** | — | — | **51** | 51 |
 | **Doc-tests** | — | — | **9** | 9 |
-| **Criterion benchmarks** (incl. gpu_parity) | — | — | **14** | 14 |
-| **Total** | **688** | **287+** (Tier 0) | **936** (tests) | **2,900+** |
+| **Integration/composition** | — | — | **47** | 47 |
+| **Total** | **688** | **287+** (Tier 0) | **1,018** (tests) | **3,000+** |
 
 ---
 
@@ -347,27 +347,30 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 
 ---
 
-## Next Steps (Post V35)
+## Evolution Status (V64l)
 
-### Science Extensions
+### Completed (V64h–V64l)
+
+- **Nest Atomic Specialist** — 9-phase provenance validation proving NestGate CAS → rhizoCrypt DAG → loamSpine ledger → sweetGrass attribution end-to-end
+- **`NestComposition` facade** — Orchestrates full Nest Atomic lifecycle in `ipc/provenance/nest.rs`
+- **Wire hygiene** — BearDog `crypto.sign` base64 `message`, skunkBat `security.audit_log`, loamSpine `spine.create`/`entry.append`
+- **Deploy graphs** — `healthspring_nest_atomic.toml`, `healthspring_niche_deploy.toml`, `healthspring_cell.toml` (plasmidBin)
+- **Deep debt zero** — 7 categories audited: TODO/FIXME/HACK, unsafe, large files, hardcoding, mocks, modern Rust, external deps
+
+### Open Science Extensions
 
 1. **DD-006 iPSC validation** — Gonzales iPSC skin model validation
 2. **DD-007 Ellsworth med chem** — Medicinal chemistry lead optimization
 3. **CM-008 equine laminitis** — Species-agnostic laminitis model
-
-### GPU + Scale
-
 4. **NLME GPU shaders** — FOCE per-subject gradient, VPC Monte Carlo
 5. **Anderson eigensolve** — GPU shader for gut lattice localization length
 6. **Biosignal FFT** — GPU radix-2 FFT for real-time ECG/PPG
-7. **TensorSession** — When barraCuda ships fused multi-op pipeline API
 
-### Cross-Spring Absorption (Identified V31)
+### Cross-Spring Absorption
 
-8. **HMM biosignal regime** — Absorb `HmmBatchForwardF64` from neuralSpring for cardiac state detection
-9. **ESN clinical prediction** — Absorb Echo State Network from neuralSpring for time-series outcomes
-10. **3D tissue Anderson** — Absorb from groundSpring for tissue heterogeneity modeling
-11. **llvm-cov** — Target 90%+ line coverage (wetSpring pattern)
+7. **HMM biosignal regime** — Absorb `HmmBatchForwardF64` from neuralSpring for cardiac state detection
+8. **ESN clinical prediction** — Absorb Echo State Network from neuralSpring for time-series outcomes
+9. **3D tissue Anderson** — Absorb from groundSpring for tissue heterogeneity modeling
 
 ---
 

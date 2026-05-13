@@ -8,7 +8,7 @@
 #
 # CI checks:
 #   tools/check_method_strings.sh — validates Rust source against this file
-#   cargo test -p healthspring-barracuda registry_cross_sync — validates
+#   cargo test --test integration_registry_sync — validates
 #   against primalSpring's canonical config/capability_registry.toml
 #
 # Structure: [domain] with `methods = [...]` listing all known methods in
@@ -284,6 +284,9 @@ methods = [
 owner = "rhizocrypt"
 locality = "consumed"
 methods = [
+    "dag.create_node",
+    "dag.query",
+    # Legacy aliases (accepted by upstream normalize_method)
     "dag.create_session",
     "dag.append_event",
     "dag.dehydrate",
@@ -293,13 +296,27 @@ methods = [
 owner = "loamspine"
 locality = "consumed"
 methods = [
+    "spine.create",
+    "entry.append",
+    # Legacy alias (accepted by upstream normalize_method)
     "commit.session",
+]
+
+[content]
+owner = "nestgate"
+locality = "consumed"
+methods = [
+    "content.store",
+    "content.retrieve",
 ]
 
 [braid]
 owner = "sweetgrass"
 locality = "consumed"
 methods = [
+    "braid.create",
+    "braid.query",
+    # Legacy alias (accepted by upstream normalize_method)
     "provenance.create_braid",
 ]
 
@@ -307,8 +324,9 @@ methods = [
 owner = "skunkbat"
 locality = "consumed"
 methods = [
-    "audit.log",
     "security.audit_log",
+    # Legacy aliases (still accepted by upstream)
+    "audit.log",
     "defense.audit",
 ]
 

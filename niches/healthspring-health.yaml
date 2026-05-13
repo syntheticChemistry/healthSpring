@@ -6,7 +6,7 @@
 
 name: healthspring
 domain: health
-version: "0.1.0"
+version: "0.2.0"
 
 capabilities:
   - science.pkpd.hill_dose_response
@@ -78,8 +78,12 @@ capabilities:
   - health.liveness
   - health.readiness
   - health.check
+  - health.monitor
+  - health.probe
   - identity.get
   - capability.list
+  - composition.status
+  - method.register
   - mcp.tools.list
   - provenance.begin
   - provenance.record
@@ -101,6 +105,9 @@ graphs:
   - graphs/healthspring_trt_scenario.toml
   - graphs/healthspring_microbiome_analysis.toml
   - graphs/healthspring_biosignal_monitor.toml
+  - graphs/healthspring_nest_atomic.toml
+  - graphs/healthspring_niche_deploy.toml
+  - graphs/healthspring_cell.toml
 
 depends_on:
   - toadstool

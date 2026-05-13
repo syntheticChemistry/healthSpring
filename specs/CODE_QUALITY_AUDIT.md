@@ -1,7 +1,9 @@
 # healthSpring Code Quality Audit Report
 
-> **Note**: This is a V42 historical snapshot. Current metrics: V59, 948+ tests,
-> zero clippy/fmt/doc warnings. See `README.md` and `CHANGELOG.md` for current state.
+> **FOSSIL RECORD** — This is a V42 historical snapshot (March 2026). Current status is
+> **V64l** (May 13, 2026): 1,018 tests, zero clippy/fmt/doc warnings, zero deep debt
+> across 7 categories. See root `README.md` and `CHANGELOG.md` for current state.
+> Retained for traceability per ecoPrimals fossil-record policy.
 
 ## V42 (March 23, 2026)
 

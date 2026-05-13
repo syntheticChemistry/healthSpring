@@ -1,19 +1,21 @@
 # healthSpring Validation Methodology
 
-**Version**: 0.1
-**Date**: March 8, 2026
+**Version**: 0.2
+**Date**: May 13, 2026 (V64l)
 
 ---
 
 ## Overview
 
-healthSpring validates human health applications using the same constrained evolution protocol as all ecoPrimals springs: Python control → Rust CPU → Rust GPU → metalForge dispatch. Each tier demonstrates that the Pure Rust implementation faithfully reproduces the reference algorithm, then promotes it to faster substrates with documented math parity.
+healthSpring validates health-of-living-systems applications using a six-level constrained evolution ladder: Python baseline → Rust CPU → barraCuda CPU → barraCuda GPU → guideStone/UniBin → NUCLEUS deployment. Each level uses the previous as its validation target, producing documented math parity at every transition.
 
 The key difference from other springs: healthSpring validates **applications**, not just algorithms. A PK model must not only reproduce published curves — it must produce clinically interpretable outputs (AUC, Cmax, trough levels) with documented uncertainty bounds. A colonization resistance score must correlate with clinical outcomes, not just match a lattice simulation.
 
+As of V64l, healthSpring also serves as the **Nest Atomic Specialist** — proving the NUCLEUS Nest Atomic composition (data lineage and provenance) end-to-end through clinical data pipelines via a 9-phase validation scenario.
+
 ---
 
-## Tier 0: Python Control
+## Level 1: Python Baseline
 
 Reference implementations from published papers, implemented in standard scientific Python (NumPy, SciPy, scikit-learn). These establish the ground truth.
 
@@ -23,33 +25,51 @@ Reference implementations from published papers, implemented in standard scienti
 - Pinned dependency versions in `requirements.txt`
 - All control scripts in `control/` with `run_all.sh`
 
-## Tier 1: Rust CPU
+## Level 2: Rust CPU
 
 Pure Rust reimplementation using `healthspring-barracuda` crate. f64 throughout (no f32 shortcuts). All tolerances named and documented.
 
 **Acceptance criteria**:
 - Matches Python control within named tolerance
 - `#![forbid(unsafe_code)]` in all modules
-- `clippy::pedantic` clean
+- `clippy::pedantic` + `clippy::nursery` clean
 - Every tolerance has a constant name and rationale
 
-## Tier 2: Rust GPU
+## Level 3: barraCuda CPU
 
-BarraCUDA WGSL shader promotion. Same algorithm, GPU-parallel execution.
+Same algorithm dispatched through barraCuda's WGSL shader pipeline running on CPU fallback. Validates that the primal math library produces identical results.
 
 **Acceptance criteria**:
-- Matches Rust CPU within documented GPU tolerance (DF64 precision bounds)
+- Matches Rust CPU within documented tolerance
 - Zero local WGSL shaders (all consumed from standalone `barraCuda`)
+
+## Level 4: barraCuda GPU
+
+WGSL shader execution on actual GPU hardware. Vendor-agnostic (NVIDIA, AMD, Intel, Apple via wgpu).
+
+**Acceptance criteria**:
+- Matches barraCuda CPU within documented GPU tolerance (DF64 precision bounds)
 - Feature-gated (`--features gpu`)
 
-## Tier 3: metalForge Dispatch
+## Level 5: guideStone / UniBin
 
-ToadStool cross-substrate routing. CPU ↔ GPU ↔ NPU dispatch validated.
+Self-validating binary (`healthspring_unibin certify`) proves bare properties 1–5 (Deterministic, Traceable, Self-Verifying via BLAKE3, Env-Agnostic, Tolerance-Documented). When NUCLEUS is deployed, IPC parity is validated via `primalspring::composition`. The `healthspring_primal` binary exposes 88 capabilities via JSON-RPC 2.0 over Unix sockets.
 
 **Acceptance criteria**:
-- Matches Tier 2 results via ToadStool `ComputeDispatch`
-- Routing decisions logged and reproducible
-- Feature-gated (`--features metalforge`)
+- `healthspring_unibin certify` passes all self-checks
+- IPC dispatch (`PrimalClient.call()`) matches direct Rust call within `DETERMINISM` tolerance
+- `--format json` output for CI/projectNUCLEUS ingestion
+- 17 validation scenarios across 8 tracks pass
+
+## Level 6: NUCLEUS Deployment
+
+plasmidBin cellular deployment via `healthspring_cell.toml`. Full Nest Atomic provenance pipeline: NestGate CAS → rhizoCrypt DAG → loamSpine ledger → sweetGrass attribution. Deploy graphs compose Tower, Node, Nest, and Meta primals.
+
+**Acceptance criteria**:
+- `s_nest_atomic` 9-phase scenario passes against live primals
+- `healthspring_cell.toml` accepted by plasmidBin
+- Wire contracts match upstream canonical names (BearDog: base64 `message`; skunkBat: `security.audit_log`; loamSpine: `spine.create`/`entry.append`)
+- Provenance trio round-trip produces valid Merkle root, ledger entry, and braid attribution
 
 ---
 
@@ -76,6 +96,26 @@ Experiments are numbered sequentially: `Exp001`, `Exp002`, etc. Each experiment:
 - Has a Rust validation binary in `experiments/expNNN_<name>/`
 - Produces output to `sandbox/` (gitignored)
 - Is documented in `whitePaper/experiments/README.md` and `whitePaper/baseCamp/`
+
+---
+
+## Nest Atomic Provenance Pipeline (V64l)
+
+The Nest Atomic validation scenario (`s_nest_atomic`) exercises the full provenance chain in 9 phases:
+
+```
+Phase 1: NestGate CAS — store content, get content hash
+Phase 2: rhizoCrypt DAG — create DAG node referencing content hash
+Phase 3: loamSpine ledger — spine.create + entry.append with Merkle root
+Phase 4: sweetGrass attribution — braid.create with semantic metadata
+Phase 5: BearDog crypto — crypto.sign with base64-encoded Merkle root
+Phase 6: Cross-atomic references — verify chain integrity across primals
+Phase 7: sweetGrass analytics — query attribution for experiment metadata
+Phase 8: Tower auxiliary — security.audit_log via skunkBat
+Phase 9: End-to-end summary — verify all phases connected
+```
+
+The `NestComposition` facade (`ipc/provenance/nest.rs`) orchestrates this pipeline for production use. The validation scenario runs against live primals when available and skips gracefully when offline.
 
 ---
 

@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V64l — Wire Hygiene: bearDog base64 `message`, skunkBat `security.audit_log`, plasmidBin cell.toml. **902+ tests**, 18 scenarios, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe, zero TODO.
+**Status**: V64l — Wire Hygiene: bearDog base64 `message`, skunkBat `security.audit_log`, plasmidBin cell.toml. **1,018 tests** (workspace), 17 scenarios, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe, zero TODO.
 **Last Updated**: May 13, 2026
 
 ---
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V64l** | [Wire Hygiene](handoffs/HEALTHSPRING_V64L_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | bearDog base64 `message`, skunkBat `security.audit_log`, plasmidBin cell.toml, Foundation Thread 10 gap |
+| **V64m** | [Comprehensive Handoff](handoffs/HEALTHSPRING_V64M_COMPREHENSIVE_HANDOFF_MAY13_2026.md) | May 13 | All wire contract learnings, Nest Atomic composition pattern, provenance pipeline, plasmidBin cell.toml, Foundation Thread 10, recommendations for upstream teams |
+| V64l | [Wire Hygiene](handoffs/HEALTHSPRING_V64L_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | bearDog base64 `message`, skunkBat `security.audit_log`, plasmidBin cell.toml, Foundation Thread 10 gap |
 | V64k | [Deep Debt Reconfirmation](handoffs/HEALTHSPRING_V64K_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | All 7 audit categories at zero debt, refreshed audit answers, no regressions from V64j |
 | V64j | [Delta Spring Evolution](handoffs/HEALTHSPRING_V64J_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | GAP-36 resolved, provenance trio wire names canonical, 5 gaps closed (#23, #32, #34, #35, #36), Nest Atomic live-ready |
 | V64i | [Deep Debt Resolution](handoffs/HEALTHSPRING_V64I_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Full 7-category audit at zero debt, clippy pedantic+nursery clean, hardcoding eliminated, audit answers, gaps #38-41 |

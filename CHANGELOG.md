@@ -4,6 +4,18 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64m — May 13, 2026
+
+### Root Docs, WhitePaper, and Cleanup Sprint
+
+- **Root docs updated to V64l** — `README.md` and `CONTEXT.md` version banners, sprint summaries (V64h–V64l), and test count reconciled to **1,018** (workspace).
+- **whitePaper modernized** — `whitePaper/README.md` version/date/test count synced. `baseCamp/README.md` test counts fixed (878 lib, 51 toadstool), stale "Next Steps (Post V35)" replaced with "Evolution Status (V64l)" documenting Nest Atomic completions and open extensions. `METHODOLOGY.md` evolved from March 2026 four-tier model to six-level validation ladder (Python → Rust → barraCuda CPU → barraCuda GPU → guideStone/UniBin → NUCLEUS deployment) with Nest Atomic provenance pipeline section.
+- **specs/ cleaned** — `specs/README.md` bumped to V64l with 1,018 tests, 51 toadstool. **FOSSIL RECORD** headers added to `AUDIT_REPORT.md` (V42), `CODE_QUALITY_AUDIT.md` (V42), and `GPU_EVOLUTION_AUDIT_MAR19_2026.md` (barraCuda v0.3.7 → v0.3.13).
+- **Niche YAML synced** — `niches/healthspring-health.yaml` bumped to v0.2.0. Added 4 missing capabilities: `health.monitor`, `health.probe`, `composition.status`, `method.register`. Added Nest Atomic and cell.toml deploy graphs.
+- **wateringHole test count fixed** — "902+ tests" → "1,018 tests (workspace)", scenarios corrected to 17.
+- **Comprehensive upstream handoff** — `HEALTHSPRING_V64M_COMPREHENSIVE_HANDOFF_MAY13_2026.md`: all wire contract learnings (BearDog base64, skunkBat audit, loamSpine canonical, NestGate CAS vs blob, rhizoCrypt, sweetGrass), Nest Atomic 9-phase pattern, NestComposition facade, deploy graph structure, capability routing architecture, plasmidBin cell.toml pattern, Foundation Thread 10 provenance expression, recommendations for upstream primal and spring teams.
+- **capability_registry.toml updated** — CI test reference fixed (`registry_cross_sync` → `integration_registry_sync`). Consumed primal wire names updated to canonical: `dag.create_node`/`dag.query`, `spine.create`/`entry.append`, `braid.create`/`braid.query`, `content.store`/`content.retrieve`, `security.audit_log` as primary. Legacy aliases retained with comments.
+
 ## V64l — May 13, 2026
 
 ### Wire Hygiene — ludoSpring Corrections Absorbed
