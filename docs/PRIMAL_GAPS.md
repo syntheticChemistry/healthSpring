@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-13
-**healthSpring version**: V64i (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64i: Deep Debt Resolution — clippy pedantic+nursery zero warnings, hardcoded strings → `PRIMAL_NAME`, all audit categories at zero debt)
+**healthSpring version**: V64j (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64j: Delta Spring Evolution — GAP-36 resolved, provenance trio wire names canonical, Nest Atomic live-ready)
 
 ---
 
@@ -466,33 +466,26 @@ capability-keyed socket registration or a discovery shim.
 
 ---
 
-## 23. Provenance Trio Empty Responses on UDS (Phase 46 Composition)
+## 23. Provenance Trio Wire Dispatch Failures (Phase 46 Composition)
 
-**Gap**: rhizoCrypt (`dag.session.create`), loamSpine (`spine.create`), and
-sweetGrass (`braid.create`) all accept UDS connections but return empty
-responses — no JSON-RPC result or error. The sockets are live (created by
-`composition_nucleus.sh`) and connections succeed, but no payload comes back.
+**Gap**: rhizoCrypt, loamSpine, and sweetGrass returned `-32601 MethodNotFound`
+(originally misdiagnosed as "empty UDS responses") because healthSpring sent
+non-canonical method names that fell through dispatch.
 
-**Evidence** (healthSpring composition, 18/24 pass, 4 fail):
-- `rhizocrypt.dag.session.create`: empty response — FAIL
-- `loamspine.spine.create`: empty response — FAIL
-- `sweetgrass.braid.create`: empty response — FAIL
+**Root cause** (confirmed May 13, 2026 via GAP-36 reconciliation):
+- healthSpring sent `commit.create` → loamSpine canonical is `spine.create`
+- healthSpring sent `ledger.append` → loamSpine canonical is `entry.append`
+- healthSpring sent `provenance.session.create` → rhizoCrypt canonical is `dag.session.create`
+- healthSpring sent `braid.attribution.create` → sweetGrass canonical is `braid.create`
 
-This matches primalSpring's known PG-45 (rhizoCrypt) but extends it to
-loamSpine and sweetGrass, revealing a pattern: the provenance trio primals
-accept UDS but don't respond to JSON-RPC when started via
-`composition_nucleus.sh` with `--socket` and env var configuration.
+**Resolution**: Two-sided fix:
+1. **Upstream**: All three primals shipped `normalize_method()` alias tables
+   (rhizoCrypt S68: 21 aliases, loamSpine v0.9.16: 6 aliases, sweetGrass v0.7.35: 10 aliases)
+2. **Local (V64j)**: healthSpring `loamspine.rs` fixed `commit.create`→`spine.create`,
+   `ledger.append`→`entry.append`. `data/provenance.rs` fixed `commit.create`→`spine.create`.
+   All other method names were already canonical (`dag.*`, `braid.create`, `storage.*`).
 
-**Impact**: DAG state tracking, ledger sealing, and braid provenance are
-fully offline for shell compositions. Domain logic works; provenance is
-lost.
-
-**Proposed resolution**: Investigate whether the provenance trio requires
-additional startup configuration (BTSP, nestgate dependency, different
-server subcommand) or if their JSON-RPC handler needs a startup delay.
-
-**Status**: Documented. All three primals gracefully degraded — composition
-completed without provenance.
+**Status**: **RESOLVED V64j** — both sides (upstream aliases + local canonical names) fixed.
 
 ---
 
@@ -659,24 +652,23 @@ Upstream audit: **ecoPrimals — Atomic Specialist Validation Sprint (May 13, 20
   - [x] `--format json` output works for CI consumption
   - [x] Gaps documented below
 
-**Wire name mapping (audit → canonical):**
+**Wire name mapping (canonical + aliases per GAP-36 reconciliation):**
 
-| Audit Name | Canonical Wire Name | Primal |
-|------------|-------------------|--------|
-| `content.put` | `storage.store` | nestGate |
-| `content.get` | `storage.retrieve` | nestGate |
-| `content.exists` | `storage.exists` | nestGate |
-| `content.list` | `storage.list` | nestGate |
-| `dag.session.create` | `dag.session.create` | rhizoCrypt |
-| `dag.event.append` | `dag.event.append` | rhizoCrypt |
-| `ledger.entry.append` | `entry.append` | loamSpine |
-| `braid.attribution.create` | `braid.create` + `braid.commit` | sweetGrass |
+| Domain | Canonical Wire Name | Accepted Aliases | Primal |
+|--------|-------------------|-----------------|--------|
+| CAS (immutable) | `content.put` / `content.get` | — | nestGate |
+| Blob (keyed) | `storage.store` / `storage.retrieve` | `storage.put`→`storage.store`, `storage.get`→`storage.retrieve` | nestGate |
+| DAG session | `dag.session.create` | `provenance.session.create` (21 total aliases) | rhizoCrypt |
+| DAG events | `dag.event.append` | `provenance.event.append` | rhizoCrypt |
+| Ledger lifecycle | `spine.create` / `spine.get` | `session.create`, `ledger.create`, `session.state` (6 aliases) | loamSpine |
+| Ledger entries | `entry.append` / `entry.get` | — (native, no alias needed) | loamSpine |
+| Attribution | `braid.create` / `braid.commit` | `braid.attribution.create`, `attribution.create_braid` (10 aliases) | sweetGrass |
 
 | # | Gap | Source | Upstream Action |
 |---|-----|--------|-----------------|
-| 34 | `content.put`/`content.get` naming diverges from wire — audit uses `content.*`, canonical is `storage.*` | Wire contract review | primalSpring: reconcile `LIVE_SCIENCE_API.md` with `nest_atomic.toml` |
-| 35 | `ledger.entry.append` naming diverges — audit uses `ledger.entry.append`, loamSpine wire uses `entry.append` | Wire contract review | primalSpring: standardize loamSpine method naming |
-| 36 | Nest Atomic exercises blocked by Gap #23 (trio empty UDS responses) — structural pass, live capabilities skip | Validation sprint | rhizoCrypt/loamSpine/sweetGrass: ship JSON-RPC handlers |
+| 34 | `content.*` (CAS) vs `storage.*` (blob) — **BY DESIGN** per biomeOS `capability_registry.toml`. Both route to nestGate, different semantics (immutable BLAKE3 vs keyed mutable). | Wire contract review | **RESOLVED V64j**: confirmed by biomeOS registry + LIVE_SCIENCE_API |
+| 35 | `entry.append` is canonical loamSpine. `ledger.entry.append` was never a loamSpine method — it's `entry.append` (native) or `session.create`→`spine.create` (aliased). | Wire contract review | **RESOLVED V64j**: loamSpine v0.9.16 alias table documents canonical names |
+| 36 | Nest Atomic exercises were blocked by Gap #23 (trio `-32601 MethodNotFound`) — now unblocked by upstream alias shipping + local canonical name fixes | Validation sprint | **RESOLVED V64j**: upstream aliases + local wire name fixes |
 | 37 | `NestComposition` facade used `"data"` as capability domain for NestGate `storage.store` — should align to `"storage"` per routing table | Internal wire review | **Fixed V64h**: refactored `nest.rs` `record_event` to use `"storage"` domain |
 
 ### Deep Debt Resolution Sprint (V64i)
@@ -719,12 +711,29 @@ Upstream audit: **ecoPrimals — Atomic Specialist Validation Sprint (May 13, 20
 | 40 | Dataset SHA256 checksums empty + `qs_gene_matrix` fetch unimplemented | Data provenance audit | healthSpring: populate post-fetch, implement fetch script |
 | 41 | No GPU parity benchmarks (Kokkos/LAMMPS/SciPy) | Benchmark audit | Not applicable — sovereign WGSL shaders, not framework ports |
 
-### Remaining upstream blockers (unchanged)
+### Delta Spring Evolution — Upstream Clear (V64j)
+
+**GAP-36 RESOLVED.** All three provenance trio primals shipped `normalize_method()` alias tables:
+- **rhizoCrypt S68**: 21 `provenance.*` → `dag.*` aliases + `SEMANTIC_ALIASES`
+- **loamSpine v0.9.16**: 6 aliases (`session.create`→`spine.create`, `ledger.create`→`spine.create`, etc.)
+- **sweetGrass v0.7.35**: 10 aliases (`braid.attribution.create`→`braid.create`, etc.)
+
+**Local fixes:**
+- `loamspine.rs`: `commit.create`→`spine.create`, `ledger.append`→`entry.append` (new canonical fns + backward-compat aliases)
+- `data/provenance.rs`: `commit.create`→`spine.create`
+
+**Gaps resolved in V64j:**
+- Gap #23 — root cause identified as `-32601 MethodNotFound` (not empty responses); fixed both sides
+- Gap #32 — NestComposition testing unblocked (transitive from #23)
+- Gap #34 — `content.*` vs `storage.*` confirmed by-design per biomeOS registry (CAS vs blob)
+- Gap #35 — `entry.append` is canonical loamSpine; aliases document the full vocabulary
+- Gap #36 — Trio wire aliases shipped; Nest Atomic live-ready
+
+**Remaining upstream blockers:**
 
 - **NestGate egress fence** (Gap #2) — ionic bridge partially resolved, NestGate side still needed
 - **BTSP server** (Gap #10) — client ready, BearDog BTSP server pending
 - **Socket discovery standardization** (Gap #22) — rhizocrypt, sweetgrass, squirrel capability sockets
-- **Provenance trio UDS responses** (Gap #23) — empty JSON-RPC responses on UDS (wire shape now canonical per V64g)
 - **Songbird crypto provider** (Gap #24) — startup discovery failure
 
 ---
@@ -755,7 +764,7 @@ Upstream audit: **ecoPrimals — Atomic Specialist Validation Sprint (May 13, 20
 | 20 | BTSP production mode breaks IPC | primalSpring transport | **V57**: documented, `FAMILY_SEED` workaround | Negotiate BTSP capability |
 | 21 | Crypto probe schema mismatch | BearDog method spec | **V57**: documented, SKIPped in guideStone | Publish method signatures |
 | 22 | Missing socket discovery (DAG/AI/commit) | Ecosystem socket std | **V57**: documented, SKIPped in guideStone | Standardize capability sockets |
-| 23 | Provenance trio empty UDS responses | Primal startup config | **V58**: documented, composition degrades | Investigate trio UDS JSON-RPC handler |
+| 23 | Provenance trio wire dispatch (`-32601`) | — | **RESOLVED V64j**: root cause was non-canonical method names; upstream aliases + local fixes | — |
 | 24 | Songbird crypto provider discovery | Songbird startup docs | **V58**: documented, symlink workaround | Document songbird startup deps |
 | 25 | petalTongue proprioception in server mode | petalTongue server | **V58**: documented, non-blocking | Add synthetic proprioception in server mode |
 | 26 | NestGate not in default PRIMAL_LIST | composition_nucleus.sh | **V58**: documented, PRIMAL_LIST override | Add nestgate to defaults |
@@ -764,11 +773,11 @@ Upstream audit: **ecoPrimals — Atomic Specialist Validation Sprint (May 13, 20
 | 29 | plasmidBin niche under-specced | Convergence wiring | **Fixed V64f**: promoted to `full` | — |
 | 30 | precision.route blurb/API divergence | Wire contract review | **V64f**: wired to LIVE_SCIENCE_API | Reconcile blurb |
 | 31 | lithoSpore B5 module ingestion | LTEE handoff | **V64f**: packaged | lithoSpore: ingest module |
-| 32 | NestComposition testing blocked by trio UDS | Provenance elevation | **V64g**: documented | Trio: ship JSON-RPC handlers |
+| 32 | NestComposition testing blocked by trio dispatch | Provenance elevation | **RESOLVED V64j**: root cause was Gap #23 (non-canonical method names); fixed by alias shipping + local canonical names | — |
 | 33 | Dataset SHA256 checksums empty | Provenance audit | **V64g**: documented | Populate on dataset fetch |
-| 34 | `content.*` vs `storage.*` wire naming | Nest Atomic sprint | **V64h**: documented | Reconcile LIVE_SCIENCE_API ↔ nest_atomic.toml |
-| 35 | `ledger.entry.append` vs `entry.append` | Nest Atomic sprint | **V64h**: documented | Standardize loamSpine naming |
-| 36 | Nest Atomic live exercises blocked by Gap #23 | Trio UDS responses | **V64h**: structural pass, live skip | Trio: ship JSON-RPC handlers |
+| 34 | `content.*` vs `storage.*` — by design | — | **RESOLVED V64j**: CAS vs blob, both nestGate, confirmed by biomeOS registry | — |
+| 35 | loamSpine method naming clarified | — | **RESOLVED V64j**: `entry.append` canonical, aliases shipped | — |
+| 36 | Nest Atomic live exercises unblocked | — | **RESOLVED V64j**: upstream aliases + local canonical names | — |
 | 37 | NestComposition `"data"` domain misroute | Internal wire review | **Fixed V64h**: `"storage"` domain | — |
 | 38 | ~30 Python baselines without Rust scenarios | Deep debt audit | **V64i**: documented, lower priority | — |
 | 39 | LTEE E2+E4 papers queued | Paper queue audit | **V64i**: documented | — |

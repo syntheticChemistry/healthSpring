@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V64i — Deep Debt Resolution: clippy pedantic+nursery zero warnings, hardcoded strings evolved, all 7 audit categories at zero debt. **902+ tests**, 18 scenarios, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy pedantic+nursery, zero unsafe, zero TODO.
+**Status**: V64j — Delta Spring Evolution: GAP-36 RESOLVED, provenance trio wire names canonical, 5 gaps closed (#23, #32, #34, #35, #36), Nest Atomic live-ready. **902+ tests**, 18 scenarios, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy pedantic+nursery, zero unsafe, zero TODO.
 **Last Updated**: May 13, 2026
 
 ---
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V64i** | [Deep Debt Resolution](handoffs/HEALTHSPRING_V64I_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Full 7-category audit at zero debt, clippy pedantic+nursery clean, hardcoding eliminated, audit answers, gaps #38-41 |
+| **V64j** | [Delta Spring Evolution](handoffs/HEALTHSPRING_V64J_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | GAP-36 resolved, provenance trio wire names canonical, 5 gaps closed (#23, #32, #34, #35, #36), Nest Atomic live-ready |
+| V64i | [Deep Debt Resolution](handoffs/HEALTHSPRING_V64I_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Full 7-category audit at zero debt, clippy pedantic+nursery clean, hardcoding eliminated, audit answers, gaps #38-41 |
 | V64h | [Nest Atomic Validation Sprint](handoffs/HEALTHSPRING_V64H_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Nest Atomic (neutron) 9-phase validation, 7-node deploy graph, NestComposition domain fix, gaps #34-37 |
 | V64g | [Provenance Elevation Handoff](handoffs/HEALTHSPRING_V64G_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Auditable data chains: expected_values.json + tolerances.toml for 7 tracks, unified IPC wire shape, NestComposition facade, 30+ DOIs, gaps #32-33 |
 | V64f | [Tier 2 Convergence Handoff](handoffs/HEALTHSPRING_V64F_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Tier 2 wired, precision mapping, --list, LTEE B5 lithoSpore module, plasmidBin |

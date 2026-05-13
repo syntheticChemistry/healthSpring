@@ -4,6 +4,21 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64j — May 13, 2026
+
+### Delta Spring Evolution — Upstream Clear, Niche Atomic Convergence
+
+- **GAP-36 RESOLVED** — provenance trio wire alias tables shipped upstream:
+  - rhizoCrypt S68: 21 `provenance.*` → `dag.*` aliases in `normalize_method()`
+  - loamSpine v0.9.16: 6 aliases (`session.create`→`spine.create`, `ledger.create`→`spine.create`, etc.)
+  - sweetGrass v0.7.35: 10 aliases (`braid.attribution.create`→`braid.create`, etc.)
+- **`loamspine.rs` wire names fixed** — `commit.create`→`spine.create` (canonical), `ledger.append`→`entry.append` (canonical). New functions `spine_create()` and `entry_append()` with backward-compatible wrappers `commit_create()` and `ledger_append()`. Doc comments reference GAP-36 reconciliation.
+- **`data/provenance.rs` wire name fixed** — `commit.create`→`spine.create` for loamSpine ledger calls.
+- **Gap #23 root cause identified** — "empty UDS responses" were actually `-32601 MethodNotFound` from non-canonical method names falling through trio dispatch. Both upstream (aliases) and local (canonical names) fixes applied.
+- **Gap #34 closed** — `content.*` (CAS, immutable, BLAKE3) vs `storage.*` (keyed blob, mutable) confirmed as intentionally distinct per biomeOS `capability_registry.toml`. Both route to nestGate with different semantics.
+- **5 gaps resolved** (V64j): #23, #32, #34, #35, #36. Nest Atomic now live-ready.
+- **Zero clippy warnings** — pedantic+nursery clean after wire name changes.
+
 ## V64i — May 13, 2026
 
 ### Deep Debt Resolution + Evolution Sprint

@@ -347,10 +347,10 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         .unwrap_or("")
         .to_owned();
 
-    // Step 2: Commit (loamSpine)
+    // Step 2: Commit (loamSpine) — canonical: spine.create
     let Ok(commit_result) = resilient_trio_call(
         &socket,
-        "commit.create",
+        "spine.create",
         &serde_json::json!({
             "summary": dehydration,
             "content_hash": merkle_root,
