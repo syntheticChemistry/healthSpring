@@ -57,6 +57,7 @@ wgpu = { version = "28", optional = true }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"], optional = true }
 bytemuck = { version = "1", features = ["derive"], optional = true }
 ureq = { version = "3", optional = true }
+base64 = "0.22"
 
 # primalSpring composition API — required for CompositionContext,
 # ScenarioMeta, ValidationResult, certification engine, and tolerances.

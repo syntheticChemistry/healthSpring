@@ -8,10 +8,11 @@
 //!   rhizoCrypt — dag.session.create, dag.event.append
 //!   loamSpine  — entry.append (ledger commit)
 //!   sweetGrass — braid.create, braid.commit (attribution)
-//!   bearDog    — crypto.sign (Merkle root signature)
-//!   songbird   — discovery.peers (peer enumeration)
-//!   skunkBat   — defense.audit (audit trail)
+//!   bearDog    — `crypto.sign` (Merkle root signature, base64 `message` param)
+//!   songbird   — `discovery.peers` (peer enumeration)
+//!   skunkBat   — `security.audit_log` (audit trail)
 
+use base64::Engine;
 use primalspring::composition::CompositionContext;
 use primalspring::validation::ValidationResult;
 
@@ -298,11 +299,12 @@ fn phase4_rhizocrypt(
 fn phase5_beardog(v: &mut ValidationResult, ctx: &mut CompositionContext, state: &mut ChainState) {
     v.section("Phase 5: BearDog (Tower crypto)");
 
-    let sign_payload = if state.merkle_root.is_empty() {
-        "nest-atomic-validation-fallback".to_owned()
+    let raw = if state.merkle_root.is_empty() {
+        "nest-atomic-validation-fallback"
     } else {
-        state.merkle_root.clone()
+        &state.merkle_root
     };
+    let message_b64 = base64::engine::general_purpose::STANDARD.encode(raw.as_bytes());
 
     let sign_result = call_or_skip(
         ctx,
@@ -311,8 +313,8 @@ fn phase5_beardog(v: &mut ValidationResult, ctx: &mut CompositionContext, state:
         "crypto",
         "crypto.sign",
         serde_json::json!({
-            "payload": sign_payload,
-            "algorithm": "ed25519",
+            "message": message_b64,
+            "purpose": "nest_atomic_validation",
         }),
     );
 
@@ -424,9 +426,9 @@ fn phase8_tower_aux(v: &mut ValidationResult, ctx: &mut CompositionContext, stat
     call_or_skip(
         ctx,
         v,
-        "skunkbat_defense_audit",
+        "skunkbat_security_audit_log",
         "audit",
-        "defense.audit",
+        "security.audit_log",
         serde_json::json!({
             "event": "nest_atomic_validation_complete",
             "session_id": state.session_id,

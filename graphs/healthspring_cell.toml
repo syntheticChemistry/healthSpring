@@ -1,0 +1,248 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Cellular deployment graph: healthSpring — clinical data provenance niche
+#
+# Health science via composing existing primals. The Nest Atomic
+# (nestGate + rhizoCrypt + loamSpine + sweetGrass) provides the data
+# provenance chain; barraCuda provides math/stats; Tower Atomic
+# (bearDog + songbird) provides crypto and discovery.
+#
+# Deploy: biomeos deploy --graph graphs/healthspring_cell.toml
+
+[graph]
+id = "healthspring-cell"
+name = "healthspring-cell"
+version = "1.0.0"
+description = "healthSpring — clinical data provenance niche with Nest Atomic"
+coordination = "sequential"
+
+[graph.metadata]
+cell_type = "spring"
+domain = "health_science"
+security_model = "btsp_enforced"
+transport = "uds_only"
+composition_model = "nest_heavy"
+
+# ── Tower Atomic ─────────────────────────────────────────────────────
+
+[[nodes]]
+id = "beardog"
+output = "beardog-ready"
+capabilities = ["crypto", "security"]
+
+[nodes.primal]
+by_capability = "security"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 30000
+
+[[nodes]]
+id = "songbird"
+depends_on = ["beardog"]
+output = "songbird-ready"
+capabilities = ["discovery", "network"]
+
+[nodes.primal]
+by_capability = "discovery"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 30000
+
+# ── Node Atomic ──────────────────────────────────────────────────────
+
+[[nodes]]
+id = "barracuda"
+depends_on = ["beardog"]
+output = "barracuda-ready"
+capabilities = ["tensor", "stats"]
+
+[nodes.primal]
+by_capability = "tensor"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 30000
+
+[[nodes]]
+id = "toadstool"
+depends_on = ["beardog", "songbird"]
+output = "toadstool-ready"
+capabilities = ["compute"]
+fallback = "skip"
+
+[nodes.primal]
+by_capability = "compute"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 45000
+
+[[nodes]]
+id = "coralreef"
+depends_on = ["beardog", "songbird"]
+output = "coralreef-ready"
+capabilities = ["shader"]
+fallback = "skip"
+
+[nodes.primal]
+by_capability = "shader"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 30000
+
+# ── Nest Atomic ──────────────────────────────────────────────────────
+
+[[nodes]]
+id = "nestgate"
+depends_on = ["beardog", "songbird"]
+output = "nestgate-ready"
+capabilities = ["storage", "content"]
+
+[nodes.primal]
+by_capability = "storage"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 30000
+
+[[nodes]]
+id = "rhizocrypt"
+depends_on = ["beardog", "songbird"]
+output = "rhizocrypt-ready"
+capabilities = ["dag", "provenance"]
+fallback = "skip"
+
+[nodes.primal]
+by_capability = "dag"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 30000
+
+[[nodes]]
+id = "loamspine"
+depends_on = ["beardog", "songbird"]
+output = "loamspine-ready"
+capabilities = ["ledger", "spine"]
+fallback = "skip"
+
+[nodes.primal]
+by_capability = "ledger"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 30000
+
+[[nodes]]
+id = "sweetgrass"
+depends_on = ["beardog", "songbird"]
+output = "sweetgrass-ready"
+capabilities = ["commit", "attribution"]
+fallback = "skip"
+
+[nodes.primal]
+by_capability = "commit"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 30000
+
+# ── Meta: Audit & Observability ──────────────────────────────────────
+
+[[nodes]]
+id = "skunkbat"
+depends_on = ["beardog", "songbird"]
+output = "skunkbat-ready"
+capabilities = ["security.audit_log", "baseline.observe", "baseline.anomaly"]
+fallback = "skip"
+
+[nodes.primal]
+by_capability = "defense"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 15000
+required = false
+
+# ── Validation ───────────────────────────────────────────────────────
+
+[[nodes]]
+id = "validate-cell"
+depends_on = ["beardog", "songbird", "nestgate", "barracuda", "skunkbat"]
+output = "cell-validated"
+
+[nodes.operation]
+name = "health_check"
+
+[nodes.operation.params]
+check_beardog = true
+check_songbird = true
+check_nestgate = true
+check_barracuda = true
+check_skunkbat = true
+timeout_seconds = 20
+
+[nodes.constraints]
+timeout_ms = 30000

@@ -1011,6 +1011,7 @@ dependencies = [
  "approx",
  "barracuda",
  "barracuda-core",
+ "base64",
  "bytemuck",
  "clap",
  "criterion",

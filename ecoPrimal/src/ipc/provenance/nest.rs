@@ -19,6 +19,7 @@
 //! target primal is unavailable. The facade tracks partial completion
 //! so callers can inspect what succeeded.
 
+use base64::Engine;
 use serde_json::Value;
 
 use crate::composition::HealthCompositionContext;
@@ -191,12 +192,13 @@ impl<'a> NestComposition<'a> {
 
         self.steps_attempted += 1;
 
+        let message_b64 = base64::engine::general_purpose::STANDARD.encode(merkle.as_bytes());
         if let Ok(result) = self.ctx.inner().call(
             "crypto",
             "crypto.sign",
             serde_json::json!({
-                "payload": merkle,
-                "algorithm": "ed25519",
+                "message": message_b64,
+                "purpose": "provenance_commit",
             }),
         ) {
             self.signature = result

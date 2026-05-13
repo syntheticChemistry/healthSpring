@@ -4,6 +4,16 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64l — May 13, 2026
+
+### Wire Hygiene — ludoSpring Corrections Absorbed
+
+- **bearDog `crypto.sign` param fix** — `"payload"` → `"message"` (base64-encoded). bearDog expects `{"message": base64, "purpose": ...}`, not `{"payload": raw, "algorithm": ...}`. Fixed in `s_nest_atomic.rs` Phase 5 and `NestComposition.sign()` in `nest.rs`. Added `base64 = "0.22"` direct dependency.
+- **skunkBat `security.audit_log` method fix** — canonical wire method is `security.audit_log`, not `defense.audit`. Fixed in `s_nest_atomic.rs` Phase 8, `healthspring_niche_deploy.toml` capabilities, `niche.rs` consumed capabilities, and `routing.rs` domain routing.
+- **`healthspring_cell.toml` created** — plasmidBin cellular deployment graph following ludoSpring `[[nodes]]` pattern. Full Nest Atomic + Tower Atomic + compute trio.
+- **Deploy graph skunkBat capabilities updated** — stale `defense.*` removed, canonical `security.audit_log` + `baseline.*` + `metadata.*` capabilities per skunkBat dispatch table.
+- **Gap #42 documented** — Foundation Thread 10 (Provenance) is empty, healthSpring domain.
+
 ## V64k — May 13, 2026
 
 ### Deep Debt Reconfirmation Sprint

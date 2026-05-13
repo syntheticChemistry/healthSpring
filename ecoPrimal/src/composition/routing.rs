@@ -20,7 +20,6 @@ pub const ALL_CAPS: &[&str] = &[
     "orchestration",
     "coordination",
     "audit",
-    "defense",
 ];
 
 /// Map a capability domain to its canonical provider primal.
@@ -40,7 +39,7 @@ pub fn capability_to_primal(capability: &str) -> &'static str {
         "visualization" => primal_names::PETALTONGUE,
         "orchestration" | "lifecycle" => primal_names::BIOMEOS,
         "coordination" => "primalspring",
-        "audit" | "audit.log" | "defense" | "defense.audit" => primal_names::SKUNKBAT,
+        "audit" | "audit.log" | "defense" | "security.audit" => primal_names::SKUNKBAT,
         _ => "unknown",
     }
 }

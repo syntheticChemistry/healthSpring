@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-13
-**healthSpring version**: V64k (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64k: Deep Debt Reconfirmation — all 7 audit categories at zero debt, V64j wire fixes verified clean)
+**healthSpring version**: V64l (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64l: Wire hygiene — bearDog base64 `message` param, skunkBat `security.audit_log`, plasmidBin cell.toml)
 
 ---
 
@@ -763,6 +763,24 @@ Re-audit after V64j wire name changes. **All 7 categories confirmed at zero debt
 
 **No new gaps.** All findings unchanged from V64i. V64j wire name changes introduced zero debt.
 
+### Wire Hygiene Sprint (V64l)
+
+ludoSpring Tower atomic (first live validation) discovered two wire contract mismatches absorbed by healthSpring:
+
+**bearDog `crypto.sign`**: Expects base64-encoded `"message"` param, not raw `"payload"`. healthSpring sent `{"payload": ..., "algorithm": "ed25519"}` — bearDog would reject with `"Missing required parameter: message"`.
+
+**Fix**: `s_nest_atomic.rs` Phase 5 and `NestComposition.sign()` in `nest.rs` now send `{"message": base64_encode(data), "purpose": "..."}`. Added `base64 = "0.22"` as direct dependency.
+
+**skunkBat `security.audit_log`**: Canonical wire method is `security.audit_log`, not `defense.audit`. healthSpring's Phase 8 and deploy graph used the wrong name.
+
+**Fix**: `s_nest_atomic.rs` Phase 8 → `security.audit_log`. Deploy graph (`healthspring_niche_deploy.toml`) skunkBat capabilities updated. `niche.rs` stale `defense.audit` removed. Routing table updated (`defense.audit` → `security.audit`).
+
+**plasmidBin cell.toml**: Created `graphs/healthspring_cell.toml` for cellular deployment (biomeos deploy format). Follows ludoSpring's `[[nodes]]` pattern with full Nest Atomic + Tower Atomic + compute trio.
+
+| # | Gap | Source | Upstream Action |
+|---|-----|--------|-----------------|
+| 42 | Foundation Thread 10 (Provenance) is empty — healthSpring domain | Upstream directive | healthSpring: seed expression when sporeGarden structure is confirmed |
+
 ---
 
 ## Summary Matrix
@@ -810,3 +828,4 @@ Re-audit after V64j wire name changes. **All 7 categories confirmed at zero debt
 | 39 | LTEE E2+E4 papers queued | Paper queue audit | **V64i**: documented | — |
 | 40 | Dataset SHA256 + fetch gaps | Data audit | **V64i**: documented | — |
 | 41 | No GPU parity benchmarks | Benchmark audit | **V64i**: N/A (sovereign WGSL) | — |
+| 42 | Foundation Thread 10 (Provenance) empty | Upstream directive | **V64l**: documented, seed when sporeGarden confirmed | — |

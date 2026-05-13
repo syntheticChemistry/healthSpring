@@ -181,13 +181,14 @@ binary = "skunkbat_primal"
 order = 8
 required = false
 depends_on = ["beardog", "rhizocrypt"]
-health_method = "defense.health"
+health_method = "health.liveness"
 by_capability = "defense"
 capabilities = [
-    "defense.audit",
-    "defense.events",
-    "defense.log",
     "security.audit_log",
+    "baseline.observe",
+    "baseline.anomaly",
+    "metadata.scan",
+    "response.graduated",
 ]
 
 # -- Node 9: healthSpring (health science primal) -------------------------
