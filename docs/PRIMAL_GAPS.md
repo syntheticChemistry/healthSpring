@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-13
-**healthSpring version**: V64j (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64j: Delta Spring Evolution — GAP-36 resolved, provenance trio wire names canonical, Nest Atomic live-ready)
+**healthSpring version**: V64k (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64k: Deep Debt Reconfirmation — all 7 audit categories at zero debt, V64j wire fixes verified clean)
 
 ---
 
@@ -735,6 +735,33 @@ Upstream audit: **ecoPrimals — Atomic Specialist Validation Sprint (May 13, 20
 - **BTSP server** (Gap #10) — client ready, BearDog BTSP server pending
 - **Socket discovery standardization** (Gap #22) — rhizocrypt, sweetgrass, squirrel capability sockets
 - **Songbird crypto provider** (Gap #24) — startup discovery failure
+
+### Deep Debt Reconfirmation Sprint (V64k)
+
+Re-audit after V64j wire name changes. **All 7 categories confirmed at zero debt.**
+
+| Category | Status | Detail |
+|----------|--------|--------|
+| TODO/FIXME/HACK | **0** | Zero markers in entire codebase |
+| `unsafe` code | **0** | `#![forbid(unsafe_code)]` enforced at lib + all 5 binary crates |
+| Production mocks | **0** | All mocks in `#[cfg(test)] mod tests` (2 mock fns in `visualization/ipc_push/mod.rs`) |
+| `unimplemented!`/`todo!`/`panic!` (non-test) | **0** | All 20 `panic!` calls are inside `#[cfg(test)]` test blocks |
+| Files > 800 LOC | **0** | Largest file: 597 lines (`ipc/proptest_ipc.rs`) |
+| Clippy pedantic+nursery | **0 warnings, 0 errors** | Full pass on `--all-targets`, including V64j additions |
+| External C deps (default build) | **0 runtime** | `blake3` uses `cc` at build-time for SIMD assembly; no C runtime deps. `ring` gated behind `nestgate` feature. |
+| Hardcoded primal routing | **0** | All via `primal_names::*` constants + capability discovery. Self-knowledge constants (`PRIMAL_NAME`, `PRIMAL_ID`, `TOOL_NAME`) are legitimate self-identification. |
+
+**Audit questions (refreshed):**
+
+| Question | Answer |
+|----------|--------|
+| Python baselines for barraCuda CPU parity? | **Yes**: `control/validation/exp040_barracuda_cpu.py` (stats, Hill, Shannon, Simpson, Chao1, Anderson) + `control/scripts/bench_barracuda_cpu_vs_python.py` (Hill, oral PK, Shannon/Simpson/Pielou, AUC, pop MC). Rust parity: full for exp040; partial for bench suite (oral PK, Pielou, trapezoidal AUC gaps). |
+| GPU benchmarks? | `gpu_parity.rs` (Hill/diversity/popPK/MM batch via wgpu), `kokkos_parity.rs` (Kokkos-modeled CPU patterns). No SciPy/LAMMPS/Galaxy direct comparisons — sovereign WGSL shaders, not framework ports. |
+| What's not implemented? | ~30 Python baselines lack Rust scenarios. V16 primitives (exp078-082: antibiotic perturbation, SCFA, serotonin, EDA, beat classification) uncovered. exp084/exp085 not in scenario registry. |
+| Unreviewed papers? | **2**: LTEE E2 (HOLIgraph) and E4 (macrocyclic peptides). 45/45 main-track complete. |
+| Datasets? | **5** in `data/manifest.toml`, all SHA256 empty. `qs_gene_matrix` lacks fetch script. Other 4 have scripts but unverified. |
+
+**No new gaps.** All findings unchanged from V64i. V64j wire name changes introduced zero debt.
 
 ---
 

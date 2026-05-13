@@ -4,6 +4,22 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64k — May 13, 2026
+
+### Deep Debt Reconfirmation Sprint
+
+- **All 7 audit categories confirmed at zero debt** after V64j wire name changes:
+  - TODO/FIXME/HACK: 0
+  - `unsafe` code: 0 — `#![forbid(unsafe_code)]` enforced across lib + 5 binary crates
+  - Production mocks: 0 — all in `#[cfg(test)]`
+  - `unimplemented!`/`todo!`/`panic!` (non-test): 0 — all 20 `panic!` in test blocks
+  - Files > 800 LOC: 0 — largest 597 lines
+  - Clippy pedantic+nursery: 0 warnings, 0 errors
+  - External C deps (default build): 0 runtime. `blake3` uses `cc` build-time for SIMD.
+  - Hardcoded routing: 0 — all via `primal_names::*` + capability discovery
+- **Audit questions refreshed**: Python baselines (2 scripts, partial Rust parity for V16 bench suite), GPU benchmarks (sovereign WGSL, no LAMMPS/SciPy/Galaxy), ~30 unscenarioed baselines, 2 unreviewed LTEE papers, 5 datasets with empty SHA256.
+- **No new debt** introduced by V64j.
+
 ## V64j — May 13, 2026
 
 ### Delta Spring Evolution — Upstream Clear, Niche Atomic Convergence
