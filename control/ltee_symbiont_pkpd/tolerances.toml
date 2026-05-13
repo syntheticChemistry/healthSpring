@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# LTEE B5 — Symbiont PK/PD (Leonard 2024) tolerance definitions
+# Used by lithoSpore module `ltee-symbiont-pk` for CI-quality validation.
+
+[metadata]
+paper_id = "B5"
+module = "ltee-symbiont-pk"
+spring = "healthSpring"
+created = "2026-05-13"
+doi = "10.1128/mbio.03342-23"
+
+[colonization]
+description = "Logistic growth of S. alvi in bee gut"
+metric = "CFU at day 7"
+expected = 3.1e8
+relative_tolerance = 0.20
+
+[production]
+description = "dsRNA steady-state titer"
+metric = "ng per gut at carrying capacity"
+expected = 425.0
+relative_tolerance = 0.15
+
+[pk_half_life]
+description = "First-order elimination half-life in gut lumen"
+metric = "hours"
+expected = 8.3
+relative_tolerance = 0.10
+
+[efficacy]
+description = "Hill dose-response knockdown at steady state"
+metric = "fraction of max"
+expected = 0.85
+relative_tolerance = 0.10
+
+[time_to_therapeutic]
+description = "Days to reach EC50 molecule concentration"
+metric = "days"
+expected = 8.0
+absolute_tolerance = 2.0

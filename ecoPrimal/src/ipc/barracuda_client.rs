@@ -180,38 +180,56 @@ impl BarraCudaClient {
     /// # Errors
     ///
     /// Returns `IpcError` if `barraCuda` is unreachable or rejects the query.
-    pub fn precision_route(&self, domain: &str) -> Result<PrecisionAdvisory, IpcError> {
-        let params = serde_json::json!({ "domain": domain });
+    pub fn precision_route(
+        &self,
+        domain: &str,
+        hardware_hint: Option<&str>,
+    ) -> Result<PrecisionAdvisory, IpcError> {
+        let mut params = serde_json::json!({ "domain": domain });
+        if let Some(hint) = hardware_hint {
+            params["hardware_hint"] = serde_json::Value::String(hint.to_owned());
+        }
         let resp = self.inner.try_call("precision.route", &params)?;
         let result = rpc::extract_rpc_result(&resp).unwrap_or(&resp);
         Ok(PrecisionAdvisory {
-            tier: result
-                .get("tier")
+            recommended_tier: result
+                .get("recommended_tier")
+                .or_else(|| result.get("tier"))
                 .and_then(serde_json::Value::as_str)
                 .unwrap_or("FP64")
                 .to_owned(),
+            fma_safe: result
+                .get("fma_safe")
+                .and_then(serde_json::Value::as_bool)
+                .unwrap_or(true),
+            requires_compiler: result
+                .get("requires_compiler")
+                .or_else(|| result.get("compiler_required"))
+                .and_then(serde_json::Value::as_bool)
+                .unwrap_or(false),
             hardware_hint: result
                 .get("hardware_hint")
                 .and_then(serde_json::Value::as_str)
                 .unwrap_or("compute")
                 .to_owned(),
-            compiler_required: result
-                .get("compiler_required")
-                .and_then(serde_json::Value::as_bool)
-                .unwrap_or(false),
         })
     }
 }
 
 /// Precision routing advisory from `barracuda.precision.route`.
+///
+/// Field names match the canonical wire contract in
+/// `primalSpring/docs/LIVE_SCIENCE_API.md`.
 #[derive(Debug, Clone)]
 pub struct PrecisionAdvisory {
-    /// Recommended precision tier (e.g. "FP32", "FP64", "DF64").
-    pub tier: String,
+    /// Recommended precision tier (e.g. "F32", "F64", "DF64").
+    pub recommended_tier: String,
+    /// Whether fused multiply-add is safe for this domain at the recommended tier.
+    pub fma_safe: bool,
+    /// Whether a shader compiler (`coralReef`) is required for this tier.
+    pub requires_compiler: bool,
     /// Hardware hint (e.g. "compute", "`tensor_core`").
     pub hardware_hint: String,
-    /// Whether a shader compiler (coralReef) is required for this tier.
-    pub compiler_required: bool,
 }
 
 fn extract_f64(resp: &serde_json::Value) -> Result<f64, IpcError> {
@@ -266,7 +284,7 @@ mod tests {
     #[test]
     fn precision_route_fails_without_barracuda() {
         let client = BarraCudaClient::new(PathBuf::from("/tmp/barracuda-nonexistent.sock"));
-        let result = client.precision_route("population_pk");
+        let result = client.precision_route("population_pk", None);
         assert!(result.is_err());
     }
 }

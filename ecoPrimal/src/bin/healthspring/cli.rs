@@ -47,6 +47,10 @@ pub enum Command {
         /// Output format: "json" for structured Tier 2 output.
         #[arg(long)]
         format: Option<String>,
+
+        /// List available scenarios without running them.
+        #[arg(long)]
+        list: bool,
     },
 
     /// Start the JSON-RPC 2.0 server.

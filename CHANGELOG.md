@@ -4,6 +4,18 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64f — May 13, 2026
+
+### Tier 2 Convergence Wave Response
+
+- **`barracuda.precision.route` wire contract aligned**: Response fields updated to canonical `LIVE_SCIENCE_API.md` — `recommended_tier`, `fma_safe`, `requires_compiler`, `hardware_hint`. Accepts optional `hardware_hint` param.
+- **`validate --list` flag**: Lists all 17 scenarios without executing (plasmidBin compatibility)
+- **`PRIMAL_PROOF_IPC_MAPPING.md`**: Documents all 17 domain operation → precision route mappings across PK/PD, microbiome, biosignal, toxicology, simulation
+- **LTEE B5 lithoSpore module packaging**: `tolerances.toml` + `LITHO_MODULE_README.md` — exact reproduction commands, tolerance envelopes, BLAKE3 provenance chain
+- **plasmidBin cell TOML updated**: Compute trio nodes (toadStool, barraCuda, coralReef) added to `healthspring_cell.toml`
+- **plasmidBin niche promoted**: `nest` → `full` composition (12 NUCLEUS primals)
+- **Gaps #28–31 surfaced**: Cell TOML stale, niche under-specced, blurb/LIVE_SCIENCE_API contract divergence, lithoSpore ingestion pending
+
 ## V64e — May 12, 2026
 
 ### Tier 2 Wiring (Ecosystem Wave Sync Response)

@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-12
-**healthSpring version**: V64 (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64: `validate_ltee_b5` Tier 1, `--format json`, `s_toxicology`, Foundation T3+T5+T8 active, deep debt audit clean)
+**Date**: 2026-05-13
+**healthSpring version**: V64f (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64: `validate_ltee_b5` Tier 1, `--format json` + `--list`, `s_toxicology`, Foundation T3+T5+T8 active, Tier 2 wired: `toadstool.validate`, `toadstool.list_workloads`, `barracuda.precision.route`)
 
 ---
 
@@ -592,6 +592,40 @@ DOWNSTREAM_COMPOSITION_EXPLORER_GUIDE, or make the lib detect and use
 - Gap #9 (Squirrel): blocked on Squirrel maturity
 - Gap #10 (BTSP server): client ready, blocked on BearDog BTSP server
 - Gaps #20–27: documented workarounds stable, await upstream primal evolution
+
+---
+
+## Tier 2 Convergence Wave — May 13, 2026 (V64f)
+
+### Resolved during convergence wiring
+
+- **`toadstool.validate`** — wired in `ipc::compute_dispatch::validate_workload()`. Accepts workload TOML path, returns validity, GPU availability, precision tier, estimated dispatch time.
+- **`toadstool.list_workloads`** — wired in `ipc::compute_dispatch::list_workloads()`. Queries available workloads via IPC with optional filter.
+- **`barracuda.precision.route`** — wired in `ipc::barracuda_client::BarraCudaClient::precision_route()`. Aligned response fields to canonical wire contract: `recommended_tier`, `fma_safe`, `requires_compiler`, `hardware_hint`.
+- **Ionic bridge stubs** — `TowerAtomic::ionic_propose/countersign/verify` wired in V64e. BearDog contract methods callable when primals are live.
+- **`--format json`** — wired in unibin, `validate_pk_models`, `validate_ltee_b5`.
+- **`--list`** — added to unibin `validate` subcommand for plasmidBin compatibility.
+- **plasmidBin cell.toml** — updated to include compute trio nodes (toadStool, barraCuda, coralReef) and validation targets.
+- **plasmidBin niche** — promoted from `nest` to `full` composition, now includes all 12 NUCLEUS primals.
+- **PRIMAL_PROOF_IPC_MAPPING.md** — created, documenting all 17 domain operation → precision route mappings.
+- **LTEE B5 lithoSpore packaging** — `tolerances.toml` + `LITHO_MODULE_README.md` added, documenting exact reproduction commands, tolerance envelopes, and BLAKE3 provenance chain.
+
+### Gaps found during convergence wiring
+
+| # | Gap | Source | Upstream Action |
+|---|-----|--------|-----------------|
+| 28 | plasmidBin cell TOML was stale — missing compute trio nodes | Convergence wiring | **Fixed locally**: compute trio added to `healthspring_cell.toml` |
+| 29 | plasmidBin niche was under-specced (`nest` composition without toadStool/barraCuda/coralReef) | Convergence wiring | **Fixed locally**: promoted to `full` composition |
+| 30 | `precision.route` blurb contract (`viable`/`capabilities`/`reason`) diverges from `LIVE_SCIENCE_API.md` (`recommended_tier`/`fma_safe`/`requires_compiler`). healthSpring wires to `LIVE_SCIENCE_API.md` as canonical. | Wire contract review | primalSpring: reconcile blurb → `LIVE_SCIENCE_API.md` |
+| 31 | lithoSpore module ingestion for B5 blocked on lithoSpore team accepting `ltee-symbiont-pk` module candidate | LTEE handoff | lithoSpore: ingest `control/ltee_symbiont_pkpd/` with BLAKE3 |
+
+### Remaining upstream blockers (unchanged)
+
+- **NestGate egress fence** (Gap #2) — ionic bridge partially resolved, NestGate side still needed
+- **BTSP server** (Gap #10) — client ready, BearDog BTSP server pending
+- **Socket discovery standardization** (Gap #22) — rhizocrypt, sweetgrass, squirrel capability sockets
+- **Provenance trio UDS responses** (Gap #23) — empty JSON-RPC responses on UDS
+- **Songbird crypto provider** (Gap #24) — startup discovery failure
 
 ---
 

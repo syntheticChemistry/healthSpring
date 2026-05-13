@@ -53,6 +53,39 @@ const fn tier_matches(scenario_tier: Tier, filter: &TierFilter) -> bool {
     }
 }
 
+pub fn cmd_list_scenarios(
+    tier_filter: Option<&TierFilter>,
+    track_filter: Option<&str>,
+) {
+    let registry = build_registry();
+    let track_parsed = track_filter.and_then(parse_track);
+
+    let filtered: Vec<_> = registry
+        .into_iter()
+        .filter(|s| {
+            if let Some(tf) = tier_filter {
+                if !tier_matches(s.meta.tier, tf) {
+                    return false;
+                }
+            }
+            if let Some(ref track) = track_parsed {
+                if s.meta.track != *track {
+                    return false;
+                }
+            }
+            true
+        })
+        .collect();
+
+    println!("{} scenario(s) registered:\n", filtered.len());
+    for s in &filtered {
+        println!(
+            "  {:30} [{:?} / {:?}]  {}",
+            s.meta.id, s.meta.track, s.meta.tier, s.meta.description
+        );
+    }
+}
+
 pub fn cmd_validate(
     tier_filter: Option<&TierFilter>,
     track_filter: Option<&str>,
