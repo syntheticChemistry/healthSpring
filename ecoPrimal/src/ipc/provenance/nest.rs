@@ -2,8 +2,8 @@
 
 //! Nest Atomic composition facade — orchestrates the full provenance chain.
 //!
-//! The Nest Atomic = NestGate + rhizoCrypt + loamSpine + sweetGrass,
-//! signed by BearDog from the Tower Atomic. This module composes
+//! The Nest Atomic = `NestGate` + `rhizoCrypt` + `loamSpine` + `sweetGrass`,
+//! signed by `BearDog` from the Tower Atomic. This module composes
 //! those IPC clients into a single lifecycle:
 //!
 //! ```text
@@ -51,9 +51,9 @@ pub struct NestProvenanceChain {
     pub status: NestStatus,
     /// rhizoCrypt session ID (or `local-<experiment>` fallback).
     pub session_id: String,
-    /// NestGate BLAKE3 content hash.
+    /// `NestGate` BLAKE3 content hash.
     pub content_hash: String,
-    /// BearDog Ed25519 signature over the Merkle root.
+    /// `BearDog` Ed25519 signature over the Merkle root.
     pub merkle_signature: String,
     /// loamSpine immutable ledger commit ID.
     pub commit_id: String,
@@ -62,7 +62,9 @@ pub struct NestProvenanceChain {
 }
 
 impl NestProvenanceChain {
-    fn unavailable() -> Self {
+    /// Construct an empty chain representing total unavailability.
+    #[must_use]
+    pub const fn unavailable() -> Self {
         Self {
             status: NestStatus::Unavailable,
             session_id: String::new(),
@@ -76,7 +78,7 @@ impl NestProvenanceChain {
 
 /// Facade orchestrating the Nest Atomic (provenance trio + Tower crypto).
 ///
-/// Each method corresponds to a step in the RootPulse `rootpulse_commit.toml`
+/// Each method corresponds to a step in the `RootPulse` `rootpulse_commit.toml`
 /// lifecycle. The facade tracks which steps succeeded so callers can inspect
 /// the chain even under partial availability.
 pub struct NestComposition<'a> {
@@ -93,7 +95,7 @@ pub struct NestComposition<'a> {
 
 impl<'a> NestComposition<'a> {
     /// Create a new Nest composition bound to the given context.
-    pub fn new(ctx: &'a mut HealthCompositionContext) -> Self {
+    pub const fn new(ctx: &'a mut HealthCompositionContext) -> Self {
         Self {
             ctx,
             session_id: None,
@@ -125,10 +127,10 @@ impl<'a> NestComposition<'a> {
         self
     }
 
-    /// Step 2: Record an event — store content via NestGate (`storage.store`)
-    /// and append to the DAG via rhizoCrypt (`dag.event.append`).
+    /// Step 2: Record an event — store content via `NestGate` (`storage.store`)
+    /// and append to the DAG via `rhizoCrypt` (`dag.event.append`).
     ///
-    /// NestGate returns a BLAKE3 content hash; the hash is embedded in the
+    /// `NestGate` returns a BLAKE3 content hash; the hash is embedded in the
     /// DAG vertex for content-addressed integrity.
     pub fn record_event(&mut self, event_name: &str, data: &Value) -> &mut Self {
         let session_id = match &self.session_id {
@@ -167,21 +169,20 @@ impl<'a> NestComposition<'a> {
             "content_hash": content_hash.as_deref().unwrap_or(""),
         });
 
-        match super::rhizocrypt::dag_event_append(self.ctx, &session_id, event_name, &event_data) {
-            Ok(result) => {
-                self.merkle_root = result
-                    .get("merkle_root")
-                    .and_then(Value::as_str)
-                    .map(str::to_owned);
-                self.steps_succeeded += 1;
-            }
-            Err(_) => {}
+        if let Ok(result) =
+            super::rhizocrypt::dag_event_append(self.ctx, &session_id, event_name, &event_data)
+        {
+            self.merkle_root = result
+                .get("merkle_root")
+                .and_then(Value::as_str)
+                .map(str::to_owned);
+            self.steps_succeeded += 1;
         }
 
         self
     }
 
-    /// Step 3: Sign the Merkle root via BearDog `crypto.sign`.
+    /// Step 3: Sign the Merkle root via `BearDog` `crypto.sign`.
     pub fn sign_merkle(&mut self) -> &mut Self {
         let merkle = match &self.merkle_root {
             Some(root) => root.clone(),
@@ -190,7 +191,7 @@ impl<'a> NestComposition<'a> {
 
         self.steps_attempted += 1;
 
-        match self.ctx.inner().call(
+        if let Ok(result) = self.ctx.inner().call(
             "crypto",
             "crypto.sign",
             serde_json::json!({
@@ -198,14 +199,11 @@ impl<'a> NestComposition<'a> {
                 "algorithm": "ed25519",
             }),
         ) {
-            Ok(result) => {
-                self.signature = result
-                    .get("signature")
-                    .and_then(Value::as_str)
-                    .map(str::to_owned);
-                self.steps_succeeded += 1;
-            }
-            Err(_) => {}
+            self.signature = result
+                .get("signature")
+                .and_then(Value::as_str)
+                .map(str::to_owned);
+            self.steps_succeeded += 1;
         }
 
         self
@@ -222,16 +220,13 @@ impl<'a> NestComposition<'a> {
             "content_hash": self.content_hash.as_deref().unwrap_or(""),
         });
 
-        match super::loamspine::commit_create(self.ctx, experiment, &commit_data) {
-            Ok(result) => {
-                self.commit_id = result
-                    .get("commit_id")
-                    .or_else(|| result.get("entry_id"))
-                    .and_then(Value::as_str)
-                    .map(str::to_owned);
-                self.steps_succeeded += 1;
-            }
-            Err(_) => {}
+        if let Ok(result) = super::loamspine::commit_create(self.ctx, experiment, &commit_data) {
+            self.commit_id = result
+                .get("commit_id")
+                .or_else(|| result.get("entry_id"))
+                .and_then(Value::as_str)
+                .map(str::to_owned);
+            self.steps_succeeded += 1;
         }
 
         self

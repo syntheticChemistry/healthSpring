@@ -260,10 +260,10 @@ pub fn begin_data_session(dataset_name: &str) -> ProvenanceResult {
         "metadata": {
             "type": "data_fetch",
             "dataset": dataset_name,
-            "spring": "healthSpring",
+            "spring": crate::PRIMAL_NAME,
             "scyborg.content_category": "Code",
         },
-        "session_type": { "Experiment": { "spring_id": "healthSpring" } },
+        "session_type": { "Experiment": { "spring_id": crate::PRIMAL_NAME } },
         "description": format!("Data fetch: {dataset_name}"),
     });
 

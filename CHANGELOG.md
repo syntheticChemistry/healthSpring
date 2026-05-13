@@ -4,6 +4,27 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64i — May 13, 2026
+
+### Deep Debt Resolution + Evolution Sprint
+
+- **Clippy pedantic+nursery: zero warnings, zero errors** — full `cargo clippy --all-targets -- -W clippy::pedantic -W clippy::nursery` passes clean. Fixed: `match` → `if let` (3), `unwrap()` → `f64::total_cmp` (3), `to_owned()` → `extract_str` helper (6), redundant closures (3), `i32 as f64` → `f64::from` (7), unfulfilled `#[expect]` attrs (3), doc backticks (7), `const fn` promotions (2), `unwrap_or` → `unwrap_or_else` (1), `&Option<T>` → `Option<&T>` (1), function too-many-lines refactor (1).
+- **Hardcoded `"healthSpring"` → `crate::PRIMAL_NAME`** — provenance session JSON in `data/provenance.rs` now uses the canonical `PRIMAL_NAME` constant instead of string literals.
+- **`s_nest_atomic` refactored** — 9-phase validation decomposed into per-phase functions (`phase1_structural` through `phase9_chain_audit`) with shared `ChainState` struct. Satisfies pedantic `too_many_lines` lint without arbitrary splitting.
+- **Bench casts evolved** — `cpu_parity.rs` population benchmarks use `f64::from` instead of `i as f64` casts. Stale `#[expect(cast_precision_loss)]` removed.
+- **Test sort evolved** — `tridiagonal_ql_local.rs` uses `f64::total_cmp` method reference instead of `partial_cmp().unwrap()`.
+
+### Deep Debt Audit Results (zero-debt confirmed)
+
+- **TODO/FIXME/HACK**: 0 across entire codebase
+- **`unsafe` code**: 0 — `#![forbid(unsafe_code)]` enforced at lib + workspace level
+- **Production mocks**: 0 — all mocks isolated to `#[cfg(test)]`
+- **`unimplemented!`/`todo!`/`panic!`** in non-test code: 0
+- **Files > 800 LOC**: 0 (largest: 597 lines)
+- **Rust edition**: 2024 (rust-version 1.87)
+- **External C deps**: 0 in default build. `ring` (via `ureq`→`rustls`) gated behind `nestgate` feature. `wgpu` GPU backends gated behind `gpu` feature.
+- **Hardcoded routing**: 0 — all primal routing via `primal_names::*` constants and capability-based discovery
+
 ## V64h — May 13, 2026
 
 ### Nest Atomic Validation Sprint

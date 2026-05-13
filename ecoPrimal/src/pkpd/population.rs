@@ -239,15 +239,11 @@ mod tests {
     }
 
     #[test]
-    #[expect(
-        clippy::cast_precision_loss,
-        reason = "loop indices small — safe for f64"
-    )]
     fn population_pk_deterministic() {
         let n = 10;
-        let cl: Vec<f64> = (0..n).map(|i| 0.3f64.mul_add(i as f64, 8.0)).collect();
-        let vd: Vec<f64> = (0..n).map(|i| 2.0f64.mul_add(i as f64, 70.0)).collect();
-        let ka: Vec<f64> = (0..n).map(|i| 0.1f64.mul_add(i as f64, 1.0)).collect();
+        let cl: Vec<f64> = (0..n).map(|i| 0.3f64.mul_add(f64::from(i), 8.0)).collect();
+        let vd: Vec<f64> = (0..n).map(|i| 2.0f64.mul_add(f64::from(i), 70.0)).collect();
+        let ka: Vec<f64> = (0..n).map(|i| 0.1f64.mul_add(f64::from(i), 1.0)).collect();
         let times: Vec<f64> = (0..100).map(|i| 24.0 * f64::from(i) / 99.0).collect();
 
         let run1 = population_pk_cpu(&cl, &vd, &ka, &TEST_REGIMEN, &times);

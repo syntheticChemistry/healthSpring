@@ -178,7 +178,7 @@ mod tests {
         // Matrix: [[2, 1], [1, 2]] → eigenvalues 1 and 3
         let (vals, vecs) = tridiagonal_ql(&[2.0, 2.0], &[1.0]);
         let mut sorted = vals;
-        sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        sorted.sort_by(f64::total_cmp);
         assert!((sorted[0] - 1.0).abs() < 1e-12, "got {}", sorted[0]);
         assert!((sorted[1] - 3.0).abs() < 1e-12, "got {}", sorted[1]);
 
@@ -225,9 +225,9 @@ mod tests {
         let (vals, _) = tridiagonal_ql(&diag, &sub_diag);
 
         let mut sorted = vals;
-        sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        sorted.sort_by(f64::total_cmp);
         let mut expected = diag.to_vec();
-        expected.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        expected.sort_by(f64::total_cmp);
 
         for (v, e) in sorted.iter().zip(expected.iter()) {
             assert!((v - e).abs() < 1e-12, "eigenvalue {v} != {e}");
@@ -236,7 +236,7 @@ mod tests {
 
     #[test]
     fn eigenvectors_orthogonal() {
-        let disorder: Vec<f64> = (0..10).map(|i| (i as f64 * 0.7).sin()).collect();
+        let disorder: Vec<f64> = (0..10).map(|i| (f64::from(i) * 0.7).sin()).collect();
         let (_, vecs) = anderson_diagonalize(&disorder, 1.0);
         let n = 10;
 

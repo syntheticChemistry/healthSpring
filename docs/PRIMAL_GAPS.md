@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-13
-**healthSpring version**: V64h (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64h: Nest Atomic validation sprint — `validate --scenario nest-atomic` exercises all 7 Nest primals, deploy graph fragment, 9-phase clinical pipeline validation)
+**healthSpring version**: V64i (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64i: Deep Debt Resolution — clippy pedantic+nursery zero warnings, hardcoded strings → `PRIMAL_NAME`, all audit categories at zero debt)
 
 ---
 
@@ -679,6 +679,46 @@ Upstream audit: **ecoPrimals — Atomic Specialist Validation Sprint (May 13, 20
 | 36 | Nest Atomic exercises blocked by Gap #23 (trio empty UDS responses) — structural pass, live capabilities skip | Validation sprint | rhizoCrypt/loamSpine/sweetGrass: ship JSON-RPC handlers |
 | 37 | `NestComposition` facade used `"data"` as capability domain for NestGate `storage.store` — should align to `"storage"` per routing table | Internal wire review | **Fixed V64h**: refactored `nest.rs` `record_event` to use `"storage"` domain |
 
+### Deep Debt Resolution Sprint (V64i)
+
+**Full audit — all 7 priority categories at zero debt:**
+
+| Category | Status | Detail |
+|----------|--------|--------|
+| TODO/FIXME/HACK | **0** | Zero markers in entire codebase |
+| `unsafe` code | **0** | `#![forbid(unsafe_code)]` enforced at lib + workspace |
+| Production mocks | **0** | All mocks in `#[cfg(test)]` |
+| `unimplemented!`/`todo!`/`panic!` (non-test) | **0** | Zero incomplete implementations |
+| Files > 800 LOC | **0** | Largest file: 597 lines |
+| Clippy pedantic+nursery | **0 warnings, 0 errors** | Full pass on `--all-targets` |
+| External C deps (default build) | **0** | `ring`/`wgpu` gated behind features |
+| Hardcoded primal routing | **0** | All via `primal_names::*` + capability discovery |
+
+**Fixed in V64i:**
+
+- Hardcoded `"healthSpring"` → `crate::PRIMAL_NAME` in provenance session JSON
+- `match` → `if let` in `NestComposition` (3 sites)
+- `unwrap()` → `f64::total_cmp` in eigenvalue sorts (3 sites)
+- `i32 as f64` → `f64::from` in benchmarks + tests (7 sites)
+- `s_nest_atomic` decomposed into 9 phase functions (pedantic `too_many_lines`)
+
+**Audit questions answered:**
+
+| Question | Answer |
+|----------|--------|
+| Python baselines for barraCuda CPU parity? | **Yes**: `control/scripts/exp040_barracuda_cpu.py` covers stats (mean, std_dev, variance, correlation), Hill, Shannon, Simpson, Chao1, Anderson. All matched by Rust scenarios. |
+| Kokkos/Galaxy/SciPy/LAMMPS GPU benchmarks? | **No**: GPU parity depends on `wgpu` feature + live GPU. No Kokkos/LAMMPS benchmarks — barraCuda's WGSL shaders are sovereign, not porting external frameworks. CPU benchmarks exist in `benches/cpu_parity.rs`. |
+| What's not implemented/validated/tested? | **~30 Python baselines** lack Rust scenarios (exp003-006, exp012-013, exp022-023, exp031-038, exp078-082, exp091-094, exp098-099, exp101-106, exp111). These are valid science but lower priority than composition wiring. |
+| Unreviewed papers from queue? | **2**: LTEE E2 (Mardikoraem & Woldring 2025 "HOLIgraph") and E4 (Woldring Lab 2024 macrocyclic peptides). 45/45 main-track papers complete. |
+| Datasets to examine? | **5 datasets** in `data/manifest.toml`, all lacking SHA256 checksums. `qs_gene_matrix` has no fetch script. MitBIH, ChEMBL, HMP 16S, GEO AR ready for fetch but unverified. |
+
+| # | Gap | Source | Upstream Action |
+|---|-----|--------|-----------------|
+| 38 | ~30 Python baselines without Rust validation scenarios | Deep debt audit | healthSpring: prioritize as science tracks mature |
+| 39 | LTEE E2 + E4 papers queued, not reviewed | Paper queue audit | healthSpring: review when relevant to provenance work |
+| 40 | Dataset SHA256 checksums empty + `qs_gene_matrix` fetch unimplemented | Data provenance audit | healthSpring: populate post-fetch, implement fetch script |
+| 41 | No GPU parity benchmarks (Kokkos/LAMMPS/SciPy) | Benchmark audit | Not applicable — sovereign WGSL shaders, not framework ports |
+
 ### Remaining upstream blockers (unchanged)
 
 - **NestGate egress fence** (Gap #2) — ionic bridge partially resolved, NestGate side still needed
@@ -730,3 +770,7 @@ Upstream audit: **ecoPrimals — Atomic Specialist Validation Sprint (May 13, 20
 | 35 | `ledger.entry.append` vs `entry.append` | Nest Atomic sprint | **V64h**: documented | Standardize loamSpine naming |
 | 36 | Nest Atomic live exercises blocked by Gap #23 | Trio UDS responses | **V64h**: structural pass, live skip | Trio: ship JSON-RPC handlers |
 | 37 | NestComposition `"data"` domain misroute | Internal wire review | **Fixed V64h**: `"storage"` domain | — |
+| 38 | ~30 Python baselines without Rust scenarios | Deep debt audit | **V64i**: documented, lower priority | — |
+| 39 | LTEE E2+E4 papers queued | Paper queue audit | **V64i**: documented | — |
+| 40 | Dataset SHA256 + fetch gaps | Data audit | **V64i**: documented | — |
+| 41 | No GPU parity benchmarks | Benchmark audit | **V64i**: N/A (sovereign WGSL) | — |

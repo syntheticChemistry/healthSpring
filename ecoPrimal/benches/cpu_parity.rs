@@ -115,15 +115,11 @@ fn bench_auc_trapezoidal_101(c: &mut Criterion) {
     });
 }
 
-#[expect(
-    clippy::cast_precision_loss,
-    reason = "benchmark indices fit f64 mantissa"
-)]
 fn bench_population_montecarlo_500(c: &mut Criterion) {
     let n = 500;
-    let cl_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.01, 8.0)).collect();
-    let vd_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.05, 70.0)).collect();
-    let ka_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.001, 1.2)).collect();
+    let cl_params: Vec<f64> = (0..n).map(|i| f64::from(i).mul_add(0.01, 8.0)).collect();
+    let vd_params: Vec<f64> = (0..n).map(|i| f64::from(i).mul_add(0.05, 70.0)).collect();
+    let ka_params: Vec<f64> = (0..n).map(|i| f64::from(i).mul_add(0.001, 1.2)).collect();
     let times: Vec<f64> = (0..=100).map(|i| f64::from(i) * 24.0 / 100.0).collect();
     c.bench_function("population_montecarlo_500", |b| {
         b.iter(|| {
@@ -138,15 +134,11 @@ fn bench_population_montecarlo_500(c: &mut Criterion) {
     });
 }
 
-#[expect(
-    clippy::cast_precision_loss,
-    reason = "benchmark indices fit f64 mantissa"
-)]
 fn bench_population_montecarlo_5000(c: &mut Criterion) {
     let n = 5_000;
-    let cl_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.001, 8.0)).collect();
-    let vd_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.005, 70.0)).collect();
-    let ka_params: Vec<f64> = (0..n).map(|i| (i as f64).mul_add(0.0001, 1.2)).collect();
+    let cl_params: Vec<f64> = (0..n).map(|i| f64::from(i).mul_add(0.001, 8.0)).collect();
+    let vd_params: Vec<f64> = (0..n).map(|i| f64::from(i).mul_add(0.005, 70.0)).collect();
+    let ka_params: Vec<f64> = (0..n).map(|i| f64::from(i).mul_add(0.0001, 1.2)).collect();
     let times: Vec<f64> = (0..=100).map(|i| f64::from(i) * 24.0 / 100.0).collect();
     c.bench_function("population_montecarlo_5000", |b| {
         b.iter(|| {

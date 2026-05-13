@@ -37,8 +37,6 @@ pub fn SCENARIO() -> Scenario {
     }
 }
 
-/// Sample clinical dataset for validation — realistic enough to exercise
-/// the full pipeline without containing actual patient data.
 fn sample_clinical_payload() -> serde_json::Value {
     serde_json::json!({
         "patient_id": "NEST-VALIDATE-001",
@@ -58,10 +56,41 @@ fn sample_clinical_payload() -> serde_json::Value {
     })
 }
 
-fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
-    // ═══════════════════════════════════════════════════════════════════
-    // Phase 1: Structural — verify routing maps without live primals
-    // ═══════════════════════════════════════════════════════════════════
+/// Intermediate state threaded through phases.
+struct ChainState {
+    content_hash: String,
+    session_id: String,
+    merkle_root: String,
+    signature: String,
+    entry_id: String,
+    braid_id: String,
+}
+
+impl ChainState {
+    const fn empty() -> Self {
+        Self {
+            content_hash: String::new(),
+            session_id: String::new(),
+            merkle_root: String::new(),
+            signature: String::new(),
+            entry_id: String::new(),
+            braid_id: String::new(),
+        }
+    }
+}
+
+/// Extract a string field from a JSON-RPC result, returning an owned `String`.
+fn extract_str(result: Option<&serde_json::Value>, keys: &[&str]) -> String {
+    result
+        .and_then(|r| {
+            keys.iter()
+                .find_map(|k| r.get(*k).and_then(serde_json::Value::as_str))
+        })
+        .unwrap_or("")
+        .into()
+}
+
+fn phase1_structural(v: &mut ValidationResult) {
     v.section("Phase 1: Structural Routing");
 
     v.check_bool(
@@ -99,45 +128,14 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         capability_to_primal("audit") == primal_names::SKUNKBAT,
         "audit → skunkbat",
     );
+}
 
-    // ═══════════════════════════════════════════════════════════════════
-    // Phase 2: Liveness — verify all 7 Nest primals respond
-    // ═══════════════════════════════════════════════════════════════════
-    v.section("Phase 2: Liveness (7 primals)");
-
-    if ctx.available_capabilities().is_empty() {
-        v.check_skip("nest_liveness", "no capabilities discovered — NUCLEUS not deployed");
-        return;
-    }
-
-    let nest_caps = [
-        "crypto",     // bearDog
-        "discovery",  // songbird
-        "audit",      // skunkBat
-        "storage",    // nestGate
-        "dag",        // rhizoCrypt
-        "commit",     // loamSpine
-        "braid",      // sweetGrass
-    ];
-    let alive = validate_liveness(ctx, v, &nest_caps);
-
-    if alive == 0 {
-        v.check_skip(
-            "nest_atomic_pipeline",
-            "zero primals alive — cannot exercise capabilities",
-        );
-        return;
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // Phase 3: NestGate — content.put / content.get / content.exists / content.list
-    // ═══════════════════════════════════════════════════════════════════
+fn phase3_nestgate(v: &mut ValidationResult, ctx: &mut CompositionContext, state: &mut ChainState) {
     v.section("Phase 3: NestGate (storage)");
 
     let payload = sample_clinical_payload();
     let store_key = "nest-atomic-validate:pkpd:001";
 
-    // content.put → storage.store
     let stored_hash = call_or_skip(
         ctx,
         v,
@@ -151,25 +149,19 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         }),
     );
 
-    let content_hash = stored_hash
-        .as_ref()
-        .and_then(|r| {
-            r.get("content_hash")
-                .or_else(|| r.get("hash"))
-                .and_then(serde_json::Value::as_str)
-        })
-        .unwrap_or("")
-        .to_owned();
+    state.content_hash = extract_str(stored_hash.as_ref(), &["content_hash", "hash"]);
 
-    if !content_hash.is_empty() {
+    if !state.content_hash.is_empty() {
         v.check_bool(
             "nestgate_content_hash_nonempty",
             true,
-            &format!("BLAKE3 hash: {}", &content_hash[..content_hash.len().min(16)]),
+            &format!(
+                "BLAKE3 hash: {}",
+                &state.content_hash[..state.content_hash.len().min(16)]
+            ),
         );
     }
 
-    // content.get → storage.retrieve
     let retrieved = call_or_skip(
         ctx,
         v,
@@ -184,10 +176,13 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
             || result.get("data").is_some()
             || result.get("value").is_some()
             || result.as_str().is_some();
-        v.check_bool("nestgate_round_trip_integrity", round_trip_ok, "stored data recoverable");
+        v.check_bool(
+            "nestgate_round_trip_integrity",
+            round_trip_ok,
+            "stored data recoverable",
+        );
     }
 
-    // content.exists → storage.exists
     let exists_result = call_or_skip(
         ctx,
         v,
@@ -197,16 +192,15 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         serde_json::json!({"key": store_key}),
     );
     if let Some(ref result) = exists_result {
-        let exists = result.as_bool().unwrap_or(
+        let exists = result.as_bool().unwrap_or_else(|| {
             result
                 .get("exists")
                 .and_then(serde_json::Value::as_bool)
-                .unwrap_or(false),
-        );
+                .unwrap_or(false)
+        });
         v.check_bool("nestgate_content_confirmed", exists, "stored content exists");
     }
 
-    // content.list → storage.list
     call_or_skip(
         ctx,
         v,
@@ -215,10 +209,13 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         "storage.list",
         serde_json::json!({"prefix": "nest-atomic-validate:"}),
     );
+}
 
-    // ═══════════════════════════════════════════════════════════════════
-    // Phase 4: rhizoCrypt — dag.session.create / dag.event.append
-    // ═══════════════════════════════════════════════════════════════════
+fn phase4_rhizocrypt(
+    v: &mut ValidationResult,
+    ctx: &mut CompositionContext,
+    state: &mut ChainState,
+) {
     v.section("Phase 4: rhizoCrypt (DAG)");
 
     let session_result = call_or_skip(
@@ -230,21 +227,19 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         serde_json::json!({"experiment": "nest_atomic_validation"}),
     );
 
-    let session_id = session_result
-        .as_ref()
-        .and_then(|r| r.get("session_id").and_then(serde_json::Value::as_str))
-        .unwrap_or("")
-        .to_owned();
+    state.session_id = extract_str(session_result.as_ref(), &["session_id"]);
 
-    if !session_id.is_empty() {
+    if !state.session_id.is_empty() {
         v.check_bool(
             "rhizocrypt_session_id_nonempty",
             true,
-            &format!("session: {}", &session_id[..session_id.len().min(16)]),
+            &format!(
+                "session: {}",
+                &state.session_id[..state.session_id.len().min(16)]
+            ),
         );
     }
 
-    // Append ingest event
     let event1 = call_or_skip(
         ctx,
         v,
@@ -252,17 +247,16 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         "dag",
         "dag.event.append",
         serde_json::json!({
-            "session_id": session_id,
+            "session_id": state.session_id,
             "event": "clinical_data_ingest",
             "data": {
-                "content_hash": content_hash,
+                "content_hash": state.content_hash,
                 "step": "ingest",
                 "source": "nestgate_storage"
             }
         }),
     );
 
-    // Append validate event
     let event2 = call_or_skip(
         ctx,
         v,
@@ -270,7 +264,7 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         "dag",
         "dag.event.append",
         serde_json::json!({
-            "session_id": session_id,
+            "session_id": state.session_id,
             "event": "clinical_data_validate",
             "data": {
                 "step": "validate",
@@ -280,7 +274,6 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         }),
     );
 
-    // Append transform event
     let event3 = call_or_skip(
         ctx,
         v,
@@ -288,33 +281,27 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         "dag",
         "dag.event.append",
         serde_json::json!({
-            "session_id": session_id,
+            "session_id": state.session_id,
             "event": "clinical_data_transform",
             "data": {
                 "step": "transform",
                 "operation": "dose_response_fit",
-                "output_hash": content_hash
+                "output_hash": state.content_hash
             }
         }),
     );
 
-    let merkle_root = event3
-        .as_ref()
-        .or(event2.as_ref())
-        .or(event1.as_ref())
-        .and_then(|r| r.get("merkle_root").and_then(serde_json::Value::as_str))
-        .unwrap_or("")
-        .to_owned();
+    let best_event = event3.or(event2).or(event1);
+    state.merkle_root = extract_str(best_event.as_ref(), &["merkle_root"]);
+}
 
-    // ═══════════════════════════════════════════════════════════════════
-    // Phase 5: BearDog — crypto.sign (Tower trust for Merkle root)
-    // ═══════════════════════════════════════════════════════════════════
+fn phase5_beardog(v: &mut ValidationResult, ctx: &mut CompositionContext, state: &mut ChainState) {
     v.section("Phase 5: BearDog (Tower crypto)");
 
-    let sign_payload = if merkle_root.is_empty() {
-        "nest-atomic-validation-placeholder".to_owned()
+    let sign_payload = if state.merkle_root.is_empty() {
+        "nest-atomic-validation-fallback".to_owned()
     } else {
-        merkle_root.clone()
+        state.merkle_root.clone()
     };
 
     let sign_result = call_or_skip(
@@ -329,23 +316,25 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         }),
     );
 
-    let signature = sign_result
-        .as_ref()
-        .and_then(|r| r.get("signature").and_then(serde_json::Value::as_str))
-        .unwrap_or("")
-        .to_owned();
+    state.signature = extract_str(sign_result.as_ref(), &["signature"]);
 
-    if !signature.is_empty() {
+    if !state.signature.is_empty() {
         v.check_bool(
             "beardog_signature_nonempty",
             true,
-            &format!("sig: {}...", &signature[..signature.len().min(16)]),
+            &format!(
+                "sig: {}...",
+                &state.signature[..state.signature.len().min(16)]
+            ),
         );
     }
+}
 
-    // ═══════════════════════════════════════════════════════════════════
-    // Phase 6: loamSpine — ledger.entry.append
-    // ═══════════════════════════════════════════════════════════════════
+fn phase6_loamspine(
+    v: &mut ValidationResult,
+    ctx: &mut CompositionContext,
+    state: &mut ChainState,
+) {
     v.section("Phase 6: loamSpine (ledger)");
 
     let ledger_result = call_or_skip(
@@ -355,35 +344,33 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         "commit",
         "entry.append",
         serde_json::json!({
-            "session_id": session_id,
-            "merkle_root": merkle_root,
-            "signature": signature,
-            "content_hash": content_hash,
+            "session_id": state.session_id,
+            "merkle_root": state.merkle_root,
+            "signature": state.signature,
+            "content_hash": state.content_hash,
             "experiment": "nest_atomic_validation",
         }),
     );
 
-    let entry_id = ledger_result
-        .as_ref()
-        .and_then(|r| {
-            r.get("entry_id")
-                .or_else(|| r.get("commit_id"))
-                .and_then(serde_json::Value::as_str)
-        })
-        .unwrap_or("")
-        .to_owned();
+    state.entry_id = extract_str(ledger_result.as_ref(), &["entry_id", "commit_id"]);
 
-    if !entry_id.is_empty() {
+    if !state.entry_id.is_empty() {
         v.check_bool(
             "loamspine_entry_id_nonempty",
             true,
-            &format!("entry: {}", &entry_id[..entry_id.len().min(16)]),
+            &format!(
+                "entry: {}",
+                &state.entry_id[..state.entry_id.len().min(16)]
+            ),
         );
     }
+}
 
-    // ═══════════════════════════════════════════════════════════════════
-    // Phase 7: sweetGrass — braid.attribution.create
-    // ═══════════════════════════════════════════════════════════════════
+fn phase7_sweetgrass(
+    v: &mut ValidationResult,
+    ctx: &mut CompositionContext,
+    state: &mut ChainState,
+) {
     v.section("Phase 7: sweetGrass (attribution)");
 
     let braid_result = call_or_skip(
@@ -395,17 +382,9 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         serde_json::json!({"experiment": "nest_atomic_validation"}),
     );
 
-    let braid_id = braid_result
-        .as_ref()
-        .and_then(|r| {
-            r.get("braid_id")
-                .or_else(|| r.get("id"))
-                .and_then(serde_json::Value::as_str)
-        })
-        .unwrap_or("")
-        .to_owned();
+    state.braid_id = extract_str(braid_result.as_ref(), &["braid_id", "id"]);
 
-    if !braid_id.is_empty() {
+    if !state.braid_id.is_empty() {
         call_or_skip(
             ctx,
             v,
@@ -413,10 +392,10 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
             "braid",
             "braid.commit",
             serde_json::json!({
-                "braid_id": braid_id,
+                "braid_id": state.braid_id,
                 "data": {
-                    "commit_ref": entry_id,
-                    "session_id": session_id,
+                    "commit_ref": state.entry_id,
+                    "session_id": state.session_id,
                     "agents": [{
                         "did": "did:key:healthSpring",
                         "role": "author",
@@ -428,10 +407,9 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     } else if braid_result.is_some() {
         v.check_skip("sweetgrass_braid_commit", "braid_create returned no id");
     }
+}
 
-    // ═══════════════════════════════════════════════════════════════════
-    // Phase 8: Tower auxiliary — songbird discovery + skunkBat audit
-    // ═══════════════════════════════════════════════════════════════════
+fn phase8_tower_aux(v: &mut ValidationResult, ctx: &mut CompositionContext, state: &ChainState) {
     v.section("Phase 8: Tower auxiliary");
 
     call_or_skip(
@@ -451,40 +429,43 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         "defense.audit",
         serde_json::json!({
             "event": "nest_atomic_validation_complete",
-            "session_id": session_id,
+            "session_id": state.session_id,
             "result": {
-                "content_hash": content_hash,
-                "merkle_root": merkle_root,
-                "entry_id": entry_id,
-                "braid_id": braid_id,
+                "content_hash": state.content_hash,
+                "merkle_root": state.merkle_root,
+                "entry_id": state.entry_id,
+                "braid_id": state.braid_id,
             }
         }),
     );
+}
 
-    // ═══════════════════════════════════════════════════════════════════
-    // Phase 9: Full chain recoverability
-    // ═══════════════════════════════════════════════════════════════════
+fn phase9_chain_audit(v: &mut ValidationResult, state: &ChainState) {
     v.section("Phase 9: Chain Audit");
 
-    let chain_complete = !content_hash.is_empty()
-        && !session_id.is_empty()
-        && !merkle_root.is_empty()
-        && !signature.is_empty()
-        && !entry_id.is_empty()
-        && !braid_id.is_empty();
+    let chain_complete = !state.content_hash.is_empty()
+        && !state.session_id.is_empty()
+        && !state.merkle_root.is_empty()
+        && !state.signature.is_empty()
+        && !state.entry_id.is_empty()
+        && !state.braid_id.is_empty();
 
-    let chain_partial = !session_id.is_empty() || !content_hash.is_empty();
+    let chain_partial = !state.session_id.is_empty() || !state.content_hash.is_empty();
 
     if chain_complete {
-        v.check_bool("nest_chain_complete", true, "full provenance chain recoverable");
+        v.check_bool(
+            "nest_chain_complete",
+            true,
+            "full provenance chain recoverable",
+        );
     } else if chain_partial {
         let populated: Vec<&str> = [
-            (!content_hash.is_empty()).then_some("content"),
-            (!session_id.is_empty()).then_some("session"),
-            (!merkle_root.is_empty()).then_some("merkle"),
-            (!signature.is_empty()).then_some("signature"),
-            (!entry_id.is_empty()).then_some("ledger"),
-            (!braid_id.is_empty()).then_some("braid"),
+            (!state.content_hash.is_empty()).then_some("content"),
+            (!state.session_id.is_empty()).then_some("session"),
+            (!state.merkle_root.is_empty()).then_some("merkle"),
+            (!state.signature.is_empty()).then_some("signature"),
+            (!state.entry_id.is_empty()).then_some("ledger"),
+            (!state.braid_id.is_empty()).then_some("braid"),
         ]
         .into_iter()
         .flatten()
@@ -495,6 +476,45 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
             &format!("partial chain: {}", populated.join(", ")),
         );
     } else {
-        v.check_skip("nest_chain_status", "no chain elements populated (primals unavailable)");
+        v.check_skip(
+            "nest_chain_status",
+            "no chain elements populated (primals unavailable)",
+        );
     }
+}
+
+fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
+    phase1_structural(v);
+
+    v.section("Phase 2: Liveness (7 primals)");
+
+    if ctx.available_capabilities().is_empty() {
+        v.check_skip(
+            "nest_liveness",
+            "no capabilities discovered — NUCLEUS not deployed",
+        );
+        return;
+    }
+
+    let nest_caps = [
+        "crypto", "discovery", "audit", "storage", "dag", "commit", "braid",
+    ];
+    let alive = validate_liveness(ctx, v, &nest_caps);
+
+    if alive == 0 {
+        v.check_skip(
+            "nest_atomic_pipeline",
+            "zero primals alive — cannot exercise capabilities",
+        );
+        return;
+    }
+
+    let mut state = ChainState::empty();
+    phase3_nestgate(v, ctx, &mut state);
+    phase4_rhizocrypt(v, ctx, &mut state);
+    phase5_beardog(v, ctx, &mut state);
+    phase6_loamspine(v, ctx, &mut state);
+    phase7_sweetgrass(v, ctx, &mut state);
+    phase8_tower_aux(v, ctx, &state);
+    phase9_chain_audit(v, &state);
 }
