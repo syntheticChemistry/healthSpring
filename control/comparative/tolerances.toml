@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Comparative medicine track tolerance definitions.
+
+[metadata]
+track = "comparative"
+spring = "healthSpring"
+created = "2026-05-13"
+scripts = ["exp100", "exp101", "exp102", "exp103", "exp104", "exp105", "exp106"]
+
+[il31_hill_identity]
+description = "Hill response at IC50 = 0.5 (Gonzales 2014)"
+metric = "effect at IC50"
+expected = 0.5
+absolute_tolerance = 1e-10
+
+[jak1_selectivity]
+description = "JAK1 selectivity over JAK2 (Gonzales 2014)"
+metric = "IC50 ratio"
+expected_min = 10.0
+
+[allometric_clearance]
+description = "Human CL from canine via 0.75 exponent"
+metric = "exponent"
+expected = 0.75
+absolute_tolerance = 0.0
+
+[lokivetmab_duration]
+description = "Duration prediction within clinical range"
+metric = "days"
+expected_range = [28, 60]

@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# PK/PD track tolerance definitions for lithoSpore CI validation.
+
+[metadata]
+track = "pkpd"
+spring = "healthSpring"
+created = "2026-05-13"
+scripts = ["exp001", "exp002", "exp003", "exp004", "exp005", "exp006", "exp077"]
+
+[hill_dose_response]
+description = "Hill equation: E(IC50) must equal 0.5"
+metric = "effect_at_ic50"
+expected = 0.5
+absolute_tolerance = 1e-10
+
+[one_compartment_auc]
+description = "AUC = F*Dose/CL (analytical identity)"
+metric = "relative error"
+expected = 0.0
+absolute_tolerance = 0.01
+
+[two_compartment_macro]
+description = "α+β = k10+k12+k21 (macro-constant identity)"
+metric = "absolute difference"
+expected = 0.0
+absolute_tolerance = 1e-10
+
+[allometric_scaling]
+description = "Scaled half-life within published range"
+metric = "days"
+expected_range = [14, 28]
+
+[population_pk_auc]
+description = "Population mean AUC within 20% of F*Dose/CL_typical"
+metric = "relative error"
+expected = 0.0
+relative_tolerance = 0.20
+
+[pbpk_mass_balance]
+description = "C(0) = Dose/Vblood (mass conservation)"
+metric = "mg/L"
+expected = 20.0
+absolute_tolerance = 1e-6
+
+[michaelis_menten_nonlinearity]
+description = "AUC(2*Dose)/AUC(Dose) > 2 at high dose (supralinear)"
+metric = "ratio"
+expected_min = 2.0

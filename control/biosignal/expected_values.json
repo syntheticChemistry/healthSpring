@@ -1,0 +1,36 @@
+{
+  "track": "biosignal",
+  "description": "Biosignal processing — ECG QRS detection, HRV, PPG SpO2, EDA, arrhythmia classification",
+  "spring": "healthSpring",
+  "created": "2026-05-13",
+  "scripts": {
+    "exp020_pan_tompkins_qrs": {
+      "paper": "Pan J, Tompkins WJ (1985) A real-time QRS detection algorithm",
+      "doi": "10.1109/TBME.1985.325532",
+      "journal": "IEEE Trans Biomed Eng",
+      "note": "Synthetic ECG at 360 Hz (MIT-BIH sampling rate), not actual PhysioNet waveforms"
+    },
+    "exp021_hrv_metrics": {
+      "note": "Rust-generated baseline (cargo run --bin exp021_hrv_metrics -- --write-baseline)",
+      "standards": ["Task Force of ESC/NASPE (1996) HRV standards. Eur Heart J 17:354-381"]
+    },
+    "exp022_ppg_spo2": {
+      "note": "Rust-generated baseline",
+      "reference": "Beer-Lambert law SpO2 calibration"
+    },
+    "exp023_fusion": {
+      "note": "Rust-generated multi-modal biosignal fusion baseline"
+    },
+    "exp081_eda_stress": {
+      "paper": "Boucsein W (2012) Electrodermal Activity, 2nd ed.",
+      "isbn": "978-1461411253",
+      "doi_review": "10.1111/psyp.12017",
+      "note": "Braithwaite 2013 EDA guide"
+    },
+    "exp082_arrhythmia_classification": {
+      "reference": "MIT-BIH Arrhythmia Database (PhysioNet)",
+      "doi": "10.1161/01.CIR.101.23.e215",
+      "note": "Uses Gaussian template morphology, not actual PhysioNet waveforms"
+    }
+  }
+}

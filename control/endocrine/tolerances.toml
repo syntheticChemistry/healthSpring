@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Endocrine track tolerance definitions for lithoSpore CI validation.
+
+[metadata]
+track = "endocrine"
+spring = "healthSpring"
+created = "2026-05-13"
+scripts = ["exp030", "exp031", "exp032", "exp033", "exp034", "exp035", "exp036", "exp037", "exp038"]
+
+[testosterone_decline_rate]
+description = "Age-related T decline ~1.6% per year (Harman 2001, Feldman 2002)"
+metric = "rate per year"
+expected = 0.016
+relative_tolerance = 0.20
+
+[trt_weight_loss]
+description = "Mean weight loss at 12 months (Saad 2016 registry)"
+metric = "kg"
+expected_range = [-16, -8]
+
+[hba1c_delta]
+description = "HbA1c change under TRT (Kapoor 2006)"
+metric = "percent points"
+expected = -0.5
+absolute_tolerance = 0.3
+
+[population_auc_variability]
+description = "Inter-individual AUC CV must exceed 15%"
+metric = "coefficient of variation"
+expected_min = 0.15
+
+[hrv_risk_threshold]
+description = "SDNN < 50ms yields elevated risk (Kleiger 1987)"
+metric = "risk factor"
+expected_min = 1.0
+
+[gut_axis_effect_size]
+description = "Cohen's d for healthy vs dysbiotic TRT response > 0.5"
+metric = "effect size"
+expected_min = 0.5

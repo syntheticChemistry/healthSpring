@@ -1,0 +1,36 @@
+{
+  "track": "discovery",
+  "description": "Drug discovery — MATRIX scoring, HTS, compound libraries, ChEMBL JAK panel, Rho-MRTF fibrosis",
+  "spring": "healthSpring",
+  "created": "2026-05-13",
+  "scripts": {
+    "exp090_matrix_scoring": {
+      "note": "Internal MATRIX methodology — multi-attribute compound scoring",
+      "data_source": "synthetic"
+    },
+    "exp091_addrc_hts": {
+      "note": "Synthetic 96-well HTS screen with Z-prime factor",
+      "reference": "Zhang JH et al. (1999) J Biomol Screen 4:67-73",
+      "doi": "10.1177/108705719900400206"
+    },
+    "exp092_compound_library": {
+      "note": "Synthetic compound interpolation",
+      "data_source": "synthetic"
+    },
+    "exp093_chembl_jak_panel": {
+      "papers": [
+        {"author": "Hill AV", "year": 1910, "doi": "10.1113/jphysiol.1910.sp001014"},
+        {"note": "IC50 values are literature-informed, not live ChEMBL API fetch"}
+      ],
+      "data_source": "hardcoded from published IC50 panels"
+    },
+    "exp094_rho_mrtf_fibrosis": {
+      "note": "Synthetic fibrosis scoring geometry",
+      "data_source": "synthetic"
+    },
+    "exp097_affinity_landscape": {
+      "note": "Toy marker/IC50 landscape",
+      "data_source": "synthetic"
+    }
+  }
+}

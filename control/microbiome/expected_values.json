@@ -1,0 +1,63 @@
+{
+  "track": "microbiome",
+  "description": "Gut microbiome diversity, Anderson localization, colonization resistance, SCFA, serotonin",
+  "spring": "healthSpring",
+  "created": "2026-05-13",
+  "scripts": {
+    "exp010_diversity_indices": {
+      "papers": [
+        {"author": "Shannon CE", "year": 1948, "title": "A mathematical theory of communication", "journal": "Bell System Technical Journal"},
+        {"author": "Simpson EH", "year": 1949, "journal": "Nature", "doi": "10.1038/163688a0"},
+        {"author": "Chao A", "year": 1984, "journal": "Scand J Stat", "doi": "10.1111/j.1467-9574.1984.tb01223.x"},
+        {"author": "Lozupone CA, Knight R", "year": 2005, "journal": "Appl Environ Microbiol", "doi": "10.1128/AEM.71.12.8228-8235.2005"}
+      ],
+      "analytical_checks": [
+        "Shannon perfectly even = ln(S)",
+        "Shannon monoculture = 0",
+        "Simpson in [0, 1]",
+        "Pielou in [0, 1]",
+        "Chao1 >= S_obs"
+      ]
+    },
+    "exp011_anderson_gut_lattice": {
+      "papers": [
+        {"author": "Anderson PW", "year": 1958, "journal": "Phys Rev", "doi": "10.1103/PhysRev.109.1492", "note": "Absence of diffusion in certain random lattices"},
+        {"author": "Thouless DJ", "year": 1972, "note": "Localization scaling theory"}
+      ],
+      "model": "1D tight-binding Anderson lattice with Pielou-to-disorder mapping"
+    },
+    "exp012_cdiff_resistance": {
+      "papers": [
+        {"author": "Jenior ML et al.", "year": 2017, "journal": "mBio", "doi": "10.1128/mBio.00261-17", "note": "C. diff amino acid competition"},
+        {"author": "Buffie CG et al.", "year": 2015, "journal": "Nature", "doi": "10.1038/nature14098", "note": "Secondary bile acid resistance"}
+      ],
+      "model": "Composite CR = α*Pielou + β*(1/ξ)"
+    },
+    "exp013_fmt_rcdi": {
+      "papers": [
+        {"author": "van Nood E et al.", "year": 2013, "journal": "NEJM", "doi": "10.1056/NEJMoa1205037", "note": "FMT for rCDI"},
+        {"author": "Buffie CG et al.", "year": 2015, "journal": "Nature", "doi": "10.1038/nature14098"}
+      ],
+      "model": "FMT blend: (1-e)*recipient + e*donor, Bray-Curtis dissimilarity"
+    },
+    "exp078_antibiotic_perturbation": {
+      "paper": "Dethlefsen L, Relman DA (2011) Incomplete recovery and individualized responses of the human distal gut microbiota to repeated antibiotic perturbation",
+      "doi": "10.1073/pnas.1000087107",
+      "model": "Shannon decline under ciprofloxacin + exponential recovery"
+    },
+    "exp079_scfa_production": {
+      "papers": [
+        {"author": "den Besten G et al.", "year": 2013, "journal": "J Lipid Res", "doi": "10.1194/jlr.R036012"},
+        {"author": "Cummings JH", "year": 1987, "journal": "Gut", "doi": "10.1136/gut.28.10.1221"}
+      ],
+      "model": "Michaelis-Menten fermentation: fiber → acetate:propionate:butyrate ≈ 60:20:15"
+    },
+    "exp080_gut_brain_serotonin": {
+      "papers": [
+        {"author": "Yano JM et al.", "year": 2015, "journal": "Cell", "doi": "10.1016/j.cell.2015.02.047", "note": "Indigenous bacteria from gut microbiota regulate host serotonin biosynthesis"},
+        {"author": "Clarke G et al.", "year": 2013, "journal": "Mol Psychiatry", "doi": "10.1038/mp.2012.77"}
+      ],
+      "model": "Shannon diversity → tryptophan availability → serotonin production"
+    }
+  }
+}

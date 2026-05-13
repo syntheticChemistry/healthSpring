@@ -29,7 +29,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/pkpd/exp002_one_compartment_pk.py",
-        baseline_source: "Rowland & Tozer, Clinical Pharmacokinetics (C0=Dose/Vd, oral Bateman function)",
+        baseline_source: "Rowland & Tozer, Clinical Pharmacokinetics ISBN:978-0781750097 (C0=Dose/Vd, oral Bateman function)",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -41,7 +41,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/pkpd/exp003_two_compartment_pk.py",
-        baseline_source: "Gibaldi & Perrier, Pharmacokinetics 2nd Ed (two-compartment identities)",
+        baseline_source: "Rowland & Tozer Ch.19 ISBN:978-0781750097 (two-compartment identities)",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -65,7 +65,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/pkpd/exp005_population_pk.py",
-        baseline_source: "Sheiner & Beal 1980 J Pharmacokinet Biopharm (population PK with IIV)",
+        baseline_source: "Mould & Upton 2013 CPT:PSP doi:10.1038/psp.2013.14 (population PK with IIV)",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -77,7 +77,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/pkpd/exp006_pbpk_compartments.py",
-        baseline_source: "Nestorov 2003 Clin Pharmacokinet 42:883 (PBPK tissue partition)",
+        baseline_source: "Gabrielsson & Weiner ISBN:978-9197651004; Nestorov 2003 Clin Pharmacokinet doi:10.2165/00003088-200342100-00001",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -89,7 +89,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/pkpd/exp077_michaelis_menten_pk.py",
-        baseline_source: "Michaelis & Menten 1913 Biochem Z 49:333 (nonlinear saturation kinetics)",
+        baseline_source: "Ludden et al. 1977 Clin Pharmacol Ther doi:10.1016/0009-9236(77)90012-7; Rowland & Tozer Ch.20",
     },
     ProvenanceRecord {
         track: "pkpd",
@@ -150,7 +150,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "1e7c55f7056c3e4e7179f25ebd5d0eab8ce3b7a4",
         run_date: "2026-03-08",
         exact_command: "python3 control/microbiome/exp013_fmt_rcdi.py",
-        baseline_source: "Kassam 2013 Am J Gastroenterol 108:500 (FMT for rCDI)",
+        baseline_source: "van Nood 2013 NEJM doi:10.1056/NEJMoa1205037; Buffie 2015 Nature doi:10.1038/nature14098",
     },
     ProvenanceRecord {
         track: "microbiome",
@@ -162,7 +162,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/microbiome/exp078_antibiotic_perturbation.py",
-        baseline_source: "Dethlefsen & Relman 2011 PNAS 108:4554 (antibiotic perturbation recovery)",
+        baseline_source: "Dethlefsen & Relman 2011 PNAS doi:10.1073/pnas.1000087107 (antibiotic perturbation recovery)",
     },
     ProvenanceRecord {
         track: "microbiome",
@@ -174,7 +174,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/microbiome/exp079_scfa_production.py",
-        baseline_source: "Morrison & Preston 2016 Gut Microbes 7:189 (SCFA fermentation kinetics)",
+        baseline_source: "den Besten 2013 J Lipid Res doi:10.1194/jlr.R036012; Cummings 1987 Gut doi:10.1136/gut.28.10.1221",
     },
     ProvenanceRecord {
         track: "microbiome",
@@ -186,7 +186,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/microbiome/exp080_gut_brain_serotonin.py",
-        baseline_source: "O'Mahony 2015 Behav Brain Res 277:32 (gut-brain serotonin axis)",
+        baseline_source: "Yano 2015 Cell doi:10.1016/j.cell.2015.02.047; Clarke 2013 Mol Psychiatry doi:10.1038/mp.2012.77",
     },
     // Track 3: Biosignal
     ProvenanceRecord {
@@ -199,7 +199,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/biosignal/exp020_pan_tompkins_qrs.py",
-        baseline_source: "Pan & Tompkins 1985 IEEE Trans Biomed Eng",
+        baseline_source: "Pan & Tompkins 1985 IEEE Trans Biomed Eng doi:10.1109/TBME.1985.325532",
     },
     ProvenanceRecord {
         track: "biosignal",
@@ -259,7 +259,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/biosignal/exp082_arrhythmia_classification.py",
-        baseline_source: "MIT-BIH Arrhythmia Database (Moody & Mark 2001 IEEE Eng Med Biol 20:45)",
+        baseline_source: "MIT-BIH Arrhythmia Database doi:10.1161/01.CIR.101.23.e215 (Goldberger 2000 PhysioNet)",
     },
     // Track 4: Endocrine
     ProvenanceRecord {
@@ -272,7 +272,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/endocrine/exp030_testosterone_im_pk.py",
-        baseline_source: "Bhasin 2010 JCEM 95:2536 (testosterone cypionate IM depot PK)",
+        baseline_source: "Bhasin 2010 JCEM doi:10.1210/jc.2009-2354 (testosterone cypionate IM depot PK)",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -308,7 +308,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/endocrine/exp033_trt_weight_trajectory.py",
-        baseline_source: "Saad 2016 Obes Facts 9:373 (TRT weight/waist trajectory)",
+        baseline_source: "Saad 2016 doi:10.1038/ijo.2015.139 (TRT weight/waist trajectory)",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -320,7 +320,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/endocrine/exp034_trt_cardiovascular.py",
-        baseline_source: "Corona 2011 JCEM 96:2341 (TRT cardiovascular endpoints)",
+        baseline_source: "Saad 2016 doi:10.1038/ijo.2015.139 (TRT cardiovascular endpoints panel)",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -332,7 +332,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/endocrine/exp035_trt_diabetes.py",
-        baseline_source: "Dhindsa 2016 Diabetes Care 39:S115 (TRT and T2DM HbA1c)",
+        baseline_source: "Kapoor 2006 Diabetes Care doi:10.2337/dc06-0841 (TRT and T2DM HbA1c)",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -356,7 +356,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/endocrine/exp037_testosterone_gut_axis.py",
-        baseline_source: "Tremellen 2012 Andrologia 44:439 (testosterone-gut microbiome axis)",
+        baseline_source: "Tremellen 2012 doi:10.1186/1477-7827-10-38; Ridaura 2013 Science doi:10.1126/science.1241214",
     },
     ProvenanceRecord {
         track: "endocrine",
@@ -368,7 +368,7 @@ pub(super) const RECORDS: &[ProvenanceRecord] = &[
         git_commit: "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
         run_date: "2026-03-19",
         exact_command: "python3 control/endocrine/exp038_hrv_trt_cardiovascular.py",
-        baseline_source: "Cross-track: HRV (Task Force 1996) × TRT cardiovascular (Corona 2011)",
+        baseline_source: "Kleiger 1987 Am J Cardiol doi:10.1016/0002-9149(87)90795-8; Task Force 1996 Eur Heart J 17:354",
     },
     // Track 5: Comparative
     ProvenanceRecord {

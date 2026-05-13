@@ -4,6 +4,15 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64g — May 13, 2026
+
+### Provenance Elevation — Auditable Data Chains
+
+- **Phase 1: Python baseline provenance strengthened** — `expected_values.json` and `tolerances.toml` created for all 7 science tracks (pkpd, endocrine, microbiome, comparative, biosignal, discovery, toxicology, simulation). DOIs added for 30+ papers across all tracks.
+- **Phase 1: `records_science.rs` DOIs updated** — 18 `ProvenanceRecord` entries now include explicit DOIs (previously journal-only references). Citations aligned to `control/<track>/expected_values.json`.
+- **Phase 2: Provenance IPC wire shape unified** — `data/provenance.rs` refactored from `capability.call` envelope pattern to canonical JSON-RPC method names (`dag.session.create`, `dag.event.append`, `dag.dehydrate`, `commit.create`, `braid.create`) matching `ipc/provenance/*.rs` and `LIVE_SCIENCE_API.md`. All 8 provenance tests pass.
+- **Phase 3: `NestComposition` facade** — `ipc/provenance/nest.rs` orchestrates the full Nest Atomic chain (NestGate → rhizoCrypt → BearDog → loamSpine → sweetGrass) as a single composed unit. Builder-pattern API: `begin_session() → record_event() → sign_merkle() → commit() → attribute() → finalize()`. Graceful degradation at each step. 4 new tests.
+
 ## V64f — May 13, 2026
 
 ### Tier 2 Convergence Wave Response

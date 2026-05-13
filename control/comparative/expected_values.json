@@ -1,0 +1,47 @@
+{
+  "track": "comparative",
+  "description": "Comparative veterinary medicine — canine/feline PK, IL-31, JAK inhibitors, allometry",
+  "spring": "healthSpring",
+  "created": "2026-05-13",
+  "scripts": {
+    "exp100_canine_il31": {
+      "paper": "Gonzales AJ et al. (2014) IL-31-induced pruritus in dogs: a novel experimental model to evaluate anti-pruritic effects of canine therapeutics",
+      "doi": "10.1111/vde.12187",
+      "key_parameters": {
+        "il31_baseline_pg_ml": 44.5,
+        "hill_n_pruritus": 1.5
+      }
+    },
+    "exp101_canine_jak1": {
+      "paper": "Gonzales AJ et al. (2014) Oclacitinib (Apoquel) is a novel Janus kinase inhibitor with activity against cytokines involved in allergy",
+      "doi": "10.1111/jvp.12076",
+      "key_parameters": {
+        "oclacitinib_jak1_ic50_nm": 10.0,
+        "selectivity_ratio_jak2": 13.0
+      }
+    },
+    "exp102_il31_pruritus_timecourse": {
+      "paper": "Gonzales AJ et al. (2014) — same study as exp100, time-course extension",
+      "doi": "10.1111/vde.12187"
+    },
+    "exp103_lokivetmab_duration": {
+      "paper": "Michels GM et al. (2016) A blinded, randomized, placebo-controlled trial of the efficacy of lokivetmab",
+      "doi": "10.1111/vde.12301"
+    },
+    "exp104_cross_species_pk": {
+      "paper": "Mahmood I, Balian JD (1996) Interspecies scaling: predicting clearance of drugs in humans",
+      "doi": "10.1007/BF02353864",
+      "model": "Allometric: CL_human = CL_animal * (BW_h/BW_a)^0.75"
+    },
+    "exp105_canine_gut_anderson": {
+      "paper": "Anderson PW (1958) — applied to canine gut microbiome diversity",
+      "doi": "10.1103/PhysRev.109.1492",
+      "note": "Illustrative canine abundance vectors — not from specific canine 16S study"
+    },
+    "exp106_feline_hyperthyroid": {
+      "paper": "Trepanier LA (2006) Pharmacokinetics of antithyroid drugs in cats",
+      "doi": "10.1111/j.1939-1676.2006.tb02903.x",
+      "model": "Michaelis-Menten methimazole PK in feline"
+    }
+  }
+}

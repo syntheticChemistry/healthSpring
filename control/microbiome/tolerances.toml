@@ -1,0 +1,42 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Microbiome track tolerance definitions for lithoSpore CI validation.
+
+[metadata]
+track = "microbiome"
+spring = "healthSpring"
+created = "2026-05-13"
+scripts = ["exp010", "exp011", "exp012", "exp013", "exp078", "exp079", "exp080"]
+
+[shannon_even]
+description = "Shannon of perfectly even community = ln(S)"
+metric = "nats"
+expected = 2.302585
+absolute_tolerance = 1e-10
+
+[anderson_localization]
+description = "Higher disorder → shorter localization length"
+metric = "xi ratio (W=1 / W=10)"
+expected_min = 2.0
+
+[colonization_resistance]
+description = "Healthy CR > dysbiotic CR"
+metric = "composite score"
+direction = "healthy > dysbiotic"
+
+[antibiotic_recovery]
+description = "Shannon recovers but remains below pre-antibiotic H0"
+metric = "nats"
+h0 = 2.2
+expected_nadir_depth = [0.3, 0.6]
+
+[scfa_ratio]
+description = "Acetate:propionate:butyrate ≈ 60:20:15"
+metric = "fraction"
+acetate_range = [0.50, 0.70]
+propionate_range = [0.15, 0.30]
+butyrate_range = [0.10, 0.25]
+
+[serotonin_ordering]
+description = "Higher diversity → more serotonin production"
+metric = "ordering"
+direction = "healthy > cdiff > dysbiotic"

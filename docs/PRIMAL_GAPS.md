@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-13
-**healthSpring version**: V64f (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64: `validate_ltee_b5` Tier 1, `--format json` + `--list`, `s_toxicology`, Foundation T3+T5+T8 active, Tier 2 wired: `toadstool.validate`, `toadstool.list_workloads`, `barracuda.precision.route`)
+**healthSpring version**: V64g (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64g: provenance elevation — `expected_values.json` + `tolerances.toml` for 7 tracks, unified IPC wire shape, `NestComposition` facade, 30+ DOIs added)
 
 ---
 
@@ -619,12 +619,23 @@ DOWNSTREAM_COMPOSITION_EXPLORER_GUIDE, or make the lib detect and use
 | 30 | `precision.route` blurb contract (`viable`/`capabilities`/`reason`) diverges from `LIVE_SCIENCE_API.md` (`recommended_tier`/`fma_safe`/`requires_compiler`). healthSpring wires to `LIVE_SCIENCE_API.md` as canonical. | Wire contract review | primalSpring: reconcile blurb → `LIVE_SCIENCE_API.md` |
 | 31 | lithoSpore module ingestion for B5 blocked on lithoSpore team accepting `ltee-symbiont-pk` module candidate | LTEE handoff | lithoSpore: ingest `control/ltee_symbiont_pkpd/` with BLAKE3 |
 
+### Provenance elevation (V64g)
+
+- **Dual wire shape eliminated** (Gap #23 partial) — `data/provenance.rs` now uses canonical `dag.session.create`, `dag.event.append` etc. instead of `capability.call` envelope with divergent operation names. All 8 provenance tests pass.
+- **`NestComposition` facade wired** — full Nest Atomic chain (NestGate + rhizoCrypt + loamSpine + sweetGrass + BearDog) orchestrated as a single composed unit. Graceful degradation at each step (trio still returns empty UDS responses per Gap #23).
+- **Python baseline provenance strengthened** — `expected_values.json` + `tolerances.toml` for 7 science tracks. 30+ DOIs added to scripts and `records_science.rs`.
+
+| # | Gap | Source | Upstream Action |
+|---|-----|--------|-----------------|
+| 32 | `NestComposition` end-to-end testing blocked by trio empty UDS responses | Provenance elevation | rhizoCrypt/loamSpine/sweetGrass: return non-empty JSON-RPC results |
+| 33 | Dataset SHA256 checksums still empty in `data/manifest.toml` | Provenance audit | healthSpring: populate checksums when datasets are fetched |
+
 ### Remaining upstream blockers (unchanged)
 
 - **NestGate egress fence** (Gap #2) — ionic bridge partially resolved, NestGate side still needed
 - **BTSP server** (Gap #10) — client ready, BearDog BTSP server pending
 - **Socket discovery standardization** (Gap #22) — rhizocrypt, sweetgrass, squirrel capability sockets
-- **Provenance trio UDS responses** (Gap #23) — empty JSON-RPC responses on UDS
+- **Provenance trio UDS responses** (Gap #23) — empty JSON-RPC responses on UDS (wire shape now canonical per V64g)
 - **Songbird crypto provider** (Gap #24) — startup discovery failure
 
 ---

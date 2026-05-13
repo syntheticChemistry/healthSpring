@@ -6,5 +6,6 @@
 //! for DAG operations, ledger/merkle commits, and braid analytics.
 
 pub mod loamspine;
+pub mod nest;
 pub mod rhizocrypt;
 pub mod sweetgrass;

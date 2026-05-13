@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V64f — Tier 2 Convergence: `toadstool.validate` + `barracuda.precision.route` wired, `--list` flag, LTEE B5 lithoSpore module packaged, plasmidBin cell + niche updated. **1,014 tests**, 17 scenarios, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Status**: V64g — Provenance Elevation: `expected_values.json` + `tolerances.toml` for 7 tracks, unified IPC wire shape, `NestComposition` facade, 30+ DOIs. **1,014+ tests**, 17 scenarios, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
 **Last Updated**: May 13, 2026
 
 ---
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V64f** | [Tier 2 Convergence Handoff](handoffs/HEALTHSPRING_V64F_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Tier 2 wired (`toadstool.validate`, `barracuda.precision.route`), precision mapping doc, `--list` flag, LTEE B5 lithoSpore module packaged, plasmidBin cell + niche updated, gaps #28-31 surfaced |
+| **V64g** | [Provenance Elevation Handoff](handoffs/HEALTHSPRING_V64G_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Auditable data chains: expected_values.json + tolerances.toml for 7 tracks, unified IPC wire shape, NestComposition facade, 30+ DOIs, gaps #32-33 |
+| V64f | [Tier 2 Convergence Handoff](handoffs/HEALTHSPRING_V64F_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | Tier 2 wired, precision mapping, --list, LTEE B5 lithoSpore module, plasmidBin |
 | | *V1–V64 → `handoffs/archive/`* | | Fossil record |
 
 ## Archive

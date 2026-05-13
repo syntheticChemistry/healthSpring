@@ -151,16 +151,15 @@ impl std::fmt::Display for TrioError {
     }
 }
 
-/// `capability_call` with circuit breaker + exponential backoff retry.
+/// `trio_rpc_call` with circuit breaker + exponential backoff retry.
 ///
 /// Retries transient I/O failures up to `MAX_RETRIES` times. If the
 /// circuit breaker is open (recent failure within `CIRCUIT_OPEN_MS`),
 /// the call short-circuits immediately.
-fn resilient_capability_call(
+fn resilient_trio_call(
     socket_path: &Path,
-    capability: &str,
-    operation: &str,
-    args: &serde_json::Value,
+    method: &str,
+    params: &serde_json::Value,
 ) -> Result<serde_json::Value, TrioError> {
     if circuit_is_open() {
         return Err(TrioError::CircuitOpen);
@@ -168,7 +167,7 @@ fn resilient_capability_call(
 
     let mut last_err = TrioError::EmptyResult;
     for attempt in 0..=MAX_RETRIES {
-        match capability_call(socket_path, capability, operation, args) {
+        match trio_rpc_call(socket_path, method, params) {
             Ok(v) => {
                 record_success();
                 return Ok(v);
@@ -186,21 +185,19 @@ fn resilient_capability_call(
     Err(last_err)
 }
 
-/// Send a `capability.call` to the Neural API over Unix socket.
-fn capability_call(
+/// Send a direct JSON-RPC method call over Unix socket.
+///
+/// Uses canonical `primalSpring/docs/LIVE_SCIENCE_API.md` wire names
+/// (e.g. `dag.session.create`) rather than the `capability.call` envelope.
+fn trio_rpc_call(
     socket_path: &Path,
-    capability: &str,
-    operation: &str,
-    args: &serde_json::Value,
+    method: &str,
+    params: &serde_json::Value,
 ) -> Result<serde_json::Value, TrioError> {
     let request = serde_json::json!({
         "jsonrpc": "2.0",
-        "method": "capability.call",
-        "params": {
-            "capability": capability,
-            "operation": operation,
-            "args": args,
-        },
+        "method": method,
+        "params": params,
         "id": 1,
     });
 
@@ -270,7 +267,7 @@ pub fn begin_data_session(dataset_name: &str) -> ProvenanceResult {
         "description": format!("Data fetch: {dataset_name}"),
     });
 
-    resilient_capability_call(&socket, "dag", "create_session", &args).map_or_else(
+    resilient_trio_call(&socket, "dag.session.create", &args).map_or_else(
         |_| unavailable_result(&format!("local-{dataset_name}")),
         |result| {
             let session_id = result
@@ -299,7 +296,7 @@ pub fn record_fetch_step(session_id: &str, step: &serde_json::Value) -> Provenan
         "event": step,
     });
 
-    resilient_capability_call(&socket, "dag", "append_event", &args).map_or_else(
+    resilient_trio_call(&socket, "dag.event.append", &args).map_or_else(
         |_| unavailable_result("unavailable"),
         |result| {
             let vertex_id = result
@@ -336,10 +333,9 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
     };
 
     // Step 1: Dehydrate (rhizoCrypt)
-    let Ok(dehydration) = resilient_capability_call(
+    let Ok(dehydration) = resilient_trio_call(
         &socket,
-        "dag",
-        "dehydrate",
+        "dag.dehydrate",
         &serde_json::json!({ "session_id": session_id }),
     ) else {
         return unavailable;
@@ -352,10 +348,9 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         .to_owned();
 
     // Step 2: Commit (loamSpine)
-    let Ok(commit_result) = resilient_capability_call(
+    let Ok(commit_result) = resilient_trio_call(
         &socket,
-        "commit",
-        "session",
+        "commit.create",
         &serde_json::json!({
             "summary": dehydration,
             "content_hash": merkle_root,
@@ -382,10 +377,9 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         .to_owned();
 
     // Step 3: Attribute (sweetGrass) — best effort
-    let braid_id = resilient_capability_call(
+    let braid_id = resilient_trio_call(
         &socket,
-        "provenance",
-        "create_braid",
+        "braid.create",
         &serde_json::json!({
             "commit_ref": commit_id,
             "agents": [{
