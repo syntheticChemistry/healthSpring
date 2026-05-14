@@ -4,7 +4,7 @@
 # Health science via composing existing primals. The Nest Atomic
 # (nestGate + rhizoCrypt + loamSpine + sweetGrass) provides the data
 # provenance chain; barraCuda provides math/stats; Tower Atomic
-# (bearDog + songbird) provides crypto and discovery.
+# (bearDog + songbird + skunkBat) provides crypto, discovery, and audit.
 #
 # Deploy: biomeos deploy --graph graphs/healthspring_cell.toml
 
@@ -22,7 +22,7 @@ security_model = "btsp_enforced"
 transport = "uds_only"
 composition_model = "nest_heavy"
 
-# ── Tower Atomic ─────────────────────────────────────────────────────
+# ── Tower Atomic (bearDog + songBird + skunkBat) ─────────────────────
 
 [[nodes]]
 id = "beardog"
@@ -60,6 +60,27 @@ family_id = "${FAMILY_ID}"
 
 [nodes.constraints]
 timeout_ms = 30000
+
+[[nodes]]
+id = "skunkbat"
+depends_on = ["beardog"]
+output = "skunkbat-ready"
+capabilities = ["security.audit_log", "baseline.observe", "baseline.anomaly"]
+fallback = "skip"
+
+[nodes.primal]
+by_capability = "audit"
+
+[nodes.operation]
+name = "start"
+
+[nodes.operation.params]
+mode = "server"
+family_id = "${FAMILY_ID}"
+
+[nodes.constraints]
+timeout_ms = 15000
+required = false
 
 # ── Node Atomic ──────────────────────────────────────────────────────
 
@@ -202,29 +223,6 @@ family_id = "${FAMILY_ID}"
 
 [nodes.constraints]
 timeout_ms = 30000
-
-# ── Meta: Audit & Observability ──────────────────────────────────────
-
-[[nodes]]
-id = "skunkbat"
-depends_on = ["beardog", "songbird"]
-output = "skunkbat-ready"
-capabilities = ["security.audit_log", "baseline.observe", "baseline.anomaly"]
-fallback = "skip"
-
-[nodes.primal]
-by_capability = "defense"
-
-[nodes.operation]
-name = "start"
-
-[nodes.operation.params]
-mode = "server"
-family_id = "${FAMILY_ID}"
-
-[nodes.constraints]
-timeout_ms = 15000
-required = false
 
 # ── Validation ───────────────────────────────────────────────────────
 

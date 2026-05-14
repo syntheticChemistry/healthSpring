@@ -4,6 +4,20 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64n — May 14, 2026
+
+### Upstream Audit Absorption — Tower Atomic, Deploy Graph Canonicalization, barraCuda v0.4.0
+
+- **Tower atomic = bearDog + songBird + skunkBat** — per upstream plasmidBin directive. All 4 deploy-style graphs updated: Tower comments, `depends_on` for healthspring node, skunkBat placement.
+- **`healthspring_nest_atomic.toml` stale fix** — skunkBat capabilities `defense.audit`/`defense.recon`/`defense.threat` → `security.audit_log`/`baseline.observe`/`baseline.anomaly` (V64l fix missed this graph).
+- **`healthspring_niche_deploy.toml` wire canonicalization** — rhizoCrypt: `dag.session.create`/`dag.event.append`/`dag.merkle.root`/`dag.merkle.verify`; loamSpine: `spine.create`/`entry.append`; sweetGrass: `braid.create`/`braid.commit`/`braid.get`; skunkBat `by_capability` → `"audit"`.
+- **`healthspring_cell.toml`** — skunkBat moved from Meta section to Tower Atomic section, `by_capability` → `"audit"`.
+- **`routing.rs` content domain** — added `"content"` → NestGate mapping (CAS surface). Added `"stats"` to `ALL_CAPS`.
+- **`niche.rs` CONSUMED_CAPABILITIES canonical** — replaced legacy wire names with canonical: `dag.session.create`, `spine.create`, `entry.append`, `braid.create`, `braid.query`, `security.audit_log`. Added `crypto.contract.propose`/`countersign`/`verify` (replacing stale `crypto.ionic_bond`). Added `content.store`/`content.retrieve`.
+- **`capability_registry.toml` sync** — `[crypto]` section: `crypto.contract.*` replaces `crypto.ionic_bond`. `[dag]`/`[braid]`/`[audit]`: canonical-first with legacy aliases. Added `[content]` section. `[audit]`: full skunkBat surface (`baseline.*`, `metadata.*`, `response.*`).
+- **barraCuda v0.4.0** — Cargo.toml comment updated from "v0.3.13" to "v0.4.0" (path dep resolves upstream workspace version).
+- **Upstream gaps documented** — GAP-43 (manifest.toml stale), GAP-44 (ports.env under-validates), GAP-45 (sourDough shell script mapping). Composing→composed blockers: ionic bridge, BTSP, Foundation T10, Nest live deploy (all upstream/coordination).
+
 ## V64m — May 13, 2026
 
 ### Root Docs, WhitePaper, and Cleanup Sprint

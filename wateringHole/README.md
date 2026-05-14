@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V64m** | [Comprehensive Handoff](handoffs/HEALTHSPRING_V64M_COMPREHENSIVE_HANDOFF_MAY13_2026.md) | May 13 | All wire contract learnings, Nest Atomic composition pattern, provenance pipeline, plasmidBin cell.toml, Foundation Thread 10, recommendations for upstream teams |
+| **V64n** | [Upstream Audit Absorption](handoffs/HEALTHSPRING_V64N_UPSTREAM_HANDOFF_MAY14_2026.md) | May 14 | Tower = bearDog + songBird + skunkBat in all graphs, deploy graph canonicalization, routing `content` domain, capability registry sync, barraCuda v0.4.0, GAPs 43-45 |
+| V64m | [Comprehensive Handoff](handoffs/HEALTHSPRING_V64M_COMPREHENSIVE_HANDOFF_MAY13_2026.md) | May 13 | All wire contract learnings, Nest Atomic composition pattern, provenance pipeline, plasmidBin cell.toml, Foundation Thread 10, recommendations for upstream teams |
 | V64l | [Wire Hygiene](handoffs/HEALTHSPRING_V64L_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | bearDog base64 `message`, skunkBat `security.audit_log`, plasmidBin cell.toml, Foundation Thread 10 gap |
 | V64k | [Deep Debt Reconfirmation](handoffs/HEALTHSPRING_V64K_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | All 7 audit categories at zero debt, refreshed audit answers, no regressions from V64j |
 | V64j | [Delta Spring Evolution](handoffs/HEALTHSPRING_V64J_UPSTREAM_HANDOFF_MAY13_2026.md) | May 13 | GAP-36 resolved, provenance trio wire names canonical, 5 gaps closed (#23, #32, #34, #35, #36), Nest Atomic live-ready |

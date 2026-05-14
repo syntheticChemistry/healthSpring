@@ -52,7 +52,7 @@ order = 3
 required = true
 depends_on = ["beardog"]
 health_method = "health.liveness"
-capabilities = ["defense.audit", "defense.recon", "defense.threat"]
+capabilities = ["security.audit_log", "baseline.observe", "baseline.anomaly"]
 
 # Nest Atomic (neutron body)
 

@@ -41,7 +41,7 @@ guidestone = []
 nestgate = ["dep:ureq"]
 
 [dependencies]
-# Validated against barraCuda v0.3.13 (workspace current).
+# Validated against barraCuda v0.4.0 (workspace current).
 # Path dep for local development; CI should pin to a known-good rev.
 # barracuda-core is required for barraCuda's internal feature resolution.
 barracuda-core = { path = "../../../primals/barraCuda/crates/barracuda-core", default-features = false, optional = true }

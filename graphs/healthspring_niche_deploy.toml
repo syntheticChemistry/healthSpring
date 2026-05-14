@@ -8,7 +8,7 @@
 # define what the primals do together via capability.call routing.
 #
 # Deploy order:
-#   Tower Atomic (BearDog + Songbird) -> Provenance Trio -> NestGate -> ToadStool -> healthSpring
+#   Tower Atomic (BearDog + Songbird + SkunkBat) -> Provenance Trio -> NestGate -> ToadStool -> healthSpring
 #
 # With just the primals and graphs, biomeOS recreates the entire diagnostic
 # pipeline. The Neural API Pathway Learner optimizes it over time.
@@ -22,7 +22,7 @@
 # Niche manifest: graphs/healthspring_niche.toml
 #
 # NUCLEUS Atomics:
-#   Tower Atomic = BearDog + Songbird (Nodes 1-2)
+#   Tower Atomic = BearDog + Songbird + SkunkBat (Nodes 1-2, 8)
 #   Node Atomic  = Tower Atomic + ToadStool (add Node 7)
 #   Nest Atomic  = Tower Atomic + NestGate (add Node 6)
 #
@@ -89,10 +89,10 @@ depends_on = ["beardog"]
 health_method = "dag.health"
 by_capability = "dag"
 capabilities = [
-    "dag.create_session",
-    "dag.append_event",
-    "dag.dehydrate",
-    "dag.merkle_root",
+    "dag.session.create",
+    "dag.event.append",
+    "dag.merkle.root",
+    "dag.merkle.verify",
     "dag.health",
 ]
 
@@ -106,9 +106,9 @@ depends_on = ["beardog", "rhizocrypt"]
 health_method = "commit.health"
 by_capability = "commit"
 capabilities = [
-    "commit.session",
-    "commit.entry",
-    "commit.health",
+    "spine.create",
+    "entry.append",
+    "spine.health",
 ]
 
 # -- Node 5: sweetGrass (semantic provenance braids) ----------------------
@@ -121,11 +121,11 @@ depends_on = ["beardog", "loamspine"]
 health_method = "provenance.health"
 by_capability = "provenance"
 capabilities = [
-    "provenance.create_braid",
-    "provenance.lineage",
-    "provenance.graph",
-    "provenance.attribution",
-    "provenance.health",
+    "braid.create",
+    "braid.commit",
+    "braid.get",
+    "anchoring.anchor",
+    "braid.health",
 ]
 
 # -- Node 6: NestGate (content-addressed data storage) --------------------
@@ -174,15 +174,15 @@ capabilities = [
 TOADSTOOL_PRECISION = "auto"
 TOADSTOOL_MULTI_DEVICE = "true"
 
-# -- Node 8: skunkBat (audit event logging) --------------------------------
+# -- Node 8: skunkBat (audit event logging — Tower Atomic) -----------------
 [[graph.node]]
 name = "skunkbat"
 binary = "skunkbat_primal"
 order = 8
 required = false
-depends_on = ["beardog", "rhizocrypt"]
+depends_on = ["beardog"]
 health_method = "health.liveness"
-by_capability = "defense"
+by_capability = "audit"
 capabilities = [
     "security.audit_log",
     "baseline.observe",
@@ -197,7 +197,7 @@ name = "healthspring"
 binary = "healthspring_primal"
 order = 9
 required = true
-depends_on = ["beardog", "songbird"]
+depends_on = ["beardog", "songbird", "skunkbat"]
 health_method = "health.check"
 by_capability = "health"
 capabilities = [

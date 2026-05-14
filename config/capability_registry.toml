@@ -254,7 +254,9 @@ locality = "consumed"
 methods = [
     "crypto.hash",
     "crypto.sign",
-    "crypto.ionic_bond",
+    "crypto.contract.propose",
+    "crypto.contract.countersign",
+    "crypto.contract.verify",
 ]
 
 [discovery]
@@ -284,9 +286,13 @@ methods = [
 owner = "rhizocrypt"
 locality = "consumed"
 methods = [
+    "dag.session.create",
+    "dag.event.append",
+    "dag.merkle.root",
+    "dag.merkle.verify",
+    # Legacy aliases (accepted by upstream normalize_method)
     "dag.create_node",
     "dag.query",
-    # Legacy aliases (accepted by upstream normalize_method)
     "dag.create_session",
     "dag.append_event",
     "dag.dehydrate",
@@ -298,6 +304,8 @@ locality = "consumed"
 methods = [
     "spine.create",
     "entry.append",
+    "spine.seal",
+    "entry.get",
     # Legacy alias (accepted by upstream normalize_method)
     "commit.session",
 ]
@@ -315,7 +323,11 @@ owner = "sweetgrass"
 locality = "consumed"
 methods = [
     "braid.create",
+    "braid.commit",
+    "braid.get",
     "braid.query",
+    "anchoring.anchor",
+    "anchoring.verify",
     # Legacy alias (accepted by upstream normalize_method)
     "provenance.create_braid",
 ]
@@ -325,6 +337,10 @@ owner = "skunkbat"
 locality = "consumed"
 methods = [
     "security.audit_log",
+    "baseline.observe",
+    "baseline.anomaly",
+    "metadata.scan",
+    "response.graduated",
     # Legacy aliases (still accepted by upstream)
     "audit.log",
     "defense.audit",

@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-13
-**healthSpring version**: V64l (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, V64l: Wire hygiene — bearDog base64 `message` param, skunkBat `security.audit_log`, plasmidBin cell.toml)
+**Date**: 2026-05-14
+**healthSpring version**: V64n (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64n: Upstream audit absorption — Tower = bearDog + songBird + skunkBat, deploy graph canonicalization, routing `content` domain, capability registry sync)
 
 ---
 
@@ -781,6 +781,47 @@ ludoSpring Tower atomic (first live validation) discovered two wire contract mis
 |---|-----|--------|-----------------|
 | 42 | Foundation Thread 10 (Provenance) is empty — healthSpring domain | Upstream directive | healthSpring: seed expression when sporeGarden structure is confirmed |
 
+### Upstream Audit Absorption Sprint (V64n — May 14, 2026)
+
+primalSpring ecosystem status update (May 14): plasmidBin deployment evolution complete. Tower atomic mandated as bearDog + songBird + skunkBat. barraCuda v0.4.0 released. sourDough internalization planned (v0.3.0–v0.6.0). healthSpring status: "composing" per manifest.toml.
+
+**Findings from upstream audit:**
+
+1. **Deploy graph Tower comments stale** — all 4 deploy-style graphs said "Tower = bearDog + songBird"; skunkBat was already present as a node but not acknowledged in Tower comments or healthspring `depends_on`.
+2. **`healthspring_nest_atomic.toml` skunkBat capabilities still `defense.audit`** — V64l fix missed this graph.
+3. **`healthspring_niche_deploy.toml` wire names non-canonical** — rhizoCrypt used `dag.create_session`/`dag.append_event`; loamSpine used `commit.session`/`commit.entry`; sweetGrass used `provenance.create_braid`.
+4. **`routing.rs` missing `content` domain** — NestGate's CAS surface (`content.*`) had no routing entry; `ALL_CAPS` also omitted `stats`.
+5. **`niche.rs` CONSUMED_CAPABILITIES stale** — legacy wire names (`dag.create_session`, `commit.session`, `provenance.create_braid`, `audit.log`, `crypto.ionic_bond`), missing `crypto.contract.*` and `content.*`.
+6. **`capability_registry.toml`** — `crypto.ionic_bond` stale (now `crypto.contract.*`), DAG/braid not canonical-first, skunkBat missing `baseline.*`/`metadata.*`/`response.*`.
+7. **Cargo.toml version comment** — "v0.3.13" stale (upstream barraCuda is v0.4.0).
+8. **infra/plasmidBin manifest.toml** — healthSpring entry says `tests = 1014`, `V64e`, `evolution = "composing"` (stale, upstream-owned).
+9. **infra/plasmidBin ports.env** — `NICHE_HEALTHSPRING` under-validates vs manifest niche primals (upstream-owned).
+
+**Fixes applied locally:**
+
+- All deploy graphs: Tower comments updated to include skunkBat, healthspring `depends_on` includes skunkBat
+- `healthspring_nest_atomic.toml`: `defense.audit`/`defense.recon`/`defense.threat` → `security.audit_log`/`baseline.observe`/`baseline.anomaly`
+- `healthspring_niche_deploy.toml`: rhizoCrypt → `dag.session.create`/`dag.event.append`/`dag.merkle.root`/`dag.merkle.verify`; loamSpine → `spine.create`/`entry.append`; sweetGrass → `braid.create`/`braid.commit`/`braid.get`; skunkBat `by_capability` → `audit`
+- `healthspring_cell.toml`: skunkBat moved to Tower Atomic section, `by_capability` → `audit`
+- `routing.rs`: added `"content"` → NestGate, `"stats"` to `ALL_CAPS`
+- `niche.rs`: CONSUMED_CAPABILITIES updated to canonical wire names + `crypto.contract.*` + `content.*`
+- `capability_registry.toml`: `crypto.contract.*` replaces `crypto.ionic_bond`; DAG/braid/audit canonical-first; content section added; skunkBat full capability surface
+- `Cargo.toml`: version comment → "v0.4.0"
+
+**Upstream items (not local debt — hand back to primalSpring):**
+
+| # | Gap | Owner | Action |
+|---|-----|-------|--------|
+| 43 | plasmidBin `manifest.toml` healthSpring stale (tests=1014, V64e) | infra/plasmidBin | Update to tests=1018, V64n |
+| 44 | `ports.env` NICHE_HEALTHSPRING under-validates (missing toadstool, barracuda, coralreef, petaltongue) | infra/plasmidBin | Sync with `[niches.healthspring]` in manifest.toml |
+| 45 | sourDough deployment internalization: 15 healthSpring shell scripts are candidates | primals/sourDough | Map to sourdough subcommands as v0.4.0–v0.6.0 ships |
+
+**Composing → composed blockers (all upstream/coordination):**
+- Ionic bridge / ionic runtime — not implemented upstream (Gap #2)
+- BTSP transport negotiation — `FAMILY_SEED` breaks mixed deploys (Gap #20)
+- Foundation Thread 10 — provenance expression pending sporeGarden (Gap #42)
+- Nest live deploy — needs running primals for `s_nest_atomic` against live NUCLEUS
+
 ---
 
 ## Summary Matrix
@@ -829,3 +870,6 @@ ludoSpring Tower atomic (first live validation) discovered two wire contract mis
 | 40 | Dataset SHA256 + fetch gaps | Data audit | **V64i**: documented | — |
 | 41 | No GPU parity benchmarks | Benchmark audit | **V64i**: N/A (sovereign WGSL) | — |
 | 42 | Foundation Thread 10 (Provenance) empty | Upstream directive | **V64l**: documented, seed when sporeGarden confirmed | — |
+| 43 | plasmidBin manifest.toml healthSpring stale | infra/plasmidBin | **V64n**: documented | Update tests=1018, V64n |
+| 44 | ports.env NICHE_HEALTHSPRING under-validates | infra/plasmidBin | **V64n**: documented | Sync with manifest niche |
+| 45 | sourDough shell script internalization | primals/sourDough | **V64n**: 15 scripts mapped | Map to sourdough v0.4.0+ |

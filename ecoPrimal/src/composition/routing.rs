@@ -7,11 +7,13 @@ use crate::primal_names;
 /// All capabilities that healthSpring's NUCLEUS composition may use.
 pub const ALL_CAPS: &[&str] = &[
     "tensor",
+    "stats",
     "shader",
     "compute",
     "security",
     "discovery",
     "storage",
+    "content",
     "dag",
     "commit",
     "braid",
@@ -31,7 +33,7 @@ pub fn capability_to_primal(capability: &str) -> &'static str {
         "compute" => primal_names::TOADSTOOL,
         "security" | "crypto" => primal_names::BEARDOG,
         "discovery" | "net.discovery" => primal_names::SONGBIRD,
-        "storage" => primal_names::NESTGATE,
+        "storage" | "content" => primal_names::NESTGATE,
         "dag" => primal_names::RHIZOCRYPT,
         "commit" | "ledger" | "spine" | "merkle" => primal_names::LOAMSPINE,
         "braid" | "attribution" => primal_names::SWEETGRASS,
