@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-16
-**healthSpring version**: V64r (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64r: Wave 20 schema standardization — `capability.list` canonical envelope, 452-method registry, `primal.list` consumed)
+**healthSpring version**: V64s (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64s: Deep debt re-audit #2 post-Wave 20 — all 7 categories zero, 0 unsafe, 0 production mocks, 0 files >800L)
 
 ---
 
@@ -882,6 +882,22 @@ Post-Wave 17 comprehensive re-audit. **All 7 categories confirmed at zero debt.*
 | Unreviewed papers? | **2**: LTEE E2 (Mardikoraem & Woldring 2025 "HOLIgraph" OATP PK/PD) and E4 (Woldring Lab 2024 macrocyclic peptides). 45/45 main-track complete. |
 | Datasets? | **5** in `data/manifest.toml`, all SHA256 empty. `qs_gene_matrix` lacks fetch script. Others (`mitbih`, `chembl_hill_panel`, `hmp_16s`, `geo_androgen_receptor`) scripted but unverified. |
 | External deps? | All appropriate: `serde`/`serde_json` (ecosystem standard), `tracing` (structured logging), `clap` (CLI), `base64` (crypto payloads), `thiserror` (error derives). Optional: `wgpu`/`tokio`/`bytemuck` (GPU feature), `ureq` (nestgate HTTP). No Rust replacement opportunities with favorable cost/benefit. |
+
+### Deep Debt Re-Audit #2 (V64s — May 16, 2026)
+
+Post-Wave 20 comprehensive re-audit. **All 7 categories confirmed at zero debt.**
+
+| Category | Status | Detail |
+|----------|--------|--------|
+| TODO/FIXME/HACK | **0** | Zero markers. 3 "workaround" hits in gpu/mod.rs + gpu/sovereign.rs doc comments describing f32 transcendental workarounds — not debt markers, they document the sovereign pipeline replacement path |
+| `unsafe` code | **0** | Only the word "unsafe" in a doc comment in server/signal.rs ("Since we forbid unsafe...") |
+| Production mocks | **0** | All mocks in `#[cfg(test)]`. Feature-gated GPU codegen stub returns `None` when `barracuda-lib` disabled — compile-time shim, not runtime mock |
+| `unimplemented!`/`todo!`/`panic!` (non-test) | **0** | All 21 `panic!` calls inside `#[cfg(test)]` blocks |
+| `.unwrap()`/`.expect()` (non-test) | **0** | 99 `.unwrap()` + 65 `.expect()` — all in `#[cfg(test)]` or doc comments |
+| Files > 800 LOC | **0** | Largest: 597 lines (`ipc/proptest_ipc.rs`, test-only) |
+| Clippy pedantic+nursery | **0 warnings** | Clean |
+
+**No changes required.** V64r Wave 20 changes (`capability_domains()` helper, `primal.list` registry addition) introduced no debt.
 
 ---
 

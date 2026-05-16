@@ -4,6 +4,14 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64s — May 16, 2026
+
+### Deep Debt Re-Audit #2 — All 7 categories zero post-Wave 20
+
+- **Full re-audit** of 214 .rs files across all 7 deep debt categories: zero TODO/FIXME/HACK, zero unsafe, zero production mocks, zero non-test panic/unwrap/expect, zero files >800L, zero clippy warnings.
+- **3 "workaround" doc comments** in `gpu/mod.rs` and `gpu/sovereign.rs` — not debt markers, they document the sovereign pipeline replacement path for f32 transcendental workarounds.
+- **V64r changes clean**: `capability_domains()` helper and `primal.list` registry addition introduced no debt.
+
 ## V64r — May 16, 2026
 
 ### Wave 20 Schema Standardization — capability.list canonical envelope, 452-method registry
