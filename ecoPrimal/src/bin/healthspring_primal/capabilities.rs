@@ -270,7 +270,13 @@ pub fn handle_capability_list() -> serde_json::Value {
         .copied()
         .collect();
 
+    let capabilities: Vec<&str> = capability_domains();
+
     serde_json::json!({
+        // Wave 20 canonical subset (MUST be present per schema standard)
+        "capabilities": capabilities,
+        "count": capabilities.len(),
+        // Enriched fields (healthSpring extensions)
         "primal": PRIMAL_NAME,
         "version": env!("CARGO_PKG_VERSION"),
         "domain": PRIMAL_DOMAIN,
@@ -296,6 +302,28 @@ pub fn handle_identity_get() -> serde_json::Value {
         "particle_profile": "neutron_heavy",
         "proto_nucleate": "healthspring_enclave_proto_nucleate",
     })
+}
+
+/// Wave 20 canonical capability domains — flat string array for biomeOS schema.
+///
+/// Extracts unique top-level domains from `ALL_CAPABILITIES` (e.g., "science",
+/// "health", "provenance", "compute") plus consumed ecosystem domains from
+/// the composition routing table.
+fn capability_domains() -> Vec<&'static str> {
+    use healthspring_barracuda::composition::ALL_CAPS;
+
+    let mut domains: Vec<&str> = ALL_CAPS.to_vec();
+
+    for cap in ALL_CAPABILITIES {
+        let domain = cap.split('.').next().unwrap_or(cap);
+        if !domains.contains(&domain) {
+            domains.push(domain);
+        }
+    }
+
+    domains.sort_unstable();
+    domains.dedup();
+    domains
 }
 
 /// Structured capability groupings (local vs routed) for biomeOS.

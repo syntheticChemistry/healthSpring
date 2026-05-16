@@ -123,10 +123,11 @@ pub const CONSUMED_CAPABILITIES: &[&str] = &[
     "braid.create",
     "braid.query",
     "security.audit_log",
-    // Wave 17 — Neural API Signal Elevation (primalSpring 451-method registry)
+    // Wave 17+20 — Neural API Signal Elevation (primalSpring 452-method registry)
     "signal.dispatch",
     "primal.announce",
     "primal.info",
+    "primal.list",
     "certificate.verify",
 ];
 

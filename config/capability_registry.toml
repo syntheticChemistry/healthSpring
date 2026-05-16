@@ -380,6 +380,7 @@ locality = "consumed"
 methods = [
     "primal.announce",
     "primal.info",
+    "primal.list",
 ]
 
 # ── Signal dispatch (primalSpring Wave 17 — Neural API Signal Elevation) ─

@@ -4,6 +4,17 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64r — May 16, 2026
+
+### Wave 20 Schema Standardization — capability.list canonical envelope, 452-method registry
+
+- **`capability.list` canonical envelope** — response now includes Wave 20 required subset: `"capabilities"` (flat domain string array) and `"count"` (domain count). Enriched fields (`methods`, `total`, `science`, `infrastructure`, `provided_capabilities`, `operation_dependencies`, `cost_estimates`) preserved alongside canonical subset.
+- **452-method registry sync** — `primal.list` added to `[primal_registry]` section in `capability_registry.toml` and `niche.rs` CONSUMED_CAPABILITIES.
+- **`capability_domains()` helper** — extracts unique top-level domains from `ALL_CAPABILITIES` + `ALL_CAPS` routing table for the canonical response.
+- **`nest.commit` signal-path status** — already wired in V64o (`NestComposition.full_lifecycle()` and `data/provenance.rs`). Signal-first with manual fallback. Aligns with primalSpring's `s_nest_commit_live` pattern. No additional wiring needed.
+- **`--provenance-dir` assessment** — Thread 10 candidate. healthSpring's `validate_pk_models` and `validate_ltee_b5` binaries already support `--format json`. Adding `--provenance-dir` is a future incremental addition when projectFOUNDATION workloads require it.
+- **Schema validation scenario** — candidate for future sprint. healthSpring's `integration_registry_sync` test already validates registry cross-sync; a `s_schema_standard` scenario would additionally probe biomeOS live response shapes.
+
 ## V64q — May 16, 2026
 
 ### Root Docs, WhitePaper, Specs Sweep — All Docs Synced to V64p
