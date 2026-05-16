@@ -43,7 +43,7 @@ The runtime surface is **`healthspring_unibin`** (certify, validate, serve, stat
 - **Unsafe code**: 0 (`forbid(unsafe_code)` in workspace lints)
 - **MSRV**: 1.87 (Edition 2024)
 - **Crates**: 98 workspace members (3 lib + 95 experiments)
-- **GPU**: 6 WGSL shaders via barraCuda v0.3.13 (Hill, PopPK, Diversity, MM, SCFA, Beat); availability probe cached in `OnceLock`
+- **GPU**: 6 WGSL shaders via barraCuda v0.4.0 (Hill, PopPK, Diversity, MM, SCFA, Beat); availability probe cached in `OnceLock`
 - **Tracing**: library code uses `tracing` (no `println!` in lib)
 
 ## Key Capabilities (JSON-RPC)

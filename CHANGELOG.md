@@ -4,6 +4,15 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64q — May 16, 2026
+
+### Root Docs, WhitePaper, Specs Sweep — All Docs Synced to V64p
+
+- **Version alignment** — All active doc headers updated from V64/V64l to V64p: `whitePaper/README.md`, `whitePaper/baseCamp/README.md`, `whitePaper/METHODOLOGY.md` (v0.3), `experiments/README.md`, `specs/README.md`, `specs/PAPER_REVIEW_QUEUE.md`.
+- **barraCuda v0.4.0 sweep** — All active docs updated from v0.3.13 to v0.4.0: root `README.md`, `CONTEXT.md`, `wateringHole/README.md` dependency table, `specs/README.md` cross-spring deps.
+- **Test count reconciliation** — `experiments/README.md` and `specs/PAPER_REVIEW_QUEUE.md` corrected from 1,014 to 1,018 (workspace total).
+- **Date alignment** — All active docs updated to May 16, 2026.
+
 ## V64p — May 16, 2026
 
 ### Deep Debt Re-Audit — All 7 Categories Zero, Clippy Zero Warnings

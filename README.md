@@ -152,7 +152,7 @@ V53 completes the composition evolution spiral: Python baselines validated Rust 
 | **Typed errors** | `ServerError` and `TrioError` enums replace `Result<_, String>` in server and provenance IPC paths. |
 | **Capability routing by domain** | `ROUTED_CAPABILITIES` maps to `by_capability` domains, not hardcoded primal names. |
 | **`niche.rs` composition registry** | `COMPOSITION_EXPERIMENTS` constant maps all 12 composition experiments to validation tiers (Tier 3–5). |
-| **ecoBin 0.9.0** | 3.2 MB static-PIE x86_64-musl, harvested to `infra/plasmidBin/`. barraCuda v0.3.13. |
+| **ecoBin 0.9.0** | 3.2 MB static-PIE x86_64-musl, harvested to `infra/plasmidBin/`. barraCuda v0.4.0. |
 | **1,002 tests** | 95 experiments (83 science + 12 composition Tier 3–5). Zero clippy, zero `dyn`, zero `async-trait`. |
 | **`math_dispatch` module** | Centralizes 11 `barracuda::` call sites. `primal-proof` feature routes 2 wire-ready methods via IPC. |
 | **`BarraCudaClient`** | Typed IPC client for barraCuda ecobin (stats.mean, stats.std_dev, rng.uniform). |

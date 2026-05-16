@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: May 13, 2026
-**Status**: V64l — Nest Atomic Specialist complete. 9-phase provenance validation, `NestComposition` facade, GAP-36 resolved, wire hygiene (BearDog base64 `message`, skunkBat `security.audit_log`), `healthspring_cell.toml` for plasmidBin, Foundation Thread 10 (Provenance). **1,018 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13.
+**Last Updated**: May 16, 2026
+**Status**: V64p — Wave 17 Signal Adoption + Deep Debt Re-Audit. `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch, 451-method registry sync, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -151,7 +151,7 @@ See [BARRACUDA_REQUIREMENTS.md](BARRACUDA_REQUIREMENTS.md) for detailed primitiv
 | **groundSpring** | Error propagation, uncertainty quantification, spectral methods, tissue Anderson localization (Track 6 cross-tissue) |
 | **airSpring** | CytokineBrain visualization, sensor fusion patterns, immunological Anderson (Track 6 cross-species immune) |
 | **hotSpring** | Lattice methods (SU(3) → tissue lattice), Anderson spectral theory, BatchedEighGpu for 3D Anderson |
-| **barraCuda** | All GPU primitives (standalone math library, v0.3.13) |
+| **barraCuda** | All GPU primitives (standalone math library, v0.4.0) |
 | **toadStool** | Compute pipeline dispatch (CPU/GPU/NPU routing, streaming) |
 | **metalForge** | NUCLEUS topology, substrate capabilities, PCIe transfer planning |
 | **petalTongue** | Universal UI — 7 DataChannel types, streaming, interaction, domain theming |

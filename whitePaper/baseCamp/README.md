@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** May 13, 2026
-**Status:** V64l — Nest Atomic Specialist complete. V64h–V64l: 9-phase provenance pipeline (`s_nest_atomic`), `NestComposition` facade, GAP-36 resolved, wire hygiene (BearDog base64 `message`, skunkBat `security.audit_log`), `healthspring_cell.toml` for plasmidBin, Foundation Thread 10 (Provenance). **1,018 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.3.13. Zero clippy, zero unsafe.
+**Last Updated:** May 16, 2026
+**Status:** V64p — Wave 17 Signal Adoption + Deep Debt Re-Audit. `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch, 451-method registry sync, all 7 debt categories zero. **1,018 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
 
 ---
 
