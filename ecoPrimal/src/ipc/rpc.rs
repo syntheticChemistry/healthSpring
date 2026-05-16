@@ -179,14 +179,15 @@ pub fn resilient_send(
 ) -> Result<serde_json::Value, IpcError> {
     use std::time::Duration;
 
+    let max = crate::tolerances::IPC_RETRY_MAX_ATTEMPTS;
     let policy = super::resilience::RetryPolicy::new(
-        3,
+        max,
         Duration::from_millis(crate::tolerances::IPC_RETRY_INITIAL_MS),
         Duration::from_millis(crate::tolerances::IPC_RETRY_CAP_MS),
     );
 
     let mut last_err = None;
-    for attempt in 0..=3 {
+    for attempt in 0..=max {
         match try_send(socket_path, method, params) {
             Ok(val) => return Ok(val),
             Err(e) if e.is_retriable() => {

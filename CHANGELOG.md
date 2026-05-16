@@ -4,6 +4,14 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64p — May 16, 2026
+
+### Deep Debt Re-Audit — All 7 Categories Zero, Clippy Zero Warnings
+
+- **All 7 deep debt categories at zero** — 214 .rs files audited post-Wave 17 signal adoption. TODO/FIXME/HACK: 0, unsafe: 0 (`#![forbid(unsafe_code)]` on lib + 6 binary roots), production mocks: 0, panic!/todo!/unimplemented! in non-test: 0, .unwrap()/.expect() in non-test: 0, files >800 LOC: 0 (largest: 597), clippy pedantic+nursery: 0 warnings.
+- **Retry constant centralized** — bare `3` in `rpc.rs` extracted to `tolerances::IPC_RETRY_MAX_ATTEMPTS`. Both `RetryPolicy::new()` and the retry loop now use the single constant.
+- **Clippy fixes** — `routing.rs`: `"fido2"` merged into bearDog match arm (identical-bodies). `data/provenance.rs`: unused `socket` param removed from `try_signal_commit`, `#[must_use]` added to `complete_data_session`.
+
 ## V64o — May 16, 2026
 
 ### Wave 17 Signal Adoption — primal.announce, nest.store/nest.commit dispatch, 451-method registry

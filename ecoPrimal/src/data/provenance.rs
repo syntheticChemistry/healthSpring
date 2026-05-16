@@ -323,6 +323,7 @@ pub fn record_fetch_step(session_id: &str, step: &serde_json::Value) -> Provenan
 /// Returns the full provenance chain. Each step degrades gracefully:
 /// if dehydrate fails, we stop. If commit fails, dehydration is preserved.
 /// If braid fails, commit is preserved.
+#[must_use]
 pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceChain {
     let unavailable = DataProvenanceChain {
         status: "unavailable".into(),
@@ -336,7 +337,7 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         return unavailable;
     };
 
-    if let Some(chain) = try_signal_commit(&socket, session_id, license) {
+    if let Some(chain) = try_signal_commit(session_id, license) {
         return chain;
     }
 
@@ -345,7 +346,6 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
 
 /// Wave 17: attempt `signal.dispatch("nest.commit", ...)` via the orchestrator.
 fn try_signal_commit(
-    socket: &Path,
     session_id: &str,
     license: &str,
 ) -> Option<DataProvenanceChain> {

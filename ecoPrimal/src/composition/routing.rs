@@ -36,7 +36,7 @@ pub fn capability_to_primal(capability: &str) -> &'static str {
         "tensor" | "stats" => primal_names::BARRACUDA,
         "shader" => primal_names::CORALREEF,
         "compute" => primal_names::TOADSTOOL,
-        "security" | "crypto" => primal_names::BEARDOG,
+        "security" | "crypto" | "fido2" => primal_names::BEARDOG,
         "discovery" | "net.discovery" => primal_names::SONGBIRD,
         "storage" | "content" => primal_names::NESTGATE,
         "dag" => primal_names::RHIZOCRYPT,
@@ -48,7 +48,6 @@ pub fn capability_to_primal(capability: &str) -> &'static str {
         "coordination" | "primal" => "primalspring",
         "audit" | "audit.log" | "defense" | "security.audit" => primal_names::SKUNKBAT,
         "certificate" | "genetic" => "ecosystem",
-        "fido2" => primal_names::BEARDOG,
         _ => "unknown",
     }
 }

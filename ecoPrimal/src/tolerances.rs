@@ -464,6 +464,9 @@ pub const VIZ_PUSH_TIMEOUT_MS: u64 = 500;
 /// Visualization backpressure cooldown after slow pushes (milliseconds).
 pub const VIZ_COOLDOWN_MS: u64 = 200;
 
+/// IPC retry maximum attempt count (0-indexed: 3 means up to 4 total tries).
+pub const IPC_RETRY_MAX_ATTEMPTS: u32 = 3;
+
 /// IPC retry initial backoff (milliseconds).
 pub const IPC_RETRY_INITIAL_MS: u64 = 50;
 

@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-16
-**healthSpring version**: V64o (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64o: Wave 17 signal adoption — `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch, 451-method registry sync)
+**healthSpring version**: V64p (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64p: Deep debt re-audit — all 7 categories at zero, clippy zero warnings, retry constant centralized)
 
 ---
 
@@ -852,6 +852,36 @@ primalSpring Wave 17 (451 methods, 41 scenarios): Neural API Signal Elevation sh
 |---|-----|--------|-----------------|
 | 46 | Foundation Threads 3+8 expressions not in healthSpring workspace | Wave 17 directive | primalSpring: confirm sporeGarden Thread 3+8 structure; healthSpring contributes B5 lithoSpore module |
 | 47 | Signal dispatch live validation pending | Wave 17 adoption | healthSpring: run `s_nest_atomic` with biomeOS signal.dispatch to validate nest.store/nest.commit signal path |
+
+### Deep Debt Re-Audit (V64p — May 16, 2026)
+
+Post-Wave 17 comprehensive re-audit. **All 7 categories confirmed at zero debt.**
+
+| Category | Status | Detail |
+|----------|--------|--------|
+| TODO/FIXME/HACK | **0** | Zero markers in entire codebase (214 .rs files audited) |
+| `unsafe` code | **0** | `#![forbid(unsafe_code)]` enforced on lib.rs + all 6 binary crate roots |
+| Production mocks | **0** | All mocks in `#[cfg(test)]`. One doc-comment "Stub" label on cfg-gated GPU API (not runtime) |
+| `unimplemented!`/`todo!`/`panic!` (non-test) | **0** | All 20 `panic!` calls inside `#[cfg(test)]` blocks |
+| `.unwrap()`/`.expect()` (non-test) | **0** | All in `#[cfg(test)]` or doc comments |
+| Files > 800 LOC | **0** | Largest file: 597 lines (`ipc/proptest_ipc.rs`) |
+| Clippy pedantic+nursery | **0 warnings** | Previous 3 warnings fixed: unused param, identical match arms, missing `#[must_use]` |
+
+**Additional fixes in V64p:**
+- `tolerances.rs`: `IPC_RETRY_MAX_ATTEMPTS` constant extracted (was bare `3` in two places in `rpc.rs`)
+- `routing.rs`: `"fido2"` merged into bearDog arm (clippy identical-bodies)
+- `data/provenance.rs`: unused `socket` param removed from `try_signal_commit`, `#[must_use]` added to `complete_data_session`
+
+**Audit answers (refreshed V64p):**
+
+| Question | Answer |
+|----------|--------|
+| Python benchmarks for barraCuda CPU parity? | **Yes**: `control/scripts/bench_barracuda_cpu_vs_python.py` (Hill, oral PK, Shannon/Simpson/Pielou, AUC, population MC) + `control/validation/exp040_barracuda_cpu.py` (analytical: Hill, IV bolus, two-compartment, Shannon/Simpson/Pielou/Chao1, Bray-Curtis, PPG). Rust mirror: `ecoPrimal/benches/cpu_parity.rs`. Gap: timing bench does not cover Chao1, Bray-Curtis, IV bolus, PPG (only analytical baseline does). |
+| GPU benchmarks? | `gpu_parity.rs` (Hill/diversity/popPK/MM batch via wgpu); `kokkos_parity.rs` (Kokkos-modeled CPU patterns — no Kokkos dependency). No Galaxy/SciPy-GPU/LAMMPS — sovereign WGSL shaders, not framework ports. |
+| What's not implemented? | ~30 Python baselines lack Rust scenarios (exp003-006, exp012-013, exp022-023, exp031-038, exp078-082, exp091-094, exp098-099, exp101-106, exp111). V16 primitives (antibiotic perturbation, SCFA, serotonin, EDA, beat classification) have Python baselines but incomplete Rust bench coverage. Modules without inline unit tests: `certification/`, `composition/`, `gpu/sovereign.rs`, `gpu/cpu_fallback.rs`, `microbiome/anderson.rs`, `microbiome/clinical.rs` (covered by integration/experiment tests). |
+| Unreviewed papers? | **2**: LTEE E2 (Mardikoraem & Woldring 2025 "HOLIgraph" OATP PK/PD) and E4 (Woldring Lab 2024 macrocyclic peptides). 45/45 main-track complete. |
+| Datasets? | **5** in `data/manifest.toml`, all SHA256 empty. `qs_gene_matrix` lacks fetch script. Others (`mitbih`, `chembl_hill_panel`, `hmp_16s`, `geo_androgen_receptor`) scripted but unverified. |
+| External deps? | All appropriate: `serde`/`serde_json` (ecosystem standard), `tracing` (structured logging), `clap` (CLI), `base64` (crypto payloads), `thiserror` (error derives). Optional: `wgpu`/`tokio`/`bytemuck` (GPU feature), `ureq` (nestgate HTTP). No Rust replacement opportunities with favorable cost/benefit. |
 
 ---
 
