@@ -4,6 +4,19 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64o — May 16, 2026
+
+### Wave 17 Signal Adoption — primal.announce, nest.store/nest.commit dispatch, 451-method registry
+
+- **`primal.announce` registration (Wave 17)** — `server/registration.rs` now tries single-call `primal.announce` (wire: `{ primal_id, transport, methods, lifecycle }`) before falling back to legacy `lifecycle.register` + N × `capability.register`. Automatic degradation for older biomeOS.
+- **Signal dispatch in NestComposition** — `full_lifecycle()` tries `signal.dispatch("nest.store", ...)` + `signal.dispatch("nest.commit", ...)` via biomeOS graph execution before falling back to the manual 5-step chain (`storage.store → dag.event.append → crypto.sign → spine.create → braid.*`).
+- **Signal dispatch in data/provenance** — `complete_data_session()` tries `signal.dispatch("nest.commit", ...)` via orchestrator socket before falling back to manual `dag.dehydrate → spine.create → braid.create`.
+- **451-method registry sync** — `capability_registry.toml` gains `[fido2]` (3 methods), `[genetic]` (4 methods), `[certificate]` (1), `[primal_registry]` (2), `[signals]` (14 atomic signals + `signal.dispatch`).
+- **Routing domain expansion** — `ALL_CAPS` gains `signal`, `certificate`, `genetic`, `fido2`, `primal`. Routing: `signal` → biomeOS, `fido2` → bearDog, `primal` → primalSpring, `certificate`/`genetic` → ecosystem.
+- **Niche consumed capabilities** — `niche.rs` CONSUMED_CAPABILITIES adds `signal.dispatch`, `primal.announce`, `primal.info`, `certificate.verify`.
+- **GAP-GS-015 confirmed** — `cargo check --workspace` passes clean (ALL_CAPS + BTSP_EXTRA_CAPS re-exported from `composition/mod.rs`).
+- **Foundation Threads 3+8** — assessed: expression artifacts are external (sporeGarden); healthSpring B5 (symbiont PK/PD) is the lithoSpore module candidate. GAP-46 + GAP-47 documented.
+
 ## V64n — May 14, 2026
 
 ### Upstream Audit Absorption — Tower Atomic, Deploy Graph Canonicalization, barraCuda v0.4.0

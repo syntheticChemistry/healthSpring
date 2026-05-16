@@ -20,6 +20,9 @@ use tracing::{info, warn};
 const HEARTBEAT_INTERVAL_SECS: u64 = 30;
 
 /// Registers the primal with the biomeOS orchestrator (or fallback).
+///
+/// Prefers `primal.announce` (Wave 17 single-call registration) with automatic
+/// fallback to `lifecycle.register` + `capability.register` for older biomeOS.
 pub fn register_with_biomeos(our_socket: &Path) {
     let biomeos_socket = socket::orchestrator_socket();
 
@@ -42,6 +45,46 @@ pub fn register_with_biomeos(our_socket: &Path) {
         return;
     };
 
+    if try_announce(target_socket, our_socket) {
+        return;
+    }
+
+    register_legacy(target_socket, our_socket);
+}
+
+/// Wave 17: single-call registration via `primal.announce`.
+fn try_announce(target_socket: &Path, our_socket: &Path) -> bool {
+    let methods: Vec<&str> = crate::capabilities::ALL_CAPABILITIES.to_vec();
+
+    let result = rpc::try_send(
+        target_socket,
+        "primal.announce",
+        &serde_json::json!({
+            "primal_id": crate::capabilities::PRIMAL_NAME,
+            "transport": our_socket.to_string_lossy(),
+            "methods": methods,
+            "lifecycle": { "state": "running" },
+        }),
+    );
+
+    match result {
+        Ok(_) => {
+            info!(
+                methods = methods.len(),
+                domain = crate::capabilities::PRIMAL_DOMAIN,
+                "registered via primal.announce (Wave 17)"
+            );
+            true
+        }
+        Err(e) => {
+            info!("primal.announce not available ({e}), falling back to legacy registration");
+            false
+        }
+    }
+}
+
+/// Pre-Wave 17 registration: `lifecycle.register` + N × `capability.register`.
+fn register_legacy(target_socket: &Path, our_socket: &Path) {
     match rpc::try_send(
         target_socket,
         "lifecycle.register",
@@ -112,7 +155,7 @@ pub fn register_with_biomeos(our_socket: &Path) {
         routed = crate::capabilities::ROUTED_CAPABILITIES.len(),
         total = crate::capabilities::ALL_CAPABILITIES.len(),
         domain = crate::capabilities::PRIMAL_DOMAIN,
-        "capabilities registered (local + routed)"
+        "capabilities registered via legacy pattern (local + routed)"
     );
 }
 

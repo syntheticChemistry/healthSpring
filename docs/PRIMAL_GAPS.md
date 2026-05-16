@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-14
-**healthSpring version**: V64n (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64n: Upstream audit absorption — Tower = bearDog + songBird + skunkBat, deploy graph canonicalization, routing `content` domain, capability registry sync)
+**Date**: 2026-05-16
+**healthSpring version**: V64o (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64o: Wave 17 signal adoption — `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch, 451-method registry sync)
 
 ---
 
@@ -822,6 +822,37 @@ primalSpring ecosystem status update (May 14): plasmidBin deployment evolution c
 - Foundation Thread 10 — provenance expression pending sporeGarden (Gap #42)
 - Nest live deploy — needs running primals for `s_nest_atomic` against live NUCLEUS
 
+### Wave 17 Signal Adoption Sprint (V64o — May 16, 2026)
+
+primalSpring Wave 17 (451 methods, 41 scenarios): Neural API Signal Elevation shipped. `ctx.dispatch()` and `ctx.announce()` on `CompositionContext` provide single-call signal dispatch and registration. 14 atomic signals defined in `graphs/signals/`. GAP-GS-015 fixed (ALL_CAPS/BTSP_EXTRA_CAPS re-exported from `composition/mod.rs`).
+
+**Fixes applied locally:**
+
+1. **`primal.announce` registration** — `server/registration.rs` now tries `primal.announce` (single-call, Wave 17) before falling back to legacy `lifecycle.register` + N × `capability.register`. Wire format: `{ primal_id, transport, methods, lifecycle: { state: "running" } }`.
+
+2. **Signal dispatch in NestComposition** — `full_lifecycle()` now tries `signal.dispatch("nest.store", ...)` + `signal.dispatch("nest.commit", ...)` before falling back to the manual 5-step chain. The signal path collapses `storage.store → dag.event.append → crypto.sign → spine.create → braid.*` into two biomeOS-managed graph executions.
+
+3. **Signal dispatch in data/provenance** — `complete_data_session()` now tries `signal.dispatch("nest.commit", ...)` via orchestrator before falling back to manual `dag.dehydrate → spine.create → braid.create` chain.
+
+4. **451-method registry sync** — `capability_registry.toml` updated with Wave 17 entries: `[fido2]` (beardog.fido2.authenticate/discover/register), `[genetic]` (ceremony_init/finalize, derive_key, entropy_contribute), `[certificate]` (certificate.verify), `[primal_registry]` (primal.announce, primal.info), `[signals]` (all 14 atomic signals + signal.dispatch).
+
+5. **Routing domain expansion** — `routing.rs` `ALL_CAPS` expanded with `signal`, `certificate`, `genetic`, `fido2`, `primal` domains. `capability_to_primal` maps `signal` → biomeOS, `fido2` → bearDog, `primal` → primalSpring, `certificate`/`genetic` → ecosystem.
+
+6. **Niche CONSUMED_CAPABILITIES** — `niche.rs` updated with `signal.dispatch`, `primal.announce`, `primal.info`, `certificate.verify`.
+
+7. **GAP-GS-015 confirmed** — `cargo check --workspace` passes clean against primalSpring HEAD.
+
+**Foundation Threads 3+8 assessment:**
+- Threads 3 (Immunology / `IMMUNO_DRUG_DISCOVERY.md`) and 8 (Human Health / `SOVEREIGN_HEALTH.md`) are documented as "active" in CHANGELOG and handoffs
+- Expression artifacts (`sporeGarden/foundation/` tree, `THREAD_INDEX.toml`, expression docs) are **not present** in this workspace — they live upstream in primalSpring/sporeGarden
+- `PRIMAL_GAPS.md` only tracks Thread 10 (Gap #42); Threads 3+8 are external expression responsibilities
+- healthSpring's B5 (symbiont PK/PD) is the lithoSpore module candidate for Thread 3+8 content
+
+| # | Gap | Source | Upstream Action |
+|---|-----|--------|-----------------|
+| 46 | Foundation Threads 3+8 expressions not in healthSpring workspace | Wave 17 directive | primalSpring: confirm sporeGarden Thread 3+8 structure; healthSpring contributes B5 lithoSpore module |
+| 47 | Signal dispatch live validation pending | Wave 17 adoption | healthSpring: run `s_nest_atomic` with biomeOS signal.dispatch to validate nest.store/nest.commit signal path |
+
 ---
 
 ## Summary Matrix
@@ -873,3 +904,5 @@ primalSpring ecosystem status update (May 14): plasmidBin deployment evolution c
 | 43 | plasmidBin manifest.toml healthSpring stale | infra/plasmidBin | **V64n**: documented | Update tests=1018, V64n |
 | 44 | ports.env NICHE_HEALTHSPRING under-validates | infra/plasmidBin | **V64n**: documented | Sync with manifest niche |
 | 45 | sourDough shell script internalization | primals/sourDough | **V64n**: 15 scripts mapped | Map to sourdough v0.4.0+ |
+| 46 | Foundation Threads 3+8 expressions missing | Wave 17 directive | **V64o**: B5 lithoSpore candidate ready | Confirm sporeGarden structure |
+| 47 | Signal dispatch live validation | Wave 17 adoption | **V64o**: signal paths wired, pending live test | Run with biomeOS signal.dispatch |

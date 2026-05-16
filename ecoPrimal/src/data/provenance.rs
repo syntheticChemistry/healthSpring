@@ -316,6 +316,10 @@ pub fn record_fetch_step(session_id: &str, step: &serde_json::Value) -> Provenan
 
 /// Complete a data fetch session: dehydrate → commit → attribute.
 ///
+/// Prefers Wave 17 signal dispatch (`nest.commit`) when the orchestration
+/// socket supports `signal.dispatch`. Falls back to the manual 3-step chain
+/// (`dag.dehydrate` → `spine.create` → `braid.create`) otherwise.
+///
 /// Returns the full provenance chain. Each step degrades gracefully:
 /// if dehydrate fails, we stop. If commit fails, dehydration is preserved.
 /// If braid fails, commit is preserved.
@@ -332,9 +336,74 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         return unavailable;
     };
 
-    // Step 1: Dehydrate (rhizoCrypt)
+    if let Some(chain) = try_signal_commit(&socket, session_id, license) {
+        return chain;
+    }
+
+    complete_data_session_legacy(&socket, session_id, license)
+}
+
+/// Wave 17: attempt `signal.dispatch("nest.commit", ...)` via the orchestrator.
+fn try_signal_commit(
+    socket: &Path,
+    session_id: &str,
+    license: &str,
+) -> Option<DataProvenanceChain> {
+    let orch = crate::ipc::socket::orchestrator_socket();
+    if !orch.exists() {
+        return None;
+    }
+
+    let result = resilient_trio_call(
+        &orch,
+        "signal.dispatch",
+        &serde_json::json!({
+            "signal": "nest.commit",
+            "params": {
+                "session_id": session_id,
+                "license": license,
+            },
+        }),
+    )
+    .ok()?;
+
+    Some(DataProvenanceChain {
+        status: "complete".into(),
+        session_id: session_id.into(),
+        merkle_root: result
+            .get("merkle_root")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("")
+            .to_owned(),
+        commit_id: result
+            .get("commit_id")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("")
+            .to_owned(),
+        braid_id: result
+            .get("braid_id")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("")
+            .to_owned(),
+    })
+}
+
+/// Pre-Wave 17 manual chain: `dag.dehydrate` → `spine.create` → `braid.create`.
+fn complete_data_session_legacy(
+    socket: &Path,
+    session_id: &str,
+    license: &str,
+) -> DataProvenanceChain {
+    let unavailable = DataProvenanceChain {
+        status: "unavailable".into(),
+        session_id: session_id.into(),
+        merkle_root: String::new(),
+        commit_id: String::new(),
+        braid_id: String::new(),
+    };
+
     let Ok(dehydration) = resilient_trio_call(
-        &socket,
+        socket,
         "dag.dehydrate",
         &serde_json::json!({ "session_id": session_id }),
     ) else {
@@ -347,9 +416,8 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         .unwrap_or("")
         .to_owned();
 
-    // Step 2: Commit (loamSpine) — canonical: spine.create
     let Ok(commit_result) = resilient_trio_call(
-        &socket,
+        socket,
         "spine.create",
         &serde_json::json!({
             "summary": dehydration,
@@ -376,9 +444,8 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
         .unwrap_or("")
         .to_owned();
 
-    // Step 3: Attribute (sweetGrass) — best effort
     let braid_id = resilient_trio_call(
-        &socket,
+        socket,
         "braid.create",
         &serde_json::json!({
             "commit_ref": commit_id,

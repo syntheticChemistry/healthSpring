@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V64l · **Date:** May 13, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64l: Nest Atomic Specialist — 9-phase provenance validation (`s_nest_atomic`), `NestComposition` facade, GAP-36 resolved (upstream alias tables + local wire fixes), wire hygiene (BearDog base64 `message`, skunkBat `security.audit_log`), `healthspring_cell.toml` for plasmidBin, Foundation Thread 10 (Provenance); 88 capabilities; 17 validation scenarios.
+**Version:** V64o · **Date:** May 16, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64o: Wave 17 Signal Adoption — `primal.announce` single-call registration (fallback to legacy), `NestComposition` + `data/provenance` try `signal.dispatch("nest.store"/"nest.commit")` via biomeOS before manual chain, 451-method registry sync (fido2, genetic, certificate, primal, 14 signals), routing/niche domain expansion, GAP-GS-015 confirmed, Foundation Threads 3+8 assessed; 88 capabilities; 17 validation scenarios.
 
 ## What This Is
 

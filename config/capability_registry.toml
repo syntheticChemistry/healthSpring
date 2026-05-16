@@ -346,6 +346,67 @@ methods = [
     "defense.audit",
 ]
 
+# ── Wave 17 ecosystem methods (primalSpring 451-method registry) ─────────
+
+[fido2]
+owner = "beardog"
+locality = "consumed"
+methods = [
+    "beardog.fido2.authenticate",
+    "beardog.fido2.discover",
+    "beardog.fido2.register",
+]
+
+[genetic]
+owner = "ecosystem"
+locality = "consumed"
+methods = [
+    "genetic.ceremony_init",
+    "genetic.ceremony_finalize",
+    "genetic.derive_key",
+    "genetic.entropy_contribute",
+]
+
+[certificate]
+owner = "ecosystem"
+locality = "consumed"
+methods = [
+    "certificate.verify",
+]
+
+[primal_registry]
+owner = "songbird"
+locality = "consumed"
+methods = [
+    "primal.announce",
+    "primal.info",
+]
+
+# ── Signal dispatch (primalSpring Wave 17 — Neural API Signal Elevation) ─
+# These are composite signals resolved by biomeOS graph execution via
+# ctx.dispatch("tier.name", params). They replace multi-call sequences.
+
+[signals]
+owner = "biomeos"
+locality = "consumed"
+methods = [
+    "signal.dispatch",
+    "nest.store",
+    "nest.commit",
+    "nest.retrieve",
+    "tower.publish",
+    "tower.authenticate",
+    "tower.discover",
+    "tower.health",
+    "tower.bootstrap",
+    "node.compute",
+    "meta.observe",
+    "meta.intent",
+    "meta.render",
+    "meta.health",
+    "meta.deploy",
+]
+
 # ── barraCuda IPC migration surface ──────────────────────────────────────
 # Methods available on barraCuda's JSON-RPC surface that healthSpring
 # calls via library import today but validates via IPC in guideStone.

@@ -300,10 +300,13 @@ impl<'a> NestComposition<'a> {
 
     /// Convenience: run the full lifecycle in one call.
     ///
-    /// Equivalent to:
-    /// ```text
-    /// begin_session → record_event → sign_merkle → commit → attribute → finalize
-    /// ```
+    /// Prefers Wave 17 signal dispatch (`nest.store` + `nest.commit`) when
+    /// biomeOS supports it. Falls back to the manual 5-step chain when
+    /// `signal.dispatch` is unavailable or returns `-32601`.
+    ///
+    /// Signal mapping (per `SIGNAL_ADOPTION_STANDARD.md`):
+    /// - `nest.store`  → `storage.store` + `dag.event.append`
+    /// - `nest.commit` → `dag.dehydrate` + `crypto.sign` + `spine.seal` + `braid.create`
     pub fn full_lifecycle(
         &mut self,
         experiment: &str,
@@ -311,12 +314,112 @@ impl<'a> NestComposition<'a> {
         data: &Value,
         agents: &[Agent],
     ) -> NestProvenanceChain {
+        if let Some(chain) = self.try_signal_dispatch(experiment, event_name, data, agents) {
+            return chain;
+        }
+
         self.begin_session(experiment)
             .record_event(event_name, data)
             .sign_merkle()
             .commit(experiment)
             .attribute(experiment, agents)
             .finalize()
+    }
+
+    /// Attempt Wave 17 signal dispatch for the full lifecycle.
+    ///
+    /// Returns `Some(chain)` if biomeOS handled both signals successfully,
+    /// `None` if signals are not available (caller should use manual chain).
+    fn try_signal_dispatch(
+        &mut self,
+        experiment: &str,
+        event_name: &str,
+        data: &Value,
+        agents: &[Agent],
+    ) -> Option<NestProvenanceChain> {
+        let agents_json: Vec<Value> = agents
+            .iter()
+            .map(|a| {
+                serde_json::json!({
+                    "did": a.did,
+                    "role": a.role,
+                    "contribution": a.contribution,
+                })
+            })
+            .collect();
+
+        let store_params = serde_json::json!({
+            "experiment": experiment,
+            "event": event_name,
+            "content": data,
+            "hash_algorithm": "blake3",
+        });
+
+        let Ok(store) = self.ctx.inner().call(
+            "orchestration",
+            "signal.dispatch",
+            serde_json::json!({
+                "signal": "nest.store",
+                "params": store_params,
+            }),
+        ) else {
+            return None;
+        };
+
+        let session_id = store
+            .get("session_id")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_owned();
+        let content_hash = store
+            .get("content_hash")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_owned();
+        let merkle_root = store
+            .get("merkle_root")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_owned();
+
+        let commit_params = serde_json::json!({
+            "session_id": session_id,
+            "experiment": experiment,
+            "merkle_root": merkle_root,
+            "agents": agents_json,
+        });
+
+        let Ok(commit) = self.ctx.inner().call(
+            "orchestration",
+            "signal.dispatch",
+            serde_json::json!({
+                "signal": "nest.commit",
+                "params": commit_params,
+            }),
+        ) else {
+            return None;
+        };
+
+        Some(NestProvenanceChain {
+            status: NestStatus::Complete,
+            session_id,
+            content_hash,
+            merkle_signature: commit
+                .get("signature")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_owned(),
+            commit_id: commit
+                .get("commit_id")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_owned(),
+            braid_id: commit
+                .get("braid_id")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_owned(),
+        })
     }
 }
 
