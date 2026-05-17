@@ -49,13 +49,13 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
 
     v.check_bool(
         "stress_index_bounded",
-        result.stress_index >= 0.0 && result.stress_index <= 1.0,
+        (0.0..=1.0).contains(&result.stress_index),
         &format!("stress={}", result.stress_index),
     );
 
     v.check_bool(
         "overall_score_bounded",
-        result.overall_score >= 0.0 && result.overall_score <= 100.0,
+        (0.0..=100.0).contains(&result.overall_score),
         &format!("score={}", result.overall_score),
     );
 

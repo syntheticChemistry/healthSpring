@@ -45,7 +45,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let inhibition = hts::percent_inhibition(0.3, 0.9, 0.1);
     v.check_bool(
         "percent_inhibition_bounded",
-        inhibition >= 0.0 && inhibition <= 100.0,
+        (0.0..=100.0).contains(&inhibition),
         &format!("inhibition={inhibition}%"),
     );
 

@@ -40,7 +40,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let fi = fibrosis::fractional_inhibition(10.0, ccg1423.rho_ic50_um);
     v.check_bool(
         "fractional_inhibition_bounded",
-        fi >= 0.0 && fi <= 1.0,
+        (0.0..=1.0).contains(&fi),
         &format!("fi={fi}"),
     );
 

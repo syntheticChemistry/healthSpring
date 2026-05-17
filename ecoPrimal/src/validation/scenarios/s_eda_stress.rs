@@ -38,6 +38,11 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
         &format!("n_samples={}", signal.len()),
     );
 
+    #[expect(
+        clippy::cast_possible_truncation,
+        clippy::cast_sign_loss,
+        reason = "fs*0.5 is small positive — safe truncation"
+    )]
     let window = (fs * 0.5) as usize;
     let tonic = eda::eda_scl(&signal, window);
     v.check_bool(
@@ -53,6 +58,11 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
         "phasic >= 0",
     );
 
+    #[expect(
+        clippy::cast_possible_truncation,
+        clippy::cast_sign_loss,
+        reason = "fs*0.5 is small positive — safe truncation"
+    )]
     let peaks = eda::eda_detect_scr(&phasic, 0.05, (fs * 0.5) as usize);
     v.check_bool(
         "scr_events_detected",

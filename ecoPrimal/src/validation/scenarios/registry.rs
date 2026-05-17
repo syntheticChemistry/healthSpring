@@ -67,6 +67,9 @@ pub fn build_registry() -> Vec<Scenario> {
         super::s_colonization_resistance::SCENARIO(),
         super::s_antibiotic_perturbation::SCENARIO(),
         super::s_scfa_serotonin::SCENARIO(),
+        super::s_gut_brain_serotonin::SCENARIO(),
+        super::s_qs_anderson::SCENARIO(),
+        super::s_real_16s::SCENARIO(),
         // ── Biosignal (Track 3) ─────────────────────────────────────
         super::s_pan_tompkins_qrs::SCENARIO(),
         super::s_hrv_metrics::SCENARIO(),
@@ -74,6 +77,7 @@ pub fn build_registry() -> Vec<Scenario> {
         super::s_biosignal_fusion::SCENARIO(),
         super::s_eda_stress::SCENARIO(),
         super::s_beat_classification::SCENARIO(),
+        super::s_mitbih_arrhythmia::SCENARIO(),
         // ── Endocrine (Track 4) ─────────────────────────────────────
         super::s_testosterone_pk::SCENARIO(),
         super::s_pellet_pk::SCENARIO(),
@@ -90,6 +94,8 @@ pub fn build_registry() -> Vec<Scenario> {
         super::s_compound_library::SCENARIO(),
         super::s_jak_panel::SCENARIO(),
         super::s_fibrosis_pathway::SCENARIO(),
+        super::s_ipsc_skin::SCENARIO(),
+        super::s_niclosamide::SCENARIO(),
         super::s_causal_simulation::SCENARIO(),
         // ── Toxicology ──────────────────────────────────────────────
         super::s_toxicology::SCENARIO(),
@@ -103,6 +109,7 @@ pub fn build_registry() -> Vec<Scenario> {
         super::s_cross_species_pk::SCENARIO(),
         super::s_canine_gut::SCENARIO(),
         super::s_feline_methimazole::SCENARIO(),
+        super::s_equine_laminitis::SCENARIO(),
         // ── Composition / Infrastructure ────────────────────────────
         super::s_composition_parity::SCENARIO(),
         super::s_live_provenance::SCENARIO(),

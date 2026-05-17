@@ -63,7 +63,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let bc = clinical::bray_curtis(&donor, &recipient);
     v.check_bool(
         "bray_curtis_bounded_0_1",
-        bc >= 0.0 && bc <= 1.0,
+        (0.0..=1.0).contains(&bc),
         &format!("bc={bc}"),
     );
 

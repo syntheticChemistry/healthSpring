@@ -4,6 +4,15 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64v — May 17, 2026
+
+### Deep Debt Re-Audit + Science Buildout — 57 Scenarios, Zero Clippy
+
+- **7 new validation scenarios** — `s_gut_brain_serotonin` (exp080), `s_ipsc_skin` (exp095), `s_niclosamide` (exp096), `s_qs_anderson` (exp107), `s_real_16s` (exp108), `s_mitbih_arrhythmia` (exp109), `s_equine_laminitis` (exp110). Registry now covers 56 experiment IDs + `nest_atomic_v1`.
+- **Clippy pedantic+nursery resolved** — fixed `manual_range_contains` (8 instances across 7 scenario files), `similar_names` (3 bindings renamed), `cast_possible_truncation`/`cast_sign_loss` (2 `#[expect]` annotations). Zero warnings across full workspace.
+- **Deep debt re-audit** — all 7 categories confirmed zero: TODO/FIXME/HACK 0, unsafe 0 (`forbid`), files >800L 0 (max 597), hardcoding 0 (domain routing), mocks 0 (test-only), unwrap/expect 0 (lint-denied), external deps 0 (all pure Rust).
+- **experiments/README.md corrected** — "all 95 have scenarios" replaced with accurate count (57 scenarios covering 56 experiment IDs; remaining ~39 experiments are GPU/bench/viz/composition binaries validated via their own test harnesses).
+
 ## V64u — May 17, 2026
 
 ### Docs Sweep + Upstream Handoff — Wave 20 Debt Resolved

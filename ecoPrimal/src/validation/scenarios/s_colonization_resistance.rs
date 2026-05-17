@@ -48,7 +48,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let cr_ordered = anderson::colonization_resistance(xi);
     v.check_bool(
         "colonization_resistance_bounded",
-        cr_ordered >= 0.0 && cr_ordered <= 1.0,
+        (0.0..=1.0).contains(&cr_ordered),
         &format!("CR={cr_ordered}"),
     );
 

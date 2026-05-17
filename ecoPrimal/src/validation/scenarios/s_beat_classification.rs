@@ -27,37 +27,39 @@ pub fn SCENARIO() -> Scenario {
 fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     v.section("Phase 1: Structural — Beat Classification");
 
-    let normal_waveform = classification::generate_normal_template(50);
-    let pvc_waveform = classification::generate_pvc_template(50);
-    let pac_waveform = classification::generate_pac_template(50);
+    let waveform_normal = classification::generate_normal_template(50);
+    let waveform_pvc = classification::generate_pvc_template(50);
+    let waveform_premature_atrial = classification::generate_pac_template(50);
 
     v.check_bool(
         "templates_correct_length",
-        normal_waveform.len() == 50 && pvc_waveform.len() == 50 && pac_waveform.len() == 50,
+        waveform_normal.len() == 50
+            && waveform_pvc.len() == 50
+            && waveform_premature_atrial.len() == 50,
         "all templates 50 samples",
     );
 
-    let corr_nn = classification::normalized_correlation(&normal_waveform, &normal_waveform);
+    let self_corr = classification::normalized_correlation(&waveform_normal, &waveform_normal);
     v.check_bool(
         "self_correlation_is_one",
-        (corr_nn - 1.0).abs() < 1e-10,
-        &format!("corr(normal,normal)={corr_nn}"),
+        (self_corr - 1.0).abs() < 1e-10,
+        &format!("corr(normal,normal)={self_corr}"),
     );
 
-    let corr_np = classification::normalized_correlation(&normal_waveform, &pvc_waveform);
+    let cross_corr = classification::normalized_correlation(&waveform_normal, &waveform_pvc);
     v.check_bool(
         "normal_pvc_correlation_lt_one",
-        corr_np < 1.0,
-        &format!("corr(normal,pvc)={corr_np}"),
+        cross_corr < 1.0,
+        &format!("corr(normal,pvc)={cross_corr}"),
     );
 
     let templates = vec![
-        BeatTemplate { class: BeatClass::Normal, waveform: normal_waveform.clone() },
-        BeatTemplate { class: BeatClass::Pvc, waveform: pvc_waveform },
-        BeatTemplate { class: BeatClass::Pac, waveform: pac_waveform },
+        BeatTemplate { class: BeatClass::Normal, waveform: waveform_normal.clone() },
+        BeatTemplate { class: BeatClass::Pvc, waveform: waveform_pvc },
+        BeatTemplate { class: BeatClass::Pac, waveform: waveform_premature_atrial },
     ];
 
-    let (label, _) = classification::classify_beat(&normal_waveform, &templates, 0.9);
+    let (label, _) = classification::classify_beat(&waveform_normal, &templates, 0.9);
     v.check_bool(
         "normal_beat_classified_correctly",
         label == BeatClass::Normal,

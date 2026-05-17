@@ -37,7 +37,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let geo = matrix_score::tissue_geometry_factor(5.0, 10.0);
     v.check_bool(
         "geometry_factor_bounded",
-        geo >= 0.0 && geo <= 1.0,
+        (0.0..=1.0).contains(&geo),
         &format!("geo={geo}"),
     );
 

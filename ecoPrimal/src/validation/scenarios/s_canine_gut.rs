@@ -47,7 +47,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let cr = anderson::colonization_resistance(xi);
     v.check_bool(
         "canine_colonization_resistance_bounded",
-        cr >= 0.0 && cr <= 1.0,
+        (0.0..=1.0).contains(&cr),
         &format!("CR={cr}"),
     );
 

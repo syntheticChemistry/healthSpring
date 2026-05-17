@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: May 17, 2026
-**Status**: V64t — 95 experiments + `validate_ltee_b5` Rust binary (LTEE B5 Tier 1, 8/8); **50 validation scenarios** (expanded from 18 in V64t); `--format json` on validation binaries. **1,018+ tests** (workspace). IPC-first defaults. primalSpring **v0.9.25**. barraCuda v0.4.0. Wave 20: `capability.list` canonical envelope, 452-method registry. All 95 experiments now have corresponding Rust validation scenarios.
+**Status**: V64v — 95 experiments + `validate_ltee_b5` Rust binary (LTEE B5 Tier 1, 8/8); **57 validation scenarios** covering 56 experiment IDs; `--format json` on validation binaries. **1,018 tests** (workspace), 0 clippy warnings. primalSpring **v0.9.25**. barraCuda v0.4.0. 452-method registry. Remaining ~39 experiments are GPU/compute/bench/visualization binaries validated via their own test harnesses.
 
 **V61 note:** Sixteen former standalone experiment `main` targets were absorbed into **`validation/scenarios/`** (registry-backed scenarios); sources archived under **`fossilRecord/experiments_prokaryotic_may2026/`**.
 
