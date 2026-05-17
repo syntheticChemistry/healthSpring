@@ -2,7 +2,7 @@
 # healthSpring White Paper
 
 **Date:** May 17, 2026
-**Status:** V64u — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone → L6 NUCLEUS. **UniBin** + **50 validation scenarios** (expanded from 18). 95 experiments, **1,018+ tests**, 88 capabilities, 96+ provenance entries. Wave 20 Schema Standard: `capability.list` canonical envelope (`capabilities` + `count`), 452-method registry sync (`primal.list`), `primal.announce` registration, `NestComposition` signal-first dispatch. Deep debt: all 7 categories zero. **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
+**Status:** V64w — Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone → L6 NUCLEUS. **UniBin** + **57 validation scenarios** covering 56 experiment IDs. 95 experiments, **1,018 tests**, 88 capabilities, 96+ provenance entries. 452-method registry. Clippy pedantic+nursery zero. All 7 deep debt categories zero. **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---

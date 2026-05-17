@@ -1,7 +1,7 @@
 # healthSpring Validation Methodology
 
-**Version**: 0.4
-**Date**: May 17, 2026 (V64u)
+**Version**: 0.5
+**Date**: May 17, 2026 (V64w)
 
 ---
 

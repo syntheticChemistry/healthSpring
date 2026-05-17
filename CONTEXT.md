@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V64u · **Date:** May 17, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64u: Wave 20 Schema Standard + Science Expansion — `capability.list` canonical envelope (`capabilities` + `count`), 452-method registry sync (`primal.list`), `primal.announce` single-call registration, `NestComposition` signal-first dispatch, 50 validation scenarios covering all 95 experiments, dataset checksum manifest; 88 capabilities.
+**Version:** V64v · **Date:** May 17, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64v: Deep Debt Re-Audit + Science Buildout — 57 validation scenarios covering 56 experiment IDs, all clippy pedantic+nursery zero, all 7 deep debt categories zero, 452-method registry, `capability.list` canonical envelope, `NestComposition` signal-first dispatch; 88 capabilities.
 
 ## What This Is
 
@@ -30,7 +30,7 @@ The runtime surface is **`healthspring_unibin`** (certify, validate, serve, stat
 ## Technical Facts
 
 - **Language**: 100% Rust, zero C dependencies (wgpu optional for GPU)
-- **Architecture**: Eukaryotic workspace layout — `certification/` (guideStone absorption), `composition/` (`HealthCompositionContext` over primalSpring `CompositionContext`), `validation/scenarios/` (50 scenarios / 8 tracks), `ipc/provenance/` (rhizocrypt, loamspine, sweetgrass), `fossilRecord/` (archived prokaryotic sources); 3 library crates + 95 experiment binaries
+- **Architecture**: Eukaryotic workspace layout — `certification/` (guideStone absorption), `composition/` (`HealthCompositionContext` over primalSpring `CompositionContext`), `validation/scenarios/` (57 scenarios / 8 tracks), `ipc/provenance/` (rhizocrypt, loamspine, sweetgrass), `fossilRecord/` (archived prokaryotic sources); 3 library crates + 95 experiment binaries
   - `healthspring-barracuda` — core science library (`default = []`, IPC-first; enable **`barracuda-lib`** for direct barraCuda crates + GPU library paths)
   - `healthspring-forge` — metalForge hardware dispatch
   - `healthspring-toadstool` — pipeline orchestration

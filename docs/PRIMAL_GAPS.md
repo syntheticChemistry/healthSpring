@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-05-17
-**healthSpring version**: V64u (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64u: Docs sweep + upstream handoff — 50 validation scenarios, 452-method registry, `capability.list` canonical envelope, all docs synced)
+**healthSpring version**: V64w (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64w: Docs sweep + upstream handoff — 57 validation scenarios, 452-method registry, all 7 deep debt categories zero, clippy zero)
 
 ---
 

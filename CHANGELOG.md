@@ -4,6 +4,14 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64w — May 17, 2026
+
+### Docs Sweep + Comprehensive Upstream Handoff
+
+- **All docs synced to V64w** — `README.md`, `CONTEXT.md`, `whitePaper/README.md`, `whitePaper/baseCamp/README.md`, `whitePaper/METHODOLOGY.md` (v0.5), `experiments/README.md`, `specs/README.md`, `specs/PAPER_REVIEW_QUEUE.md`, `wateringHole/README.md`, `docs/PRIMAL_GAPS.md`.
+- **Comprehensive upstream handoff** — `HEALTHSPRING_V64W_COMPREHENSIVE_UPSTREAM_HANDOFF_MAY17_2026.md` covering full primal evolution review, NUCLEUS composition patterns (domain routing, signal-first fallback, scenario validation, deploy graphs), neuralAPI deployment via biomeOS, upstream primal gap asks, delta spring guidance.
+- **Debris review** — zero orphaned files, zero stale TODOs, zero outdated references in active docs. Handoff archive (66 files) preserved as fossil record.
+
 ## V64v — May 17, 2026
 
 ### Deep Debt Re-Audit + Science Buildout — 57 Scenarios, Zero Clippy

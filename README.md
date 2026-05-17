@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** May 17, 2026 (V64v)
+**Date:** May 17, 2026 (V64w)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V64v — **Deep Debt Re-Audit + Science Buildout**. **57 validation scenarios** (7 new: gut-brain serotonin, iPSC skin, niclosamide, QS-Anderson, real 16S, MIT-BIH arrhythmia, equine laminitis). All clippy pedantic+nursery warnings resolved. **1,018 tests** pass, 0 clippy warnings. All 7 deep debt categories zero. guideStone **Level 5**. 452-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.25**. Zero clippy, zero unsafe, zero TODO.
+**Status:** V64w — **Docs Sweep + Comprehensive Upstream Handoff**. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. **1,018 tests** pass, 0 clippy warnings. guideStone **Level 5**. 452-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.25**. Zero clippy, zero unsafe, zero TODO.
 
 ---
 
