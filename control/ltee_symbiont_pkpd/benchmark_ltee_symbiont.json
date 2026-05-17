@@ -11,7 +11,7 @@
   "pk_half_life_hours": 8.317766166719343,
   "_provenance": {
     "date": "2026-05-11",
-    "python": "3.10.12 (main, May 27 2025, 17:12:29) [GCC 11.4.0]",
-    "numpy": "pure-python-fallback"
+    "python": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]",
+    "numpy": "1.21.5"
   }
 }

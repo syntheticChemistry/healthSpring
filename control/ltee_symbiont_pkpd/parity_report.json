@@ -1,0 +1,107 @@
+{
+  "parity_report": {
+    "paper_id": "B5",
+    "paper": "Leonard2024",
+    "module": "ltee-symbiont-pk",
+    "litho_module_candidate": 8,
+    "spring": "healthSpring",
+    "date": "2026-05-17",
+    "version": "V64x",
+    "tier1_language": "Python 3.10 (pure-math, no NumPy dependency)",
+    "tier2_language": "Rust (healthspring-barracuda 0.1.0, CPU path)",
+    "parity_status": "FULL_MATCH"
+  },
+  "checks": [
+    {
+      "name": "colonization_day7_cfu",
+      "description": "Logistic colonization CFU at day 7",
+      "python_value": 307839277.31802374,
+      "rust_value": 307839277.31802374,
+      "tolerance_rel": 1e-4,
+      "actual_rel_error": 0.0,
+      "status": "PASS"
+    },
+    {
+      "name": "colonization_final_cfu",
+      "description": "Final colonization CFU approaching carrying capacity",
+      "python_value": 999494652.9352545,
+      "rust_value": 999494652.9352545,
+      "tolerance_rel": 1e-4,
+      "actual_rel_error": 0.0,
+      "status": "PASS"
+    },
+    {
+      "name": "doubling_time_hours",
+      "description": "Doubling time from growth rate r=1.2/day",
+      "python_value": 13.862943611198906,
+      "rust_value": 13.862943611198906,
+      "tolerance_rel": 1e-6,
+      "actual_rel_error": 0.0,
+      "status": "PASS"
+    },
+    {
+      "name": "time_to_half_max_days",
+      "description": "Time to K/2 colonization from logistic model",
+      "python_value": 7.675200305813208,
+      "rust_value": 7.675200305813208,
+      "tolerance_rel": 1e-6,
+      "actual_rel_error": 0.0,
+      "status": "PASS"
+    },
+    {
+      "name": "steady_state_molecule_ng",
+      "description": "Steady-state molecule concentration in gut lumen",
+      "python_value": 424.5087783804876,
+      "rust_value": 424.5087783804876,
+      "tolerance_rel": 1e-3,
+      "actual_rel_error": 0.0,
+      "status": "PASS"
+    },
+    {
+      "name": "molecule_monotonic_post_d1",
+      "description": "Molecule concentration monotonically increasing after day 1",
+      "python_value": true,
+      "rust_value": true,
+      "tolerance_rel": 0,
+      "actual_rel_error": 0.0,
+      "status": "PASS"
+    },
+    {
+      "name": "knockdown_steady_state",
+      "description": "Hill dose-response knockdown efficacy at steady state",
+      "python_value": 0.8525282495038913,
+      "rust_value": 0.8525282495038913,
+      "tolerance_rel": 1e-3,
+      "actual_rel_error": 0.0,
+      "status": "PASS"
+    },
+    {
+      "name": "pk_half_life_hours",
+      "description": "PK half-life from first-order elimination constant",
+      "python_value": 8.317766166719343,
+      "rust_value": 8.317766166719343,
+      "tolerance_rel": 1e-6,
+      "actual_rel_error": 0.0,
+      "status": "PASS"
+    }
+  ],
+  "summary": {
+    "total_checks": 8,
+    "passed": 8,
+    "failed": 0,
+    "max_relative_error": 0.0,
+    "parity_proven": true,
+    "notes": "Python and Rust produce bit-identical IEEE 754 f64 results for all 8 checks. Both use identical algorithms: logistic growth, first-order elimination ODE (Euler), Hill dose-response. No floating-point divergence detected at any tolerance level."
+  },
+  "litho_readiness": {
+    "expected_values_json": "control/ltee_symbiont_pkpd/expected_values.json",
+    "benchmark_json": "control/ltee_symbiont_pkpd/benchmark_ltee_symbiont.json",
+    "rust_binary": "ecoPrimal/src/bin/validate_ltee_b5.rs",
+    "python_baseline": "control/ltee_symbiont_pkpd/ltee_symbiont_pkpd.py",
+    "stable_methods_used": [
+      "science.pkpd.hill_dose_response",
+      "science.pkpd.one_compartment_pk"
+    ],
+    "module_8_ready": true
+  }
+}

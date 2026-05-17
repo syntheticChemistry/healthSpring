@@ -4,6 +4,16 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64x — May 17, 2026
+
+### lithoSpore Audit Absorption — Degradation, Stability Tiers, Cross-Tier Parity
+
+- **Degradation behavior documented** — `docs/DEGRADATION_BEHAVIOR.md` catalogs per-domain degradation for all 13 capability domains (dag, spine, braid, storage, security, stats, compute, shader, visualization, discovery, orchestration, inference, audit). Pattern: `NestComposition` tracks `steps_attempted`/`steps_succeeded`, returns `NestStatus::{Complete, Partial, Unavailable}`. Science never gated behind provenance.
+- **Stability tier awareness absorbed** — `docs/STABILITY_TIERS.md` documents IPC capability alignment (all canonical, zero local aliases) and classifies all 58 niche `science.*` methods into `stable` (15 methods with lithoSpore/cross-spring consumers), `evolving` (41 methods under active research), and `internal` (2 helper methods).
+- **Cross-tier parity proven for B5** — `docs/CROSS_TIER_PARITY.md` + `control/ltee_symbiont_pkpd/parity_report.json`. Python (Tier 0) and Rust (Tier 1) produce **bit-identical** IEEE 754 f64 results for all 8 checks (colonization, doubling time, t_half_max, molecule SS, monotonicity, knockdown, PK half-life). Zero floating-point divergence.
+- **Trio transaction semantics confirmed** — `NestComposition` already implements all 5 upstream rules: DAG-without-braid valid, no rollback, partial state reported, never error on partial provenance.
+- **lithoSpore Module 8 ready** — B5 `expected_values.json`, `benchmark_ltee_symbiont.json`, `parity_report.json`, and `tolerances.toml` all in place for Module 8 coordination.
+
 ## V64w — May 17, 2026
 
 ### Docs Sweep + Comprehensive Upstream Handoff

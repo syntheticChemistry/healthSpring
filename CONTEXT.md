@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V64v · **Date:** May 17, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64v: Deep Debt Re-Audit + Science Buildout — 57 validation scenarios covering 56 experiment IDs, all clippy pedantic+nursery zero, all 7 deep debt categories zero, 452-method registry, `capability.list` canonical envelope, `NestComposition` signal-first dispatch; 88 capabilities.
+**Version:** V64x · **Date:** May 17, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64x: lithoSpore Audit Absorption — degradation behavior documented (13 domains), stability tiers annotated (15 stable / 41 evolving / 2 internal), B5 cross-tier parity proven (8/8 bit-identical), trio semantics confirmed, Module 8 ready. 57 scenarios, 88 capabilities, zero debt.
 
 ## What This Is
 

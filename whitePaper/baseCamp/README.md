@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** May 17, 2026
-**Status:** V64w — Deep Debt Re-Audit + Science Buildout. **57 validation scenarios** covering 56 experiment IDs, 452-method registry, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
+**Status:** V64x — lithoSpore audit absorbed. B5 cross-tier parity proven (8/8 bit-identical), degradation + stability tiers documented, Module 8 ready. **57 validation scenarios** covering 56 experiment IDs, 452-method registry, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
 
 ---
 

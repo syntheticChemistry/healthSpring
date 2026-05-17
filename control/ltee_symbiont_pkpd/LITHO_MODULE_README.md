@@ -5,7 +5,8 @@
 colonizing the honeybee gut." mBio 15(3):e03342-23.
 **DOI**: 10.1128/mbio.03342-23
 **LTEE Queue ID**: B5
-**Spring**: healthSpring V64e
+**Spring**: healthSpring V64x
+**Cross-Tier Parity**: 8/8 PASS — bit-identical Python vs Rust (May 17, 2026)
 
 ---
 
@@ -16,7 +17,8 @@ control/ltee_symbiont_pkpd/
 ├── expected_values.json       # Ground-truth parameters and tolerance envelopes
 ├── tolerances.toml            # Machine-readable tolerances for lithoSpore CI
 ├── ltee_symbiont_pkpd.py      # Python Tier 0 baseline (deterministic, no GPU)
-├── benchmark_ltee_symbiont.json  # Benchmark metadata
+├── benchmark_ltee_symbiont.json  # Benchmark metadata (Python output)
+├── parity_report.json         # Structured cross-tier parity comparison
 ├── LITHO_MODULE_README.md     # This file
 └── __init__.py
 ```
