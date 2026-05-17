@@ -4,6 +4,31 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64u — May 17, 2026
+
+### Docs Sweep + Upstream Handoff — Wave 20 Debt Resolved
+
+- **Wave 20 debt resolved** — `wateringHole/README.md` status line updated from V64o/451 to V64u/452 (upstream audit finding).
+- **All docs synced to V64u** — `README.md`, `CONTEXT.md`, `whitePaper/README.md`, `whitePaper/baseCamp/README.md`, `whitePaper/METHODOLOGY.md` (v0.4), `experiments/README.md`, `specs/README.md`, `specs/PAPER_REVIEW_QUEUE.md`, `wateringHole/README.md`, `docs/PRIMAL_GAPS.md`.
+- **Upstream handoff** — `HEALTHSPRING_V64U_DOCS_SWEEP_UPSTREAM_HANDOFF_MAY17_2026.md` crafted with composition pattern learnings (Nest Atomic, domain routing, scenario expansion, canonical envelope), upstream primal gap asks (sweetGrass TCP, toadStool sandbox, coralReef WGSL ingest), and guidance for other delta springs.
+- **Debris review** — zero TODO/FIXME/HACK in source, zero orphaned files, zero stale scripts. fossilRecord properly documented. 66 archived handoffs preserved.
+
+## V64t — May 17, 2026
+
+### Science Expansion — 32 New Validation Scenarios, Dataset Manifest
+
+- **32 new validation scenarios** registered in `ecoPrimal/src/validation/scenarios/` — expands scenario registry from 18 to 50 scenarios across all 7 science tracks:
+  - PK/PD (3 new): `s_two_compartment_pk`, `s_mab_pk`, `s_pbpk`
+  - Microbiome (4 new): `s_fmt_blend`, `s_colonization_resistance`, `s_antibiotic_perturbation`, `s_scfa_serotonin`
+  - Biosignal (4 new): `s_ppg_spo2`, `s_biosignal_fusion`, `s_eda_stress`, `s_beat_classification`
+  - Endocrine (8 new): `s_pellet_pk`, `s_testosterone_decline`, `s_trt_outcomes`, `s_cardiac_risk`, `s_diabetes_trt`, `s_pop_trt`, `s_gut_axis`, `s_hrv_trt`
+  - Discovery (5 new): `s_hts_analysis`, `s_compound_library`, `s_jak_panel`, `s_fibrosis_pathway`, `s_causal_simulation`
+  - Toxicology (2 new): `s_tox_landscape`, `s_hormesis`
+  - Comparative (6 new): `s_canine_jak1`, `s_pruritus`, `s_lokivetmab`, `s_cross_species_pk`, `s_canine_gut`, `s_feline_methimazole`
+- **Registry organized by track** — `build_registry()` now groups scenarios with section comments for navigability.
+- **Dataset checksum manifest** — `config/dataset_checksums.toml` created, documenting all external data dependencies (NCBI, PhysioNet, ChEMBL) with provenance, fetch status, and verification state. qs_gene_matrix fetch gap formally documented.
+- **All 95 experiments** now have corresponding Rust validation scenarios covering their core scientific claims.
+
 ## V64s — May 16, 2026
 
 ### Deep Debt Re-Audit #2 — All 7 categories zero post-Wave 20

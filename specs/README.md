@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: May 16, 2026
-**Status**: V64p — Wave 17 Signal Adoption + Deep Debt Re-Audit. `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch, 451-method registry sync, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0.
+**Last Updated**: May 17, 2026
+**Status**: V64u — Wave 20 Schema Standard + Science Expansion. `capability.list` canonical envelope, 452-method registry, 50 validation scenarios, all 7 deep debt categories zero. **1,018+ tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---

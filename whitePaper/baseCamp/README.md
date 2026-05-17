@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** May 16, 2026
-**Status:** V64p — Wave 17 Signal Adoption + Deep Debt Re-Audit. `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch, 451-method registry sync, all 7 debt categories zero. **1,018 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
+**Last Updated:** May 17, 2026
+**Status:** V64u — Wave 20 Schema Standard + Science Expansion. `capability.list` canonical envelope, 452-method registry, `primal.announce` registration, `NestComposition` signal-first dispatch, all 7 debt categories zero. **1,018+ tests**, 95 experiments, **50 validation scenarios**, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
 
 ---
 
@@ -347,15 +347,19 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 
 ---
 
-## Evolution Status (V64l)
+## Evolution Status (V64u)
 
-### Completed (V64h–V64l)
+### Completed (V64h–V64u)
 
+- **Science Expansion (V64t)** — 32 new validation scenarios (50 total) covering all 95 experiments across PK/PD, microbiome, biosignal, endocrine, discovery, toxicology, comparative medicine
+- **Wave 20 Schema Standard (V64r)** — `capability.list` canonical envelope (`capabilities` + `count`), 452-method registry sync (`primal.list`), `nest.commit` signal-path confirmed
+- **Wave 17 Signal Adoption (V64o)** — `primal.announce` single-call registration, `NestComposition` signal-first dispatch, 451-method registry sync
 - **Nest Atomic Specialist** — 9-phase provenance validation proving NestGate CAS → rhizoCrypt DAG → loamSpine ledger → sweetGrass attribution end-to-end
 - **`NestComposition` facade** — Orchestrates full Nest Atomic lifecycle in `ipc/provenance/nest.rs`
 - **Wire hygiene** — BearDog `crypto.sign` base64 `message`, skunkBat `security.audit_log`, loamSpine `spine.create`/`entry.append`
 - **Deploy graphs** — `healthspring_nest_atomic.toml`, `healthspring_niche_deploy.toml`, `healthspring_cell.toml` (plasmidBin)
-- **Deep debt zero** — 7 categories audited: TODO/FIXME/HACK, unsafe, large files, hardcoding, mocks, modern Rust, external deps
+- **Deep debt zero** — 7 categories audited across all sprints: TODO/FIXME/HACK, unsafe, large files, hardcoding, mocks, modern Rust, external deps
+- **Dataset checksum manifest** — `config/dataset_checksums.toml` with provenance for all external data dependencies
 
 ### Open Science Extensions
 

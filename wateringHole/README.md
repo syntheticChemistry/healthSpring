@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V64o — Wave 17 Signal Adoption: `primal.announce` registration, `nest.store`/`nest.commit` dispatch, 451-method registry sync. **1,018 tests** (workspace), 17 scenarios, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
-**Last Updated**: May 16, 2026
+**Status**: V64u — Wave 20 Schema Standard + Science Expansion. `capability.list` canonical envelope (`capabilities` + `count`), 452-method registry sync (`primal.list`). 50 validation scenarios (was 18). **1,018+ tests** (workspace), 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
+**Last Updated**: May 17, 2026
 
 ---
 
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V64r** | [Wave 20 Schema Standard](handoffs/HEALTHSPRING_V64R_WAVE20_SCHEMA_STANDARD_MAY16_2026.md) | May 16 | `capability.list` canonical envelope (capabilities + count), 452-method registry sync (primal.list), nest.commit signal-path confirmed |
+| **V64u** | [Docs Sweep + Upstream Handoff](handoffs/HEALTHSPRING_V64U_DOCS_SWEEP_UPSTREAM_HANDOFF_MAY17_2026.md) | May 17 | 50 validation scenarios (32 new), dataset manifest, docs sweep to V64u, composition pattern learnings, upstream gap asks |
+| V64r | [Wave 20 Schema Standard](handoffs/HEALTHSPRING_V64R_WAVE20_SCHEMA_STANDARD_MAY16_2026.md) | May 16 | `capability.list` canonical envelope (capabilities + count), 452-method registry sync (primal.list), nest.commit signal-path confirmed |
 | V64o | [Wave 17 Signal Adoption](handoffs/HEALTHSPRING_V64O_WAVE17_SIGNAL_ADOPTION_MAY16_2026.md) | May 16 | `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch in NestComposition + data/provenance, 451-method registry sync, routing/niche domain expansion, GAP-GS-015 confirmed, Foundation Threads 3+8, GAPs 46-47 |
 | V64n | [Upstream Audit Absorption](handoffs/HEALTHSPRING_V64N_UPSTREAM_HANDOFF_MAY14_2026.md) | May 14 | Tower = bearDog + songBird + skunkBat in all graphs, deploy graph canonicalization, routing `content` domain, capability registry sync, barraCuda v0.4.0, GAPs 43-45 |
 | V64m | [Comprehensive Handoff](handoffs/HEALTHSPRING_V64M_COMPREHENSIVE_HANDOFF_MAY13_2026.md) | May 13 | All wire contract learnings, Nest Atomic composition pattern, provenance pipeline, plasmidBin cell.toml, Foundation Thread 10, recommendations for upstream teams |

@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** May 16, 2026 (V64o)
+**Date:** May 17, 2026 (V64u)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V64o — **Wave 17 Signal Adoption**. `primal.announce` single-call registration (fallback to legacy). `NestComposition.full_lifecycle()` tries `signal.dispatch("nest.store"/"nest.commit")` via biomeOS before manual chain. `data/provenance.rs` tries `signal.dispatch("nest.commit")` for session finalization. 451-method registry sync (fido2, genetic, certificate, primal, 14 signals). Routing/niche expanded with signal/certificate/genetic/fido2/primal domains. GAP-GS-015 confirmed. Foundation Threads 3+8 assessed (external, B5 lithoSpore candidate). **1,018 tests** pass, 0 clippy warnings. guideStone **Level 5**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
+**Status:** V64u — **Docs Sweep + Upstream Handoff**. 50 validation scenarios covering all 95 experiments across 7 science tracks. Wave 20 canonical envelope (`capability.list` + `count`, 452-method registry). Dataset checksum manifest. `primal.announce` single-call registration. `NestComposition` signal-first dispatch. **1,018+ tests** pass, 0 clippy warnings. guideStone **Level 5**. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.25**. Zero clippy, zero unsafe, zero TODO.
 
 ---
 

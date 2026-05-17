@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Paper Review Queue
 
-**Last Updated**: May 16, 2026
-**Status**: V64p — Wave 17 Signal Adoption + Deep Debt Re-Audit. primalSpring **v0.9.25**. guideStone Level 5 (57/57). **95** experiments (83 science + 12 composition Tier 3–5), **1,018** tests (workspace), 45/45 papers + 1 LTEE complete (E2/E4 queued). 96+ provenance entries, 88 capabilities. barraCuda v0.4.0.
+**Last Updated**: May 17, 2026
+**Status**: V64u — Wave 20 Schema Standard + Science Expansion. primalSpring **v0.9.25**. guideStone Level 5 (57/57). **95** experiments (83 science + 12 composition Tier 3–5), **50** validation scenarios, **1,018+** tests (workspace), 45/45 papers + 1 LTEE complete (E2/E4 queued). 96+ provenance entries, 88 capabilities. barraCuda v0.4.0.
 
 ---
 

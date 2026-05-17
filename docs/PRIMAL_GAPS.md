@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-16
-**healthSpring version**: V64s (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64s: Deep debt re-audit #2 post-Wave 20 — all 7 categories zero, 0 unsafe, 0 production mocks, 0 files >800L)
+**Date**: 2026-05-17
+**healthSpring version**: V64u (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64u: Docs sweep + upstream handoff — 50 validation scenarios, 452-method registry, `capability.list` canonical envelope, all docs synced)
 
 ---
 
