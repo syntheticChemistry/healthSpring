@@ -2,7 +2,7 @@
 # biomeOS NUCLEUS Local Integration Plan
 
 **Last Updated**: May 12, 2026
-**Status**: V64 — V63 + `validate_ltee_b5` Tier 1, `--format json` on validation binaries (Tier 2 ingestion ready), `s_toxicology` scenario, Foundation T3+T5+T8 active. Phase 46 NUCLEUS composition (18/24). guideStone Level 5. **1,014 tests**, **95 experiments**, 88 capabilities. ecoBin 0.9.0.
+**Status**: V64x — 57 validation scenarios, B5 cross-tier parity proven. Phase 46 NUCLEUS composition. guideStone Level 5. **1,018 tests**, **95 experiments**, 88 capabilities. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring v0.9.25.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

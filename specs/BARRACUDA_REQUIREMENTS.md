@@ -2,7 +2,7 @@
 # healthSpring BarraCUDA Requirements
 
 **Last Updated**: May 12, 2026
-**Status**: V64 — V63 + `--format json` on validation binaries, `s_toxicology` scenario, Foundation T3+T5+T8 active. Phase 46 NUCLEUS composition. guideStone Level 5. All four math methods IPC-validated. barraCuda v0.3.13. All six GPU ops LIVE. ecoBin 0.9.0. primalSpring v0.9.25.
+**Status**: V64x — 57 validation scenarios, all four math methods IPC-validated. barraCuda v0.4.0. All six GPU ops LIVE. ecoBin 0.9.0. primalSpring v0.9.25. CG-3 (`submit_and_map`) tracked upstream.
 
 ---
 

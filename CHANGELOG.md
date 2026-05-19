@@ -4,6 +4,15 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64y — May 19, 2026
+
+### River Delta Gap Response — Signal Fix, Ionic Consistency, Stale Docs Sweep
+
+- **Signal dispatch status fix** — `NestComposition::try_signal_dispatch()` now computes `NestStatus` from actual response field population (5/5 = Complete, 1-4/5 = Partial, 0/5 = Unavailable) instead of hardcoding `Complete`. Aligns signal path with manual chain's partial completion tracking per upstream trio semantics.
+- **Ionic bonding policy consistency** — `healthspring_nest_atomic.toml` fixed from `"Ionic"` / `"MethodGate"` to `"ionic"` / `"dual_tower_enclave"`, matching niche and biomeos deploy graphs. `PRIMAL_GAPS.md` contradiction resolved: §2 and "composing → composed blockers" now agree that stubs are wired (V64e), full negotiation awaits WS-1.
+- **Stale version sweep** — barraCuda v0.3.13 → v0.4.0 across 12 active docs (`CONTEXT.md`, `specs/*`, `whitePaper/baseCamp/*`, `wateringHole/HEALTHSPRING_LEVERAGE_GUIDE.md`, `.github/workflows/ci.yml`). Test count 1,014 → 1,018 across 9 docs. README.md stale V64l → V64x reference.
+- **Gap exposure documented** — `HEALTHSPRING_V64Y_RIVER_DELTA_GAP_RESPONSE_MAY19_2026.md` covering all 6 River Delta gaps (WS-1/2/3/4/9/11) plus 5 primal-layer gaps (R5/R7/CG-3/CG-8/S1).
+
 ## V64x — May 17, 2026
 
 ### lithoSpore Audit Absorption — Degradation, Stability Tiers, Cross-Tier Parity

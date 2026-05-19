@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V64x · **Date:** May 17, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64x: lithoSpore Audit Absorption — degradation behavior documented (13 domains), stability tiers annotated (15 stable / 41 evolving / 2 internal), B5 cross-tier parity proven (8/8 bit-identical), trio semantics confirmed, Module 8 ready. 57 scenarios, 88 capabilities, zero debt.
+**Version:** V64y · **Date:** May 19, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64y: River Delta Gap Response — signal dispatch status fix (partial completion parity), ionic bonding consistency, stale version sweep (12 files). B5 cross-tier parity proven, Module 8 ready. 57 scenarios, 88 capabilities, zero debt.
 
 ## What This Is
 
@@ -69,7 +69,7 @@ The runtime surface is **`healthspring_unibin`** (certify, validate, serve, stat
 
 | Repo | Relationship |
 |------|-------------|
-| **barraCuda** | GPU math library (optional **`barracuda-lib`** workspace feature — path dep, v0.3.13) |
+| **barraCuda** | GPU math library (optional **`barracuda-lib`** workspace feature — path dep, v0.4.0) |
 | **coralReef** | WGSL compiler pipeline |
 | **toadStool** | Dispatch orchestration |
 | **primalSpring** | Composition framework (**v0.9.25** pinned), ScenarioMeta / ValidationResult, CompositionContext, certification APIs |

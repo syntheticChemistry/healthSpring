@@ -2,7 +2,7 @@
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
 **Last Updated**: May 12, 2026
-**Status**: V64 — V63 + `validate_ltee_b5` Tier 1, `--format json`, `s_toxicology`, Foundation T3+T5+T8 active, dead `npu` removed, exp primal-name centralization. Phase 46 NUCLEUS composition (18/24). guideStone Level 5. 95 experiments, 1,014 tests, 88 capabilities, 96+ provenance entries. barraCuda v0.3.13. ecoBin 0.9.0.
+**Status**: V64x — 57 validation scenarios, 95 experiments, 1,018 tests, 88 capabilities. B5 cross-tier parity proven. lithoSpore Module 8 ready. barraCuda v0.4.0. ecoBin 0.9.0. primalSpring v0.9.25. Zero clippy, zero debt.
 
 ---
 

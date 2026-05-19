@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** May 17, 2026 (V64x)
+**Date:** May 19, 2026 (V64y)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V64x — **lithoSpore Audit Absorption**. Degradation behavior documented. Stability tiers annotated (15 stable, 41 evolving, 2 internal). **B5 cross-tier parity proven** (8/8 bit-identical Python vs Rust). Trio transaction semantics confirmed. lithoSpore Module 8 ready. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. **1,018 tests** pass, 0 clippy warnings. guideStone **Level 5**. 452-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.25**. Zero clippy, zero unsafe, zero TODO.
+**Status:** V64y — **River Delta Gap Response**. Signal dispatch status fix (partial completion parity). Ionic bonding policy consistent. Stale version sweep (12 files). B5 cross-tier parity proven. lithoSpore Module 8 ready. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. **1,018 tests** pass, 0 clippy warnings. guideStone **Level 5**. 452-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.25**. Zero clippy, zero unsafe, zero TODO.
 
 ---
 
@@ -64,7 +64,7 @@ New modules: **`certification/`** (guideStone logic absorbed from the standalone
 
 ## V60 Deep Debt Evolution — Sovereign NUCLEUS Parity (from V59) *(historical)*
 
-> Snapshot of the **V60** milestone. Current workspace status is **V64l** (May 13, 2026) — see above.
+> Snapshot of the **V60** milestone. Current workspace status is **V64x** (May 19, 2026) — see above.
 
 V60 extends sovereign deployment and parity: optional **`barracuda-lib`** feature (default on) gates barraCuda/barracuda-core; disabling yields an IPC-first NUCLEUS path with pure-Rust fallbacks in `math_dispatch.rs`. **`BarraCudaClient::discover()`** probes the `stats` capability first with a `barracuda` name fallback. Scattered timeouts and retries consolidate into **`tolerances.rs`**; inline literals in exp122 and guidestone bare.rs migrate to named tolerance constants. **`exp123_nucleus_parity`** validates full NUCLEUS pipeline parity (Tower+Node+Nest+cross-atomic) for the health niche; **`validate_pk_models`** supports projectNUCLEUS workloads (Hill, 1-compartment, PopPK, Michaelis-Menten). Criterion **`gpu_parity`** benchmarks are feature-gated behind `gpu`; dataset fetch scripts add BLAKE3 hashing; `records_infra.rs` and visualization scenario tests split for maintainability; capability registry and docs align with primalSpring. **1,002** tests pass, **0** clippy warnings.
 

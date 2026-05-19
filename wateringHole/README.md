@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V64x — lithoSpore Audit Absorption. Degradation behavior documented (13 domains). Stability tiers annotated (15 stable, 41 evolving, 2 internal). B5 cross-tier parity proven (8/8 bit-identical). Trio transaction semantics confirmed. lithoSpore Module 8 ready. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 452-method registry. **1,018 tests** (workspace), 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
+**Status**: V64y — River Delta Gap Response. Signal dispatch status fix. Ionic bonding consistency. Stale version sweep (12 files). B5 cross-tier parity proven. Module 8 ready. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 452-method registry. **1,018 tests** (workspace), 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
 **Last Updated**: May 17, 2026
 
 ---
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V64x** | [lithoSpore Audit Absorption](handoffs/HEALTHSPRING_V64X_LITHOSPORE_ABSORPTION_MAY17_2026.md) | May 17 | Degradation behavior (13 domains), stability tiers (58 methods annotated), B5 cross-tier parity (8/8 bit-identical), trio semantics confirmed, Module 8 ready |
+| **V64y** | [River Delta Gap Response](handoffs/HEALTHSPRING_V64Y_RIVER_DELTA_GAP_RESPONSE_MAY19_2026.md) | May 19 | Signal dispatch status fix, ionic bonding consistency, stale version sweep (12 files), gap exposure assessment for WS-1/2/3/4/9/11 + R5/R7/CG-3/CG-8/S1 |
+| V64x | [lithoSpore Audit Absorption](handoffs/HEALTHSPRING_V64X_LITHOSPORE_ABSORPTION_MAY17_2026.md) | May 17 | Degradation behavior (13 domains), stability tiers (58 methods annotated), B5 cross-tier parity (8/8 bit-identical), trio semantics confirmed, Module 8 ready |
 | V64w | [Comprehensive Upstream Handoff](handoffs/HEALTHSPRING_V64W_COMPREHENSIVE_UPSTREAM_HANDOFF_MAY17_2026.md) | May 17 | 57 scenarios, full primal evolution review, NUCLEUS composition patterns, neuralAPI deployment, deep debt zero, upstream gap asks |
 | V64u | [Docs Sweep + Upstream Handoff](handoffs/HEALTHSPRING_V64U_DOCS_SWEEP_UPSTREAM_HANDOFF_MAY17_2026.md) | May 17 | 50 validation scenarios (32 new), dataset manifest, docs sweep to V64u, composition pattern learnings, upstream gap asks |
 | V64r | [Wave 20 Schema Standard](handoffs/HEALTHSPRING_V64R_WAVE20_SCHEMA_STANDARD_MAY16_2026.md) | May 16 | `capability.list` canonical envelope (capabilities + count), 452-method registry sync (primal.list), nest.commit signal-path confirmed |

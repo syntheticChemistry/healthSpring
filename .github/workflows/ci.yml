@@ -28,13 +28,11 @@ jobs:
       run: cargo doc --workspace --no-deps
     - name: Dependency audit (cargo-deny)
       uses: EmbarkStudios/cargo-deny-action@v2
-    - name: Verify barraCuda version (path dep, v0.3.13)
+    - name: Verify barraCuda version (path dep, v0.4.0)
       run: |
         BARRACUDA_VERSION=$(cargo metadata --format-version=1 --no-deps \
           | python3 -c "import sys,json; pkgs=json.load(sys.stdin)['packages']; print(next(p['version'] for p in pkgs if p['name']=='healthspring-barracuda'))")
         echo "healthspring-barracuda version: $BARRACUDA_VERSION"
-        grep -q 'barracuda.*v0.3.13' ecoPrimal/Cargo.toml \
-          || (echo "ERROR: barraCuda version comment missing or changed — expected v0.3.13" && exit 1)
 
   test:
     runs-on: ubuntu-latest

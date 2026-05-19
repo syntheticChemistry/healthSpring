@@ -400,25 +400,42 @@ impl<'a> NestComposition<'a> {
             return None;
         };
 
+        let merkle_signature = commit
+            .get("signature")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_owned();
+        let commit_id = commit
+            .get("commit_id")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_owned();
+        let braid_id = commit
+            .get("braid_id")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_owned();
+
+        let filled = [&session_id, &content_hash, &merkle_signature, &commit_id, &braid_id]
+            .iter()
+            .filter(|s| !s.is_empty())
+            .count();
+
+        let status = if filled == 5 {
+            NestStatus::Complete
+        } else if filled > 0 {
+            NestStatus::Partial
+        } else {
+            NestStatus::Unavailable
+        };
+
         Some(NestProvenanceChain {
-            status: NestStatus::Complete,
+            status,
             session_id,
             content_hash,
-            merkle_signature: commit
-                .get("signature")
-                .and_then(Value::as_str)
-                .unwrap_or("")
-                .to_owned(),
-            commit_id: commit
-                .get("commit_id")
-                .and_then(Value::as_str)
-                .unwrap_or("")
-                .to_owned(),
-            braid_id: commit
-                .get("braid_id")
-                .and_then(Value::as_str)
-                .unwrap_or("")
-                .to_owned(),
+            merkle_signature,
+            commit_id,
+            braid_id,
         })
     }
 }

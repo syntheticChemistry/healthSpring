@@ -2,7 +2,7 @@
 # healthSpring vs. Every Cure MATRIX — Comparative Analysis
 
 **Last Updated**: May 12, 2026
-**Status**: V64 — UniBin + LTEE B5 Tier 1 + Foundation T3+T8 active + `s_toxicology` scenario; guideStone Level 5. **1,014 tests**, 95 experiments, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.3.13. Onboarding document for researchers whose work we have ingested and evolved —
+**Status**: V64x — 57 validation scenarios, B5 cross-tier parity proven. guideStone Level 5. **1,018 tests**, 95 experiments, 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0. Onboarding document for researchers whose work we have ingested and evolved —
 particularly Fajgenbaum (MATRIX), Lisabeth (ADDRC HTS), and collaborators entering the
 healthSpring ecosystem.
 **Audience**: Drug discovery researchers, pharmacologists, computational biologists, and anyone

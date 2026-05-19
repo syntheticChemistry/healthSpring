@@ -17,8 +17,8 @@ coordination = "Sequential"
 particle = "neutron"
 
 [graph.bonding_policy]
-bond_type = "Ionic"
-trust_model = "MethodGate"
+bond_type = "ionic"
+trust_model = "dual_tower_enclave"
 
 # Tower Atomic (electron shell)
 

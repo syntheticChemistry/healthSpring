@@ -817,7 +817,7 @@ primalSpring ecosystem status update (May 14): plasmidBin deployment evolution c
 | 45 | sourDough deployment internalization: 15 healthSpring shell scripts are candidates | primals/sourDough | Map to sourdough subcommands as v0.4.0–v0.6.0 ships |
 
 **Composing → composed blockers (all upstream/coordination):**
-- Ionic bridge / ionic runtime — not implemented upstream (Gap #2)
+- Ionic bridge — stubs wired (V64e `crypto.contract.*`); full negotiation protocol awaits primalSpring Track 4 spec (WS-1)
 - BTSP transport negotiation — `FAMILY_SEED` breaks mixed deploys (Gap #20)
 - Foundation Thread 10 — provenance expression pending sporeGarden (Gap #42)
 - Nest live deploy — needs running primals for `s_nest_atomic` against live NUCLEUS
@@ -906,7 +906,7 @@ Post-Wave 20 comprehensive re-audit. **All 7 categories confirmed at zero debt.*
 | # | Gap | Blocked On | healthSpring Action | primalSpring Action |
 |---|-----|------------|--------------------|--------------------|
 | 1 | Capability namespace | — | **Fixed V49**: aliases added | Confirm alignment |
-| 2 | Ionic bridge | BearDog + NestGate | Wire when available | Evolve primals |
+| 2 | Ionic bridge | BearDog + NestGate | **Stubs wired** (V64e `crypto.contract.*`); full negotiation awaits WS-1 | primalSpring Track 4 spec |
 | 3 | Discovery naming | Songbird alignment | **V50**: dual fallback | Standardize names |
 | 4 | Inference namespace | Squirrel alignment | `inference.*` added | Pick canonical ns |
 | 5 | Readiness semantics | — | Fixed V48 | — |
