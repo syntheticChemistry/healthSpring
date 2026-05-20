@@ -1,7 +1,7 @@
 +++
-title = "healthSpring Validation Summary — V64"
-description = "PK/PD, gut microbiome, biosignal, drug discovery — LTEE B5 Tier 1, --format json, s_toxicology, Foundation T3+T5+T8 active, deep debt audit clean"
-date = 2026-05-12
+title = "healthSpring Validation Summary — V64y"
+description = "PK/PD, gut microbiome, biosignal, drug discovery — 57 validation scenarios, B5 cross-tier parity proven, lithoSpore Module 8 ready, zero debt"
+date = 2026-05-20
 
 [taxonomies]
 primals = ["barracuda", "toadstool", "biomeos", "nestgate"]
