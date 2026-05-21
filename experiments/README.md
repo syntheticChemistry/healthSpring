@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
 **Last Updated**: May 17, 2026
-**Status**: V64x — B5 cross-tier parity proven (8/8 bit-identical Python vs Rust). 95 experiments + `validate_ltee_b5` Rust binary (LTEE B5 Tier 1, 8/8); **57 validation scenarios** covering 56 experiment IDs; `--format json` on validation binaries. **1,018 tests** (workspace), 0 clippy warnings. primalSpring **v0.9.25**. barraCuda v0.4.0. 452-method registry. Remaining ~39 experiments are GPU/compute/bench/visualization binaries validated via their own test harnesses.
+**Status**: V64x — B5 cross-tier parity proven (8/8 bit-identical Python vs Rust). 95 experiments + `validate_ltee_b5` Rust binary (LTEE B5 Tier 1, 8/8); **57 validation scenarios** covering 56 experiment IDs; `--format json` on validation binaries. **1,018 tests** (workspace), 0 clippy warnings. primalSpring **v0.9.25**. barraCuda v0.4.0. 445-method registry. Remaining ~39 experiments are GPU/compute/bench/visualization binaries validated via their own test harnesses.
 
 **V61 note:** Sixteen former standalone experiment `main` targets were absorbed into **`validation/scenarios/`** (registry-backed scenarios); sources archived under **`fossilRecord/experiments_prokaryotic_may2026/`**.
 

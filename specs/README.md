@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: May 17, 2026
-**Status**: V64x — lithoSpore audit absorbed. B5 cross-tier parity proven (8/8 bit-identical). Degradation + stability tiers documented. Module 8 ready. **57 validation scenarios**, 452-method registry, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0.
+**Status**: V64x — lithoSpore audit absorbed. B5 cross-tier parity proven (8/8 bit-identical). Degradation + stability tiers documented. Module 8 ready. **57 validation scenarios**, 445-method registry, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---

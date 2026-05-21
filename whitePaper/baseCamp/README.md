@@ -3,7 +3,7 @@
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
 **Last Updated:** May 17, 2026
-**Status:** V64x — lithoSpore audit absorbed. B5 cross-tier parity proven (8/8 bit-identical), degradation + stability tiers documented, Module 8 ready. **57 validation scenarios** covering 56 experiment IDs, 452-method registry, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
+**Status:** V64x — lithoSpore audit absorbed. B5 cross-tier parity proven (8/8 bit-identical), degradation + stability tiers documented, Module 8 ready. **57 validation scenarios** covering 56 experiment IDs, 445-method registry, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
 
 ---
 
@@ -352,7 +352,7 @@ The primal provides the science. The graphs define the composition. biomeOS's Ne
 ### Completed (V64h–V64u)
 
 - **Science Expansion (V64t)** — 32 new validation scenarios (50 total) covering all 95 experiments across PK/PD, microbiome, biosignal, endocrine, discovery, toxicology, comparative medicine
-- **Wave 20 Schema Standard (V64r)** — `capability.list` canonical envelope (`capabilities` + `count`), 452-method registry sync (`primal.list`), `nest.commit` signal-path confirmed
+- **Wave 20 Schema Standard (V64r)** — `capability.list` canonical envelope (`capabilities` + `count`), 445-method registry sync (`primal.list`), `nest.commit` signal-path confirmed
 - **Wave 17 Signal Adoption (V64o)** — `primal.announce` single-call registration, `NestComposition` signal-first dispatch, 451-method registry sync
 - **Nest Atomic Specialist** — 9-phase provenance validation proving NestGate CAS → rhizoCrypt DAG → loamSpine ledger → sweetGrass attribution end-to-end
 - **`NestComposition` facade** — Orchestrates full Nest Atomic lifecycle in `ipc/provenance/nest.rs`
