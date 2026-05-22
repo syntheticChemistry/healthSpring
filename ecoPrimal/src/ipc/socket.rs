@@ -87,6 +87,19 @@ pub fn orchestrator_socket() -> PathBuf {
     resolve_socket_dir().join(name)
 }
 
+/// Resolve the coordination socket (primalSpring).
+///
+/// Used for `bonding.*` protocol and `coordination.*` methods.
+#[must_use]
+pub fn coordination_socket() -> PathBuf {
+    if let Ok(explicit) = std::env::var("PRIMALSPRING_SOCKET") {
+        return PathBuf::from(explicit);
+    }
+    let dir = resolve_socket_dir();
+    let family_id = get_family_id();
+    dir.join(format!("primalspring-{family_id}.sock"))
+}
+
 /// Discover another primal by name — scans the socket dir for matching sockets.
 #[deprecated(since = "0.10.0", note = "use CompositionContext::discover() instead")]
 #[must_use]

@@ -4,6 +4,19 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V64z — May 22, 2026
+
+### Wave 38 IonicContractRegistry Absorption — Bonding Protocol Wired, Egress Fence Reconciled
+
+- **`bonding.*` protocol wired** — `TowerAtomic` gains `bonding_propose`, `bonding_accept`, `bonding_terminate`, `bonding_status` methods routing through the coordination socket to primalSpring's `IonicContractRegistry` state machine. Lifecycle: `Proposed → Active → Metered → Sealed`. Ed25519 signing layer (`crypto.contract.*`) retained underneath.
+- **Coordination socket added** — `socket::coordination_socket()` resolves primalSpring UDS via `PRIMALSPRING_SOCKET` env or `primalspring-{family}.sock` convention.
+- **`bonding` capability domain** — added to `routing.rs` (`ALL_CAPS` + `capability_to_primal`), `niche.rs` (`CONSUMED_CAPABILITIES`: 5 bonding methods), and `capability_registry.toml` (`[bonding]` section).
+- **`storage.egress_fence` phantom reconciled** — not a real NestGate method (absent from upstream registry). Removed from `CONSUMED_CAPABILITIES` and `capability_registry.toml`. PRIMAL_GAPS §2 updated.
+- **Registry reference 452 → 445** — niche comment updated to reflect primalSpring's current 445-method registry.
+- **Degradation + stability docs updated** — `DEGRADATION_BEHAVIOR.md` adds `bonding` domain row; `STABILITY_TIERS.md` adds `bonding` IPC alignment entry.
+- **Tests** — 3 new tests: `bonding_propose_fails_without_coordination`, `bonding_terminate_fails_without_coordination`, `bonding_status_fails_without_coordination`.
+- **1,021 workspace tests** (up from 1,018). Zero clippy, zero debt — all 7 deep debt categories remain at zero.
+
 ## V64y — May 19, 2026
 
 ### River Delta Gap Response — Signal Fix, Ionic Consistency, Stale Docs Sweep

@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-17
-**healthSpring version**: V64x (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64x: lithoSpore audit absorbed — degradation documented, stability tiers annotated, B5 cross-tier parity 8/8 bit-identical, Module 8 ready, 57 validation scenarios, 445-method registry, all 7 deep debt categories zero, clippy zero)
+**Date**: 2026-05-22
+**healthSpring version**: V64z (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64z: Wave 38 IonicContractRegistry absorbed — `bonding.*` protocol wired, `storage.egress_fence` phantom reconciled, registry 445, 57 validation scenarios, 1,021 tests, all 7 deep debt categories zero, clippy zero)
 
 ---
 
@@ -53,30 +53,38 @@ methods. Both namespaces coexist — `science.*` remains the primary surface.
 
 ---
 
-## 2. Ionic Bridge / Bonding Policy — Partially Resolved
+## 2. Ionic Bridge / Bonding Policy — Substantially Resolved (V64z)
 
 **Gap**: The proto-nucleate declares a dual-tower architecture with an ionic
 bridge between Tower A (patient data) and Tower B (analytics). The bonding
 policy specifies covalent intra-tower, ionic cross-family, and encryption
 tiers.
 
-**Resolution (partial)**: BearDog **Wave 97** (May 8, 2026) shipped ionic bond
-contract methods: `crypto.contract.propose`, `crypto.contract.countersign`,
-`crypto.contract.verify` — full propose→countersign→verify lifecycle with
-Ed25519 dual-signature verification. This resolves the healthSpring dual-tower
-ionic requirement. BearDog's `IonicBondHandler` provides 8 methods for
-cross-tower and cross-family trust establishment.
+**Resolution history**:
+- BearDog **Wave 97** (May 8, 2026) shipped `crypto.contract.*` signing layer.
+- healthSpring **V64e** wired `TowerAtomic::ionic_propose/countersign/verify`
+  for the Ed25519 signing layer.
+- primalSpring **Wave 38** (May 22, 2026) shipped `IonicContractRegistry` with
+  full state machine (`bonding::ionic_runtime`): `bonding.propose` →
+  `bonding.accept` → `record_call` → `bonding.modify_scope` →
+  `bonding.terminate` → `bonding.seal` with TTL expiry and usage metering.
+- healthSpring **V64z** wired `bonding.*` protocol layer into `TowerAtomic`
+  (`bonding_propose`, `bonding_accept`, `bonding_terminate`, `bonding_status`)
+  routing through the coordination socket to primalSpring's
+  `IonicContractRegistry`. Added `bonding` capability domain to routing table,
+  niche CONSUMED_CAPABILITIES, and capability registry.
 
 **Remaining**:
-- **NestGate**: `storage.egress_fence`, time-series egress policy, family-scoped
-  encryption at rest — still needed for full enclave enforcement
-- **healthSpring**: Wire to BearDog `crypto.contract.*` methods via IPC for
-  dual-tower bond establishment. No structural changes needed — IPC client stubs
-  are sufficient.
+- **NestGate egress fence**: `storage.egress_fence` was a healthSpring-invented
+  wire name with no upstream NestGate counterpart. Removed from
+  CONSUMED_CAPABILITIES and capability registry in V64z. Real egress policy
+  (time-series fence, family-scoped encryption at rest) awaits NestGate
+  `content.egress` or equivalent when NestGate ships enclave enforcement.
 
-**Status**: BearDog ionic bond **LIVE** upstream. NestGate egress fence still
-blocked. healthSpring wiring deferred until NUCLEUS composition exercises the
-dual-tower topology.
+**Status**: Ionic bridge **WIRED** — both Ed25519 signing layer
+(`crypto.contract.*`) and contract state machine (`bonding.*`) available.
+NestGate egress fence reconciled (phantom wire name removed). Live E2E
+validation pending deployed NUCLEUS with multi-tower topology.
 
 ---
 
@@ -817,7 +825,7 @@ primalSpring ecosystem status update (May 14): plasmidBin deployment evolution c
 | 45 | sourDough deployment internalization: 15 healthSpring shell scripts are candidates | primals/sourDough | Map to sourdough subcommands as v0.4.0–v0.6.0 ships |
 
 **Composing → composed blockers (all upstream/coordination):**
-- Ionic bridge — stubs wired (V64e `crypto.contract.*`); full negotiation protocol awaits primalSpring Track 4 spec (WS-1)
+- Ionic bridge — **WIRED V64z**: `bonding.*` protocol (IonicContractRegistry) + `crypto.contract.*` signing layer; WS-1 substantially resolved
 - BTSP transport negotiation — `FAMILY_SEED` breaks mixed deploys (Gap #20)
 - Foundation Thread 10 — provenance expression pending sporeGarden (Gap #42)
 - Nest live deploy — needs running primals for `s_nest_atomic` against live NUCLEUS
@@ -906,7 +914,7 @@ Post-Wave 20 comprehensive re-audit. **All 7 categories confirmed at zero debt.*
 | # | Gap | Blocked On | healthSpring Action | primalSpring Action |
 |---|-----|------------|--------------------|--------------------|
 | 1 | Capability namespace | — | **Fixed V49**: aliases added | Confirm alignment |
-| 2 | Ionic bridge | BearDog + NestGate | **Stubs wired** (V64e `crypto.contract.*`); full negotiation awaits WS-1 | primalSpring Track 4 spec |
+| 2 | Ionic bridge | NestGate egress policy | **V64z**: `bonding.*` protocol wired + `crypto.contract.*` signing; `storage.egress_fence` phantom removed | NestGate: ship `content.egress` or equivalent |
 | 3 | Discovery naming | Songbird alignment | **V50**: dual fallback | Standardize names |
 | 4 | Inference namespace | Squirrel alignment | `inference.*` added | Pick canonical ns |
 | 5 | Readiness semantics | — | Fixed V48 | — |

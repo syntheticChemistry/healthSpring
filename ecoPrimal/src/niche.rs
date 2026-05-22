@@ -107,7 +107,6 @@ pub const CONSUMED_CAPABILITIES: &[&str] = &[
     "discovery.find_by_capability",
     "storage.store",
     "storage.retrieve",
-    "storage.egress_fence",
     "content.store",
     "content.retrieve",
     "compute.offload",
@@ -123,7 +122,12 @@ pub const CONSUMED_CAPABILITIES: &[&str] = &[
     "braid.create",
     "braid.query",
     "security.audit_log",
-    // Wave 17+20 — Neural API Signal Elevation (primalSpring 452-method registry)
+    // Wave 38 — IonicContractRegistry bonding protocol (primalSpring 445-method registry)
+    "bonding.propose",
+    "bonding.accept",
+    "bonding.terminate",
+    "bonding.status",
+    "bonding.modify_scope",
     "signal.dispatch",
     "primal.announce",
     "primal.info",

@@ -34,10 +34,12 @@ with the **canonical stable names** in the upstream registry:
 | `visualization` | `[visualization]` | **stable** | Yes |
 | `orchestration` / `lifecycle` / `signal` | `[lifecycle]` / `[signals.*]` | **stable** | Yes |
 | `inference` / `model` | `[inference]` | varies | Yes |
+| `bonding` | `[bonding]` | **stable** | Yes |
 | `audit` / `audit.log` / `defense` | `[defense]` | varies | Yes |
 
 **Status**: All IPC capability strings are canonical. No local aliases
-requiring the sweetGrass GAP-36 wire-name alias pattern.
+requiring the sweetGrass GAP-36 wire-name alias pattern. `bonding.*`
+domain added in V64z (Wave 38 IonicContractRegistry absorption).
 
 ---
 

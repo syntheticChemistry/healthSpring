@@ -259,6 +259,17 @@ methods = [
     "crypto.contract.verify",
 ]
 
+[bonding]
+owner = "primalspring"
+locality = "consumed"
+methods = [
+    "bonding.propose",
+    "bonding.accept",
+    "bonding.modify_scope",
+    "bonding.status",
+    "bonding.terminate",
+]
+
 [discovery]
 owner = "songbird"
 locality = "consumed"
@@ -272,7 +283,6 @@ locality = "consumed"
 methods = [
     "storage.store",
     "storage.retrieve",
-    "storage.egress_fence",
 ]
 
 [shader]

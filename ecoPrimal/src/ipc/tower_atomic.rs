@@ -246,6 +246,96 @@ impl TowerAtomic {
             .and_then(serde_json::Value::as_bool)
             .unwrap_or(false))
     }
+
+    // ── Wave 38 bonding.* protocol (IonicContractRegistry) ──────────
+    //
+    // These methods call the primalSpring coordination endpoint
+    // (bonding.propose / bonding.accept / bonding.terminate) which
+    // manages the IonicContractRegistry state machine. The
+    // crypto.contract.* methods above remain for the BearDog Ed25519
+    // signing layer underneath.
+
+    /// Propose an ionic bond via the `bonding.propose` protocol.
+    ///
+    /// Routes through the coordination endpoint (primalSpring) to the
+    /// `IonicContractRegistry` state machine. The registry validates
+    /// the proposal and creates a contract in `Proposed` state.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if the coordination endpoint is unreachable.
+    pub fn bonding_propose(
+        &self,
+        proposer_identity: &str,
+        capabilities: &[&str],
+        duration_secs: u64,
+        rate_limit_rps: u32,
+    ) -> Result<serde_json::Value, IpcError> {
+        let params = serde_json::json!({
+            "proposer_identity": proposer_identity,
+            "requested_capabilities": capabilities,
+            "duration_secs": duration_secs,
+            "trust_model": "Contractual",
+            "rate_limit_rps": rate_limit_rps,
+        });
+        let socket = socket::coordination_socket();
+        super::rpc::try_send(&socket, "bonding.propose", &params)
+    }
+
+    /// Accept or reject a proposed ionic bond via `bonding.accept`.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if the coordination endpoint is unreachable.
+    pub fn bonding_accept(
+        &self,
+        contract_id: &str,
+        accept: bool,
+        capability_allow: &[&str],
+    ) -> Result<serde_json::Value, IpcError> {
+        let params = serde_json::json!({
+            "contract_id": contract_id,
+            "accept": accept,
+            "constraints": {
+                "capability_allow": capability_allow,
+            },
+        });
+        let socket = socket::coordination_socket();
+        super::rpc::try_send(&socket, "bonding.accept", &params)
+    }
+
+    /// Terminate an active ionic bond via `bonding.terminate`.
+    ///
+    /// Returns the provenance seal from the registry.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if the coordination endpoint is unreachable.
+    pub fn bonding_terminate(
+        &self,
+        contract_id: &str,
+        reason: &str,
+    ) -> Result<serde_json::Value, IpcError> {
+        let params = serde_json::json!({
+            "contract_id": contract_id,
+            "reason": reason,
+        });
+        let socket = socket::coordination_socket();
+        super::rpc::try_send(&socket, "bonding.terminate", &params)
+    }
+
+    /// Query the status of an ionic bond via `bonding.status`.
+    ///
+    /// # Errors
+    ///
+    /// Returns `IpcError` if the coordination endpoint is unreachable.
+    pub fn bonding_status(&self, contract_id: &str) -> Result<serde_json::Value, IpcError> {
+        let params = serde_json::json!({
+            "contract_id": contract_id,
+        });
+        let socket = socket::coordination_socket();
+        super::rpc::try_send(&socket, "bonding.status", &params)
+    }
 }
 
 /// Discover a primal socket in a directory by name pattern.
@@ -378,6 +468,41 @@ mod tests {
             discovery_socket: PathBuf::from("/tmp/nonexistent-songbird.sock"),
         };
         let result = tower.ionic_verify("test-contract-id");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn bonding_propose_fails_without_coordination() {
+        let tower = TowerAtomic {
+            crypto_socket: PathBuf::from("/tmp/nonexistent-beardog.sock"),
+            discovery_socket: PathBuf::from("/tmp/nonexistent-songbird.sock"),
+        };
+        let result = tower.bonding_propose(
+            "did:key:healthspring",
+            &["compute.submit", "storage.retrieve"],
+            3600,
+            50,
+        );
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn bonding_terminate_fails_without_coordination() {
+        let tower = TowerAtomic {
+            crypto_socket: PathBuf::from("/tmp/nonexistent-beardog.sock"),
+            discovery_socket: PathBuf::from("/tmp/nonexistent-songbird.sock"),
+        };
+        let result = tower.bonding_terminate("ionic-0001-test", "complete");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn bonding_status_fails_without_coordination() {
+        let tower = TowerAtomic {
+            crypto_socket: PathBuf::from("/tmp/nonexistent-beardog.sock"),
+            discovery_socket: PathBuf::from("/tmp/nonexistent-songbird.sock"),
+        };
+        let result = tower.bonding_status("ionic-0001-test");
         assert!(result.is_err());
     }
 }

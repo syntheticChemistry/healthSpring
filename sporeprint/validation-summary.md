@@ -1,7 +1,7 @@
 +++
-title = "healthSpring Validation Summary — V64y"
-description = "PK/PD, gut microbiome, biosignal, drug discovery — 57 validation scenarios, B5 cross-tier parity proven, lithoSpore Module 8 ready, zero debt"
-date = 2026-05-20
+title = "healthSpring Validation Summary — V64z"
+description = "PK/PD, gut microbiome, biosignal, drug discovery — 57 validation scenarios, B5 cross-tier parity proven, lithoSpore Module 8 ready, IonicContractRegistry wired, zero debt"
+date = 2026-05-22
 
 [taxonomies]
 primals = ["barracuda", "toadstool", "biomeos", "nestgate"]
@@ -10,7 +10,7 @@ springs = ["healthspring", "wetspring", "neuralspring", "groundspring"]
 
 ## Status
 
-- **1,018 Rust workspace tests** — 878 lib + 9 doc + 20 integration/composition + 12 integration_wfdb + 3 integration_registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool
+- **1,021 Rust workspace tests** — 878 lib + 9 doc + 20 integration/composition + 12 integration_wfdb + 3 integration_registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool
 - **113 Python cross-validation checks** (`control/pkpd/cross_validate.py`, Tracks 1–9)
 - **7 clinical tracks**: PK/PD, microbiome, biosignal, endocrinology, NLME, comparative medicine, drug discovery
 - **Sovereign NLME** (FOCE/SAEM) replaces proprietary NONMEM/Monolix

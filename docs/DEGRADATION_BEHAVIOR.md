@@ -29,6 +29,7 @@ infrastructure primals are unavailable. healthSpring follows the pattern:
 | `visualization` | petalTongue | Scenario JSON generated but not pushed | JSON on disk | **None** — visualization is enrichment |
 | `discovery` | songBird | Socket discovery falls back to UDS convention paths | Convention path | **None** — 5-tier discovery escalation |
 | `orchestration` | biomeOS | Signal dispatch falls back to manual multi-call chain | Manual chain | **None** — `NestComposition` has dual-path |
+| `bonding` | primalSpring | `bonding.*` protocol unavailable; falls back to `crypto.contract.*` direct signing | Direct signing | **None** — Ed25519 layer works independently |
 | `inference` | Squirrel | Not consumed (future ML surrogates) | N/A | **None** |
 | `audit` | skunkBat | Audit log skipped | No log | **None** — audit is enrichment |
 
