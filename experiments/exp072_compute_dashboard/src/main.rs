@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![forbid(unsafe_code)]
-#![deny(clippy::all)]
-#![warn(clippy::pedantic)]
-#![deny(clippy::nursery)]
+#![deny(clippy::all, clippy::pedantic, clippy::nursery)]
 #![expect(
     clippy::expect_used,
     reason = "Mutex::lock().expect() is idiomatic for poisoned-mutex \

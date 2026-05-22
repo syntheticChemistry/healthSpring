@@ -237,7 +237,7 @@ fn validate_squirrel_optional(h: &mut ValidationHarness) {
         let squirrel = nodes.iter().find(|n| {
             n.get("name")
                 .and_then(|v| v.as_str())
-                .is_some_and(|s| s.contains("squirrel"))
+                .is_some_and(|s| s.contains(primal_names::SQUIRREL))
         });
 
         h.check_bool("Squirrel node present in deploy graph", squirrel.is_some());

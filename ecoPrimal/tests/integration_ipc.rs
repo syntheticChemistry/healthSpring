@@ -104,8 +104,8 @@ fn socket_dir_uses_xdg_or_fallback() {
     let dir = socket::resolve_socket_dir();
     let dir_str = dir.to_string_lossy();
     assert!(
-        dir_str.contains("biomeos"),
-        "socket dir should contain 'biomeos': {dir_str}"
+        dir_str.contains(healthspring_barracuda::primal_names::BIOMEOS_DIR_NAME),
+        "socket dir should contain biomeOS dir name: {dir_str}"
     );
 }
 

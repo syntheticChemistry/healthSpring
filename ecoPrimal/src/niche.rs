@@ -346,6 +346,7 @@ pub const OPERATION_DEPENDENCIES: &[(&str, &[&str])] = &[
 )]
 mod tests {
     use super::*;
+    use crate::primal_names;
 
     #[test]
     fn primal_identity_consistent() {
@@ -363,8 +364,8 @@ mod tests {
     #[test]
     fn dependencies_include_tower_atomic() {
         let names: Vec<&str> = DEPENDENCIES.iter().map(|d| d.name).collect();
-        assert!(names.contains(&"beardog"));
-        assert!(names.contains(&"songbird"));
+        assert!(names.contains(&primal_names::BEARDOG));
+        assert!(names.contains(&primal_names::SONGBIRD));
     }
 
     #[test]
@@ -374,7 +375,10 @@ mod tests {
             .filter(|d| d.required)
             .map(|d| d.name)
             .collect();
-        assert_eq!(required, vec!["beardog", "songbird"]);
+        assert_eq!(
+            required,
+            vec![primal_names::BEARDOG, primal_names::SONGBIRD]
+        );
     }
 
     #[test]

@@ -109,7 +109,7 @@ mod tests {
 
     #[test]
     fn socket_not_found_is_connection_error() {
-        let err = IpcError::SocketNotFound("toadstool".into());
+        let err = IpcError::SocketNotFound(crate::primal_names::TOADSTOOL.into());
         assert!(err.is_connection_error());
     }
 
