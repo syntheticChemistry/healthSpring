@@ -1,22 +1,37 @@
 {
   "track": "endocrine",
-  "description": "Testosterone replacement therapy — PK, metabolic response, cardiovascular, gut-axis",
+  "description": "Testosterone replacement therapy \u2014 PK, metabolic response, cardiovascular, gut-axis",
   "spring": "healthSpring",
   "created": "2026-05-13",
   "scripts": {
     "exp030_testosterone_im_pk": {
-      "paper": "Testosterone cypionate IM pharmacokinetics — clinical label and Bhasin 2010 JCEM",
+      "paper": "Testosterone cypionate IM pharmacokinetics \u2014 clinical label and Bhasin 2010 JCEM",
       "doi": "10.1210/jc.2009-2354",
       "model": "IM depot: C(t) = (F*D*ka)/(Vd*(ka-ke)) * (exp(-ke*t) - exp(-ka*t))"
     },
     "exp031_testosterone_pellet_pk": {
       "paper": "Testosterone pellet (subcutaneous): zero-order depot release + first-order elimination",
-      "references": ["Handelsman DJ (2013) Andrology 1:3-16", "FDA testosterone pellet label"]
+      "references": [
+        "Handelsman DJ (2013) Andrology 1:3-16",
+        "FDA testosterone pellet label"
+      ]
     },
     "exp032_age_testosterone_decline": {
       "papers": [
-        {"author": "Harman SM et al.", "year": 2001, "journal": "JCEM", "doi": "10.1210/jcem.86.2.7219", "note": "Baltimore Longitudinal Study of Aging"},
-        {"author": "Feldman HA et al.", "year": 2002, "journal": "JCEM", "doi": "10.1210/jc.2002-020890", "note": "Massachusetts Male Aging Study"}
+        {
+          "author": "Harman SM et al.",
+          "year": 2001,
+          "journal": "JCEM",
+          "doi": "10.1210/jcem.86.2.7219",
+          "note": "Baltimore Longitudinal Study of Aging"
+        },
+        {
+          "author": "Feldman HA et al.",
+          "year": 2002,
+          "journal": "JCEM",
+          "doi": "10.1210/jc.2002-020890",
+          "note": "Massachusetts Male Aging Study"
+        }
       ],
       "model": "T(age) = T0 * exp(-k * (age - 30))",
       "key_parameters": {
@@ -43,8 +58,16 @@
     },
     "exp036_population_trt_montecarlo": {
       "papers": [
-        {"author": "Saad F et al.", "year": 2016, "doi": "10.1038/ijo.2015.139"},
-        {"author": "Harman SM et al.", "year": 2001, "doi": "10.1210/jcem.86.2.7219"}
+        {
+          "author": "Saad F et al.",
+          "year": 2016,
+          "doi": "10.1038/ijo.2015.139"
+        },
+        {
+          "author": "Harman SM et al.",
+          "year": 2001,
+          "doi": "10.1210/jcem.86.2.7219"
+        }
       ],
       "model": "10K virtual patients, IM depot PK + metabolic response",
       "key_parameters": {
@@ -54,17 +77,42 @@
     },
     "exp037_testosterone_gut_axis": {
       "papers": [
-        {"author": "Ridaura VK et al.", "year": 2013, "journal": "Science", "doi": "10.1126/science.1241214", "note": "gut microbiome → body composition"},
-        {"author": "Tremellen K, Pearce K", "year": 2012, "journal": "Reprod Biol Endocrinol", "doi": "10.1186/1477-7827-10-38", "note": "GELTH hypothesis"}
+        {
+          "author": "Ridaura VK et al.",
+          "year": 2013,
+          "journal": "Science",
+          "doi": "10.1126/science.1241214",
+          "note": "gut microbiome \u2192 body composition"
+        },
+        {
+          "author": "Tremellen K, Pearce K",
+          "year": 2012,
+          "journal": "Reprod Biol Endocrinol",
+          "doi": "10.1186/1477-7827-10-38",
+          "note": "GELTH hypothesis"
+        }
       ],
-      "model": "Pielou evenness → Anderson disorder → ξ → TRT response stratification"
+      "model": "Pielou evenness \u2192 Anderson disorder \u2192 \u03be \u2192 TRT response stratification"
     },
     "exp038_hrv_trt_cardiovascular": {
       "papers": [
-        {"author": "Kleiger RE et al.", "year": 1987, "journal": "Am J Cardiol", "doi": "10.1016/0002-9149(87)90795-8", "note": "SDNN < 50ms = 5x cardiac mortality"},
-        {"author": "Sharma R et al.", "year": 2015, "note": "TRT cardiovascular benefit systematic review"}
+        {
+          "author": "Kleiger RE et al.",
+          "year": 1987,
+          "journal": "Am J Cardiol",
+          "doi": "10.1016/0002-9149(87)90795-8",
+          "note": "SDNN < 50ms = 5x cardiac mortality"
+        },
+        {
+          "author": "Sharma R et al.",
+          "year": 2015,
+          "note": "TRT cardiovascular benefit systematic review"
+        }
       ],
       "model": "hrv_trt_response + cardiac_risk_composite"
     }
+  },
+  "_provenance": {
+    "blake3": "4a77bf4157b1e2d99a0ddb06901a32322bc488b677b4c507461b2f7dd1616a9d"
   }
 }

@@ -4,6 +4,15 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V65a — May 23, 2026
+
+### Wave 46 Absorption — BLAKE3 Backfill, Registry 458, sporePrint Pipeline
+
+- **BLAKE3 provenance backfill (FN-1)** — `tools/blake3_backfill.sh` hashes all 63 JSON files in `control/` and injects `_provenance.blake3` into each. 62 files updated; fully idempotent. Addresses SP-4 alignment.
+- **sporePrint sovereign publish pipeline (SP-4)** — `tools/publish_sporeprint.sh` pushes `sporeprint/*.md` to NestGate via `content.put` with BLAKE3 integrity and metadata. Mirrors airSpring/primalSpring pattern.
+- **Registry reference 445 → 458** — `niche.rs` comment and 6 documentation files updated to reflect primalSpring v0.9.27 (Wave 46) 458-method registry.
+- **Zero clippy, zero debt** — all 7 deep debt categories remain at zero. 1,021 tests pass.
+
 ## V64z — May 22, 2026
 
 ### Wave 38 IonicContractRegistry Absorption — Bonding Protocol Wired, Egress Fence Reconciled

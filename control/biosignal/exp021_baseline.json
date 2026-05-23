@@ -6,7 +6,8 @@
     "source": "Rust exp021_hrv_metrics --write-baseline",
     "python": "3.13.2 | packaged by Anaconda, Inc. | (main, Feb  6 2025, 18:56:02) [GCC 11.2.0]",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
-    "command": "python3 control/biosignal/exp021_hrv_metrics.py"
+    "command": "python3 control/biosignal/exp021_hrv_metrics.py",
+    "blake3": "6f8d67017dcc44d3e117d3e46ab3900f3c6612df6b7ffc2300013ba48f2674a6"
   },
   "_source": "healthSpring Exp021: HRV Metrics (RMSSD, pNN50)",
   "fs": 360.0,

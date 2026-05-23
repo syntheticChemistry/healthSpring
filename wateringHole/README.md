@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V64z — Wave 38 IonicContractRegistry Absorption. `bonding.*` protocol wired. `storage.egress_fence` phantom reconciled. B5 cross-tier parity proven. Module 8 ready. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 445-method registry. **1,021 tests** (workspace), 88 capabilities. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
-**Last Updated**: May 22, 2026
+**Status**: V65a — Wave 46 Absorption. BLAKE3 provenance backfill (62 JSON files). sporePrint sovereign publish pipeline (SP-4). B5 cross-tier parity proven. Module 8 ready. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 458-method registry. **1,021 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
+**Last Updated**: May 23, 2026
 
 ---
 
@@ -22,12 +22,13 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V64z** | [Wave 38 IonicContractRegistry Absorption](handoffs/HEALTHSPRING_V64Z_WAVE38_IONIC_ABSORPTION_MAY22_2026.md) | May 22 | `bonding.*` protocol wired via coordination socket, `storage.egress_fence` phantom reconciled, registry 445, degradation + stability docs updated |
+| **V65a** | [Wave 46 Absorption](handoffs/HEALTHSPRING_V65A_WAVE46_ABSORPTION_MAY23_2026.md) | May 23 | BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), registry 458, primalSpring v0.9.27 |
+| V64z | [Wave 38 IonicContractRegistry Absorption](handoffs/HEALTHSPRING_V64Z_WAVE38_IONIC_ABSORPTION_MAY22_2026.md) | May 22 | `bonding.*` protocol wired via coordination socket, `storage.egress_fence` phantom reconciled, registry 445, degradation + stability docs updated |
 | V64y | [River Delta Gap Response](handoffs/HEALTHSPRING_V64Y_RIVER_DELTA_GAP_RESPONSE_MAY19_2026.md) | May 19 | Signal dispatch status fix, ionic bonding consistency, stale version sweep (12 files), gap exposure assessment for WS-1/2/3/4/9/11 + R5/R7/CG-3/CG-8/S1 |
 | V64x | [lithoSpore Audit Absorption](handoffs/HEALTHSPRING_V64X_LITHOSPORE_ABSORPTION_MAY17_2026.md) | May 17 | Degradation behavior (13 domains), stability tiers (58 methods annotated), B5 cross-tier parity (8/8 bit-identical), trio semantics confirmed, Module 8 ready |
 | V64w | [Comprehensive Upstream Handoff](handoffs/HEALTHSPRING_V64W_COMPREHENSIVE_UPSTREAM_HANDOFF_MAY17_2026.md) | May 17 | 57 scenarios, full primal evolution review, NUCLEUS composition patterns, neuralAPI deployment, deep debt zero, upstream gap asks |
 | V64u | [Docs Sweep + Upstream Handoff](handoffs/HEALTHSPRING_V64U_DOCS_SWEEP_UPSTREAM_HANDOFF_MAY17_2026.md) | May 17 | 50 validation scenarios (32 new), dataset manifest, docs sweep to V64u, composition pattern learnings, upstream gap asks |
-| V64r | [Wave 20 Schema Standard](handoffs/HEALTHSPRING_V64R_WAVE20_SCHEMA_STANDARD_MAY16_2026.md) | May 16 | `capability.list` canonical envelope (capabilities + count), 445-method registry sync (primal.list), nest.commit signal-path confirmed |
+| V64r | [Wave 20 Schema Standard](handoffs/HEALTHSPRING_V64R_WAVE20_SCHEMA_STANDARD_MAY16_2026.md) | May 16 | `capability.list` canonical envelope (capabilities + count), 458-method registry sync (primal.list), nest.commit signal-path confirmed |
 | V64o | [Wave 17 Signal Adoption](handoffs/HEALTHSPRING_V64O_WAVE17_SIGNAL_ADOPTION_MAY16_2026.md) | May 16 | `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch in NestComposition + data/provenance, 451-method registry sync, routing/niche domain expansion, GAP-GS-015 confirmed, Foundation Threads 3+8, GAPs 46-47 |
 | V64n | [Upstream Audit Absorption](handoffs/HEALTHSPRING_V64N_UPSTREAM_HANDOFF_MAY14_2026.md) | May 14 | Tower = bearDog + songBird + skunkBat in all graphs, deploy graph canonicalization, routing `content` domain, capability registry sync, barraCuda v0.4.0, GAPs 43-45 |
 | V64m | [Comprehensive Handoff](handoffs/HEALTHSPRING_V64M_COMPREHENSIVE_HANDOFF_MAY13_2026.md) | May 13 | All wire contract learnings, Nest Atomic composition pattern, provenance pipeline, plasmidBin cell.toml, Foundation Thread 10, recommendations for upstream teams |

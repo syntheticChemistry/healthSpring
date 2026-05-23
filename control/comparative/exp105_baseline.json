@@ -69,6 +69,7 @@
     "command": "python3 control/comparative/exp105_canine_gut_anderson.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python": "3.13.2",
-    "numpy": "2.1.3"
+    "numpy": "2.1.3",
+    "blake3": "6c3ef27a15d4a379c02bef49e141af84c849de7cfe361f824ea5b22525f99186"
   }
 }

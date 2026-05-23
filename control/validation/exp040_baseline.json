@@ -21,6 +21,7 @@
     "numpy": "2.1.3",
     "command": "python3 control/validation/exp040_barracuda_cpu.py",
     "script": "control/validation/exp040_barracuda_cpu.py",
-    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6"
+    "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
+    "blake3": "a57503da074ec83a873abec5bd2dcba77251bbbbfc73b764cc8182b8d09af2f1"
   }
 }

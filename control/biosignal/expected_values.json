@@ -1,6 +1,6 @@
 {
   "track": "biosignal",
-  "description": "Biosignal processing — ECG QRS detection, HRV, PPG SpO2, EDA, arrhythmia classification",
+  "description": "Biosignal processing \u2014 ECG QRS detection, HRV, PPG SpO2, EDA, arrhythmia classification",
   "spring": "healthSpring",
   "created": "2026-05-13",
   "scripts": {
@@ -12,7 +12,9 @@
     },
     "exp021_hrv_metrics": {
       "note": "Rust-generated baseline (cargo run --bin exp021_hrv_metrics -- --write-baseline)",
-      "standards": ["Task Force of ESC/NASPE (1996) HRV standards. Eur Heart J 17:354-381"]
+      "standards": [
+        "Task Force of ESC/NASPE (1996) HRV standards. Eur Heart J 17:354-381"
+      ]
     },
     "exp022_ppg_spo2": {
       "note": "Rust-generated baseline",
@@ -32,5 +34,8 @@
       "doi": "10.1161/01.CIR.101.23.e215",
       "note": "Uses Gaussian template morphology, not actual PhysioNet waveforms"
     }
+  },
+  "_provenance": {
+    "blake3": "423d156c20bdc51ea14f5eba051ab1f43b46243ab219c99b406370d7195f8a8f"
   }
 }

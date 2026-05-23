@@ -12,6 +12,7 @@
   "_provenance": {
     "date": "2026-05-11",
     "python": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]",
-    "numpy": "1.21.5"
+    "numpy": "1.21.5",
+    "blake3": "6f0605fdc1dfe22fa9974c712a783fe43ee20d7a1d2f412f959e5ae918837408"
   }
 }

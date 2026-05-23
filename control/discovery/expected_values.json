@@ -1,11 +1,11 @@
 {
   "track": "discovery",
-  "description": "Drug discovery — MATRIX scoring, HTS, compound libraries, ChEMBL JAK panel, Rho-MRTF fibrosis",
+  "description": "Drug discovery \u2014 MATRIX scoring, HTS, compound libraries, ChEMBL JAK panel, Rho-MRTF fibrosis",
   "spring": "healthSpring",
   "created": "2026-05-13",
   "scripts": {
     "exp090_matrix_scoring": {
-      "note": "Internal MATRIX methodology — multi-attribute compound scoring",
+      "note": "Internal MATRIX methodology \u2014 multi-attribute compound scoring",
       "data_source": "synthetic"
     },
     "exp091_addrc_hts": {
@@ -19,8 +19,14 @@
     },
     "exp093_chembl_jak_panel": {
       "papers": [
-        {"author": "Hill AV", "year": 1910, "doi": "10.1113/jphysiol.1910.sp001014"},
-        {"note": "IC50 values are literature-informed, not live ChEMBL API fetch"}
+        {
+          "author": "Hill AV",
+          "year": 1910,
+          "doi": "10.1113/jphysiol.1910.sp001014"
+        },
+        {
+          "note": "IC50 values are literature-informed, not live ChEMBL API fetch"
+        }
       ],
       "data_source": "hardcoded from published IC50 panels"
     },
@@ -32,5 +38,8 @@
       "note": "Toy marker/IC50 landscape",
       "data_source": "synthetic"
     }
+  },
+  "_provenance": {
+    "blake3": "dbd1a895c2c5116c3be64a2bd1339769bbc29a586439e8a5e25025109cc8ec35"
   }
 }

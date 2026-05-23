@@ -128,5 +128,8 @@
       "p50_us": 61.593,
       "p95_us": 107.811
     }
-  ]
+  ],
+  "_provenance": {
+    "blake3": "d65db9bc6f11ff7076f723cd485a671940adb346d3ce1551cfee2843a05b6fda"
+  }
 }

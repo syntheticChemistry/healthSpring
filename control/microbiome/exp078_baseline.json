@@ -6,6 +6,7 @@
     "date": "2026-03-10",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/microbiome/exp078_antibiotic_perturbation.py",
-    "script": "control/microbiome/exp078_antibiotic_perturbation.py"
+    "script": "control/microbiome/exp078_antibiotic_perturbation.py",
+    "blake3": "10e6088d3069b0bc3cc70bc9c3eb5f0235da9e7bd25e5f1c72529af92cb64b91"
   }
 }

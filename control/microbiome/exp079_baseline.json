@@ -7,6 +7,7 @@
     "date": "2026-03-10",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/microbiome/exp079_scfa_production.py",
-    "script": "control/microbiome/exp079_scfa_production.py"
+    "script": "control/microbiome/exp079_scfa_production.py",
+    "blake3": "f11f5c35d7d2b2341a8f83a7bfa31ee2b799efe43be04d671c86cc25dbc5499a"
   }
 }

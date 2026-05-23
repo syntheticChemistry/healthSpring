@@ -30,6 +30,7 @@
     "command": "python3 control/comparative/exp104_cross_species_pk.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python_version": "3.13.2",
-    "numpy_version": "2.1.3"
+    "numpy_version": "2.1.3",
+    "blake3": "1f4bdaf2de81c33b58a75d4b255adadb2b3add2286d74ceaa40431a48ba6f245"
   }
 }

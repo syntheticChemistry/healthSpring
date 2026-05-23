@@ -104,6 +104,7 @@
     "command": "control/discovery/exp097_affinity_landscape.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python_version": "3.13.2",
-    "numpy_version": "2.1.3"
+    "numpy_version": "2.1.3",
+    "blake3": "89c339af9ba97590f3dbe8703712d99ed97ea1b21d3fc059b7c9c4c44d4570bf"
   }
 }

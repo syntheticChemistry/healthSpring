@@ -47,6 +47,7 @@
     "command": "python3 control/discovery/exp091_addrc_hts.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python_version": "3.13.2",
-    "numpy_version": "2.1.3"
+    "numpy_version": "2.1.3",
+    "blake3": "700f332b1a51c74ade7de3e26f6a185b2a34240e84d5ab64e5179397d54c4f6f"
   }
 }

@@ -1,11 +1,11 @@
 {
   "track": "pkpd",
-  "description": "Pharmacokinetics / Pharmacodynamics — analytical baselines from peer-reviewed literature",
+  "description": "Pharmacokinetics / Pharmacodynamics \u2014 analytical baselines from peer-reviewed literature",
   "spring": "healthSpring",
   "created": "2026-05-13",
   "scripts": {
     "exp001_hill_dose_response": {
-      "paper": "Hill AV (1910) The possible effects of the aggregation of the molecules of haemoglobin on its dissociation curves. J Physiol 40(suppl):iv–vii",
+      "paper": "Hill AV (1910) The possible effects of the aggregation of the molecules of haemoglobin on its dissociation curves. J Physiol 40(suppl):iv\u2013vii",
       "doi": "10.1113/jphysiol.1910.sp001014",
       "model": "Hill dose-response: E = Emax * C^n / (IC50^n + C^n)",
       "key_parameters": {
@@ -16,7 +16,7 @@
       "analytical_checks": [
         "E(IC50) = 0.5 (definition of IC50)",
         "E(0) = 0 (no effect at zero dose)",
-        "E(∞) → Emax (saturation)",
+        "E(\u221e) \u2192 Emax (saturation)",
         "Monotonically increasing for n > 0",
         "Steeper sigmoid for higher n"
       ]
@@ -35,13 +35,13 @@
         "AUC = F*Dose / CL",
         "C(0) = 0 for oral",
         "C(0) = Dose/Vd for IV",
-        "t½ = ln(2) * Vd / CL"
+        "t\u00bd = ln(2) * Vd / CL"
       ]
     },
     "exp003_two_compartment_pk": {
       "paper": "Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics, 4th ed. Ch. 19.",
       "isbn": "978-0781750097",
-      "model": "C(t) = A*exp(-α*t) + B*exp(-β*t)",
+      "model": "C(t) = A*exp(-\u03b1*t) + B*exp(-\u03b2*t)",
       "key_parameters": {
         "dose_mg": 240.0,
         "v1_L": 15.0,
@@ -50,18 +50,36 @@
         "k21_hr": 0.15
       },
       "analytical_checks": [
-        "α + β = k10 + k12 + k21",
-        "α * β = k10 * k21",
+        "\u03b1 + \u03b2 = k10 + k12 + k21",
+        "\u03b1 * \u03b2 = k10 * k21",
         "A + B = C0 = Dose/V1",
         "AUC = Dose / (V1 * k10)",
-        "Terminal slope = -β"
+        "Terminal slope = -\u03b2"
       ]
     },
     "exp004_mab_pk_transfer": {
       "papers": [
-        {"author": "Gonzales AJ, Fleck TJ et al.", "year": 2021, "journal": "Vet Dermatol", "doi": "10.1111/vde.12187", "note": "lokivetmab canine PK (nS-603)"},
-        {"author": "Kabashima K et al.", "year": 2020, "journal": "NEJM", "doi": "10.1056/NEJMoa1917006", "note": "nemolizumab Phase III"},
-        {"author": "Mahmood I, Balian JD", "year": 1996, "journal": "J Pharm Sci", "doi": "10.1007/BF02353864", "note": "allometric scaling"}
+        {
+          "author": "Gonzales AJ, Fleck TJ et al.",
+          "year": 2021,
+          "journal": "Vet Dermatol",
+          "doi": "10.1111/vde.12187",
+          "note": "lokivetmab canine PK (nS-603)"
+        },
+        {
+          "author": "Kabashima K et al.",
+          "year": 2020,
+          "journal": "NEJM",
+          "doi": "10.1056/NEJMoa1917006",
+          "note": "nemolizumab Phase III"
+        },
+        {
+          "author": "Mahmood I, Balian JD",
+          "year": 1996,
+          "journal": "J Pharm Sci",
+          "doi": "10.1007/BF02353864",
+          "note": "allometric scaling"
+        }
       ],
       "model": "Allometric: Param_human = Param_animal * (BW_h/BW_a)^b",
       "key_parameters": {
@@ -72,13 +90,22 @@
     },
     "exp005_population_pk": {
       "papers": [
-        {"author": "Mould DR, Upton RN", "year": 2013, "journal": "CPT:PSP", "doi": "10.1038/psp.2013.14", "note": "Basic concepts in population modeling"},
-        {"author": "Rowland M, Tozer TN", "note": "Ch. 18 population PK"}
+        {
+          "author": "Mould DR, Upton RN",
+          "year": 2013,
+          "journal": "CPT:PSP",
+          "doi": "10.1038/psp.2013.14",
+          "note": "Basic concepts in population modeling"
+        },
+        {
+          "author": "Rowland M, Tozer TN",
+          "note": "Ch. 18 population PK"
+        }
       ],
       "model": "Lognormal IIV on CL/Vd/ka, one-compartment oral Bateman",
       "key_parameters": {
         "cl_typical_L_hr": 10.0,
-        "cl_cv": 0.30,
+        "cl_cv": 0.3,
         "vd_typical_L": 80.0,
         "ka_typical_hr": 1.5,
         "f_bioavail": 0.79,
@@ -93,8 +120,17 @@
     },
     "exp077_michaelis_menten_pk": {
       "papers": [
-        {"author": "Rowland M, Tozer TN", "note": "Ch. 20 capacity-limited elimination"},
-        {"author": "Ludden TM et al.", "year": 1977, "journal": "Clin Pharmacol Ther", "doi": "10.1016/0009-9236(77)90012-7", "note": "phenytoin nonlinear PK"}
+        {
+          "author": "Rowland M, Tozer TN",
+          "note": "Ch. 20 capacity-limited elimination"
+        },
+        {
+          "author": "Ludden TM et al.",
+          "year": 1977,
+          "journal": "Clin Pharmacol Ther",
+          "doi": "10.1016/0009-9236(77)90012-7",
+          "note": "phenytoin nonlinear PK"
+        }
       ],
       "model": "Michaelis-Menten: dC/dt = -Vmax*C/(Km + C)",
       "key_parameters": {
@@ -103,5 +139,8 @@
         "vd_L": 50.0
       }
     }
+  },
+  "_provenance": {
+    "blake3": "7c57b64140bc6628c1532f1258c2927db56afa9168e1429d7f529300d737141d"
   }
 }

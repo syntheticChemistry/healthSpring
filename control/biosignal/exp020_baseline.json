@@ -23,6 +23,7 @@
     "numpy": "2.1.3",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/biosignal/exp020_pan_tompkins_qrs.py",
-    "script": "control/biosignal/exp020_pan_tompkins_qrs.py"
+    "script": "control/biosignal/exp020_pan_tompkins_qrs.py",
+    "blake3": "4c1af720dca200659fa3baba449aca9f7245109625ae246105ac9b271022e894"
   }
 }

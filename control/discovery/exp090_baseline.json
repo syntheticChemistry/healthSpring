@@ -40,6 +40,7 @@
     "command": "python3 control/discovery/exp090_matrix_scoring.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python_version": "3.13.2",
-    "numpy_version": "2.1.3"
+    "numpy_version": "2.1.3",
+    "blake3": "c80a74ef884ac0963625b7a0ab443ab83dae35a653a845933092684360af0da8"
   }
 }

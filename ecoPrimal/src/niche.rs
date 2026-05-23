@@ -122,7 +122,7 @@ pub const CONSUMED_CAPABILITIES: &[&str] = &[
     "braid.create",
     "braid.query",
     "security.audit_log",
-    // Wave 38 — IonicContractRegistry bonding protocol (primalSpring 445-method registry)
+    // Wave 46 — IonicContractRegistry bonding protocol (primalSpring 458-method registry)
     "bonding.propose",
     "bonding.accept",
     "bonding.terminate",

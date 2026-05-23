@@ -97,6 +97,7 @@
     "command": "python3 control/comparative/exp100_canine_il31.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python_version": "3.13.2",
-    "numpy_version": "2.1.3"
+    "numpy_version": "2.1.3",
+    "blake3": "285c8605bf1f58f1c581b68aa9f76336f0e63573b45d460b99ef0803a308021a"
   }
 }

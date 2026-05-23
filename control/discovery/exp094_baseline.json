@@ -112,6 +112,7 @@
     "command": "python3 control/discovery/exp094_rho_mrtf_fibrosis.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python": "3.13.2",
-    "numpy": "2.1.3"
+    "numpy": "2.1.3",
+    "blake3": "74fc7c1231d5054389f9b5de718aa2675a8a7f4aa215a6cef673540c1184d216"
   }
 }

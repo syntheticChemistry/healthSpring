@@ -24,6 +24,7 @@
     "numpy": "2.1.3",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/pkpd/exp006_pbpk_compartments.py",
-    "script": "control/pkpd/exp006_pbpk_compartments.py"
+    "script": "control/pkpd/exp006_pbpk_compartments.py",
+    "blake3": "d992eef7941773709b6ecfc9f945f225ee683255614d1837225043e748adb3ce"
   }
 }

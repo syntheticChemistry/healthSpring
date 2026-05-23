@@ -49,6 +49,7 @@
     "command": "python3 control/comparative/exp101_canine_jak1.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python_version": "3.13.2",
-    "numpy_version": "2.1.3"
+    "numpy_version": "2.1.3",
+    "blake3": "435fbfd7e8dc5ae5083d43318a5e11e959c7a1b901c502984789f4e443ad33ac"
   }
 }

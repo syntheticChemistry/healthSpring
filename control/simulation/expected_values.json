@@ -1,13 +1,16 @@
 {
   "track": "simulation",
-  "description": "Mechanistic simulation — causal terrarium (pathway/damage/fitness model)",
+  "description": "Mechanistic simulation \u2014 causal terrarium (pathway/damage/fitness model)",
   "spring": "healthSpring",
   "created": "2026-05-13",
   "scripts": {
     "exp111_causal_terrarium": {
-      "note": "Internal mechanistic fitness model — Hill-type pathway activation with damage coupling",
+      "note": "Internal mechanistic fitness model \u2014 Hill-type pathway activation with damage coupling",
       "data_source": "analytical (Hill kinetics + population steady-state)",
-      "model": "fitness = baseline * Π(1 + activation_i) * (1 - damage)"
+      "model": "fitness = baseline * \u03a0(1 + activation_i) * (1 - damage)"
     }
+  },
+  "_provenance": {
+    "blake3": "0532200b922a92d84c13e0d5ffa32748ae632c808ff614169d08e7a7462842ba"
   }
 }

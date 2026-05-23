@@ -3,7 +3,7 @@
   "paper": "Leonard2024",
   "paper_id": "B5",
   "litho_module": "ltee-symbiont-pk",
-  "description": "Symbiont PK/PD: engineered gut bacteria as drug delivery — pharmacokinetics of symbiont-produced molecules",
+  "description": "Symbiont PK/PD: engineered gut bacteria as drug delivery \u2014 pharmacokinetics of symbiont-produced molecules",
   "doi": "10.1128/mbio.03342-23",
   "journal": "mBio",
   "year": 2024,
@@ -14,8 +14,8 @@
   "model_parameters": {
     "colonization": {
       "description": "Snodgrassella alvi colonization dynamics in bee gut after inoculation",
-      "initial_cfu_per_gut": 1e5,
-      "carrying_capacity_cfu": 1e9,
+      "initial_cfu_per_gut": 100000.0,
+      "carrying_capacity_cfu": 1000000000.0,
       "growth_rate_per_day": 1.2,
       "doubling_time_hours": 13.9,
       "model": "logistic",
@@ -45,7 +45,7 @@
     }
   },
   "expected_outcomes": {
-    "colonization_at_day_7_cfu": 3.1e8,
+    "colonization_at_day_7_cfu": 310000000.0,
     "colonization_at_day_7_tolerance": 0.2,
     "steady_state_molecule_ng": 425.0,
     "steady_state_molecule_tolerance": 0.15,
@@ -69,5 +69,8 @@
     "ltee_queue_id": "B5",
     "spring": "healthSpring",
     "track": "LTEE GuideStone"
+  },
+  "_provenance": {
+    "blake3": "77cc7b32d0e1282455ad7c9ad8cf443ce2b11e3c1b229ac0bdaf4a75a9398a56"
   }
 }

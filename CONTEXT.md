@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V64z · **Date:** May 22, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V64z: Wave 38 IonicContractRegistry absorption — `bonding.*` protocol wired via coordination socket, `storage.egress_fence` phantom reconciled, registry 445. B5 cross-tier parity proven, Module 8 ready. 57 scenarios, 88 capabilities, zero debt.
+**Version:** V65a · **Date:** May 23, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V65a: Wave 46 absorption — BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), registry 458. B5 cross-tier parity proven, Module 8 ready. 57 scenarios, 88 capabilities, zero debt.
 
 ## What This Is
 

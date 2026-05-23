@@ -162,6 +162,7 @@
     "command": "control/toxicology/exp098_toxicity_landscape.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python_version": "3.13.2",
-    "numpy_version": "2.1.3"
+    "numpy_version": "2.1.3",
+    "blake3": "26ce6dd4bc7b69d01c4d92497bd4bab328b896d192af20c98d515d351011de30"
   }
 }

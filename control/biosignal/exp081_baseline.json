@@ -6,6 +6,7 @@
     "date": "2026-03-10",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/biosignal/exp081_eda_stress.py",
-    "script": "control/biosignal/exp081_eda_stress.py"
+    "script": "control/biosignal/exp081_eda_stress.py",
+    "blake3": "46b255b5fbe8fed315f2d2cda1887f9b900ac58fc2d8393a31813c370af092f8"
   }
 }

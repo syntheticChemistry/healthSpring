@@ -17,7 +17,7 @@
       "description": "Logistic colonization CFU at day 7",
       "python_value": 307839277.31802374,
       "rust_value": 307839277.31802374,
-      "tolerance_rel": 1e-4,
+      "tolerance_rel": 0.0001,
       "actual_rel_error": 0.0,
       "status": "PASS"
     },
@@ -26,7 +26,7 @@
       "description": "Final colonization CFU approaching carrying capacity",
       "python_value": 999494652.9352545,
       "rust_value": 999494652.9352545,
-      "tolerance_rel": 1e-4,
+      "tolerance_rel": 0.0001,
       "actual_rel_error": 0.0,
       "status": "PASS"
     },
@@ -35,7 +35,7 @@
       "description": "Doubling time from growth rate r=1.2/day",
       "python_value": 13.862943611198906,
       "rust_value": 13.862943611198906,
-      "tolerance_rel": 1e-6,
+      "tolerance_rel": 1e-06,
       "actual_rel_error": 0.0,
       "status": "PASS"
     },
@@ -44,7 +44,7 @@
       "description": "Time to K/2 colonization from logistic model",
       "python_value": 7.675200305813208,
       "rust_value": 7.675200305813208,
-      "tolerance_rel": 1e-6,
+      "tolerance_rel": 1e-06,
       "actual_rel_error": 0.0,
       "status": "PASS"
     },
@@ -53,7 +53,7 @@
       "description": "Steady-state molecule concentration in gut lumen",
       "python_value": 424.5087783804876,
       "rust_value": 424.5087783804876,
-      "tolerance_rel": 1e-3,
+      "tolerance_rel": 0.001,
       "actual_rel_error": 0.0,
       "status": "PASS"
     },
@@ -71,7 +71,7 @@
       "description": "Hill dose-response knockdown efficacy at steady state",
       "python_value": 0.8525282495038913,
       "rust_value": 0.8525282495038913,
-      "tolerance_rel": 1e-3,
+      "tolerance_rel": 0.001,
       "actual_rel_error": 0.0,
       "status": "PASS"
     },
@@ -80,7 +80,7 @@
       "description": "PK half-life from first-order elimination constant",
       "python_value": 8.317766166719343,
       "rust_value": 8.317766166719343,
-      "tolerance_rel": 1e-6,
+      "tolerance_rel": 1e-06,
       "actual_rel_error": 0.0,
       "status": "PASS"
     }
@@ -103,5 +103,8 @@
       "science.pkpd.one_compartment_pk"
     ],
     "module_8_ready": true
+  },
+  "_provenance": {
+    "blake3": "013f995fd103f97eba5de2f135a68e3b361c4cb836ae3e1e01865271999ae7f3"
   }
 }

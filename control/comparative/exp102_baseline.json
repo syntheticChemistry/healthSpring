@@ -947,6 +947,7 @@
     "command": "python3 control/comparative/exp102_il31_pruritus_timecourse.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python": "3.13.2",
-    "numpy": "2.1.3"
+    "numpy": "2.1.3",
+    "blake3": "fbbaf1a70101ffd2f8e796248cf97cc6017a70d3b6e5431174be2dfde5ff4f00"
   }
 }

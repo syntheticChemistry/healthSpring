@@ -339,6 +339,7 @@
     "command": "python3 control/comparative/exp106_feline_hyperthyroid.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python": "3.13.2",
-    "numpy": "2.1.3"
+    "numpy": "2.1.3",
+    "blake3": "a3db6060ab58ea0c492eef704d1208252ff96108b46e8a0598b50cc354a19613"
   }
 }

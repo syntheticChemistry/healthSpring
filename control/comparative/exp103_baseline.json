@@ -56,6 +56,7 @@
     "command": "python3 control/comparative/exp103_lokivetmab_duration.py",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "python": "3.13.2",
-    "numpy": "2.1.3"
+    "numpy": "2.1.3",
+    "blake3": "9fb7a4406d324d6f3a81e78f906179a90fbf7431d36c2498ccb093f5ccf5bade"
   }
 }

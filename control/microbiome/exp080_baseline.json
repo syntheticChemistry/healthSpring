@@ -14,6 +14,7 @@
     "date": "2026-03-10",
     "git_commit": "56c5b2c8756a870d200dacda5a91af223fbbc2d6",
     "command": "python3 control/microbiome/exp080_gut_brain_serotonin.py",
-    "script": "control/microbiome/exp080_gut_brain_serotonin.py"
+    "script": "control/microbiome/exp080_gut_brain_serotonin.py",
+    "blake3": "9db0a9d026816d3ed6ac4ab25a6fdabd03156b5add450f8bd1a2940dbfb3197c"
   }
 }

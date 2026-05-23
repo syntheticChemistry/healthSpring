@@ -1,11 +1,11 @@
 {
   "track": "toxicology",
-  "description": "Toxicology — multi-tissue accumulation, biphasic dose-response (hormesis)",
+  "description": "Toxicology \u2014 multi-tissue accumulation, biphasic dose-response (hormesis)",
   "spring": "healthSpring",
   "created": "2026-05-13",
   "scripts": {
     "exp098_toxicity_landscape": {
-      "note": "Internal multi-tissue toxicity model — synthetic tissue occupancy scenarios",
+      "note": "Internal multi-tissue toxicity model \u2014 synthetic tissue occupancy scenarios",
       "data_source": "analytical formulas from toxicology module"
     },
     "exp099_hormesis": {
@@ -14,5 +14,8 @@
       "model": "Biphasic: stimulation at low dose, inhibition at high dose",
       "data_source": "analytical"
     }
+  },
+  "_provenance": {
+    "blake3": "c87aaf9564a854413d67b7dfb86e9ab72ba64fd0d1194e2576da408562ebb34e"
   }
 }
