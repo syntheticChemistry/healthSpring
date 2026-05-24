@@ -6,6 +6,14 @@ This project uses internal versioning (V-series) for development milestones.
 
 ## V65a — May 23, 2026
 
+### Post-Primordial Gate Deployment — southGate
+
+- **Gate assignment confirmed**: southGate (5800X3D, 128GB DDR4). Co-tenant: wetSpring.
+- **`tools/southgate_nucleus.sh`** — Dual-tower NUCLEUS launcher for healthSpring's unique `healthspring_enclave_proto_nucleate` graph. Launches 14 primal instances across two FAMILY_IDs with ionic bridge mediation. Supports `start`, `stop`, `status`, `validate`.
+- **`tools/fetch_primals.sh`** — Verifies all 14 binaries available (13 plasmidBin NUCLEUS + 1 primalspring_primal). 14/14 confirmed present.
+- **Handoff**: `HEALTHSPRING_GATE_DEPLOYMENT_MAY23_2026.md` — documents gate assignment, dual-tower topology, deployment flow, validation posture, and upstream gaps found (dual-family namespacing, primalspring_primal in plasmidBin, multi-spring contention, live guidestone).
+- **L3 validation ready** — awaiting physical deployment to southGate hardware.
+
 ### Wave 46 Absorption — BLAKE3 Backfill, Registry 458, sporePrint Pipeline
 
 - **BLAKE3 provenance backfill (FN-1)** — `tools/blake3_backfill.sh` hashes all 63 JSON files in `control/` and injects `_provenance.blake3` into each. 62 files updated; fully idempotent. Addresses SP-4 alignment.

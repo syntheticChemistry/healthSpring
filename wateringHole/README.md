@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V65a — Wave 46 Absorption. BLAKE3 provenance backfill (62 JSON files). sporePrint sovereign publish pipeline (SP-4). B5 cross-tier parity proven. Module 8 ready. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 458-method registry. **1,021 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
+**Status**: V65a — **Post-Primordial Gate Deployment**. southGate assigned (5800X3D, 128GB DDR4, co-tenant: wetSpring). Dual-tower NUCLEUS launcher wired (`southgate_nucleus.sh`). 14/14 primal binaries verified. L3 live IPC validation ready. BLAKE3 provenance complete. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 458-method registry. **1,021 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
 **Last Updated**: May 23, 2026
 
 ---
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V65a** | [Wave 46 Absorption](handoffs/HEALTHSPRING_V65A_WAVE46_ABSORPTION_MAY23_2026.md) | May 23 | BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), registry 458, primalSpring v0.9.27 |
+| **V65a** | [Gate Deployment — southGate](handoffs/HEALTHSPRING_GATE_DEPLOYMENT_MAY23_2026.md) | May 23 | southGate assigned, dual-tower launcher wired, 14/14 binaries verified, L3 ready, gaps for biomeOS/plasmidBin/wetSpring |
+| V65a | [Wave 46 Absorption](handoffs/HEALTHSPRING_V65A_WAVE46_ABSORPTION_MAY23_2026.md) | May 23 | BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), registry 458, primalSpring v0.9.27 |
 | V64z | [Wave 38 IonicContractRegistry Absorption](handoffs/archive/HEALTHSPRING_V64Z_WAVE38_IONIC_ABSORPTION_MAY22_2026.md) | May 22 | `bonding.*` protocol wired via coordination socket, `storage.egress_fence` phantom reconciled, registry 445, degradation + stability docs updated |
 | V64x | [lithoSpore Audit Absorption](handoffs/archive/HEALTHSPRING_V64X_LITHOSPORE_ABSORPTION_MAY17_2026.md) | May 17 | Degradation behavior (13 domains), stability tiers (58 methods annotated), B5 cross-tier parity (8/8 bit-identical), trio semantics confirmed, Module 8 ready |
 | V64w | [Comprehensive Upstream Handoff](handoffs/archive/HEALTHSPRING_V64W_COMPREHENSIVE_UPSTREAM_HANDOFF_MAY17_2026.md) | May 17 | 57 scenarios, full primal evolution review, NUCLEUS composition patterns, neuralAPI deployment, deep debt zero, upstream gap asks |
