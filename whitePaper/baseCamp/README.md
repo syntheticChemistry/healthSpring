@@ -2,8 +2,8 @@
 
 Per-person translation of validated science into usable health applications. Metagenomics, pharmacokinetics, biosignals, and endocrine models mean nothing unless they produce actionable clinical insight for individual patients. Every pipeline here terminates at a patient — parameterized, visualized, and interpretable by the clinician standing in front of them.
 
-**Last Updated:** May 17, 2026
-**Status:** V64x — lithoSpore audit absorbed. B5 cross-tier parity proven (8/8 bit-identical), degradation + stability tiers documented, Module 8 ready. **57 validation scenarios** covering 56 experiment IDs, 458-method registry, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, primalSpring **v0.9.25**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
+**Last Updated:** May 23, 2026
+**Status:** V65a — Wave 46 absorbed. BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4). B5 cross-tier parity proven (8/8 bit-identical), degradation + stability tiers documented, Module 8 ready. **57 validation scenarios** covering 56 experiment IDs, 458-method registry, all 7 deep debt categories zero. **1,021 tests**, 95 experiments, primalSpring **v0.9.27**, 54 Python baseline scripts + 53 `.ipynb` notebooks, 96+ provenance entries. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
 
 ---
 
@@ -104,7 +104,7 @@ Exp063 closes this loop: a `PatientTrtProfile` (age, weight, testosterone level,
 | **toadStool tests** | — | — | **51** | 51 |
 | **Doc-tests** | — | — | **9** | 9 |
 | **Integration/composition** | — | — | **47** | 47 |
-| **Total** | **688** | **287+** (Tier 0) | **1,018** (tests) | **3,000+** |
+| **Total** | **688** | **287+** (Tier 0) | **1,021** (tests) | **3,000+** |
 
 ---
 

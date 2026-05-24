@@ -1,7 +1,7 @@
 # healthSpring Degradation Behavior
 
 **Version**: 1.0
-**Date**: May 17, 2026 (V64x)
+**Date**: May 23, 2026 (V65a)
 **Reference**: `infra/wateringHole/PROVENANCE_TRIO_INTEGRATION_GUIDE.md` §Transaction Semantics
 
 ---

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring BarraCUDA Requirements
 
-**Last Updated**: May 12, 2026
-**Status**: V64x — 57 validation scenarios, all four math methods IPC-validated. barraCuda v0.4.0. All six GPU ops LIVE. ecoBin 0.9.0. primalSpring v0.9.25. CG-3 (`submit_and_map`) tracked upstream.
+**Last Updated**: May 23, 2026
+**Status**: V65a — Wave 46 absorbed. 57 validation scenarios, all four math methods IPC-validated. barraCuda v0.4.0. All six GPU ops LIVE. ecoBin 0.9.0. primalSpring v0.9.27. CG-3 (`submit_and_map`) tracked upstream.
 
 ---
 

@@ -93,7 +93,7 @@ fn cmd_version() {
     let version = env!("CARGO_PKG_VERSION");
     eprintln!("healthspring {version}");
     eprintln!("  domain:     {}", healthspring_barracuda::PRIMAL_DOMAIN);
-    eprintln!("  primalSpring: v0.9.25 (pinned)");
+    eprintln!("  primalSpring: v0.9.27 (pinned)");
 }
 
 fn cmd_status() {

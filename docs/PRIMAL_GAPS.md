@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-22
-**healthSpring version**: V64z (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.25**, barraCuda **v0.4.0**, V64z: Wave 38 IonicContractRegistry absorbed — `bonding.*` protocol wired, `storage.egress_fence` phantom reconciled, registry 445, 57 validation scenarios, 1,021 tests, all 7 deep debt categories zero, clippy zero)
+**Date**: 2026-05-23
+**healthSpring version**: V65a (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**, barraCuda **v0.4.0**, V65a: Wave 46 absorbed — BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), `bonding.*` protocol wired, registry 458, 57 validation scenarios, 1,021 tests, all 7 deep debt categories zero, clippy zero)
 
 ---
 

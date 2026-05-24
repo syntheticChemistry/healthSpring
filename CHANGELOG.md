@@ -13,6 +13,17 @@ This project uses internal versioning (V-series) for development milestones.
 - **Registry reference 445 → 458** — `niche.rs` comment and 6 documentation files updated to reflect primalSpring v0.9.27 (Wave 46) 458-method registry.
 - **Zero clippy, zero debt** — all 7 deep debt categories remain at zero. 1,021 tests pass.
 
+### Docs Cleanup & Debris Sweep
+
+- **Version sweep** — 25+ active docs updated from V64x/1,018/v0.9.25 to V65a/1,021/v0.9.27 (whitePaper, specs, docs, baseCamp, wateringHole).
+- **README Current Metrics table** — refreshed from stale V64o to V65a (57 scenarios, 1,021 tests, 458 registry).
+- **Cargo.toml primalSpring pin** — bumped from `0.9.25` to `0.9.27`; `main.rs` version string updated.
+- **Sandbox artifacts removed** — committed `sandbox/dashboard/` and `sandbox/clinical/` JSON files removed from tracking; `sandbox/` added to `.gitignore`.
+- **Tools archived** — `py_to_notebook.py` (one-shot complete) and `composition_template.sh` (superseded by upstream) moved to `fossilRecord/`.
+- **Handoffs archived** — V64y and V64z handoffs moved to `wateringHole/handoffs/archive/`; 13 broken links in `wateringHole/README.md` fixed to point to `archive/`.
+- **publish_sporeprint.sh** — metadata version updated from V64z to V65a.
+- **fossilRecord/README.md** — updated manifest to include newly archived tools.
+
 ## V64z — May 22, 2026
 
 ### Wave 38 IonicContractRegistry Absorption — Bonding Protocol Wired, Egress Fence Reconciled

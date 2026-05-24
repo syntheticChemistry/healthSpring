@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Specifications
 
-**Last Updated**: May 17, 2026
-**Status**: V64x — lithoSpore audit absorbed. B5 cross-tier parity proven (8/8 bit-identical). Degradation + stability tiers documented. Module 8 ready. **57 validation scenarios**, 458-method registry, all 7 deep debt categories zero. **1,018 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0.
+**Last Updated**: May 23, 2026
+**Status**: V65a — Wave 46 absorbed. BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4). B5 cross-tier parity proven (8/8 bit-identical). Degradation + stability tiers documented. Module 8 ready. **57 validation scenarios**, 458-method registry, all 7 deep debt categories zero. **1,021 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---
@@ -11,7 +11,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Rust tests (workspace) | 1,018 |
+| Rust tests (workspace) | 1,021 |
 | Python control checks | 53 baselines + 53 notebooks, 113 parity checks (`cross_validate.py`, all 9 tracks) |
 | Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | GPU validation (Tier 2) | **Live** — 6 WGSL shaders, fused pipeline, 42/42 parity, GPU scaling confirmed |

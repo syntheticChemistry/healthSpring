@@ -2,7 +2,7 @@
 # Sub-Thesis: QS Gene Profiling — Functional Anderson Disorder
 
 **Last Updated**: April 27, 2026
-**Status**: V64x — 57 validation scenarios. 59 genera, 6 QS families, effective disorder validated (12 unit tests); healthSpring 1,018 tests, 54 baselines. barraCuda v0.4.0. primalSpring v0.9.25.
+**Status**: V65a — 57 validation scenarios. 59 genera, 6 QS families, effective disorder validated (12 unit tests); healthSpring 1,021 tests, 54 baselines. barraCuda v0.4.0. primalSpring v0.9.27.
 **Tracks**: 2 (Microbiome), 6 (Comparative Medicine), 7 (Drug Discovery)
 **Cross-Paper**: Paper 01 (Anderson-QS), Paper 16 (Anaerobic-Aerobic QS)
 

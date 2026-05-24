@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring White Paper
 
-**Date:** May 17, 2026
-**Status:** V64x — lithoSpore audit absorbed. Degradation behavior, stability tiers, B5 cross-tier parity (8/8 bit-identical), trio semantics confirmed. Module 8 ready. Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone → L6 NUCLEUS. **UniBin** + **57 validation scenarios** covering 56 experiment IDs. 95 experiments, **1,018 tests**, 88 capabilities, 96+ provenance entries. 458-method registry. Clippy pedantic+nursery zero. All 7 deep debt categories zero. **primalSpring v0.9.25**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
+**Date:** May 23, 2026
+**Status:** V65a — Wave 46 absorbed. BLAKE3 provenance backfill (62 files hashed), sporePrint sovereign publish pipeline (SP-4), registry 458. B5 cross-tier parity proven (8/8 bit-identical), degradation + stability tiers documented, Module 8 ready. Six-level validation ladder: L1 Python → L2 Rust → L3 CPU → L4 GPU → L5 guideStone → L6 NUCLEUS. **UniBin** + **57 validation scenarios** covering 56 experiment IDs. 95 experiments, **1,021 tests**, 88 capabilities, 96+ provenance entries. 458-method registry. Clippy pedantic+nursery zero. All 7 deep debt categories zero. **primalSpring v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe.
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 
 ---
@@ -243,7 +243,7 @@ NCA replaces WinNonlin. All validated, all AGPL-3.0, all zero-dependency Pure Ru
 | Metric | Value |
 |--------|-------|
 | Experiments | 95 complete (83 science + 12 composition Tier 3–5, exp112–123) |
-| Rust tests | 1,018 (878 lib + 9 doc + 12 integration + 20 composition + 3 registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool; see root README) |
+| Rust tests | 1,021 (878 lib + 9 doc + 12 integration + 20 composition + 6 registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool; see root README) |
 | Python checks | 113 cross-validation |
 | Paper queue | 45/45 complete (Tracks 1–7), 3 LTEE queued (B5, E2, E4) |
 | GPU shaders | 6 WGSL (Hill, PopPK, Diversity, MM batch, SCFA batch, Beat classify) |

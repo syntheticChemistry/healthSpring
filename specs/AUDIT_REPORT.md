@@ -1,7 +1,7 @@
 # healthSpring Codebase Completion Audit Report
 
 > **FOSSIL RECORD** — This is a V42 historical snapshot (March 2026). Current status is
-> **V64l** (May 13, 2026): 1,018 tests, 95 experiments, 88 capabilities, zero clippy/fmt/doc
+> **V65a** (May 23, 2026): 1,021 tests, 95 experiments, 88 capabilities, zero clippy/fmt/doc
 > warnings, zero deep debt across 7 categories. See root `README.md` for current state.
 > Retained for traceability per ecoPrimals fossil-record policy.
 

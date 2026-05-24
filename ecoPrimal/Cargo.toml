@@ -61,8 +61,8 @@ base64 = "0.22"
 
 # primalSpring composition API — required for CompositionContext,
 # ScenarioMeta, ValidationResult, certification engine, and tolerances.
-# Pinned to v0.9.25 (interstadial eukaryotic evolution baseline).
-primalspring = { path = "../../primalSpring/ecoPrimal", version = "0.9.25" }
+# Pinned to v0.9.27 (Wave 46 absorption).
+primalspring = { path = "../../primalSpring/ecoPrimal", version = "0.9.27" }
 
 [[bin]]
 name = "healthspring_primal"

@@ -5,7 +5,7 @@
 colonizing the honeybee gut." mBio 15(3):e03342-23.
 **DOI**: 10.1128/mbio.03342-23
 **LTEE Queue ID**: B5
-**Spring**: healthSpring V64x
+**Spring**: healthSpring V65a
 **Cross-Tier Parity**: 8/8 PASS — bit-identical Python vs Rust (May 17, 2026)
 
 ---

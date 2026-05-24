@@ -33,10 +33,10 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V64o** (Wave 17 Signal Adoption: `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch, 451-method registry sync, routing/niche domain expansion, GAP-GS-015 confirmed, Foundation Threads 3+8 assessed) |
-| **Total tests** | **1,018** (878 lib + 9 doc + 12 integration + 20 composition + 3 registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool) |
+| Version | **V65a** (Wave 46 Absorption: BLAKE3 provenance backfill, sporePrint sovereign publish SP-4, 458-method registry, IonicContractRegistry bonding protocol wired) |
+| **Total tests** | **1,021** (878 lib + 9 doc + 12 integration + 20 composition + 6 registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
-| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: 17 registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
+| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: **57** registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
 | JSON-RPC capabilities | 88 (`ALL_CAPABILITIES` in `capabilities.rs`; 58 science + 30 infra — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **45/45 complete** (Tracks 1–7: 30 T1–T5 + 8 T6 + 7 T7) + **1 LTEE complete** (B5 Tier 0+1), 2 LTEE queued (E2, E4) |
 | Python baselines | **53 Python control scripts + 53 Jupyter notebooks** with structured provenance registry (**95+** provenance entries, 100% experiment coverage) |
@@ -56,7 +56,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 ## V61 Eukaryotic Architecture — UniBin & IPC-first (from V60)
 
-V61 completes the **eukaryotic** layout: a single **`healthspring_unibin`** surfaces certification, validation scenario runs, primal serve, status, and version — alongside the existing **`healthspring_primal`** niche server. **Library defaults are IPC-first** (`default = []`); link **`barracuda-lib`** when you need direct `barracuda::` imports or GPU library paths. **primalSpring v0.9.25** is pinned (workspace dependency with version), replacing the earlier optional path-only **v0.9.17** arrangement.
+V61 completes the **eukaryotic** layout: a single **`healthspring_unibin`** surfaces certification, validation scenario runs, primal serve, status, and version — alongside the existing **`healthspring_primal`** niche server. **Library defaults are IPC-first** (`default = []`); link **`barracuda-lib`** when you need direct `barracuda::` imports or GPU library paths. **primalSpring v0.9.27** is pinned (workspace dependency with version), replacing the earlier optional path-only **v0.9.17** arrangement.
 
 New modules: **`certification/`** (guideStone logic absorbed from the standalone binary), **`composition/`** (`HealthCompositionContext` wrapping primalSpring’s **`CompositionContext`**), **`validation/scenarios/`** (16 scenarios in 8 tracks migrated out of one-off experiment mains). **Per-trio provenance** IPC lives under **`ipc/provenance/`** — **rhizocrypt** (DAG), **loamspine** (ledger / Merkle), **sweetgrass** (braid / analytics). Pre-extinction sources are preserved under **`fossilRecord/`** (`guidestone_prokaryotic_may2026/`, `experiments_prokaryotic_may2026/`).
 
@@ -64,7 +64,7 @@ New modules: **`certification/`** (guideStone logic absorbed from the standalone
 
 ## V60 Deep Debt Evolution — Sovereign NUCLEUS Parity (from V59) *(historical)*
 
-> Snapshot of the **V60** milestone. Current workspace status is **V64x** (May 19, 2026) — see above.
+> Snapshot of the **V60** milestone. Current workspace status is **V65a** (May 23, 2026) — see above.
 
 V60 extends sovereign deployment and parity: optional **`barracuda-lib`** feature (default on) gates barraCuda/barracuda-core; disabling yields an IPC-first NUCLEUS path with pure-Rust fallbacks in `math_dispatch.rs`. **`BarraCudaClient::discover()`** probes the `stats` capability first with a `barracuda` name fallback. Scattered timeouts and retries consolidate into **`tolerances.rs`**; inline literals in exp122 and guidestone bare.rs migrate to named tolerance constants. **`exp123_nucleus_parity`** validates full NUCLEUS pipeline parity (Tower+Node+Nest+cross-atomic) for the health niche; **`validate_pk_models`** supports projectNUCLEUS workloads (Hill, 1-compartment, PopPK, Michaelis-Menten). Criterion **`gpu_parity`** benchmarks are feature-gated behind `gpu`; dataset fetch scripts add BLAKE3 hashing; `records_infra.rs` and visualization scenario tests split for maintainability; capability registry and docs align with primalSpring. **1,002** tests pass, **0** clippy warnings.
 

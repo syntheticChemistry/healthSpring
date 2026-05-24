@@ -80,7 +80,7 @@ publish_file() {
     fi
 
     local params
-    params=$(printf '{"path":"sporeprint/healthspring/%s","content_base64":"%s","content_type":"%s","blake3":"%s","metadata":{"source":"healthspring","pipeline":"SP-4","version":"V64z"}}' \
+    params=$(printf '{"path":"sporeprint/healthspring/%s","content_base64":"%s","content_type":"%s","blake3":"%s","metadata":{"source":"healthspring","pipeline":"SP-4","version":"V65a"}}' \
         "$filename" "$content" "$content_type" "$blake3")
 
     local result

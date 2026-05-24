@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Integration Plan: NestGate + biomeOS + Atomic Stack
 
-**Last Updated**: May 19, 2026 (V64x — 57 validation scenarios, 1,018 tests, 95 experiments, 88 capabilities, 4 NUCLEUS workloads, barraCuda v0.4.0, primalSpring v0.9.25)
+**Last Updated**: May 23, 2026 (V65a — 57 validation scenarios, 1,021 tests, 95 experiments, 88 capabilities, 4 NUCLEUS workloads, barraCuda v0.4.0, primalSpring v0.9.27)
 
 ---
 

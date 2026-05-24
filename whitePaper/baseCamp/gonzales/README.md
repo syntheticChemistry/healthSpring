@@ -1,7 +1,7 @@
 # healthSpring baseCamp: Gonzales PK/PD → Human Therapeutics
 
 **Faculty**: Andrea J. Gonzales (MSU Pharmacology & Toxicology), Erika Lisabeth (ADDRC), Richard Neubig (Drug Discovery), Edmund Ellsworth (Medicinal Chemistry)
-**Status**: V64x — 57 validation scenarios, B5 cross-tier parity proven. primalSpring **v0.9.25**. 95 experiments, **1,018 tests**, 54 Python baselines + 53 notebooks. barraCuda v0.4.0. ecoBin 0.9.0.
+**Status**: V65a — 57 validation scenarios, B5 cross-tier parity proven. primalSpring **v0.9.27**. 95 experiments, **1,021 tests**, 54 Python baselines + 53 notebooks. barraCuda v0.4.0. ecoBin 0.9.0.
 **Parent**: gen3/baseCamp Paper 12 (Immunological Anderson), gen3/baseCamp Paper 13 (Sovereign Human Health Computing)
 
 ---
