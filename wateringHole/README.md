@@ -22,7 +22,7 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V65a** | [Gate Deployment — southGate](handoffs/HEALTHSPRING_GATE_DEPLOYMENT_MAY23_2026.md) | May 23 | southGate assigned, dual-tower launcher wired, 14/14 binaries verified, L3 ready, gaps for biomeOS/plasmidBin/wetSpring |
+| **V65a** | [Gate Deployment — ironGate](handoffs/HEALTHSPRING_GATE_DEPLOYMENT_MAY23_2026.md) | May 23 | ironGate live — Tower A 7/7 healthy, 7 deployment gaps documented for upstream primal teams, dual-tower launcher wired |
 | V65a | [Wave 46 Absorption](handoffs/HEALTHSPRING_V65A_WAVE46_ABSORPTION_MAY23_2026.md) | May 23 | BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), registry 458, primalSpring v0.9.27 |
 | V64z | [Wave 38 IonicContractRegistry Absorption](handoffs/archive/HEALTHSPRING_V64Z_WAVE38_IONIC_ABSORPTION_MAY22_2026.md) | May 22 | `bonding.*` protocol wired via coordination socket, `storage.egress_fence` phantom reconciled, registry 445, degradation + stability docs updated |
 | V64x | [lithoSpore Audit Absorption](handoffs/archive/HEALTHSPRING_V64X_LITHOSPORE_ABSORPTION_MAY17_2026.md) | May 17 | Degradation behavior (13 domains), stability tiers (58 methods annotated), B5 cross-tier parity (8/8 bit-identical), trio semantics confirmed, Module 8 ready |

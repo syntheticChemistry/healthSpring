@@ -1,27 +1,25 @@
-# healthSpring Gate Deployment — southGate
+# healthSpring Gate Deployment — ironGate
 
 **Date**: May 23, 2026
 **From**: healthSpring V65a
-**Gate**: southGate (5800X3D, 128GB DDR4)
-**Co-tenant**: wetSpring
+**Gate**: ironGate (i9-14900K, RTX 5070, 96GB DDR5)
+**Co-tenants**: primalSpring, ludoSpring, groundSpring
 **NUCLEUS Composition**: `healthspring_enclave_proto_nucleate` (dual-tower ionic bond)
-**Status**: **DEPLOYMENT-READY** — 14/14 primal binaries available, tooling wired
+**Status**: **DEPLOYED** — Tower A 7/7 healthy, Tower B partial (socket path gaps)
 
 ---
 
 ## Gate Assignment Confirmed
 
-healthSpring deploys on **southGate** alongside **wetSpring**. This is a
-Nest-heavy gate (128GB DDR4) suitable for healthSpring's dual-tower patient
-data enclave and wetSpring's fermentation data pipelines.
+healthSpring deploys on **ironGate** alongside primalSpring, ludoSpring, and
+groundSpring. This is the primary development gate with the most compute headroom.
 
 | Hardware | Spec |
 |----------|------|
-| CPU | AMD 5800X3D (8C/16T, 96MB V-Cache) |
-| RAM | 128GB DDR4 |
-| GPU | N/A for healthSpring (CPU-only science + IPC) |
-| Storage | TBD (NestGate storage volumes) |
-| OS | Linux (x86_64-unknown-linux-musl static primals) |
+| CPU | Intel i9-14900K (24C/32T) |
+| RAM | 96GB DDR5 |
+| GPU | NVIDIA RTX 5070 |
+| OS | Linux 6.12.10 (Pop!_OS / x86_64) |
 
 ---
 
@@ -80,10 +78,10 @@ time_window = "session"
 | Tool | Purpose | Status |
 |------|---------|--------|
 | `tools/fetch_primals.sh` | Verify/fetch all 14 binaries | **WIRED** |
-| `tools/southgate_nucleus.sh start` | Launch dual-tower NUCLEUS | **WIRED** |
-| `tools/southgate_nucleus.sh status` | Health check all 14 instances | **WIRED** |
-| `tools/southgate_nucleus.sh stop` | Graceful shutdown | **WIRED** |
-| `tools/southgate_nucleus.sh validate` | Run `healthspring validate` against live NUCLEUS | **WIRED** |
+| `tools/gate_nucleus.sh start` | Launch dual-tower NUCLEUS | **WIRED** |
+| `tools/gate_nucleus.sh status` | Health check all 14 instances | **WIRED** |
+| `tools/gate_nucleus.sh stop` | Graceful shutdown | **WIRED** |
+| `tools/gate_nucleus.sh validate` | Run `healthspring validate` against live NUCLEUS | **WIRED** |
 | `tools/composition_nucleus.sh` | Single-family fallback launcher (existing) | Available |
 | `tools/healthspring_composition.sh` | IPC math validation (existing) | Available |
 
@@ -131,21 +129,90 @@ healthspring_unibin validate --format json
 
 ---
 
+## Live Deployment Results (May 23, 2026 — ironGate)
+
+**Deployment method**: `tools/gate_nucleus.sh start` via `plasmidBin/start_primal.sh`
+
+### Tower A — Patient Data Enclave: **7/7 HEALTHY**
+
+| Primal | Status | Socket Path | Notes |
+|--------|--------|-------------|-------|
+| beardog | **HEALTHY** | `/tmp/biomeos/{family}/beardog-{family}.sock` | Responds `"alive"` |
+| songbird | **HEALTHY** | `/run/user/1000/biomeos/songbird-{family}.sock` | Needs `BEARDOG_SOCKET` env |
+| nestgate | **HEALTHY** | `/run/user/1000/biomeos/nestgate-{family}.sock` | Ignores `--socket`, uses XDG |
+| rhizocrypt | **HEALTHY** | `/run/user/1000/biomeos/rhizocrypt-{family}.sock` | Needs `FAMILY_SEED` env |
+| loamspine | **HEALTHY** | `/tmp/biomeos/{family}/loamspine-{family}.sock` | 15s infant discovery timeout; needs `DISCOVERY_ENDPOINT` |
+| sweetgrass | **HEALTHY** | varies | Responds `"alive"` |
+| biomeos | **HEALTHY** | varies | Coordinator ready |
+
+### Tower B — Analytics/Inference: **3/6 HEALTHY** (socket path gap)
+
+| Primal | Status | Notes |
+|--------|--------|-------|
+| beardog | **HEALTHY** | Same pattern as Tower A |
+| songbird | **HEALTHY** | Same pattern |
+| squirrel | **RUNNING but unreachable** | Socket at XDG path; empty health response (format issue) |
+| nestgate | Not started (blocked by squirrel) | Would succeed (same pattern as Tower A) |
+| rhizocrypt | Not started | Would succeed |
+| sweetgrass | Not started | Would succeed |
+
+### Deployment Issues Discovered
+
+1. **Socket path disagreement**: NestGate and Squirrel ignore `--socket` CLI flag, always place socket at `$XDG_RUNTIME_DIR/biomeos/{name}-{family}.sock`. BearDog and LoamSpine respect the passed path. This creates discovery confusion.
+
+2. **`FAMILY_SEED` vs `BEARDOG_FAMILY_SEED`**: RhizoCrypt requires `FAMILY_SEED` env for BTSP. BearDog uses `BEARDOG_FAMILY_SEED`. Both must be set for dual-tower operation.
+
+3. **Songbird requires explicit `BEARDOG_SOCKET`**: Without it, Songbird fails with "No security provider configured."
+
+4. **LoamSpine infant discovery timeout**: 15s DNS SRV scan before fallback. Set `DISCOVERY_ENDPOINT` to songbird socket to skip.
+
+5. **Health response format inconsistency**: BearDog returns `{"status":"alive"}`, others return `{"status":"alive"}` or nothing. Squirrel returns empty on `health.liveness`.
+
+6. **`socat` required**: Not installed by default on some systems. Required for UDS health probes.
+
+---
+
 ## Gaps Found (for upstream primal teams)
+
+### Gap: Socket Path Inconsistency (CRITICAL for multi-tower)
+
+**Problem**: Primals disagree on socket placement. BearDog and LoamSpine respect
+the `--socket` CLI flag and use the passed directory. NestGate and Squirrel ignore
+`--socket` and always use `$XDG_RUNTIME_DIR/biomeos/{name}-{family}.sock`.
+
+**Impact**: Multi-tower compositions cannot reliably isolate socket namespaces.
+Discovery breaks when the health checker looks in the wrong directory.
+
+**Ask for NestGate/Squirrel teams**: Honor the `--socket` CLI flag passed by
+`start_primal.sh`. Alternatively, document the canonical socket resolution order
+so launchers can predict the actual path.
 
 ### Gap: Dual-Tower Socket Namespacing
 
 **Problem**: The standard `nucleus_launcher.sh` uses a single FAMILY_ID for all primals.
 healthSpring's dual-tower graph needs **two FAMILY_IDs** with isolated socket directories.
-This required a custom `southgate_nucleus.sh` rather than using the plasmidBin launcher directly.
+This required a custom `gate_nucleus.sh` rather than using the plasmidBin launcher directly.
 
 **Ask for biomeOS**: Support `--graph` flag that reads a proto-nucleate TOML and auto-deploys
 with the specified family topology (per-node family assignment). This would make dual-tower
 deployment declarative rather than scripted.
 
-**Ask for primalspring_primal**: Confirm that the ionic bridge binary can discover both
-families' songbird instances when passed SOCKET_DIR_B as an env var. Current assumption
-is that the bridge needs visibility into both socket directories.
+### Gap: FAMILY_SEED Environment Inconsistency
+
+**Problem**: BearDog uses `BEARDOG_FAMILY_SEED`. RhizoCrypt uses `FAMILY_SEED`. If only
+one is set, rhizoCrypt rejects all connections with "BTSP: no family seed." Both must
+be exported for a family to function.
+
+**Ask for ecosystem**: Standardize on a single env var (`FAMILY_SEED`) with BearDog
+accepting it as an alias, or document that launchers must export both.
+
+### Gap: Songbird Security Provider Discovery
+
+**Problem**: Songbird refuses to start without `BEARDOG_SOCKET` or `SONGBIRD_SECURITY_PROVIDER`
+explicitly set. It cannot auto-discover BearDog from the same socket directory.
+
+**Ask for Songbird**: Auto-discover BearDog by scanning `$SOCKET_DIR/beardog-*.sock` or
+`$SOCKET_DIR/security.sock` before requiring explicit env configuration.
 
 ### Gap: primalspring_primal Not in plasmidBin
 
@@ -155,47 +222,44 @@ plasmidBin set. healthSpring's proto-nucleate requires it as the bonding mediato
 **Ask for plasmidBin**: Consider adding `primalspring_primal` as a 14th binary in plasmidBin
 for springs that use ionic bond compositions. Current workaround: build from source.
 
-### Gap: Multi-Spring Socket Contention (L4 validation)
+### Gap: Health Response Format Inconsistency
 
-**Problem**: southGate hosts both healthSpring and wetSpring. If both springs' NUCLEUS
-compositions use overlapping FAMILY_IDs or socket paths, we'll see contention.
+**Problem**: BearDog returns `{"status":"alive"}`. Squirrel returns empty on `health.liveness`.
+The Deployment Validation Standard says primals MUST return `{"status":"healthy"}`.
 
-**Ask for wetSpring**: Coordinate FAMILY_ID naming convention. Proposed:
-- healthSpring: `healthspring-tower-a`, `healthspring-tower-b`
-- wetSpring: `wetspring-{family}` (single-family NUCLEUS)
+**Ask for ecosystem**: Enforce the standard. All primals should return
+`{"status":"healthy"}` or `{"alive":true}` per DEPLOYMENT_VALIDATION_STANDARD.md.
 
-### Gap: Live Guidestone Certification (L5)
+### Gap: LoamSpine 15s Infant Discovery Timeout
 
-**Problem**: Current guideStone Level 5 was certified against mock composition.
-Post-primordial standard requires live NUCLEUS validation.
+**Problem**: Without `DISCOVERY_ENDPOINT`, LoamSpine does a 15-second DNS SRV scan
+before starting. This exceeds reasonable health check timeouts.
 
-**Ask for primalSpring**: Confirm whether `healthspring_unibin certify --max-tier 5`
-should be run against live IPC (via env pointing at southGate sockets) or if the
-current in-process model remains valid.
+**Ask for LoamSpine**: Reduce timeout to 3s or skip DNS when `FAMILY_ID` is set
+(indicating a composed NUCLEUS, not standalone).
 
 ---
 
-## Multi-Domain Composition (southGate shared)
+## Multi-Domain Composition (ironGate shared)
 
-southGate will host both healthSpring and wetSpring NUCLEUS compositions. Expected
+ironGate hosts healthSpring, primalSpring, ludoSpring, and groundSpring. Expected
 resource profile:
 
-| Resource | healthSpring | wetSpring | Total |
-|----------|-------------|-----------|-------|
-| Primal instances | 14 (dual-tower) | ~9 (single NUCLEUS) | ~23 |
-| UDS sockets | ~14 | ~9 | ~23 |
-| RAM estimate | ~2–4 GB | ~2–4 GB | ~4–8 GB of 128 GB |
-| CPU (idle) | Minimal | Minimal | < 5% |
+| Resource | healthSpring | Others (3 springs) | Total |
+|----------|-------------|-------------------|-------|
+| Primal instances | 14 (dual-tower) | ~9 each | ~41 |
+| UDS sockets | ~14 | ~27 | ~41 |
+| RAM estimate | ~2–4 GB | ~6–12 GB | ~8–16 GB of 96 GB |
+| CPU (idle) | Minimal | Minimal | < 10% |
 
-No contention expected — 128GB DDR4 is ample for 23 static-musl primal instances.
-CPU contention only during concurrent validation runs.
+No contention expected — 96GB DDR5 and 24C/32T i9-14900K have ample headroom.
 
 ---
 
 ## Posture
 
-healthSpring V65a is **deployment-ready** for southGate. All primal binaries verified.
-Dual-tower launcher (`southgate_nucleus.sh`) wired. Validation pipeline ready to run
-against live NUCLEUS. L3 live IPC validation is the next milestone — blocked only on
-physical deployment to southGate hardware and coordination with wetSpring for L4
-multi-domain testing.
+healthSpring V65a is **live on ironGate**. Tower A (7/7 primals healthy) deployed
+successfully. Tower B blocked by socket path inconsistency (Squirrel/NestGate ignore
+`--socket` flag). Dual-tower launcher (`gate_nucleus.sh`) wired and functional.
+**7 deployment gaps** documented for upstream primal teams. L3 live IPC validation
+achievable once socket path standardization resolves.

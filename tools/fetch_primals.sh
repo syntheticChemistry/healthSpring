@@ -43,7 +43,7 @@ for arg in "$@"; do
     esac
 done
 
-echo "━━━ healthSpring: Fetch Primals (southGate) ━━━"
+echo "━━━ healthSpring: Fetch Primals (gate deployment) ━━━"
 echo "Binary dir: $BIN_DIR"
 echo ""
 
