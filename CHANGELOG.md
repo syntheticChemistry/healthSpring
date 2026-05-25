@@ -6,6 +6,15 @@ This project uses internal versioning (V-series) for development milestones.
 
 ## V65a — May 25, 2026
 
+### Wave 50 — Covalent HPC Absorption + Mesh Seeding
+
+- **Post-primordial verified**: `grep -rn 'target/release' tools/ scripts/` returns zero NUCLEUS primal hits. Zero stale primals in PATH.
+- **NUCLEUS 14/17 ALIVE on ironGate**: 14 responding + 3 BTSP-protected (petaltongue, squirrel, visualization). All 12 core primals operational.
+- **Songbird mesh seeded**: `mesh.init` with `node_id=irongate-healthspring`, `bootstrap_peers=["192.168.1.144:7700"]`. Federation on `*:7700`. Peers empty (awaiting bidirectional seeding from eastGate).
+- **Dual-tower validated against live NUCLEUS**: All 7 domain capabilities (pharmacology, genomics, clinical, aggregate, liveness, de_identify, data.fetch) responding. Nest Atomic IPC confirmed (rhizoCrypt, loamSpine, sweetGrass, NestGate, BearDog all callable).
+- **Cross-gate health sweep**: eastGate primals UDS-only (no TCP exposure) — cross-gate probes must route via Songbird mesh `capability.call`. Local ironGate sweep: 14/17 alive.
+- **Handoff**: `HEALTHSPRING_WAVE50_COVALENT_HPC_MAY25_2026.md`.
+
 ### Wave 49 — Post-Primordial Cleanup + Covalent Mesh
 
 - **Primordial patterns cut**: All `target/release/` fallbacks removed from `gate_nucleus.sh`, `fetch_primals.sh`. petalTongue sourced from plasmidBin in `live_dashboard.sh`, `visualize.sh`. `composition_nucleus.sh` archived to `fossilRecord/`. Stale `healthspring_primal` symlink removed from plasmidBin. Zero primal binaries outside plasmidBin.
