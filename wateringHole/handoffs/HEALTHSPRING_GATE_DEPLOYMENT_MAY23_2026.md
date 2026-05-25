@@ -92,16 +92,16 @@ time_window = "session"
 ./tools/fetch_primals.sh --check
 
 # 2. Launch dual-tower NUCLEUS
-./tools/southgate_nucleus.sh start
+./tools/gate_nucleus.sh start
 
 # 3. Validate composition
-./tools/southgate_nucleus.sh validate
+./tools/gate_nucleus.sh validate
 
 # 4. Run full scenario suite against live primals
 healthspring_unibin validate --format json
 
 # 5. Stop when done
-./tools/southgate_nucleus.sh stop
+./tools/gate_nucleus.sh stop
 ```
 
 ---
@@ -124,7 +124,7 @@ healthspring_unibin validate --format json
 | L1 | Python vs Rust (local, no IPC) | **57/57 scenarios PASS** |
 | L2 | Rust vs barraCuda CPU/GPU | **42/42 parity PASS** |
 | L3 | Live IPC via NUCLEUS composition | **READY** — tooling wired, awaiting live deployment |
-| L4 | Multi-gate mesh (southGate + wetSpring contention test) | **PENDING** — requires wetSpring co-deployment |
+| L4 | Multi-gate mesh (cross-gate contention test) | **PENDING** — requires 3+ gates networked |
 | L5 | guideStone certification against live NUCLEUS | **Level 5** (against mock; live TBD) |
 
 ---

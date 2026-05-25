@@ -91,11 +91,12 @@ Python baseline → Rust CPU → barraCuda GPU → coralReef/toadStool sovereign
 
 | Field | Value |
 |-------|-------|
-| **Gate** | pending — declare your gate |
-| **Composition** | Nest Atomic (5 primals) |
-| **NUCLEUS status** | pending |
+| **Gate** | ironGate |
+| **Hardware** | i9-14900K (24C/32T), RTX 5070, 96GB DDR5 |
+| **Composition** | Full NUCLEUS (13 primals) + healthspring_primal cell |
+| **NUCLEUS status** | **operational** |
 | **Songbird federation** | port 7700 |
-| **LAN mesh** | ready when NUCLEUS deployed |
+| **LAN mesh** | active — co-tenants: primalSpring, ludoSpring |
 | **Cell graph** | `plasmidBin/cells/healthspring_cell.toml` |
 | **Launch** | `SONGBIRD_FEDERATION_PORT=7700 ./tools/nucleus_launcher.sh start` then `./tools/cell_launcher.sh healthspring start` |
 

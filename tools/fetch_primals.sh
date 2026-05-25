@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
-# fetch_primals.sh — Pull plasmidBin primal binaries for southGate deployment
+# fetch_primals.sh — Pull plasmidBin primal binaries for gate deployment
 #
 # Thin wrapper around primalSpring/tools/fetch_primals.sh or plasmidBin/fetch.sh.
 # Ensures all 13 NUCLEUS primals + primalspring_primal are available locally.
@@ -74,7 +74,7 @@ echo ""
 echo "Present: $present / $((present + missing))"
 
 if [[ $missing -eq 0 ]]; then
-    echo "All primals available. southGate ready for deployment."
+    echo "All primals available. Gate ready for deployment."
     exit 0
 fi
 

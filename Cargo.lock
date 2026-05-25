@@ -1843,6 +1843,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "hostname"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "617aaa3557aef3810a6369d0a99fac8a080891b68bd9f9812a1eeda0c0730cbd"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "windows-link",
+]
+
+[[package]]
 name = "http"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2411,7 +2422,7 @@ dependencies = [
 
 [[package]]
 name = "primalspring"
-version = "0.9.27"
+version = "0.9.28"
 dependencies = [
  "base64",
  "blake3",
@@ -2420,6 +2431,7 @@ dependencies = [
  "getrandom 0.4.2",
  "hkdf 0.13.0",
  "hmac 0.13.0",
+ "hostname",
  "serde",
  "serde_json",
  "sha2 0.11.0",

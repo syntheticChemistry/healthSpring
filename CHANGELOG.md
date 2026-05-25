@@ -6,13 +6,22 @@ This project uses internal versioning (V-series) for development milestones.
 
 ## V65a — May 23, 2026
 
-### Post-Primordial Gate Deployment — southGate
+### Post-Primordial Gate Deployment — ironGate
 
-- **Gate assignment confirmed**: southGate (5800X3D, 128GB DDR4). Co-tenant: wetSpring.
-- **`tools/southgate_nucleus.sh`** — Dual-tower NUCLEUS launcher for healthSpring's unique `healthspring_enclave_proto_nucleate` graph. Launches 14 primal instances across two FAMILY_IDs with ionic bridge mediation. Supports `start`, `stop`, `status`, `validate`.
+- **Gate assignment confirmed**: ironGate (i9-14900K, RTX 5070, 96GB DDR5). Co-tenants: primalSpring, ludoSpring.
+- **`tools/gate_nucleus.sh`** — Dual-tower NUCLEUS launcher for healthSpring's unique `healthspring_enclave_proto_nucleate` graph. Launches 14 primal instances across two FAMILY_IDs with ionic bridge mediation. Supports `start`, `stop`, `status`, `validate`.
 - **`tools/fetch_primals.sh`** — Verifies all 14 binaries available (13 plasmidBin NUCLEUS + 1 primalspring_primal). 14/14 confirmed present.
-- **Handoff**: `HEALTHSPRING_GATE_DEPLOYMENT_MAY23_2026.md` — documents gate assignment, dual-tower topology, deployment flow, validation posture, and upstream gaps found (dual-family namespacing, primalspring_primal in plasmidBin, multi-spring contention, live guidestone).
-- **L3 validation ready** — awaiting physical deployment to southGate hardware.
+- **Handoff**: `HEALTHSPRING_GATE_DEPLOYMENT_MAY23_2026.md` — documents gate assignment, dual-tower topology, deployment flow, validation posture, and 7 upstream gaps found.
+- **L3 validation ready** — live on ironGate.
+
+### Wave 48 Covalent Mesh — Sound Off
+
+- **Sound off completed**: CONTEXT.md `## Gate Deployment` section updated — ironGate (i9-14900K, RTX 5070, 96GB DDR5), co-tenants primalSpring + ludoSpring.
+- **NUCLEUS deployed**: 23 UDS sockets alive via `nucleus_launcher.sh`. All 13 NUCLEUS primals responding on UDS. `healthspring_primal` cell layered and alive.
+- **Songbird TCP federation on port 7700**: Bound on all interfaces (`0.0.0.0:7700`). Ready for cross-gate LAN discovery. Peers empty (no remote gates on local LAN segment — expected).
+- **healthspring_primal cell**: Built from source, symlinked to `plasmidBin/primals/`, started manually on TCP 9800 + UDS `healthspring-default.sock`. All 4 domain capabilities responding (`health.pharmacology`, `health.genomics`, `health.clinical`, `health.aggregate`).
+- **Deployment gaps found**: `nucleus_launcher.sh` syntax error (line 304); 4 primals (nestgate, rhizocrypt, barracuda, coralreef) fail `--socket` flag from launcher (use XDG paths); songbird federation requires manual restart with `SONGBIRD_SECURITY_PROVIDER` + `--federation-port`; `healthspring_primal` not in plasmidBin (built from source).
+- **Handoff**: `HEALTHSPRING_WAVE48_COVALENT_MESH_MAY25_2026.md`.
 
 ### Wave 46 Absorption — BLAKE3 Backfill, Registry 458, sporePrint Pipeline
 
