@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 # healthSpring Leverage Guide — Standalone, Trio, and Full Niche
 
-**Date**: May 23, 2026
+**Date**: May 25, 2026
 **Primal**: healthSpring V65a (`healthspring-barracuda` 0.1.0, ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**)
 **Audience**: All springs, all primals, biomeOS integrators
 **Status**: Active
@@ -212,7 +212,7 @@ Top capabilities by domain (58 science + 30 infra = 88):
 
 | Metric | V65a |
 |--------|-----|
-| Tests | 1,014 |
+| Tests | 1,021 |
 | Experiments | 95 (83 science + 12 composition Tier 3–5) |
 | Python baselines | 53 scripts + 53 notebooks |
 | Cross-validation | 113/113 |

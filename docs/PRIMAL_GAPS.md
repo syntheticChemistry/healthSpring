@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-23
-**healthSpring version**: V65a (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**, barraCuda **v0.4.0**, V65a: Wave 46 absorbed — BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), `bonding.*` protocol wired, registry 458, 57 validation scenarios, 1,021 tests, all 7 deep debt categories zero, clippy zero)
+**Date**: 2026-05-25
+**healthSpring version**: V65a (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**, barraCuda **v0.4.0**, V65a: Wave 50 Covalent HPC — BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), `bonding.*` protocol wired, registry 458, 57 validation scenarios, 1,021 tests, all 7 deep debt categories zero, clippy zero)
 
 ---
 
@@ -503,7 +503,7 @@ non-canonical method names that fell through dispatch.
 provider: No Crypto provider available` even when beardog's socket is
 active and `--beardog-socket` is passed.
 
-**Evidence**: `composition_nucleus.sh start` → songbird exits immediately
+**Evidence**: `gate_nucleus.sh start` → songbird exits immediately
 after beardog is running and its socket is confirmed. Log shows songbird's
 internal discovery doesn't find beardog via the provided socket path or
 env vars.
@@ -544,7 +544,7 @@ proprioception data (e.g., `frame_rate: 0.0`, `active_scenes: N`,
 
 ## 26. NestGate Not in Default PRIMAL_LIST
 
-**Gap**: `composition_nucleus.sh` default `PRIMAL_LIST` does not include
+**Gap**: `gate_nucleus.sh (was composition_nucleus.sh, now archived)` default `PRIMAL_LIST` does not include
 `nestgate`. Storage capability is offline unless explicitly added:
 `PRIMAL_LIST="beardog songbird toadstool barracuda rhizocrypt loamspine sweetgrass nestgate petaltongue"`.
 
@@ -552,7 +552,7 @@ proprioception data (e.g., `frame_rate: 0.0`, `active_scenes: N`,
 override `PRIMAL_LIST`.
 
 **Proposed resolution**: Add `nestgate` to the default `PRIMAL_LIST` in
-`composition_nucleus.sh`, or document the override pattern.
+`gate_nucleus.sh (was composition_nucleus.sh, now archived)`, or document the override pattern.
 
 **Status**: Documented. Workaround: set `PRIMAL_LIST` explicitly.
 
@@ -820,7 +820,7 @@ primalSpring ecosystem status update (May 14): plasmidBin deployment evolution c
 
 | # | Gap | Owner | Action |
 |---|-----|-------|--------|
-| 43 | plasmidBin `manifest.toml` healthSpring stale (tests=1014, V64e) | infra/plasmidBin | Update to tests=1018, V64n |
+| 43 | plasmidBin `manifest.toml` healthSpring stale (tests=1014, V64e) | infra/plasmidBin | Update to tests=1021, V65a |
 | 44 | `ports.env` NICHE_HEALTHSPRING under-validates (missing toadstool, barracuda, coralreef, petaltongue) | infra/plasmidBin | Sync with `[niches.healthspring]` in manifest.toml |
 | 45 | sourDough deployment internalization: 15 healthSpring shell scripts are candidates | primals/sourDough | Map to sourdough subcommands as v0.4.0–v0.6.0 ships |
 
@@ -938,7 +938,7 @@ Post-Wave 20 comprehensive re-audit. **All 7 categories confirmed at zero debt.*
 | 23 | Provenance trio wire dispatch (`-32601`) | — | **RESOLVED V64j**: root cause was non-canonical method names; upstream aliases + local fixes | — |
 | 24 | Songbird crypto provider discovery | Songbird startup docs | **V58**: documented, symlink workaround | Document songbird startup deps |
 | 25 | petalTongue proprioception in server mode | petalTongue server | **V58**: documented, non-blocking | Add synthetic proprioception in server mode |
-| 26 | NestGate not in default PRIMAL_LIST | composition_nucleus.sh | **V58**: documented, PRIMAL_LIST override | Add nestgate to defaults |
+| 26 | NestGate not in default PRIMAL_LIST | gate_nucleus.sh (was composition_nucleus.sh, now archived) | **V58**: documented, PRIMAL_LIST override | Add nestgate to defaults |
 | 27 | socat dependency undocumented | Lib docs | **V58**: `nc -U` shim provided | Document dep or add fallback |
 | 28 | plasmidBin cell TOML stale | Convergence wiring | **Fixed V64f**: compute trio added | — |
 | 29 | plasmidBin niche under-specced | Convergence wiring | **Fixed V64f**: promoted to `full` | — |
@@ -955,7 +955,7 @@ Post-Wave 20 comprehensive re-audit. **All 7 categories confirmed at zero debt.*
 | 40 | Dataset SHA256 + fetch gaps | Data audit | **V64i**: documented | — |
 | 41 | No GPU parity benchmarks | Benchmark audit | **V64i**: N/A (sovereign WGSL) | — |
 | 42 | Foundation Thread 10 (Provenance) empty | Upstream directive | **V64l**: documented, seed when sporeGarden confirmed | — |
-| 43 | plasmidBin manifest.toml healthSpring stale | infra/plasmidBin | **V64n**: documented | Update tests=1018, V64n |
+| 43 | plasmidBin manifest.toml healthSpring stale | infra/plasmidBin | **V64n**: documented | Update tests=1021, V65a |
 | 44 | ports.env NICHE_HEALTHSPRING under-validates | infra/plasmidBin | **V64n**: documented | Sync with manifest niche |
 | 45 | sourDough shell script internalization | primals/sourDough | **V64n**: 15 scripts mapped | Map to sourdough v0.4.0+ |
 | 46 | Foundation Threads 3+8 expressions missing | Wave 17 directive | **V64o**: B5 lithoSpore candidate ready | Confirm sporeGarden structure |

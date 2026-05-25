@@ -1,7 +1,7 @@
 # healthSpring Experiments
 
-**Last Updated**: May 23, 2026
-**Status**: V65a — Wave 46 absorbed. BLAKE3 provenance backfill. 95 experiments + `validate_ltee_b5` Rust binary (LTEE B5 Tier 1, 8/8); **57 validation scenarios** covering 56 experiment IDs; `--format json` on validation binaries. **1,021 tests** (workspace), 0 clippy warnings. primalSpring **v0.9.27**. barraCuda v0.4.0. 458-method registry. Remaining ~39 experiments are GPU/compute/bench/visualization binaries validated via their own test harnesses.
+**Last Updated**: May 25, 2026
+**Status**: V65a — Wave 50 Covalent HPC. BLAKE3 provenance backfill. 95 experiments + `validate_ltee_b5` Rust binary (LTEE B5 Tier 1, 8/8); **57 validation scenarios** covering 56 experiment IDs; `--format json` on validation binaries. **1,021 tests** (workspace), 0 clippy warnings. primalSpring **v0.9.27**. barraCuda v0.4.0. 458-method registry. Remaining ~39 experiments are GPU/compute/bench/visualization binaries validated via their own test harnesses.
 
 **V61 note:** Sixteen former standalone experiment `main` targets were absorbed into **`validation/scenarios/`** (registry-backed scenarios); sources archived under **`fossilRecord/experiments_prokaryotic_may2026/`**.
 

@@ -2,7 +2,7 @@
 # biomeOS NUCLEUS Local Integration Plan
 
 **Last Updated**: May 12, 2026
-**Status**: V65a — Wave 46 absorbed. 57 validation scenarios, B5 cross-tier parity proven. BLAKE3 provenance backfill. guideStone Level 5. **1,021 tests**, **95 experiments**, 88 capabilities. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring v0.9.27.
+**Status**: V65a — Wave 50 Covalent HPC. 57 validation scenarios, B5 cross-tier parity proven. BLAKE3 provenance backfill. guideStone Level 5. **1,021 tests**, **95 experiments**, 88 capabilities. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring v0.9.27.
 **Depends on**: biomeOS (phase2/biomeOS/), NestGate (phase1/nestgate/), toadStool, metalForge
 
 ---

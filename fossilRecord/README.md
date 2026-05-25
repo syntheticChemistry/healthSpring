@@ -21,6 +21,8 @@ Locally archived tools are retained here as provenance artifacts.
 | `py_to_notebook.py` | One-shot Python-to-notebook converter (53 notebooks generated; tool complete) | V65a (May 2026) |
 | `composition_template.sh` | primalSpring composition starter (superseded by upstream tooling) | V65a (May 2026) |
 | `composition_nucleus.sh` | Single-family NUCLEUS launcher (superseded by `plasmidBin/nucleus_launcher.sh` + `cell_launcher.sh`) | V65a (May 2026) |
+| `blake3_backfill.sh` | One-shot BLAKE3 provenance hasher for control JSON files (62 files hashed; FN-1 complete) | V65a (May 2026) |
+| `socat_shim.sh` | `nc -U` shim for systems without socat (socat now installed on all gates) | V65a (May 2026) |
 
 The V61 directories lived here briefly during V61 migration, then moved to the
 ecosystem-level fossil record. This README remains as the provenance pointer.

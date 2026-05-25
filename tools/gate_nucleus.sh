@@ -23,7 +23,7 @@
 #   ./tools/gate_nucleus.sh validate
 #
 # Prerequisites:
-#   - plasmidBin primals available (run fetch_primals.sh --all first)
+#   - plasmidBin primals available (run fetch_primals.sh --check first)
 #   - socat installed
 
 set -euo pipefail

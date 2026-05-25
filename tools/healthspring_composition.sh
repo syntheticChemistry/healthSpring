@@ -10,7 +10,7 @@
 # Usage:
 #   COMPOSITION_NAME=healthspring FAMILY_ID=healthspring ./tools/healthspring_composition.sh
 #
-# Requires: NUCLEUS running (use tools/composition_nucleus.sh start)
+# Requires: NUCLEUS running (use primalSpring/tools/nucleus_launcher.sh start)
 
 set -euo pipefail
 

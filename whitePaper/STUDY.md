@@ -181,7 +181,7 @@ analysis pipeline, and integration of QS gene profiling for microbial drug targe
 
 ## 3. What We Have Learned
 
-Seven months of validation across 94 experiments, 948+ tests, and 45 reproduced papers
+Seven months of validation across 95 experiments, 1,021 tests, and 45 reproduced papers
 have produced several key insights:
 
 ### 3.1 Species-agnostic mathematics works

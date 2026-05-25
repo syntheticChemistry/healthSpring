@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Extension Plan — Datasets, New Systems, and Evolution Paths
 
-**Last Updated**: May 23, 2026
+**Last Updated**: May 25, 2026
 **Status**: V65a — 57 validation scenarios, B5 cross-tier parity proven. BLAKE3 provenance backfill. guideStone Level 5. 95 experiments, 1,021 tests, 88 capabilities. barraCuda v0.4.0. ecoBin 0.9.0.
 
 This document surveys how each track can extend beyond the current validated experiments

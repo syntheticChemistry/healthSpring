@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring Evolution Map — Rust Module → WGSL Shader → Pipeline Stage
 
-**Last Updated**: May 23, 2026
-**Status**: V65a — Wave 46 absorbed. 57 validation scenarios, 95 experiments, 1,021 tests, 88 capabilities. B5 cross-tier parity proven. BLAKE3 provenance backfill. lithoSpore Module 8 ready. barraCuda v0.4.0. ecoBin 0.9.0. primalSpring v0.9.27. Zero clippy, zero debt.
+**Last Updated**: May 25, 2026
+**Status**: V65a — Wave 50 Covalent HPC. 57 validation scenarios, 95 experiments, 1,021 tests, 88 capabilities. B5 cross-tier parity proven. BLAKE3 provenance backfill. lithoSpore Module 8 ready. barraCuda v0.4.0. ecoBin 0.9.0. primalSpring v0.9.27. Zero clippy, zero debt.
 
 ---
 

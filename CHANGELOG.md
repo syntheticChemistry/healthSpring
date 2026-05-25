@@ -6,6 +6,19 @@ This project uses internal versioning (V-series) for development milestones.
 
 ## V65a — May 25, 2026
 
+### Docs Cleanup + Debris Sweep (Post-Wave 50)
+
+- **Date sweep**: 21 active docs updated from May 23 → May 25, 2026 (specs, whitePaper, docs, experiments, wateringHole, sporeprint).
+- **Wave 46 → Wave 50 status banners**: 12+ files updated from "Wave 46 absorbed" to "Wave 50 Covalent HPC" in status lines.
+- **Test count sweep**: 8 stale references (948, 1,014, 1,018) updated to 1,021 across README, specs, whitePaper, wateringHole.
+- **CONTEXT.md header refreshed**: Wave 50 status, post-primordial plasmidBin-only, ironGate operational.
+- **README Current Metrics**: Version row updated to Wave 50 Covalent HPC.
+- **Tools archived**: `blake3_backfill.sh` (one-shot complete) and `socat` shim (socat now installed) moved to `fossilRecord/`.
+- **Stale tool references fixed**: `composition_nucleus.sh` → `gate_nucleus.sh` in `healthspring_composition.sh` and `PRIMAL_GAPS.md`; `fetch_primals.sh --all` → `--check` in `gate_nucleus.sh`.
+- **Cargo.toml comment**: primalSpring pin comment updated to reflect Wave 50.
+- **NUCLEUS_SPRING_ALIGNMENT.md**: healthSpring row updated to Wave 50 covalent HPC status.
+- **fossilRecord/README.md**: Updated manifest with newly archived tools.
+
 ### Wave 50 — Covalent HPC Absorption + Mesh Seeding
 
 - **Post-primordial verified**: `grep -rn 'target/release' tools/ scripts/` returns zero NUCLEUS primal hits. Zero stale primals in PATH.
