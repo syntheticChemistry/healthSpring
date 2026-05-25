@@ -87,6 +87,18 @@ Python baseline → Rust CPU → barraCuda GPU → coralReef/toadStool sovereign
 
 ## Design Philosophy
 
+## Gate Deployment
+
+| Field | Value |
+|-------|-------|
+| **Gate** | pending — declare your gate |
+| **Composition** | Nest Atomic (5 primals) |
+| **NUCLEUS status** | pending |
+| **Songbird federation** | port 7700 |
+| **LAN mesh** | ready when NUCLEUS deployed |
+| **Cell graph** | `plasmidBin/cells/healthspring_cell.toml` |
+| **Launch** | `SONGBIRD_FEDERATION_PORT=7700 ./tools/nucleus_launcher.sh start` then `./tools/cell_launcher.sh healthspring start` |
+
 These binaries are built using AI-assisted constrained evolution. Rust's
 compiler constraints (ownership, lifetimes, type system) reshape the fitness
 landscape and drive specialization. Primals are self-contained — they know
