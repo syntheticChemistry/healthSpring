@@ -5,7 +5,7 @@
 **Date:** May 25, 2026 (V65a)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V65a — **Wave 48 Covalent Mesh Operational**. ironGate deployed — NUCLEUS 23 UDS sockets alive, Songbird TCP federation port 7700, `healthspring_primal` cell live with 4 domain capabilities. BLAKE3 provenance backfill (62 JSON files hashed). **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. **1,021 tests** pass, 0 clippy warnings. guideStone **Level 5**. 458-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.27**. Zero clippy, zero unsafe, zero TODO.
+**Status:** V65a — **Post-Primordial / Wave 49**. All primordial patterns cut — plasmidBin-only deployment. NUCLEUS 19 UDS sockets (16 alive + 3 BTSP), Songbird TCP federation `*:7700`, `healthspring_primal` cell live with 4 domain capabilities. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. **1,021 tests** pass, 0 clippy warnings. guideStone **Level 5**. 458-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.27**. Zero clippy, zero unsafe, zero TODO.
 
 ---
 

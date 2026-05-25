@@ -14,7 +14,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-PETALTONGUE_ROOT="${PETALTONGUE_ROOT:-$(cd "${PROJECT_ROOT}/../petalTongue" 2>/dev/null && pwd || true)}"
 
 MODE="${1:-web}"
 PORT="${2:-13378}"
@@ -36,17 +35,15 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-# --- 1. Locate petalTongue ----------------------------------------------
+# --- 1. Locate petalTongue (plasmidBin only — post-primordial) -----------
 
-if [[ -z "${PETALTONGUE_ROOT}" ]] || [[ ! -d "${PETALTONGUE_ROOT}" ]]; then
-    die "petalTongue not found. Set PETALTONGUE_ROOT env var."
-fi
+ECO_ROOT="$(cd "${PROJECT_ROOT}/../.." && pwd)"
+PLASMID_BIN="${ECOPRIMALS_PLASMID_BIN:-$ECO_ROOT/infra/plasmidBin}"
+PETALTONGUE_BIN="$PLASMID_BIN/primals/x86_64-unknown-linux-musl/petaltongue"
+[[ -x "$PETALTONGUE_BIN" ]] || PETALTONGUE_BIN="$PLASMID_BIN/primals/petaltongue"
 
-PETALTONGUE_BIN="${PETALTONGUE_ROOT}/target/release/petaltongue"
 if [[ ! -x "$PETALTONGUE_BIN" ]]; then
-    info "Building petalTongue (release) …"
-    cargo build --release --manifest-path "${PETALTONGUE_ROOT}/Cargo.toml" 2>&1 | tail -1
-    ok "petalTongue built"
+    die "petalTongue not found in plasmidBin. Run: cd infra/plasmidBin && git pull"
 fi
 
 # --- 2. Build the streaming binary --------------------------------------

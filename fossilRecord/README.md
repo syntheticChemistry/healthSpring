@@ -20,6 +20,7 @@ Locally archived tools are retained here as provenance artifacts.
 | `guidestone_prokaryotic_may2026/` | Standalone `healthspring_guidestone` binary sources absorbed into `certification/` organelle | V61 (May 2026) |
 | `py_to_notebook.py` | One-shot Python-to-notebook converter (53 notebooks generated; tool complete) | V65a (May 2026) |
 | `composition_template.sh` | primalSpring composition starter (superseded by upstream tooling) | V65a (May 2026) |
+| `composition_nucleus.sh` | Single-family NUCLEUS launcher (superseded by `plasmidBin/nucleus_launcher.sh` + `cell_launcher.sh`) | V65a (May 2026) |
 
 The V61 directories lived here briefly during V61 migration, then moved to the
 ecosystem-level fossil record. This README remains as the provenance pointer.

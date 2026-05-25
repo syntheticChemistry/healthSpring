@@ -4,7 +4,15 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
-## V65a — May 23, 2026
+## V65a — May 25, 2026
+
+### Wave 49 — Post-Primordial Cleanup + Covalent Mesh
+
+- **Primordial patterns cut**: All `target/release/` fallbacks removed from `gate_nucleus.sh`, `fetch_primals.sh`. petalTongue sourced from plasmidBin in `live_dashboard.sh`, `visualize.sh`. `composition_nucleus.sh` archived to `fossilRecord/`. Stale `healthspring_primal` symlink removed from plasmidBin. Zero primal binaries outside plasmidBin.
+- **NUCLEUS restarted from plasmidBin**: `nucleus_launcher.sh` with auto-detect (`infra/plasmidBin/primals/x86_64-unknown-linux-musl/`). 16 ALIVE + 3 BTSP-protected = 19 UDS sockets. `healthspring_primal` cell live.
+- **Songbird TCP federation**: Port 7700 bound on `*:7700` (all interfaces). eastGate (192.168.1.144:7700) reachable from ironGate (192.168.1.238). Peers empty (auto-discovery pending).
+- **Known pipeline debt handled**: petalTongue EADDRINUSE (stale socket cleared + restarted), loamSpine alive (slow detection), songbird sled DB cleaned.
+- **Handoff**: `HEALTHSPRING_WAVE49_POST_PRIMORDIAL_MAY25_2026.md`.
 
 ### Post-Primordial Gate Deployment — ironGate
 

@@ -56,15 +56,13 @@ ok()  { printf "[%s] ✓ %s\n" "$GATE_NAME" "$*"; }
 
 find_binary() {
     local name="$1"
-    if [[ -x "$BIN_DIR/$name" ]]; then
-        echo "$BIN_DIR/$name"
+    local triple_dir="$PLASMID_BIN/primals/x86_64-unknown-linux-musl"
+    if [[ -x "$triple_dir/$name" ]]; then
+        echo "$triple_dir/$name"
         return
     fi
-    local alt="$ECO_ROOT/primals/$name/target/release/$name"
-    [[ -x "$alt" ]] && echo "$alt" && return
-    local ps_bin="$ECO_ROOT/springs/primalSpring/target/release/primalspring_primal"
-    if [[ "$name" == "primalspring_primal" && -x "$ps_bin" ]]; then
-        echo "$ps_bin"
+    if [[ -x "$BIN_DIR/$name" ]]; then
+        echo "$BIN_DIR/$name"
         return
     fi
     echo ""
@@ -278,11 +276,7 @@ do_validate() {
 
     local unibin="$PROJECT_ROOT/target/release/healthspring_unibin"
     if [[ ! -x "$unibin" ]]; then
-        unibin="$PROJECT_ROOT/target/debug/healthspring_unibin"
-    fi
-
-    if [[ ! -x "$unibin" ]]; then
-        err "healthspring_unibin not found. Run: cargo build --release -p healthspring_unibin"
+        err "healthspring_unibin not found. Build: cargo build --release --bin healthspring_unibin"
         return 1
     fi
 
