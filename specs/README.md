@@ -2,7 +2,7 @@
 # healthSpring Specifications
 
 **Last Updated**: May 28, 2026
-**Status**: V65a — Wave 60 Eukaryotic Gate. BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4). B5 cross-tier parity proven (8/8 bit-identical). Degradation + stability tiers documented. Module 8 ready. **57 validation scenarios**, 458-method registry, all 7 deep debt categories zero. **1,021 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0.
+**Status**: V65a — Wave 60 Eukaryotic Gate. BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4). B5 cross-tier parity proven (8/8 bit-identical). Degradation + stability tiers documented. Module 8 ready. **57 validation scenarios**, 470+-method registry, all 7 deep debt categories zero. **1,021 tests**, 95 experiments, 88 JSON-RPC capabilities, 96+ provenance entries. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0.
 **Domain**: Health of living systems — PK/PD, gut microbiome, biosignal, endocrinology, comparative medicine, drug discovery, toxicology, simulation
 
 ---

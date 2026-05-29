@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V65a — **Wave 60 Eukaryotic Gate**. ironGate eukaryotic (i9-14900K, RTX 5070, 96GB DDR5, co-tenants: primalSpring, ludoSpring). 13/13 NUCLEUS, Forgejo sync live, cascade-pull 22-repo profile. Post-primordial clean. Dual-tower + Nest Atomic validated. `healthspring_primal` cell live (7 domain capabilities). **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 458-method registry. **1,021 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
-**Last Updated**: May 28, 2026
+**Status**: V65a — **Wave 60b Triad Absorption**. ironGate eukaryotic (i9-14900K, RTX 5070, 96GB DDR5, co-tenants: primalSpring, ludoSpring). `.gate` identity, cascade-pull v2.0.0, 22-repo profile. Neural API triad (qS/rP/wF) absorbed. 13/13 NUCLEUS, post-primordial clean. `healthspring_primal` cell live (7 domain capabilities). **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 470+-method registry. **1,021 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
+**Last Updated**: May 29, 2026
 
 ---
 
@@ -22,17 +22,18 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V65a** | [Wave 60 Eukaryotic Gate](handoffs/HEALTHSPRING_WAVE60_EUKARYOTIC_GATE_MAY28_2026.md) | May 28 | ironGate eukaryotic — Forgejo sync + cascade-pull 22-repo, 13/13 NUCLEUS, visualize.sh bug fix, ecoBin version alignment, CONTEXT launcher paths corrected, 2 upstream manifest gaps |
+| **V65a** | [Wave 60b Triad Absorption](handoffs/HEALTHSPRING_WAVE60B_TRIAD_ABSORPTION_MAY29_2026.md) | May 29 | `.gate` identity, cascade-pull v2.0.0, Neural API triad (qS/rP/wF) absorbed, cross-gate executor spec reviewed, registry 458→470+, prior manifest GAPs resolved upstream |
+| V65a | [Wave 60 Eukaryotic Gate](handoffs/HEALTHSPRING_WAVE60_EUKARYOTIC_GATE_MAY28_2026.md) | May 28 | ironGate eukaryotic — Forgejo sync + cascade-pull 22-repo, 13/13 NUCLEUS, visualize.sh bug fix, ecoBin version alignment, CONTEXT launcher paths corrected, 2 upstream manifest gaps |
 | V65a | [Wave 50 Covalent HPC](handoffs/HEALTHSPRING_WAVE50_COVALENT_HPC_MAY25_2026.md) | May 25 | Mesh seeded (eastGate bootstrap), dual-tower + Nest Atomic validated against live NUCLEUS, 7 domain + 5 IPC capabilities confirmed |
 | V65a | [Wave 49 Post-Primordial](handoffs/HEALTHSPRING_WAVE49_POST_PRIMORDIAL_MAY25_2026.md) | May 25 | Primordial patterns cut, plasmidBin-only, NUCLEUS 19 UDS, federation `*:7700`, healthspring_primal cell live |
 | V65a | [Wave 48 Covalent Mesh — Sound Off](handoffs/HEALTHSPRING_WAVE48_COVALENT_MESH_MAY25_2026.md) | May 25 | ironGate operational — NUCLEUS 23/23 UDS alive, Songbird federation port 7700, healthspring_primal cell live, 4 deployment gaps for upstream |
 | V65a | [Gate Deployment — ironGate](handoffs/HEALTHSPRING_GATE_DEPLOYMENT_MAY23_2026.md) | May 23 | ironGate live — Tower A 7/7 healthy, 7 deployment gaps documented for upstream primal teams, dual-tower launcher wired |
-| V65a | [Wave 46 Absorption](handoffs/HEALTHSPRING_V65A_WAVE46_ABSORPTION_MAY23_2026.md) | May 23 | BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), registry 458, primalSpring v0.9.27 |
+| V65a | [Wave 46 Absorption](handoffs/HEALTHSPRING_V65A_WAVE46_ABSORPTION_MAY23_2026.md) | May 23 | BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), registry 470+, primalSpring v0.9.27 |
 | V64z | [Wave 38 IonicContractRegistry Absorption](handoffs/archive/HEALTHSPRING_V64Z_WAVE38_IONIC_ABSORPTION_MAY22_2026.md) | May 22 | `bonding.*` protocol wired via coordination socket, `storage.egress_fence` phantom reconciled, registry 445, degradation + stability docs updated |
 | V64x | [lithoSpore Audit Absorption](handoffs/archive/HEALTHSPRING_V64X_LITHOSPORE_ABSORPTION_MAY17_2026.md) | May 17 | Degradation behavior (13 domains), stability tiers (58 methods annotated), B5 cross-tier parity (8/8 bit-identical), trio semantics confirmed, Module 8 ready |
 | V64w | [Comprehensive Upstream Handoff](handoffs/archive/HEALTHSPRING_V64W_COMPREHENSIVE_UPSTREAM_HANDOFF_MAY17_2026.md) | May 17 | 57 scenarios, full primal evolution review, NUCLEUS composition patterns, neuralAPI deployment, deep debt zero, upstream gap asks |
 | V64u | [Docs Sweep + Upstream Handoff](handoffs/archive/HEALTHSPRING_V64U_DOCS_SWEEP_UPSTREAM_HANDOFF_MAY17_2026.md) | May 17 | 50 validation scenarios (32 new), dataset manifest, docs sweep to V64u, composition pattern learnings, upstream gap asks |
-| V64r | [Wave 20 Schema Standard](handoffs/archive/HEALTHSPRING_V64R_WAVE20_SCHEMA_STANDARD_MAY16_2026.md) | May 16 | `capability.list` canonical envelope (capabilities + count), 458-method registry sync (primal.list), nest.commit signal-path confirmed |
+| V64r | [Wave 20 Schema Standard](handoffs/archive/HEALTHSPRING_V64R_WAVE20_SCHEMA_STANDARD_MAY16_2026.md) | May 16 | `capability.list` canonical envelope (capabilities + count), 470+-method registry sync (primal.list), nest.commit signal-path confirmed |
 | V64o | [Wave 17 Signal Adoption](handoffs/archive/HEALTHSPRING_V64O_WAVE17_SIGNAL_ADOPTION_MAY16_2026.md) | May 16 | `primal.announce` registration, `nest.store`/`nest.commit` signal dispatch in NestComposition + data/provenance, 451-method registry sync, routing/niche domain expansion, GAP-GS-015 confirmed, Foundation Threads 3+8, GAPs 46-47 |
 | V64n | [Upstream Audit Absorption](handoffs/archive/HEALTHSPRING_V64N_UPSTREAM_HANDOFF_MAY14_2026.md) | May 14 | Tower = bearDog + songBird + skunkBat in all graphs, deploy graph canonicalization, routing `content` domain, capability registry sync, barraCuda v0.4.0, GAPs 43-45 |
 | V64m | [Comprehensive Handoff](handoffs/archive/HEALTHSPRING_V64M_COMPREHENSIVE_HANDOFF_MAY13_2026.md) | May 13 | All wire contract learnings, Nest Atomic composition pattern, provenance pipeline, plasmidBin cell.toml, Foundation Thread 10, recommendations for upstream teams |

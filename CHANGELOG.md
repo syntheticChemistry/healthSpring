@@ -4,7 +4,16 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
-## V65a — May 28, 2026
+## V65a — May 29, 2026
+
+### Wave 60b — Neural API Triad Absorption + Gate Identity
+
+- **`.gate` identity file created**: `ironGate` identity written to `$ECOPRIMALS_ROOT/.gate`. cascade-pull v2.0.0 now auto-detects gate from this file (priority over hostname heuristic).
+- **cascade-pull v2.0.0 verified**: New manifest-driven script (symlink from `wateringHole/cascade-pull.sh` → `scripts/cascade-pull.sh`). 22/22 repos pulled from Forgejo. Both prior GAPs resolved upstream (songBird path case, nestGate local_path).
+- **Neural API Coordination Triad absorbed**: quorumSignal (sense), rootPulse (action), waterFall (sync). 23 atomic signal graphs (was 15) across 6 dispatch tiers. New rootPulse graphs: `rootpulse_{commit,branch,merge,diff,federate}`. New ecosystem graphs: `ecosystem_{pull,push,check}`.
+- **Cross-gate graph executor spec reviewed**: Node-level `gate` and `relay` hints on signal graph nodes enable future cross-NUCLEUS dispatch via Songbird mesh. Wave 65+ implementation target.
+- **Registry 458 → 470+**: 9 new upstream methods (`dag.branch/merge/diff/federate`, `content.sync/replicate`, `mesh.discover_remotes/mirror/publish`). All active docs updated.
+- **Handoff**: `HEALTHSPRING_WAVE60B_TRIAD_ABSORPTION_MAY29_2026.md`.
 
 ### Wave 60 — Eukaryotic Gate Onboarding
 
