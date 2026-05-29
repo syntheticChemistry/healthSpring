@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V65a — **Wave 60b Triad Absorption**. ironGate eukaryotic (i9-14900K, RTX 5070, 96GB DDR5, co-tenants: primalSpring, ludoSpring). `.gate` identity, cascade-pull v2.0.0, 22-repo profile. Neural API triad (qS/rP/wF) absorbed. 13/13 NUCLEUS, post-primordial clean. `healthspring_primal` cell live (7 domain capabilities). **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 470+-method registry. **1,021 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
+**Status**: V65a — **Wave 60 Stabilization**. ironGate eukaryotic (i9-14900K, RTX 5070, 96GB DDR5, co-tenants: primalSpring, ludoSpring). `.gate` identity, cascade-pull v2.0.0, 22-repo profile. Neural API triad (qS/rP/wF) absorbed. 13/13 NUCLEUS, post-primordial clean. `healthspring_primal` cell live (7 domain capabilities). **59 validation scenarios** covering 58 experiment IDs (LTEE B5 + barraCuda CPU parity added). All clippy pedantic+nursery zero. All 7 deep debt categories zero. 470+-method registry. **1,021 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
 **Last Updated**: May 29, 2026
 
 ---
@@ -22,7 +22,8 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
-| **V65a** | [Wave 60b Triad Absorption](handoffs/HEALTHSPRING_WAVE60B_TRIAD_ABSORPTION_MAY29_2026.md) | May 29 | `.gate` identity, cascade-pull v2.0.0, Neural API triad (qS/rP/wF) absorbed, cross-gate executor spec reviewed, registry 458→470+, prior manifest GAPs resolved upstream |
+| **V65a** | [Wave 60 Stabilization](handoffs/HEALTHSPRING_WAVE60_STABILIZATION_MAY29_2026.md) | May 29 | Niche depth: `s_ltee_b5` (8 checks, PASS), `s_barracuda_cpu_parity` (10 checks, PASS), 57→59 scenarios, PRIMAL_GAPS #38 substantially closed, upstream frozen (14 new methods pending across 6 primals) |
+| V65a | [Wave 60b Triad Absorption](handoffs/HEALTHSPRING_WAVE60B_TRIAD_ABSORPTION_MAY29_2026.md) | May 29 | `.gate` identity, cascade-pull v2.0.0, Neural API triad (qS/rP/wF) absorbed, cross-gate executor spec reviewed, registry 458→470+, prior manifest GAPs resolved upstream |
 | V65a | [Wave 60 Eukaryotic Gate](handoffs/HEALTHSPRING_WAVE60_EUKARYOTIC_GATE_MAY28_2026.md) | May 28 | ironGate eukaryotic — Forgejo sync + cascade-pull 22-repo, 13/13 NUCLEUS, visualize.sh bug fix, ecoBin version alignment, CONTEXT launcher paths corrected, 2 upstream manifest gaps |
 | V65a | [Wave 50 Covalent HPC](handoffs/HEALTHSPRING_WAVE50_COVALENT_HPC_MAY25_2026.md) | May 25 | Mesh seeded (eastGate bootstrap), dual-tower + Nest Atomic validated against live NUCLEUS, 7 domain + 5 IPC capabilities confirmed |
 | V65a | [Wave 49 Post-Primordial](handoffs/HEALTHSPRING_WAVE49_POST_PRIMORDIAL_MAY25_2026.md) | May 25 | Primordial patterns cut, plasmidBin-only, NUCLEUS 19 UDS, federation `*:7700`, healthspring_primal cell live |

@@ -60,6 +60,8 @@ pub fn build_registry() -> Vec<Scenario> {
         super::s_population_pk::SCENARIO(),
         super::s_pbpk::SCENARIO(),
         super::s_michaelis_menten::SCENARIO(),
+        super::s_ltee_b5::SCENARIO(),
+        super::s_barracuda_cpu_parity::SCENARIO(),
         // ── Microbiome (Track 2) ────────────────────────────────────
         super::s_diversity_indices::SCENARIO(),
         super::s_anderson_gut::SCENARIO(),

@@ -10,6 +10,7 @@ mod registry;
 // Scenario modules (one per absorbed experiment)
 mod s_anderson_gut;
 mod s_antibiotic_perturbation;
+mod s_barracuda_cpu_parity;
 mod s_barracuda_parity;
 mod s_beat_classification;
 mod s_biosignal_fusion;
@@ -41,6 +42,7 @@ mod s_jak_panel;
 mod s_live_health;
 mod s_live_provenance;
 mod s_lokivetmab;
+mod s_ltee_b5;
 mod s_mab_pk;
 mod s_matrix_scoring;
 mod s_michaelis_menten;

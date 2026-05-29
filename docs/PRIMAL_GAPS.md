@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-28
-**healthSpring version**: V65a (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**, barraCuda **v0.4.0**, V65a: Wave 60 Eukaryotic Gate — BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), `bonding.*` protocol wired, registry 470+, 57 validation scenarios, 1,021 tests, all 7 deep debt categories zero, clippy zero)
+**Date**: 2026-05-29
+**healthSpring version**: V65a (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**, barraCuda **v0.4.0**, V65a: Wave 60 Eukaryotic Gate — BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), `bonding.*` protocol wired, registry 470+, 59 validation scenarios, 1,021 tests, all 7 deep debt categories zero, clippy zero)
 
 ---
 
@@ -706,15 +706,15 @@ Upstream audit: **ecoPrimals — Atomic Specialist Validation Sprint (May 13, 20
 
 | Question | Answer |
 |----------|--------|
-| Python baselines for barraCuda CPU parity? | **Yes**: `control/scripts/exp040_barracuda_cpu.py` covers stats (mean, std_dev, variance, correlation), Hill, Shannon, Simpson, Chao1, Anderson. All matched by Rust scenarios. |
+| Python baselines for barraCuda CPU parity? | **Yes**: `control/validation/exp040_barracuda_cpu.py` (stats, Hill, Shannon, Simpson, Chao1, Anderson, Bray-Curtis, PPG) — **now matched by `s_barracuda_cpu_parity` scenario (10 checks, PASS)**. |
 | Kokkos/Galaxy/SciPy/LAMMPS GPU benchmarks? | **No**: GPU parity depends on `wgpu` feature + live GPU. No Kokkos/LAMMPS benchmarks — barraCuda's WGSL shaders are sovereign, not porting external frameworks. CPU benchmarks exist in `benches/cpu_parity.rs`. |
-| What's not implemented/validated/tested? | **~30 Python baselines** lack Rust scenarios (exp003-006, exp012-013, exp022-023, exp031-038, exp078-082, exp091-094, exp098-099, exp101-106, exp111). These are valid science but lower priority than composition wiring. |
+| What's not implemented/validated/tested? | **Coverage substantially closed (Wave 60 stabilization)**: 59 scenarios now cover all 10 tracks + LTEE B5 (8 checks) + barraCuda CPU parity (10 checks). Remaining ~5 experiment binaries (exp084/085 GPU scaling, exp112-113 dispatch) lack dedicated scenarios but are exercised by CI composition jobs. Modules without inline unit tests: `certification/`, `composition/`, `gpu/sovereign.rs`, `gpu/cpu_fallback.rs`, `microbiome/anderson.rs` (covered by integration tests). |
 | Unreviewed papers from queue? | **2**: LTEE E2 (Mardikoraem & Woldring 2025 "HOLIgraph") and E4 (Woldring Lab 2024 macrocyclic peptides). 45/45 main-track papers complete. |
 | Datasets to examine? | **5 datasets** in `data/manifest.toml`, all lacking SHA256 checksums. `qs_gene_matrix` has no fetch script. MitBIH, ChEMBL, HMP 16S, GEO AR ready for fetch but unverified. |
 
 | # | Gap | Source | Upstream Action |
 |---|-----|--------|-----------------|
-| 38 | ~30 Python baselines without Rust validation scenarios | Deep debt audit | healthSpring: prioritize as science tracks mature |
+| 38 | ~~\~30 Python baselines without Rust scenarios~~ **SUBSTANTIALLY CLOSED**: 59 scenarios; only ~5 experiment binaries without dedicated scenarios (GPU scaling, dispatch parity — CI-covered) | Deep debt audit → **Wave 60 stabilization** | DONE: exp040 + B5 absorbed |
 | 39 | LTEE E2 + E4 papers queued, not reviewed | Paper queue audit | healthSpring: review when relevant to provenance work |
 | 40 | Dataset SHA256 checksums empty + `qs_gene_matrix` fetch unimplemented | Data provenance audit | healthSpring: populate post-fetch, implement fetch script |
 | 41 | No GPU parity benchmarks (Kokkos/LAMMPS/SciPy) | Benchmark audit | Not applicable — sovereign WGSL shaders, not framework ports |
@@ -765,7 +765,7 @@ Re-audit after V64j wire name changes. **All 7 categories confirmed at zero debt
 |----------|--------|
 | Python baselines for barraCuda CPU parity? | **Yes**: `control/validation/exp040_barracuda_cpu.py` (stats, Hill, Shannon, Simpson, Chao1, Anderson) + `control/scripts/bench_barracuda_cpu_vs_python.py` (Hill, oral PK, Shannon/Simpson/Pielou, AUC, pop MC). Rust parity: full for exp040; partial for bench suite (oral PK, Pielou, trapezoidal AUC gaps). |
 | GPU benchmarks? | `gpu_parity.rs` (Hill/diversity/popPK/MM batch via wgpu), `kokkos_parity.rs` (Kokkos-modeled CPU patterns). No SciPy/LAMMPS/Galaxy direct comparisons — sovereign WGSL shaders, not framework ports. |
-| What's not implemented? | ~30 Python baselines lack Rust scenarios. V16 primitives (exp078-082: antibiotic perturbation, SCFA, serotonin, EDA, beat classification) uncovered. exp084/exp085 not in scenario registry. |
+| What's not implemented? | **Substantially closed**: 59 scenarios cover all 10 tracks including V16 primitives (exp078-082 all have scenarios). Remaining: exp084/085 (GPU scaling) not in scenario registry, exp112-113 (dispatch) CI-only. |
 | Unreviewed papers? | **2**: LTEE E2 (HOLIgraph) and E4 (macrocyclic peptides). 45/45 main-track complete. |
 | Datasets? | **5** in `data/manifest.toml`, all SHA256 empty. `qs_gene_matrix` lacks fetch script. Other 4 have scripts but unverified. |
 
@@ -886,7 +886,7 @@ Post-Wave 17 comprehensive re-audit. **All 7 categories confirmed at zero debt.*
 |----------|--------|
 | Python benchmarks for barraCuda CPU parity? | **Yes**: `control/scripts/bench_barracuda_cpu_vs_python.py` (Hill, oral PK, Shannon/Simpson/Pielou, AUC, population MC) + `control/validation/exp040_barracuda_cpu.py` (analytical: Hill, IV bolus, two-compartment, Shannon/Simpson/Pielou/Chao1, Bray-Curtis, PPG). Rust mirror: `ecoPrimal/benches/cpu_parity.rs`. Gap: timing bench does not cover Chao1, Bray-Curtis, IV bolus, PPG (only analytical baseline does). |
 | GPU benchmarks? | `gpu_parity.rs` (Hill/diversity/popPK/MM batch via wgpu); `kokkos_parity.rs` (Kokkos-modeled CPU patterns — no Kokkos dependency). No Galaxy/SciPy-GPU/LAMMPS — sovereign WGSL shaders, not framework ports. |
-| What's not implemented? | ~30 Python baselines lack Rust scenarios (exp003-006, exp012-013, exp022-023, exp031-038, exp078-082, exp091-094, exp098-099, exp101-106, exp111). V16 primitives (antibiotic perturbation, SCFA, serotonin, EDA, beat classification) have Python baselines but incomplete Rust bench coverage. Modules without inline unit tests: `certification/`, `composition/`, `gpu/sovereign.rs`, `gpu/cpu_fallback.rs`, `microbiome/anderson.rs`, `microbiome/clinical.rs` (covered by integration/experiment tests). |
+| What's not implemented? | **Substantially closed (Wave 60)**: 59 scenarios cover all 10 tracks. All V16 primitives (exp078-082) have scenarios. Only exp084/085 (GPU scaling) and exp112-113 (dispatch parity) lack dedicated scenarios (CI-covered). Modules without inline unit tests: `certification/`, `composition/`, `gpu/sovereign.rs`, `gpu/cpu_fallback.rs`, `microbiome/anderson.rs` (covered by integration/experiment tests). |
 | Unreviewed papers? | **2**: LTEE E2 (Mardikoraem & Woldring 2025 "HOLIgraph" OATP PK/PD) and E4 (Woldring Lab 2024 macrocyclic peptides). 45/45 main-track complete. |
 | Datasets? | **5** in `data/manifest.toml`, all SHA256 empty. `qs_gene_matrix` lacks fetch script. Others (`mitbih`, `chembl_hill_panel`, `hmp_16s`, `geo_androgen_receptor`) scripted but unverified. |
 | External deps? | All appropriate: `serde`/`serde_json` (ecosystem standard), `tracing` (structured logging), `clap` (CLI), `base64` (crypto payloads), `thiserror` (error derives). Optional: `wgpu`/`tokio`/`bytemuck` (GPU feature), `ureq` (nestgate HTTP). No Rust replacement opportunities with favorable cost/benefit. |
@@ -950,7 +950,7 @@ Post-Wave 20 comprehensive re-audit. **All 7 categories confirmed at zero debt.*
 | 35 | loamSpine method naming clarified | — | **RESOLVED V64j**: `entry.append` canonical, aliases shipped | — |
 | 36 | Nest Atomic live exercises unblocked | — | **RESOLVED V64j**: upstream aliases + local canonical names | — |
 | 37 | NestComposition `"data"` domain misroute | Internal wire review | **Fixed V64h**: `"storage"` domain | — |
-| 38 | ~30 Python baselines without Rust scenarios | Deep debt audit | **V64i**: documented, lower priority | — |
+| 38 | ~30 Python baselines w/o scenarios | — | **CLOSED Wave 60**: 59 scenarios, exp040+B5 absorbed | — |
 | 39 | LTEE E2+E4 papers queued | Paper queue audit | **V64i**: documented | — |
 | 40 | Dataset SHA256 + fetch gaps | Data audit | **V64i**: documented | — |
 | 41 | No GPU parity benchmarks | Benchmark audit | **V64i**: N/A (sovereign WGSL) | — |

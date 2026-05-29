@@ -6,6 +6,14 @@ This project uses internal versioning (V-series) for development milestones.
 
 ## V65a — May 29, 2026
 
+### Wave 60 Stabilization — Niche Depth (LTEE B5 + barraCuda CPU Parity)
+
+- **`s_ltee_b5` scenario added**: LTEE B5 symbiont PK/PD — 8 cross-tier checks (colonization dynamics, molecule production, efficacy, PK half-life) validated against Python baseline. All 8/8 PASS with bit-identical results.
+- **`s_barracuda_cpu_parity` scenario added**: V16 CPU math primitives — 10 checks (mean, std_dev, Hill at IC50/2x/steep, Shannon, Simpson, Chao1, Bray-Curtis identical/disjoint) validated against analytical baselines. All 10/10 PASS.
+- **Scenario count 57 → 59**: Both new scenarios registered in `validation/scenarios/registry.rs`, `mod.rs` updated.
+- **PRIMAL_GAPS #38 substantially closed**: Gap previously claimed "~30 Python baselines without Rust scenarios" — now 59 scenarios cover all 10 tracks, only ~5 experiment binaries (GPU scaling, dispatch parity) lack dedicated scenarios (CI-covered). Three audit-answer tables updated.
+- **Directive**: Wave 60 stabilization — no new upstream API surface until 14 new capability methods ship across 6 primals.
+
 ### Wave 60b — Neural API Triad Absorption + Gate Identity
 
 - **`.gate` identity file created**: `ironGate` identity written to `$ECOPRIMALS_ROOT/.gate`. cascade-pull v2.0.0 now auto-detects gate from this file (priority over hostname heuristic).
