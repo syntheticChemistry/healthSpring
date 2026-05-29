@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 (scyBorg: AGPL-3.0 code + ORC mechanics + CC-BY-SA-4.0 creative) -->
 # healthSpring vs. Every Cure MATRIX — Comparative Analysis
 
-**Last Updated**: May 25, 2026
+**Last Updated**: May 28, 2026
 **Status**: V65a — 57 validation scenarios, B5 cross-tier parity proven. guideStone Level 5. **1,021 tests**, 95 experiments, 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Onboarding document for researchers whose work we have ingested and evolved —
 particularly Fajgenbaum (MATRIX), Lisabeth (ADDRC HTS), and collaborators entering the
 healthSpring ecosystem.

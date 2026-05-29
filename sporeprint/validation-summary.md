@@ -1,7 +1,7 @@
 +++
 title = "healthSpring Validation Summary — V65a"
 description = "PK/PD, gut microbiome, biosignal, drug discovery — 57 validation scenarios, B5 cross-tier parity proven, lithoSpore Module 8 ready, BLAKE3 provenance complete, zero debt"
-date = 2026-05-25
+date = 2026-05-28
 
 [taxonomies]
 primals = ["barracuda", "toadstool", "biomeos", "nestgate"]

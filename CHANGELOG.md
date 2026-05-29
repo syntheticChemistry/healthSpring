@@ -4,7 +4,17 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
-## V65a — May 25, 2026
+## V65a — May 28, 2026
+
+### Wave 60 — Eukaryotic Gate Onboarding
+
+- **Forgejo sync verified**: ironGate cascade-pull working — 22-repo profile, 20 on disk, `--source forgejo` pulls from `git.primals.eco`. All forgejo remotes configured.
+- **Bug fix: `visualize.sh` ECO_ROOT ordering**: `ECO_ROOT` was used on line 59 before definition on line 72, causing silent skip of petalTongue sandbox sync. Moved to line 19.
+- **ecoBin version alignment**: `capabilities.rs` clarified from "ecoBin v3.0" to "ecoBin 0.9.0 (spec v3.0)".
+- **CONTEXT.md launcher path fix**: Gate Deployment `Launch` row corrected from `./tools/nucleus_launcher.sh` to `../primalSpring/tools/nucleus_launcher.sh`.
+- **Doc sweep**: 21 active docs updated from May 25 → May 28, 12+ status banners from Wave 50 → Wave 60.
+- **Upstream gaps**: 2 manifest issues documented (songbird path case mismatch, nestGate workspace root path).
+- **Handoff**: `HEALTHSPRING_WAVE60_EUKARYOTIC_GATE_MAY28_2026.md`.
 
 ### Docs Cleanup + Debris Sweep (Post-Wave 50)
 

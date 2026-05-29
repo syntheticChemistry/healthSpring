@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V65a · **Date:** May 25, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V65a: Wave 50 Covalent HPC — post-primordial (plasmidBin-only), NUCLEUS operational on ironGate, Songbird mesh seeded (eastGate), dual-tower + Nest Atomic validated. 57 scenarios, 88 capabilities, zero debt.
+**Version:** V65a · **Date:** May 28, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V65a: Wave 60 Eukaryotic Gate — ironGate eukaryotic (13/13 NUCLEUS, Forgejo sync, cascade-pull 22-repo profile), post-primordial clean, dual-tower + Nest Atomic validated. 57 scenarios, 88 capabilities, zero debt.
 
 ## What This Is
 
@@ -98,7 +98,7 @@ Python baseline → Rust CPU → barraCuda GPU → coralReef/toadStool sovereign
 | **Songbird federation** | port 7700 |
 | **LAN mesh** | active — co-tenants: primalSpring, ludoSpring |
 | **Cell graph** | `plasmidBin/cells/healthspring_cell.toml` |
-| **Launch** | `SONGBIRD_FEDERATION_PORT=7700 ./tools/nucleus_launcher.sh start` then `./tools/cell_launcher.sh healthspring start` |
+| **Launch** | `SONGBIRD_FEDERATION_PORT=7700 ../primalSpring/tools/nucleus_launcher.sh start` then `../primalSpring/tools/cell_launcher.sh healthspring start` |
 
 These binaries are built using AI-assisted constrained evolution. Rust's
 compiler constraints (ownership, lifetimes, type system) reshape the fitness

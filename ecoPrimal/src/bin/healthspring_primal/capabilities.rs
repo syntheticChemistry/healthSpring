@@ -417,7 +417,7 @@ pub fn cmd_version() {
     println!("{PRIMAL_NAME} {}", env!("CARGO_PKG_VERSION"));
     println!("  Domain:    {PRIMAL_DOMAIN}");
     println!("  License:   AGPL-3.0-or-later");
-    println!("  Arch:      UniBin / ecoBin v3.0");
+    println!("  Arch:      UniBin / ecoBin 0.9.0 (spec v3.0)");
     println!("  Runtime:   {}", std::env::consts::ARCH);
 }
 

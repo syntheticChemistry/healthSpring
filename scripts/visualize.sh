@@ -16,6 +16,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+ECO_ROOT="$(cd "${PROJECT_ROOT}/../.." && pwd)"
 
 IPC=false
 ARGS=()
@@ -69,7 +70,6 @@ fi
 
 # --- 3. Locate petalTongue (plasmidBin only — post-primordial) -----------
 
-ECO_ROOT="$(cd "${PROJECT_ROOT}/../.." && pwd)"
 PLASMID_BIN="${ECOPRIMALS_PLASMID_BIN:-$ECO_ROOT/infra/plasmidBin}"
 PETALTONGUE_BIN="$PLASMID_BIN/primals/x86_64-unknown-linux-musl/petaltongue"
 [[ -x "$PETALTONGUE_BIN" ]] || PETALTONGUE_BIN="$PLASMID_BIN/primals/petaltongue"

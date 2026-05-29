@@ -61,7 +61,7 @@ base64 = "0.22"
 
 # primalSpring composition API — required for CompositionContext,
 # ScenarioMeta, ValidationResult, certification engine, and tolerances.
-# Pinned to v0.9.27 (Wave 46+, current: Wave 50).
+# Pinned to v0.9.27 (Wave 46+, current: Wave 60).
 primalspring = { path = "../../primalSpring/ecoPrimal", version = "0.9.27" }
 
 [[bin]]

@@ -1,7 +1,7 @@
 # healthSpring Stability Tiers
 
 **Version**: 1.0
-**Date**: May 25, 2026 (V65a)
+**Date**: May 28, 2026 (V65a)
 **Reference**: `primalSpring/config/capability_registry.toml` — stability annotations
 
 ---

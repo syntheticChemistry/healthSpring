@@ -1,7 +1,7 @@
 # healthSpring Cross-Tier Parity
 
 **Version**: 1.0
-**Date**: May 25, 2026 (V65a)
+**Date**: May 28, 2026 (V65a)
 **Reference**: `primalSpring/docs/VALIDATION_TIERS.md` — Tier 3 + parity sections
 
 ---

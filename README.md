@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** May 25, 2026 (V65a)
+**Date:** May 28, 2026 (V65a)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V65a — **Wave 50 Covalent HPC**. Post-primordial clean (zero `target/release/` for NUCLEUS primals). NUCLEUS 14/17 ALIVE on ironGate, Songbird mesh seeded (`mesh.init` → eastGate), federation `*:7700`. Dual-tower validated: 7 domain + 5 Nest Atomic capabilities live. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. **1,021 tests** pass, 0 clippy warnings. guideStone **Level 5**. 458-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.27**. Zero clippy, zero unsafe, zero TODO.
+**Status:** V65a — **Wave 60 Eukaryotic Gate**. ironGate eukaryotic (13/13 NUCLEUS, Forgejo sync live, cascade-pull 22-repo profile). Post-primordial clean. Dual-tower validated: 7 domain + 5 Nest Atomic capabilities. **57 validation scenarios** covering 56 experiment IDs. All clippy pedantic+nursery zero. All 7 deep debt categories zero. **1,021 tests** pass, 0 clippy warnings. guideStone **Level 5**. 458-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.27**. Zero clippy, zero unsafe, zero TODO.
 
 ---
 
@@ -33,7 +33,7 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V65a** (Wave 50 Covalent HPC: post-primordial plasmidBin-only, NUCLEUS on ironGate, Songbird mesh seeded, dual-tower + Nest Atomic validated) |
+| Version | **V65a** (Wave 60 Eukaryotic Gate: ironGate eukaryotic, Forgejo sync + cascade-pull 22-repo, 13/13 NUCLEUS, dual-tower + Nest Atomic validated) |
 | **Total tests** | **1,021** (878 lib + 9 doc + 12 integration + 20 composition + 6 registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
 | Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: **57** registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
@@ -64,7 +64,7 @@ New modules: **`certification/`** (guideStone logic absorbed from the standalone
 
 ## V60 Deep Debt Evolution — Sovereign NUCLEUS Parity (from V59) *(historical)*
 
-> Snapshot of the **V60** milestone. Current workspace status is **V65a** (May 25, 2026) — see above.
+> Snapshot of the **V60** milestone. Current workspace status is **V65a** (May 28, 2026) — see above.
 
 V60 extends sovereign deployment and parity: optional **`barracuda-lib`** feature (default on) gates barraCuda/barracuda-core; disabling yields an IPC-first NUCLEUS path with pure-Rust fallbacks in `math_dispatch.rs`. **`BarraCudaClient::discover()`** probes the `stats` capability first with a `barracuda` name fallback. Scattered timeouts and retries consolidate into **`tolerances.rs`**; inline literals in exp122 and guidestone bare.rs migrate to named tolerance constants. **`exp123_nucleus_parity`** validates full NUCLEUS pipeline parity (Tower+Node+Nest+cross-atomic) for the health niche; **`validate_pk_models`** supports projectNUCLEUS workloads (Hill, 1-compartment, PopPK, Michaelis-Menten). Criterion **`gpu_parity`** benchmarks are feature-gated behind `gpu`; dataset fetch scripts add BLAKE3 hashing; `records_infra.rs` and visualization scenario tests split for maintainability; capability registry and docs align with primalSpring. **1,002** tests pass, **0** clippy warnings.
 
