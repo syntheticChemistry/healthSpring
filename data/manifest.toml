@@ -34,7 +34,7 @@ accessions = [
 license = "Public domain (NCBI)"
 size_estimate = "~50MB (gene records + protein hits)"
 output = "qs_gene_matrix.json"
-script = ""  # fetch_qs_genes.py not yet implemented; QS gene matrix assembled manually from NCBI queries
+script = "fetch_qs_genes.py"
 tracks = [2, 6]
 sha256 = ""  # populated after first download
 

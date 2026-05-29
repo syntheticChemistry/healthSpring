@@ -52,3 +52,74 @@ pub fn capability_to_primal(capability: &str) -> &'static str {
         _ => "unknown",
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn all_caps_entries_route_to_known_primal() {
+        for cap in ALL_CAPS {
+            let primal = capability_to_primal(cap);
+            assert_ne!(
+                primal, "unknown",
+                "ALL_CAPS entry '{cap}' routes to 'unknown' — missing match arm"
+            );
+        }
+    }
+
+    #[test]
+    fn all_caps_has_no_duplicates() {
+        let mut seen = std::collections::HashSet::new();
+        for cap in ALL_CAPS {
+            assert!(
+                seen.insert(cap),
+                "ALL_CAPS contains duplicate: '{cap}'"
+            );
+        }
+    }
+
+    #[test]
+    fn canonical_routing_table() {
+        assert_eq!(capability_to_primal("tensor"), primal_names::BARRACUDA);
+        assert_eq!(capability_to_primal("stats"), primal_names::BARRACUDA);
+        assert_eq!(capability_to_primal("shader"), primal_names::CORALREEF);
+        assert_eq!(capability_to_primal("compute"), primal_names::TOADSTOOL);
+        assert_eq!(capability_to_primal("security"), primal_names::BEARDOG);
+        assert_eq!(capability_to_primal("crypto"), primal_names::BEARDOG);
+        assert_eq!(capability_to_primal("fido2"), primal_names::BEARDOG);
+        assert_eq!(capability_to_primal("discovery"), primal_names::SONGBIRD);
+        assert_eq!(capability_to_primal("net.discovery"), primal_names::SONGBIRD);
+        assert_eq!(capability_to_primal("storage"), primal_names::NESTGATE);
+        assert_eq!(capability_to_primal("content"), primal_names::NESTGATE);
+        assert_eq!(capability_to_primal("dag"), primal_names::RHIZOCRYPT);
+        assert_eq!(capability_to_primal("commit"), primal_names::LOAMSPINE);
+        assert_eq!(capability_to_primal("ledger"), primal_names::LOAMSPINE);
+        assert_eq!(capability_to_primal("spine"), primal_names::LOAMSPINE);
+        assert_eq!(capability_to_primal("merkle"), primal_names::LOAMSPINE);
+        assert_eq!(capability_to_primal("braid"), primal_names::SWEETGRASS);
+        assert_eq!(capability_to_primal("attribution"), primal_names::SWEETGRASS);
+        assert_eq!(capability_to_primal("inference"), primal_names::SQUIRREL);
+        assert_eq!(capability_to_primal("model"), primal_names::SQUIRREL);
+        assert_eq!(capability_to_primal("visualization"), primal_names::PETALTONGUE);
+        assert_eq!(capability_to_primal("orchestration"), primal_names::BIOMEOS);
+        assert_eq!(capability_to_primal("lifecycle"), primal_names::BIOMEOS);
+        assert_eq!(capability_to_primal("signal"), primal_names::BIOMEOS);
+        assert_eq!(capability_to_primal("coordination"), "primalspring");
+        assert_eq!(capability_to_primal("bonding"), "primalspring");
+        assert_eq!(capability_to_primal("primal"), "primalspring");
+        assert_eq!(capability_to_primal("audit"), primal_names::SKUNKBAT);
+        assert_eq!(capability_to_primal("audit.log"), primal_names::SKUNKBAT);
+        assert_eq!(capability_to_primal("defense"), primal_names::SKUNKBAT);
+        assert_eq!(capability_to_primal("security.audit"), primal_names::SKUNKBAT);
+        assert_eq!(capability_to_primal("certificate"), "ecosystem");
+        assert_eq!(capability_to_primal("genetic"), "ecosystem");
+    }
+
+    #[test]
+    fn unknown_capability_returns_unknown() {
+        assert_eq!(capability_to_primal("nonexistent"), "unknown");
+        assert_eq!(capability_to_primal(""), "unknown");
+        assert_eq!(capability_to_primal("health.liveness"), "unknown");
+    }
+}

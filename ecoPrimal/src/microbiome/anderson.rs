@@ -82,3 +82,129 @@ pub fn colonization_resistance(xi: f64) -> f64 {
         0.0
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hamiltonian_2x2_structure() {
+        let h = anderson_hamiltonian_1d(&[1.0, 2.0], 0.5);
+        assert_eq!(h.len(), 4);
+        assert!((h[0] - 1.0).abs() < 1e-15);
+        assert!((h[1] - 0.5).abs() < 1e-15);
+        assert!((h[2] - 0.5).abs() < 1e-15);
+        assert!((h[3] - 2.0).abs() < 1e-15);
+    }
+
+    #[test]
+    fn hamiltonian_is_symmetric() {
+        let disorder = [0.3, -0.5, 1.2, 0.7, -0.1];
+        let h = anderson_hamiltonian_1d(&disorder, 1.0);
+        let n = disorder.len();
+        for i in 0..n {
+            for j in 0..n {
+                assert!(
+                    (h[i * n + j] - h[j * n + i]).abs() < 1e-15,
+                    "H[{i},{j}] != H[{j},{i}]"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn hamiltonian_tridiagonal() {
+        let disorder = [1.0, 2.0, 3.0, 4.0];
+        let h = anderson_hamiltonian_1d(&disorder, 0.8);
+        let n = disorder.len();
+        for i in 0..n {
+            for j in 0..n {
+                let dist = i.abs_diff(j);
+                if dist > 1 {
+                    assert!(
+                        h[i * n + j].abs() < 1e-15,
+                        "non-zero at [{i},{j}] (dist {dist})"
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn ipr_of_localized_state() {
+        let mut psi = vec![0.0; 10];
+        psi[3] = 1.0;
+        let ipr = inverse_participation_ratio(&psi);
+        assert!((ipr - 1.0).abs() < 1e-15, "perfectly localized IPR should be 1.0");
+    }
+
+    #[test]
+    #[expect(clippy::cast_precision_loss, reason = "test lattice sizes ≪ 2^52")]
+    fn ipr_of_extended_state() {
+        let n = 100_usize;
+        let amplitude = 1.0 / (n as f64).sqrt();
+        let psi = vec![amplitude; n];
+        let ipr = inverse_participation_ratio(&psi);
+        let expected = 1.0 / n as f64;
+        assert!(
+            (ipr - expected).abs() < 1e-12,
+            "uniform extended IPR={ipr}, expected {expected}"
+        );
+    }
+
+    #[test]
+    fn localization_length_from_ipr_edge_cases() {
+        assert!((localization_length_from_ipr(1.0) - 1.0).abs() < 1e-15);
+        assert!((localization_length_from_ipr(0.5) - 2.0).abs() < 1e-15);
+        assert!(localization_length_from_ipr(0.0).is_infinite());
+        assert!(localization_length_from_ipr(-1.0).is_infinite());
+    }
+
+    #[test]
+    fn level_spacing_ratio_short_inputs() {
+        assert!((level_spacing_ratio(&[]) - 0.0).abs() < 1e-15);
+        assert!((level_spacing_ratio(&[1.0]) - 0.0).abs() < 1e-15);
+        assert!((level_spacing_ratio(&[1.0, 2.0]) - 0.0).abs() < 1e-15);
+    }
+
+    #[test]
+    fn level_spacing_ratio_uniform_spacing() {
+        let evals: Vec<f64> = (0..20).map(f64::from).collect();
+        let r = level_spacing_ratio(&evals);
+        assert!(
+            (r - 1.0).abs() < 1e-12,
+            "uniform spacing: <r> should be 1.0, got {r}"
+        );
+    }
+
+    #[test]
+    fn colonization_resistance_positive_finite() {
+        assert!((colonization_resistance(2.0) - 0.5).abs() < 1e-15);
+        assert!((colonization_resistance(0.5) - 2.0).abs() < 1e-15);
+    }
+
+    #[test]
+    fn colonization_resistance_edge_cases() {
+        assert!((colonization_resistance(0.0) - 0.0).abs() < 1e-15);
+        assert!((colonization_resistance(-1.0) - 0.0).abs() < 1e-15);
+        assert!((colonization_resistance(f64::INFINITY) - 0.0).abs() < 1e-15);
+        assert!((colonization_resistance(f64::NAN) - 0.0).abs() < 1e-15);
+    }
+
+    #[test]
+    fn diagonalize_recovers_known_eigenvalues() {
+        let (evals, _) = anderson_diagonalize(&[0.0, 0.0], 1.0);
+        let mut sorted = evals;
+        sorted.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+        assert!((sorted[0] - (-1.0)).abs() < 1e-10, "e0={}", sorted[0]);
+        assert!((sorted[1] - 1.0).abs() < 1e-10, "e1={}", sorted[1]);
+    }
+
+    #[test]
+    fn diagonalize_eigenvalue_count_matches_lattice_size() {
+        let disorder = [0.1, -0.2, 0.3, 0.0, -0.1];
+        let (evals, evecs) = anderson_diagonalize(&disorder, 1.0);
+        assert_eq!(evals.len(), 5);
+        assert_eq!(evecs.len(), 25);
+    }
+}

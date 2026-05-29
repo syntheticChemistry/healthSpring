@@ -2,7 +2,7 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V65a — **Wave 60 Stabilization**. ironGate eukaryotic (i9-14900K, RTX 5070, 96GB DDR5, co-tenants: primalSpring, ludoSpring). `.gate` identity, cascade-pull v2.0.0, 22-repo profile. Neural API triad (qS/rP/wF) absorbed. 13/13 NUCLEUS, post-primordial clean. `healthspring_primal` cell live (7 domain capabilities). **59 validation scenarios** covering 58 experiment IDs (LTEE B5 + barraCuda CPU parity added). All clippy pedantic+nursery zero. All 7 deep debt categories zero. 470+-method registry. **1,021 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
+**Status**: V65a — **Wave 60 Stabilization**. ironGate eukaryotic (i9-14900K, RTX 5070, 96GB DDR5, co-tenants: primalSpring, ludoSpring). `.gate` identity, cascade-pull v2.0.0, 22-repo profile. Neural API triad (qS/rP/wF) absorbed. 13/13 NUCLEUS, post-primordial clean. `healthspring_primal` cell live (7 domain capabilities). **59 validation scenarios** covering 58 experiment IDs (LTEE B5 + barraCuda CPU parity added). All clippy pedantic+nursery zero. All 7 deep debt categories zero. 470+-method registry. **1,052 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
 **Last Updated**: May 29, 2026
 
 ---

@@ -173,3 +173,147 @@ fn wang_hash_uniform(seed: u32) -> f64 {
     s ^= s << 5;
     f64::from(s) / f64::from(u32::MAX)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::gpu::types::{GpuOp, GpuResult};
+
+    #[test]
+    fn hill_sweep_at_ec50_is_half_emax() {
+        let op = GpuOp::HillSweep {
+            emax: 1.0,
+            ec50: 10.0,
+            n: 1.0,
+            concentrations: vec![10.0],
+        };
+        if let GpuResult::HillSweep(vals) = execute_cpu(&op) {
+            assert!((vals[0] - 0.5).abs() < 1e-12, "Hill(EC50)={}", vals[0]);
+        } else {
+            panic!("wrong result variant");
+        }
+    }
+
+    #[test]
+    fn hill_sweep_monotonic() {
+        let concs: Vec<f64> = (1..=100).map(f64::from).collect();
+        let op = GpuOp::HillSweep {
+            emax: 1.0,
+            ec50: 50.0,
+            n: 2.0,
+            concentrations: concs,
+        };
+        if let GpuResult::HillSweep(vals) = execute_cpu(&op) {
+            for w in vals.windows(2) {
+                assert!(w[1] >= w[0], "Hill not monotonic: {} < {}", w[1], w[0]);
+            }
+        } else {
+            panic!("wrong result variant");
+        }
+    }
+
+    #[test]
+    fn population_pk_batch_deterministic() {
+        let op = GpuOp::PopulationPkBatch {
+            n_patients: 10,
+            dose_mg: 100.0,
+            f_bioavail: 0.8,
+            seed: 42,
+        };
+        let r1 = execute_cpu(&op);
+        let r2 = execute_cpu(&op);
+        if let (GpuResult::PopulationPkBatch(a), GpuResult::PopulationPkBatch(b)) = (r1, r2) {
+            assert_eq!(a.len(), 10);
+            for (x, y) in a.iter().zip(b.iter()) {
+                assert!((x - y).abs() < 1e-15, "non-deterministic: {x} != {y}");
+            }
+        } else {
+            panic!("wrong result variant");
+        }
+    }
+
+    #[test]
+    fn diversity_batch_uniform_community() {
+        let op = GpuOp::DiversityBatch {
+            communities: vec![vec![0.25, 0.25, 0.25, 0.25]],
+        };
+        if let GpuResult::DiversityBatch(vals) = execute_cpu(&op) {
+            let (shannon, simpson) = vals[0];
+            assert!((shannon - 4.0_f64.ln()).abs() < 1e-12, "shannon={shannon}");
+            assert!((simpson - 0.75).abs() < 1e-12, "simpson={simpson}");
+        } else {
+            panic!("wrong result variant");
+        }
+    }
+
+    #[test]
+    fn mm_batch_positive_aucs() {
+        let op = GpuOp::MichaelisMentenBatch {
+            vmax: 10.0,
+            km: 5.0,
+            vd: 30.0,
+            dt: 0.1,
+            n_steps: 100,
+            n_patients: 5,
+            seed: 7,
+        };
+        if let GpuResult::MichaelisMentenBatch(aucs) = execute_cpu(&op) {
+            assert_eq!(aucs.len(), 5);
+            for auc in &aucs {
+                assert!(*auc > 0.0, "AUC should be positive, got {auc}");
+            }
+        } else {
+            panic!("wrong result variant");
+        }
+    }
+
+    #[test]
+    fn scfa_batch_positive_outputs() {
+        let params = crate::microbiome::ScfaParams {
+            vmax_acetate: 60.0,
+            km_acetate: 10.0,
+            vmax_propionate: 25.0,
+            km_propionate: 10.0,
+            vmax_butyrate: 15.0,
+            km_butyrate: 10.0,
+        };
+        let op = GpuOp::ScfaBatch {
+            params,
+            fiber_inputs: vec![5.0, 10.0, 20.0],
+        };
+        if let GpuResult::ScfaBatch(vals) = execute_cpu(&op) {
+            assert_eq!(vals.len(), 3);
+            for (a, p, b) in &vals {
+                assert!(*a > 0.0 && *p > 0.0 && *b > 0.0);
+            }
+        } else {
+            panic!("wrong result variant");
+        }
+    }
+
+    #[test]
+    fn beat_classify_matches_own_template() {
+        let template_n = vec![0.0, 0.5, 1.0, 0.5, 0.0];
+        let template_pvc = vec![0.0, -0.5, -1.0, -0.5, 0.0];
+        let op = GpuOp::BeatClassifyBatch {
+            beats: vec![template_n.clone(), template_pvc.clone()],
+            templates: vec![template_n, template_pvc],
+        };
+        if let GpuResult::BeatClassifyBatch(vals) = execute_cpu(&op) {
+            assert_eq!(vals.len(), 2);
+            assert_eq!(vals[0].0, 0, "first beat should match Normal (idx 0)");
+            assert_eq!(vals[1].0, 1, "second beat should match PVC (idx 1)");
+            assert!(vals[0].1 > 0.99, "self-correlation should be ~1.0");
+        } else {
+            panic!("wrong result variant");
+        }
+    }
+
+    #[test]
+    fn wang_hash_in_unit_range() {
+        for seed in 0..1000_u32 {
+            let v = wang_hash_uniform(seed);
+            assert!((0.0..=1.0).contains(&v), "wang_hash({seed})={v} out of [0,1]");
+        }
+    }
+}

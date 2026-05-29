@@ -12,6 +12,12 @@ This project uses internal versioning (V-series) for development milestones.
 - **`s_barracuda_cpu_parity` scenario added**: V16 CPU math primitives — 10 checks (mean, std_dev, Hill at IC50/2x/steep, Shannon, Simpson, Chao1, Bray-Curtis identical/disjoint) validated against analytical baselines. All 10/10 PASS.
 - **Scenario count 57 → 59**: Both new scenarios registered in `validation/scenarios/registry.rs`, `mod.rs` updated.
 - **PRIMAL_GAPS #38 substantially closed**: Gap previously claimed "~30 Python baselines without Rust scenarios" — now 59 scenarios cover all 10 tracks, only ~5 experiment binaries (GPU scaling, dispatch parity) lack dedicated scenarios (CI-covered). Three audit-answer tables updated.
+- **Unit tests added (31 new, 1,021 → 1,052)**: Four previously untested modules now have inline tests:
+  - `composition/routing.rs`: ALL_CAPS completeness, routing table exhaustive verification, unknown capability fallback
+  - `certification/bare.rs`: P1/P2/P4/P5 bare properties run-and-pass, niche identity, tier coverage, wire counts
+  - `microbiome/anderson.rs`: Hamiltonian structure/symmetry/tridiagonality, IPR (localized/extended), localization length edge cases, level-spacing ratio, colonization resistance, diagonalization
+  - `gpu/cpu_fallback.rs`: One test per GpuOp variant (Hill, PopPK, Diversity, MM, SCFA, BeatClassify), determinism, wang_hash range
+- **`data/fetch_qs_genes.py` implemented**: Only dataset in `data/manifest.toml` with no fetch path. Queries NCBI Gene eutils for 40 gut species × 19 QS gene families. Produces structured JSON matrix for exp107 (QS-augmented Anderson).
 - **Directive**: Wave 60 stabilization — no new upstream API surface until 14 new capability methods ship across 6 primals.
 
 ### Wave 60b — Neural API Triad Absorption + Gate Identity

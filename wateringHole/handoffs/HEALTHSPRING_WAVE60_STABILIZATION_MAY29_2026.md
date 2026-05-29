@@ -64,12 +64,32 @@ Gap #38 summary row marked **SUBSTANTIALLY CLOSED**.
 
 ---
 
+### 4. Unit Tests Added (31 new tests, 1,021 → 1,052)
+
+Four modules with zero inline tests now have comprehensive coverage:
+
+| Module | Tests Added | Coverage |
+|--------|-------------|----------|
+| `composition/routing.rs` | 4 | ALL_CAPS completeness, routing table exhaustive, unknown fallback, no duplicates |
+| `certification/bare.rs` | 7 | P1/P2/P4/P5 run-and-pass, niche identity, tier coverage, wire counts |
+| `microbiome/anderson.rs` | 12 | Hamiltonian structure/symmetry/tridiagonal, IPR localized/extended, localization length edges, level-spacing ratio, colonization resistance, diagonalization |
+| `gpu/cpu_fallback.rs` | 8 | One test per GpuOp variant (Hill/PopPK/Diversity/MM/SCFA/Beat), determinism, wang_hash range |
+
+### 5. `data/fetch_qs_genes.py` Implemented
+
+The only dataset in `data/manifest.toml` with `script = ""` now has a fetch script.
+Queries NCBI Gene eutils for 40 gut-associated bacterial species × 19 QS gene
+families. Produces structured JSON matrix for exp107 (QS-augmented Anderson
+localization). Rate-limited at 350ms per query. `--dry-run` mode available.
+
+---
+
 ## Current State
 
 | Metric | Value |
 |--------|-------|
 | Validation scenarios | **59** (was 57) |
-| Tests | **1,021** |
+| Tests | **1,052** (was 1,021) |
 | Clippy | Zero warnings (pedantic + nursery) |
 | Deep debt | All 7 categories zero |
 | Registry | 470+ methods |
@@ -84,9 +104,8 @@ Gap #38 summary row marked **SUBSTANTIALLY CLOSED**.
 | Priority | Item | Status |
 |----------|------|--------|
 | P0 | Baseline JSON parity layer for science scenarios | Not started |
-| P0 | Dataset fetch + SHA256 population (5 datasets) | Fetch scripts exist, unverified |
+| P0 | Dataset fetch + SHA256 population (5 datasets) | All 5 datasets now have fetch scripts |
 | P1 | LTEE E2 (HOLIgraph) + E4 (macrocyclic peptides) paper reproduction | Queued |
-| P1 | Unit tests for composition/, certification/, microbiome/anderson.rs | Covered by integration, inline missing |
 | P2 | Conditional GPU vs CPU tests for 6 WGSL shaders | Feature-gated, manual only |
 | P2 | Absorb exp112-113 dispatch parity into scenario registry | CI-covered, scenarios optional |
 
@@ -100,7 +119,13 @@ Gap #38 summary row marked **SUBSTANTIALLY CLOSED**.
 | `ecoPrimal/src/validation/scenarios/s_barracuda_cpu_parity.rs` | **New** — barraCuda CPU parity scenario (10 checks) |
 | `ecoPrimal/src/validation/scenarios/mod.rs` | Added 2 module declarations |
 | `ecoPrimal/src/validation/scenarios/registry.rs` | Added 2 scenario entries (PK/PD track) |
-| `docs/PRIMAL_GAPS.md` | Gap #38 closed, 3 audit tables updated, header → 59 scenarios |
-| `README.md` | Status → Wave 60 Stabilization, 59 scenarios |
+| `ecoPrimal/src/composition/routing.rs` | Added 4 unit tests (ALL_CAPS + routing table) |
+| `ecoPrimal/src/certification/bare.rs` | Added 7 unit tests (bare properties + niche identity) |
+| `ecoPrimal/src/microbiome/anderson.rs` | Added 12 unit tests (lattice physics + edge cases) |
+| `ecoPrimal/src/gpu/cpu_fallback.rs` | Added 8 unit tests (all GpuOp variants + determinism) |
+| `data/fetch_qs_genes.py` | **New** — NCBI Gene fetch for QS matrix (40 species × 19 families) |
+| `data/manifest.toml` | `qs_gene_matrix` script field populated |
+| `docs/PRIMAL_GAPS.md` | Gap #38 closed, 3 audit tables updated, header → 59 scenarios, 1,052 tests |
+| `README.md` | Status → Wave 60 Stabilization, 59 scenarios, 1,052 tests |
 | `CHANGELOG.md` | New stabilization entry |
 | `wateringHole/README.md` | Status + handoff table updated |

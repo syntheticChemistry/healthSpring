@@ -194,3 +194,69 @@ pub fn validate_tolerance_documented(v: &mut ValidationResult) {
         &format!("{}", tolerances::DIVERSITY_CROSS_VALIDATE),
     );
 }
+
+#[cfg(test)]
+mod tests {
+    use primalspring::validation::ValidationResult;
+
+    use super::*;
+
+    fn run_and_assert_pass(
+        name: &str,
+        f: fn(&mut ValidationResult),
+    ) {
+        let mut v = ValidationResult::new(name);
+        f(&mut v);
+        assert!(
+            v.all_passed(),
+            "{name}: {}/{} checks passed",
+            v.passed,
+            v.passed + v.failed + v.skipped
+        );
+    }
+
+    #[test]
+    fn p1_deterministic_output() {
+        run_and_assert_pass("P1", validate_deterministic_output);
+    }
+
+    #[test]
+    fn p2_reference_traceable() {
+        run_and_assert_pass("P2", validate_reference_traceable);
+    }
+
+    #[test]
+    fn p4_environment_agnostic() {
+        run_and_assert_pass("P4", validate_environment_agnostic);
+    }
+
+    #[test]
+    fn p5_tolerance_documented() {
+        run_and_assert_pass("P5", validate_tolerance_documented);
+    }
+
+    #[test]
+    fn niche_identity_consistent() {
+        assert_eq!(niche::PRIMAL_ID, crate::PRIMAL_NAME);
+        assert_eq!(niche::NICHE_DOMAIN, "health");
+    }
+
+    #[test]
+    fn composition_experiments_cover_all_tiers() {
+        let tiers: Vec<&str> = niche::COMPOSITION_EXPERIMENTS
+            .iter()
+            .map(|(_, t)| *t)
+            .collect();
+        assert!(tiers.iter().any(|t| t.starts_with("tier3")));
+        assert!(tiers.iter().any(|t| t.starts_with("tier4")));
+        assert!(tiers.iter().any(|t| t.starts_with("tier5")));
+    }
+
+    #[test]
+    fn wire_count_consistency() {
+        assert_eq!(
+            math_dispatch::WIRE_READY_COUNT + math_dispatch::WIRE_PENDING_COUNT,
+            math_dispatch::TOTAL_COUNT
+        );
+    }
+}
