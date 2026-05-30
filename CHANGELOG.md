@@ -4,6 +4,15 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V65b — May 30, 2026
+
+### Wave 63 — Temporal Sync + BTSP Probe + pseudoSpore Domain Profile
+
+- **BTSP `btsp.capabilities` probe pattern implemented**: `probe_btsp_capabilities()` and `should_upgrade_btsp()` functions added to `ipc/btsp.rs`. Probes a primal socket for BTSP server support before attempting handshake, preventing the Gap #20 failure mode where BTSP-unaware primals reject `ClientHello`. Includes `BtspCapabilities` response struct with serde support. 4 new tests (10 total in btsp module).
+- **`domain_profile.toml` authored**: Clinical PK-PD drug interaction domain profile for pseudoSpore emission. 6 entity groups (PBPK compartments, PD response, drug interaction, microbiome metabolism, population PK, symbiont PK/PD), 5 derivation pipelines, 8 audit checks, 5 figure specifications. Ready for `litho emit-pseudospore --spring healthSpring --domain-profile ./domain_profile.toml`.
+- **Temporal sync operational**: `cascade-pull.sh --source temporal` verified functional. 21/22 repos synced from temporal leaders (1 diverge: toadStool, upstream concern). healthSpring at PARITY on both forgejo and origin remotes.
+- **Test count 1,052 → 1,056**: 4 new BTSP probe tests.
+
 ## V65a — May 29, 2026
 
 ### Wave 60 Stabilization — Niche Depth (LTEE B5 + barraCuda CPU Parity)

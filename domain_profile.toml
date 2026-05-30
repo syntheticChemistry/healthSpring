@@ -1,0 +1,170 @@
+# Domain Profile: Clinical PK-PD Drug Interaction
+# Covers PBPK compartmental modeling, pharmacodynamic response curves,
+# drug-drug interaction prediction, microbiome-mediated metabolism,
+# and population pharmacokinetics with GPU-accelerated Monte Carlo.
+
+[profile]
+id = "clinical-pkpd-drug-interaction"
+version = "1.0.0"
+domain = "clinical-pharmacology"
+subdomain = ["pharmacokinetics", "pharmacodynamics", "drug-interactions", "microbiome-metabolism"]
+tools = ["Rust", "WGSL (barraCuda)", "Python (baselines)"]
+methods = ["compartmental-ode", "hill-equation", "monte-carlo-population-pk", "pbpk-modeling"]
+
+[translation]
+# Domain concepts → computation mappings
+
+[[translation.entity_groups]]
+name = "pbpk_compartments"
+domain_description = "Physiologically-based PK: organ-level absorption, distribution, metabolism, elimination"
+computation = "Multi-compartment ODE integration (Runge-Kutta 4th order)"
+modules = ["module1_pbpk"]
+
+[[translation.entity_groups]]
+name = "pd_response"
+domain_description = "Pharmacodynamic dose-response: Hill equation, Emax, sigmoid curves"
+computation = "Hill function evaluation with EC50/Emax parameterization"
+modules = ["module2_pd"]
+
+[[translation.entity_groups]]
+name = "drug_interaction"
+domain_description = "CYP450 inhibition/induction, competitive/non-competitive binding, AUC fold-change"
+computation = "Interaction magnitude prediction via mechanistic static models"
+modules = ["module3_ddi"]
+
+[[translation.entity_groups]]
+name = "microbiome_metabolism"
+domain_description = "Gut microbiome xenobiotic metabolism: SCFA production, bile acid conjugation, colonization resistance"
+computation = "Anderson localization + Michaelis-Menten kinetics for community-level metabolism"
+modules = ["module4_microbiome"]
+
+[[translation.entity_groups]]
+name = "population_pk"
+domain_description = "Inter-individual variability in PK parameters across patient populations"
+computation = "GPU-accelerated Monte Carlo sampling (Wang hash PRNG, barraCuda dispatch)"
+modules = ["module5_pop_pk"]
+
+[[translation.entity_groups]]
+name = "symbiont_pkpd"
+domain_description = "Engineered symbiont colonization + therapeutic molecule production (LTEE B5)"
+computation = "Logistic growth + Hill knockdown coupled ODE system"
+modules = ["module6_symbiont"]
+
+[derivation]
+# How clinical PK-PD outputs are produced
+
+[[derivation.pipeline]]
+name = "pbpk_curve_generation"
+description = "Multi-compartment PBPK time-concentration curves for reference compounds"
+input = "compound_params.json (clearance, volume, blood flow fractions)"
+output = "pbpk_curves.json"
+tool = "healthspring Tier 2 (Rust ODE solver)"
+
+[[derivation.pipeline]]
+name = "pd_response_surface"
+description = "Dose-response surface across Hill parameter space"
+input = "pd_params.json (EC50, Emax, n_hill)"
+output = "pd_surface.json"
+tool = "healthspring Tier 2 (cpu_fallback hill_sweep)"
+
+[[derivation.pipeline]]
+name = "ddi_auc_prediction"
+description = "AUC fold-change predictions for known CYP450 inhibitor pairs"
+input = "ddi_pairs.json (victim/perpetrator Ki values)"
+output = "ddi_predictions.json"
+tool = "healthspring Tier 2 (pure Rust)"
+
+[[derivation.pipeline]]
+name = "population_pk_distribution"
+description = "Monte Carlo population PK parameter distributions (N=10,000)"
+input = "population_demographics.json (weight, age, CrCl)"
+output = "pop_pk_distribution.json"
+tool = "healthspring Tier 3 (barraCuda GPU via population_pk_batch)"
+
+[[derivation.pipeline]]
+name = "microbiome_colonization"
+description = "Anderson localization colonization resistance under antibiotic perturbation"
+input = "community_matrix.json (species abundances, disorder)"
+output = "colonization_resistance.json"
+tool = "healthspring Tier 2 (microbiome::anderson)"
+
+[audit]
+# Validation checks for clinical PK-PD domain
+
+[[audit.checks]]
+name = "compartment_mass_balance"
+description = "Total drug mass is conserved across PBPK compartments (±0.1%)"
+applies_to = ["module1_pbpk"]
+
+[[audit.checks]]
+name = "hill_curve_properties"
+description = "EC50 inflection point, monotonicity, and asymptotic Emax verified"
+applies_to = ["module2_pd"]
+
+[[audit.checks]]
+name = "ddi_reference_parity"
+description = "AUC fold-change predictions within 2-fold of published clinical data"
+applies_to = ["module3_ddi"]
+
+[[audit.checks]]
+name = "microbiome_diversity_bounds"
+description = "Shannon/Simpson indices within ecologically valid ranges"
+applies_to = ["module4_microbiome"]
+
+[[audit.checks]]
+name = "population_pk_coverage"
+description = "95% CI of population parameters covers reference population ranges"
+applies_to = ["module5_pop_pk"]
+
+[[audit.checks]]
+name = "cross_tier_parity"
+description = "Tier 2 (Rust) output matches Tier 1 (Python) golden values within documented tolerance"
+applies_to = "all"
+
+[[audit.checks]]
+name = "gpu_cpu_determinism"
+description = "barraCuda GPU output is bit-identical to cpu_fallback reference"
+applies_to = ["module2_pd", "module5_pop_pk"]
+
+[[audit.checks]]
+name = "symbiont_steady_state"
+description = "LTEE B5 symbiont reaches expected colonization density and molecule production"
+applies_to = ["module6_symbiont"]
+
+[figures]
+auto_generate = false
+
+[[figures.plot]]
+name = "pbpk_concentration_time"
+module = "module1_pbpk"
+type = "1d_multi_line"
+x_axis = "Time (hours)"
+y_axis = "Concentration (ng/mL)"
+
+[[figures.plot]]
+name = "hill_dose_response"
+module = "module2_pd"
+type = "1d_line"
+x_axis = "Dose (log scale)"
+y_axis = "Response (% Emax)"
+
+[[figures.plot]]
+name = "ddi_auc_waterfall"
+module = "module3_ddi"
+type = "bar"
+x_axis = "Drug pair"
+y_axis = "AUC fold-change"
+
+[[figures.plot]]
+name = "pop_pk_histogram"
+module = "module5_pop_pk"
+type = "histogram"
+x_axis = "Clearance (L/h)"
+y_axis = "Frequency"
+
+[[figures.plot]]
+name = "colonization_landscape"
+module = "module4_microbiome"
+type = "heatmap"
+x_axis = "Disorder strength"
+y_axis = "Lattice position"

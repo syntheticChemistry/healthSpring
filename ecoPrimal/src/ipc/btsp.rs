@@ -75,6 +75,102 @@ pub fn btsp_available() -> bool {
     std::env::var("FAMILY_SEED").is_ok()
 }
 
+/// Response from a `btsp.capabilities` probe.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BtspCapabilities {
+    /// Whether the primal supports BTSP server mode.
+    pub server: bool,
+    /// Protocol version (e.g. "1.0").
+    #[serde(default)]
+    pub version: String,
+    /// Supported ciphers (e.g. `chacha20-poly1305`).
+    #[serde(default)]
+    pub ciphers: Vec<String>,
+    /// Key derivation function (e.g. "hkdf-sha256").
+    #[serde(default)]
+    pub kdf: String,
+}
+
+/// Probe a primal socket for `btsp.capabilities` to determine whether the
+/// peer supports BTSP server mode before attempting a handshake.
+///
+/// This prevents the failure mode described in Gap #20 where BTSP-unaware
+/// primals reject or misparse `ClientHello`. Call this before any BTSP
+/// handshake attempt.
+///
+/// Returns `Some(caps)` if the primal responded with BTSP support info,
+/// `None` if the primal does not support BTSP (error, method-not-found, or
+/// `server: false`).
+pub fn probe_btsp_capabilities(
+    socket_path: &std::path::Path,
+) -> Option<BtspCapabilities> {
+    let params = serde_json::json!({});
+    let response = crate::ipc::rpc::try_send(socket_path, "btsp.capabilities", &params).ok()?;
+
+    let server_field = response.get("server").and_then(serde_json::Value::as_bool);
+
+    match server_field {
+        Some(true) => {
+            let caps = BtspCapabilities {
+                server: true,
+                version: response
+                    .get("version")
+                    .and_then(serde_json::Value::as_str)
+                    .unwrap_or("unknown")
+                    .to_owned(),
+                ciphers: response
+                    .get("ciphers")
+                    .and_then(serde_json::Value::as_array)
+                    .map(|arr| {
+                        arr.iter()
+                            .filter_map(serde_json::Value::as_str)
+                            .map(String::from)
+                            .collect()
+                    })
+                    .unwrap_or_default(),
+                kdf: response
+                    .get("kdf")
+                    .and_then(serde_json::Value::as_str)
+                    .unwrap_or("")
+                    .to_owned(),
+            };
+            Some(caps)
+        }
+        Some(false) => None,
+        None => {
+            if response.get("protocol").is_some() || response.get("handshake").is_some() {
+                Some(BtspCapabilities {
+                    server: true,
+                    version: response
+                        .get("version")
+                        .and_then(serde_json::Value::as_str)
+                        .unwrap_or("unknown")
+                        .to_owned(),
+                    ciphers: Vec::new(),
+                    kdf: String::new(),
+                })
+            } else {
+                None
+            }
+        }
+    }
+}
+
+/// Check if BTSP upgrade should be attempted for a given capability socket.
+///
+/// Returns `true` only if:
+/// 1. `FAMILY_SEED` is set (BTSP client side enabled)
+/// 2. The peer responds to `btsp.capabilities` with `server: true`
+///
+/// This is the recommended pre-flight check before calling `connect_btsp`.
+#[must_use]
+pub fn should_upgrade_btsp(socket_path: &std::path::Path) -> bool {
+    if !btsp_available() {
+        return false;
+    }
+    probe_btsp_capabilities(socket_path).is_some()
+}
+
 #[expect(
     clippy::cast_possible_truncation,
     reason = "value is masked to 8 bits before cast"
@@ -154,5 +250,41 @@ mod tests {
         assert!(json.is_ok());
         let json_str = json.expect("serialization should succeed in test");
         assert!(json_str.contains("ClientHello"));
+    }
+
+    #[test]
+    #[expect(clippy::expect_used, reason = "test assertion")]
+    fn btsp_capabilities_deserializes() {
+        let json = r#"{"server":true,"version":"1.0","ciphers":["chacha20-poly1305"],"kdf":"hkdf-sha256"}"#;
+        let caps: BtspCapabilities = serde_json::from_str(json).expect("deserialization");
+        assert!(caps.server);
+        assert_eq!(caps.version, "1.0");
+        assert_eq!(caps.ciphers, vec!["chacha20-poly1305"]);
+        assert_eq!(caps.kdf, "hkdf-sha256");
+    }
+
+    #[test]
+    #[expect(clippy::expect_used, reason = "test assertion")]
+    fn btsp_capabilities_deserializes_minimal() {
+        let json = r#"{"server":false}"#;
+        let caps: BtspCapabilities = serde_json::from_str(json).expect("deserialization");
+        assert!(!caps.server);
+        assert!(caps.ciphers.is_empty());
+    }
+
+    #[test]
+    fn should_upgrade_btsp_requires_family_seed() {
+        // Without FAMILY_SEED, should_upgrade_btsp always returns false
+        // regardless of socket connectivity.
+        if std::env::var("FAMILY_SEED").is_err() {
+            let path = std::path::Path::new("/nonexistent/socket.sock");
+            assert!(!should_upgrade_btsp(path));
+        }
+    }
+
+    #[test]
+    fn probe_nonexistent_socket_returns_none() {
+        let path = std::path::Path::new("/nonexistent/btsp_test.sock");
+        assert!(probe_btsp_capabilities(path).is_none());
     }
 }

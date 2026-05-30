@@ -592,7 +592,7 @@ DOWNSTREAM_COMPOSITION_EXPLORER_GUIDE, or make the lib detect and use
 - Gap #2 (ionic bridge): still blocked on BearDog + NestGate evolution
 - Gap #9 (Squirrel): blocked on Squirrel maturity
 - Gap #10 (BTSP server): client ready, blocked on BearDog BTSP server
-- Gaps #20–27: documented workarounds stable, await upstream primal evolution
+- Gaps #21–27: documented workarounds stable, await upstream primal evolution (Gap #20 BTSP probe resolved V65b)
 
 ---
 
@@ -826,7 +826,7 @@ primalSpring ecosystem status update (May 14): plasmidBin deployment evolution c
 
 **Composing → composed blockers (all upstream/coordination):**
 - Ionic bridge — **WIRED V64z**: `bonding.*` protocol (IonicContractRegistry) + `crypto.contract.*` signing layer; WS-1 substantially resolved
-- BTSP transport negotiation — `FAMILY_SEED` breaks mixed deploys (Gap #20)
+- BTSP transport negotiation — **RESOLVED V65b**: `probe_btsp_capabilities()` + `should_upgrade_btsp()` probe pattern implemented. Checks `btsp.capabilities` before handshake attempt. (Gap #20)
 - Foundation Thread 10 — provenance expression pending sporeGarden (Gap #42)
 - Nest live deploy — needs running primals for `s_nest_atomic` against live NUCLEUS
 
