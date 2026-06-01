@@ -18,7 +18,8 @@ pub use bare::{
     validate_self_verifying, validate_tolerance_documented,
 };
 pub use composition::{
-    validate_barracuda_math_ipc, validate_manifest_capabilities, validate_primal_proof,
+    validate_barracuda_math_ipc, validate_btsp_escalation, validate_manifest_capabilities,
+    validate_primal_proof,
 };
 pub use domain::validate_domain_science;
 
@@ -76,6 +77,9 @@ pub fn certify(max_tier: u8) -> ValidationResult {
 
     v.section("Tier 2: Manifest Capabilities");
     validate_manifest_capabilities(&mut ctx, &mut v);
+
+    v.section("Tier 2: BTSP Escalation (S4 Auth Readiness)");
+    validate_btsp_escalation(&mut ctx, &mut v);
 
     if max_tier < 3 {
         v.finish();

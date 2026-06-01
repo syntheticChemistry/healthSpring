@@ -4,6 +4,17 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V65c — June 1, 2026
+
+### Wave 67 — Glacial Cutover: S4 Auth Readiness
+
+- **BTSP escalation validation wired into certification**: `validate_btsp_escalation()` added to `certification/composition.rs`. Checks `ctx.btsp_authenticated()` for all security-critical capabilities (security, storage, dag, commit, tensor). Reports per-capability BTSP state and overall S4 coverage. Wired into Tier 2 certification flow.
+- **`s_btsp_auth_readiness` scenario added**: Composition-track scenario (60th total). Phase 1: structural probe pattern verification. Phase 2: per-capability BTSP state via CompositionContext. Phase 3: S4 auth gate summary. Tier `Both` — runs structural checks without NUCLEUS, composition checks with.
+- **`TowerAtomic::btsp_readiness()` method**: Probes both Tower primals (BearDog + Songbird) for BTSP server capabilities. Returns `BtspReadiness` struct. Enables S4 pre-flight check on the legacy IPC path before `CompositionContext` migration is complete.
+- **Temporal sync migrated to `membrane temporal.sync`**: cascade-pull.sh fossilized in Wave 66; all sync now via Rust `membrane` CLI. Verified healthSpring at PARITY on both remotes.
+- **Scenario count 59 → 60**: New `s_btsp_auth_readiness` registered in `registry.rs`, `mod.rs`.
+- **Deep debt audit**: zero TODO/FIXME/HACK, zero unsafe, zero `target/release/` references, zero primordial patterns. Pre-existing deprecated socket helpers documented as architectural debt (pending full `CompositionContext` migration).
+
 ## V65b — May 30, 2026
 
 ### Wave 63 — Temporal Sync + BTSP Probe + pseudoSpore Domain Profile

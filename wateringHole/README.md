@@ -2,8 +2,8 @@
 
 Cross-spring handoff documents and evolution coordination.
 
-**Status**: V65b — **Wave 63 Temporal Sync**. ironGate eukaryotic (i9-14900K, RTX 5070, 96GB DDR5, co-tenants: primalSpring, ludoSpring). Temporal sync operational (`cascade-pull.sh --source temporal`). BTSP `btsp.capabilities` probe pattern implemented (Gap #20 resolved). `domain_profile.toml` authored for pseudoSpore emission. 13/13 NUCLEUS, post-primordial clean. **59 validation scenarios**. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 470+-method registry. **1,056 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
-**Last Updated**: May 30, 2026
+**Status**: V65c — **Wave 67 Glacial Cutover**. ironGate eukaryotic (i9-14900K, RTX 5070, 96GB DDR5, co-tenants: primalSpring, ludoSpring). S4 auth readiness: BTSP escalation validation + `s_btsp_auth_readiness` scenario (60 total). `TowerAtomic::btsp_readiness()`. Temporal sync via `membrane temporal.sync`. 13/13 NUCLEUS, post-primordial clean. **60 validation scenarios**. All clippy pedantic+nursery zero. All 7 deep debt categories zero. 470+-method registry. **1,056 tests** (workspace), 88 capabilities. primalSpring **v0.9.27**. ecoBin 0.9.0. barraCuda v0.4.0. Zero clippy, zero unsafe, zero TODO.
+**Last Updated**: June 1, 2026
 
 ---
 
@@ -22,6 +22,7 @@ The wateringHole is where springs coordinate. Handoff documents record:
 
 | Version | File | Date | Scope |
 |---------|------|------|-------|
+| **V65c** | [Wave 67 Glacial Cutover](handoffs/HEALTHSPRING_WAVE67_GLACIAL_CUTOVER_JUN01_2026.md) | Jun 1 | S4 BTSP auth readiness (certification + scenario + tower_atomic), temporal sync migrated to membrane CLI, 59→60 scenarios |
 | **V65b** | [Wave 63 Temporal Sync](handoffs/HEALTHSPRING_WAVE63_TEMPORAL_SYNC_MAY30_2026.md) | May 30 | BTSP probe pattern (Gap #20 resolved), `domain_profile.toml` (6 modules), temporal sync operational (21/22 repos), 1,052→1,056 tests |
 | **V65a** | [Wave 60 Stabilization](handoffs/HEALTHSPRING_WAVE60_STABILIZATION_MAY29_2026.md) | May 29 | Niche depth: `s_ltee_b5` (8 checks, PASS), `s_barracuda_cpu_parity` (10 checks, PASS), 57→59 scenarios, PRIMAL_GAPS #38 substantially closed, upstream frozen (14 new methods pending across 6 primals) |
 | V65a | [Wave 60b Triad Absorption](handoffs/HEALTHSPRING_WAVE60B_TRIAD_ABSORPTION_MAY29_2026.md) | May 29 | `.gate` identity, cascade-pull v2.0.0, Neural API triad (qS/rP/wF) absorbed, cross-gate executor spec reviewed, registry 458→470+, prior manifest GAPs resolved upstream |

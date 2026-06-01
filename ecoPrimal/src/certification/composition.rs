@@ -174,6 +174,75 @@ pub fn validate_manifest_capabilities(ctx: &mut CompositionContext, v: &mut Vali
     );
 }
 
+/// Validate BTSP escalation readiness across composition capabilities.
+///
+/// For S4 auth validation: checks whether the `CompositionContext` was able
+/// to upgrade each critical capability to BTSP-authenticated transport.
+/// When `FAMILY_SEED` is not set, capabilities are expected to be cleartext
+/// (this is normal for standalone dev). When set, security-critical caps
+/// (security, storage, dag, commit) should be BTSP-authenticated.
+pub fn validate_btsp_escalation(ctx: &mut CompositionContext, v: &mut ValidationResult) {
+    let security_caps = ["security", "storage", "dag", "commit", "tensor"];
+    let family_seed_set = std::env::var("FAMILY_SEED").is_ok();
+
+    let mut authenticated_count = 0u32;
+    let mut probed_count = 0u32;
+
+    for cap in &security_caps {
+        match ctx.btsp_authenticated(cap) {
+            Some(true) => {
+                v.check_bool(
+                    &format!("btsp.auth:{cap}"),
+                    true,
+                    "BTSP-authenticated",
+                );
+                authenticated_count += 1;
+                probed_count += 1;
+            }
+            Some(false) => {
+                if family_seed_set {
+                    v.check_bool(
+                        &format!("btsp.auth:{cap}"),
+                        false,
+                        "cleartext (FAMILY_SEED set but primal lacks BTSP server)",
+                    );
+                } else {
+                    v.check_skip(
+                        &format!("btsp.auth:{cap}"),
+                        "cleartext (standalone mode — FAMILY_SEED not set)",
+                    );
+                }
+                probed_count += 1;
+            }
+            None => {
+                v.check_skip(
+                    &format!("btsp.auth:{cap}"),
+                    "capability not discovered",
+                );
+            }
+        }
+    }
+
+    v.check_bool(
+        "btsp.escalation.probed",
+        probed_count > 0,
+        &format!("{probed_count}/{} capabilities probed for BTSP", security_caps.len()),
+    );
+
+    if family_seed_set {
+        v.check_bool(
+            "btsp.escalation.coverage",
+            authenticated_count > 0,
+            &format!("{authenticated_count}/{probed_count} BTSP-authenticated (FAMILY_SEED active)"),
+        );
+    } else {
+        v.check_skip(
+            "btsp.escalation.coverage",
+            "FAMILY_SEED not set — standalone mode, BTSP not expected",
+        );
+    }
+}
+
 /// Probe a single capability — PASS if call succeeds, SKIP if connection error.
 fn probe_capability(
     ctx: &mut CompositionContext,

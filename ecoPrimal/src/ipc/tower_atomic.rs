@@ -48,6 +48,23 @@ use super::error::IpcError;
 use super::socket;
 use crate::primal_names;
 
+/// BTSP readiness state for Tower Atomic primals.
+#[derive(Debug)]
+pub struct BtspReadiness {
+    /// `BearDog` (crypto) BTSP capabilities, if supported.
+    pub crypto: Option<super::btsp::BtspCapabilities>,
+    /// `Songbird` (discovery) BTSP capabilities, if supported.
+    pub discovery: Option<super::btsp::BtspCapabilities>,
+}
+
+impl BtspReadiness {
+    /// Whether at least one Tower primal supports BTSP.
+    #[must_use]
+    pub const fn any_supported(&self) -> bool {
+        self.crypto.is_some() || self.discovery.is_some()
+    }
+}
+
 /// Capability domains used for Tower Atomic primal discovery.
 /// These are the semantic capabilities, not primal names — any primal
 /// advertising these capabilities satisfies the Tower Atomic contract.
@@ -107,6 +124,19 @@ impl TowerAtomic {
         health_probe(&self.crypto_socket, "health")?;
         health_probe(&self.discovery_socket, "health")?;
         Ok(())
+    }
+
+    /// Probe both Tower Atomic primals for BTSP server support.
+    ///
+    /// Returns a map of socket path to `BtspCapabilities` for primals that
+    /// support BTSP. Used by S4 auth validation to determine which primals
+    /// can be upgraded from cleartext to authenticated transport.
+    #[must_use]
+    pub fn btsp_readiness(&self) -> BtspReadiness {
+        BtspReadiness {
+            crypto: super::btsp::probe_btsp_capabilities(&self.crypto_socket),
+            discovery: super::btsp::probe_btsp_capabilities(&self.discovery_socket),
+        }
     }
 
     /// Discover a primal that provides the given capability.

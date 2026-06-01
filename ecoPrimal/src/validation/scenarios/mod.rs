@@ -14,6 +14,7 @@ mod s_barracuda_cpu_parity;
 mod s_barracuda_parity;
 mod s_beat_classification;
 mod s_biosignal_fusion;
+mod s_btsp_auth_readiness;
 mod s_canine_gut;
 mod s_canine_il31;
 mod s_canine_jak1;
