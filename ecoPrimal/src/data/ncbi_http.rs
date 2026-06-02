@@ -12,7 +12,7 @@ use super::DataError;
 
 const DEFAULT_EUTILS_BASE: &str = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
 const DEFAULT_SRA_RUN_INFO_BASE: &str = "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi";
-const TOOL_NAME: &str = "healthspring";
+const TOOL_NAME: &str = crate::PRIMAL_NAME;
 const TOOL_EMAIL: &str = "healthspring@ecoprimal.local";
 
 fn eutils_base() -> String {
