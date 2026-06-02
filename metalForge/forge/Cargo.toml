@@ -14,7 +14,6 @@ workspace = true
 [features]
 default = []
 gpu = ["dep:wgpu", "dep:pollster"]
-npu = []
 
 [dependencies]
 healthspring-barracuda = { path = "../../ecoPrimal" }
