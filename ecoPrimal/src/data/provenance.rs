@@ -80,9 +80,11 @@ fn data_provider_socket_path() -> Option<PathBuf> {
         std::env::var("BIOMEOS_SOCKET_DIR")
             .ok()
             .map(|d| PathBuf::from(d).join(&sock_name)),
-        std::env::var("XDG_RUNTIME_DIR")
-            .ok()
-            .map(|d| PathBuf::from(d).join(crate::primal_names::BIOMEOS_DIR_NAME).join(&sock_name)),
+        std::env::var("XDG_RUNTIME_DIR").ok().map(|d| {
+            PathBuf::from(d)
+                .join(crate::primal_names::BIOMEOS_DIR_NAME)
+                .join(&sock_name)
+        }),
     ]
     .into_iter()
     .flatten()
@@ -345,10 +347,7 @@ pub fn complete_data_session(session_id: &str, license: &str) -> DataProvenanceC
 }
 
 /// Wave 17: attempt `signal.dispatch("nest.commit", ...)` via the orchestrator.
-fn try_signal_commit(
-    session_id: &str,
-    license: &str,
-) -> Option<DataProvenanceChain> {
+fn try_signal_commit(session_id: &str, license: &str) -> Option<DataProvenanceChain> {
     let orch = crate::ipc::socket::orchestrator_socket();
     if !orch.exists() {
         return None;

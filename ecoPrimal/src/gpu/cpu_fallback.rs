@@ -313,7 +313,10 @@ mod tests {
     fn wang_hash_in_unit_range() {
         for seed in 0..1000_u32 {
             let v = wang_hash_uniform(seed);
-            assert!((0.0..=1.0).contains(&v), "wang_hash({seed})={v} out of [0,1]");
+            assert!(
+                (0.0..=1.0).contains(&v),
+                "wang_hash({seed})={v} out of [0,1]"
+            );
         }
     }
 }

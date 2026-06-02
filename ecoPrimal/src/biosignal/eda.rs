@@ -80,9 +80,10 @@ pub fn generate_synthetic_eda(
         for (i, sample) in eda.iter_mut().enumerate().skip(start).take(end - start) {
             let t_rel = idx_to_f64(i) / fs - t_event;
             if t_rel < 0.0 {
-                *sample += scr_amplitude * (-(t_rel * t_rel) / (2.0 * 0.3 * 0.3)).exp();
+                *sample =
+                    scr_amplitude.mul_add((-(t_rel * t_rel) / (2.0 * 0.3 * 0.3)).exp(), *sample);
             } else {
-                *sample += scr_amplitude * (-t_rel / 1.5).exp();
+                *sample = scr_amplitude.mul_add((-t_rel / 1.5).exp(), *sample);
             }
         }
     }

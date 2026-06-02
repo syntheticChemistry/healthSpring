@@ -104,7 +104,11 @@ fn validate_node_presence(h: &mut ValidationHarness) {
             .filter_map(|n| n.get("name").and_then(|v| v.as_str()))
             .collect();
 
-        let required_nodes = [primal_names::BEARDOG, primal_names::SONGBIRD, "healthspring"];
+        let required_nodes = [
+            primal_names::BEARDOG,
+            primal_names::SONGBIRD,
+            "healthspring",
+        ];
         for name in &required_nodes {
             h.check_bool(
                 &format!("Required node present: {name}"),

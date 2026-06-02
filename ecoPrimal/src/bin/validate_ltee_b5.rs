@@ -100,8 +100,10 @@ fn simulate(dt: f64, total_days: f64) -> SimResult {
 
     for i in 0..n_steps {
         let input_rate = cfu[i] * PROD_RATE;
-        molecule_pg[i + 1] =
-            dt.mul_add(F_BIO.mul_add(input_rate, -(KE * molecule_pg[i])), molecule_pg[i]);
+        molecule_pg[i + 1] = dt.mul_add(
+            F_BIO.mul_add(input_rate, -(KE * molecule_pg[i])),
+            molecule_pg[i],
+        );
     }
 
     let conc_ng: Vec<f64> = molecule_pg.iter().map(|&m| m / 1000.0).collect();

@@ -107,7 +107,10 @@ fn bench_montecarlo_pop_pk_1k(c: &mut Criterion) {
                 black_box(&cl_params),
                 black_box(&vd_params),
                 black_box(&ka_params),
-                &DosingRegimen { dose_mg: 4.0, f_bioavail: 0.79 },
+                &DosingRegimen {
+                    dose_mg: 4.0,
+                    f_bioavail: 0.79,
+                },
                 &times,
             )
         });

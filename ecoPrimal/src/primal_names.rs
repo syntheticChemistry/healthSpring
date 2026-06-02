@@ -45,6 +45,12 @@ pub const PETALTONGUE: &str = "petaltongue";
 /// Conventional socket-name prefix for `skunkBat` (audit).
 pub const SKUNKBAT: &str = "skunkbat";
 
+/// Conventional socket-name prefix for `primalSpring` (coordination / bonding).
+pub const PRIMALSPRING: &str = "primalspring";
+
+/// Conventional socket-name prefix for ecosystem-level services (certificate / genetic).
+pub const ECOSYSTEM: &str = "ecosystem";
+
 /// Conventional socket-name prefix for the orchestrator.
 pub const BIOMEOS: &str = "biomeOS";
 
@@ -74,10 +80,7 @@ pub mod wire_prefix {
 ///
 /// Songbird *is* the discovery service, so we locate it by convention
 /// rather than capability probe.
-pub const SONGBIRD_SOCKET_PATHS: &[&str] = &[
-    "biomeos/songbird.sock",
-    "songbird/songbird.sock",
-];
+pub const SONGBIRD_SOCKET_PATHS: &[&str] = &["biomeos/songbird.sock", "songbird/songbird.sock"];
 
 /// Environment variable suffix convention: `{NAME}_SOCKET`.
 ///

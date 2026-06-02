@@ -52,10 +52,7 @@ fn main() {
             list,
         } => {
             if list {
-                validate::cmd_list_scenarios(
-                    tier.as_ref(),
-                    track.as_deref(),
-                );
+                validate::cmd_list_scenarios(tier.as_ref(), track.as_deref());
             } else {
                 let json_mode = format.as_deref() == Some("json");
                 validate::cmd_validate(

@@ -32,11 +32,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let vd = 5.0;
     let half_life = 21.0;
     let c0 = pkpd::mab_pk_sc(dose, vd, half_life, 0.0);
-    v.check_bool(
-        "mab_c0_positive",
-        c0 > 0.0,
-        &format!("c0={c0}"),
-    );
+    v.check_bool("mab_c0_positive", c0 > 0.0, &format!("c0={c0}"));
 
     let c_half = pkpd::mab_pk_sc(dose, vd, half_life, half_life);
     v.check_abs_or_rel(

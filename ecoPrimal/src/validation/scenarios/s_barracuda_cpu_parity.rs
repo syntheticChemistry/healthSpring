@@ -39,13 +39,7 @@ fn run(vr: &mut ValidationResult, _ctx: &mut CompositionContext) {
 
     if let Some(sd) = math_dispatch::std_dev(&data) {
         let expected_sd = 3.027_650_354_097_491_6;
-        vr.check_abs_or_rel(
-            "cpu_std_dev_sample",
-            sd,
-            expected_sd,
-            1e-10,
-            1e-10,
-        );
+        vr.check_abs_or_rel("cpu_std_dev_sample", sd, expected_sd, 1e-10, 1e-10);
     }
 
     vr.section("Phase 2: Hill Dose-Response");
@@ -90,13 +84,7 @@ fn run(vr: &mut ValidationResult, _ctx: &mut CompositionContext) {
 
     let abundances = [10.0_f64, 10.0, 10.0, 10.0];
     let simpson = math_dispatch::simpson(&abundances);
-    vr.check_abs_or_rel(
-        "cpu_simpson_uniform_4",
-        simpson,
-        0.75,
-        1e-12,
-        1e-12,
-    );
+    vr.check_abs_or_rel("cpu_simpson_uniform_4", simpson, 0.75, 1e-12, 1e-12);
 
     let counts: Vec<u64> = vec![10, 5, 3, 1, 1, 1, 1, 1, 1, 1];
     let chao1 = math_dispatch::chao1_classic(&counts);

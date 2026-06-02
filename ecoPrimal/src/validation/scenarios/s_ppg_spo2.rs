@@ -43,23 +43,11 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let (ac_red, dc_red) = ppg::ppg_extract_ac_dc(&synth.red);
     let (ac_ir, dc_ir) = ppg::ppg_extract_ac_dc(&synth.ir);
 
-    v.check_bool(
-        "dc_red_positive",
-        dc_red > 0.0,
-        &format!("dc_red={dc_red}"),
-    );
-    v.check_bool(
-        "dc_ir_positive",
-        dc_ir > 0.0,
-        &format!("dc_ir={dc_ir}"),
-    );
+    v.check_bool("dc_red_positive", dc_red > 0.0, &format!("dc_red={dc_red}"));
+    v.check_bool("dc_ir_positive", dc_ir > 0.0, &format!("dc_ir={dc_ir}"));
 
     let r = ppg::ppg_r_value(ac_red, dc_red, ac_ir, dc_ir);
-    v.check_bool(
-        "r_value_positive",
-        r > 0.0,
-        &format!("r={r}"),
-    );
+    v.check_bool("r_value_positive", r > 0.0, &format!("r={r}"));
 
     let spo2 = ppg::spo2_from_r(r);
     v.check_bool(

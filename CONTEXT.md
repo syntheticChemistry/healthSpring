@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Context — healthSpring
 
-**Version:** V65a · **Date:** May 28, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V65a: Wave 60 Eukaryotic Gate — ironGate eukaryotic (13/13 NUCLEUS, Forgejo sync, cascade-pull 22-repo profile), post-primordial clean, dual-tower + Nest Atomic validated. 57 scenarios, 88 capabilities, zero debt.
+**Version:** V65c · **Date:** Jun 2, 2026 · **Architecture:** Eukaryotic UniBin (`healthspring_unibin` / `healthspring` alias + `healthspring_primal`); IPC-first library defaults with optional `barracuda-lib`. 4 NUCLEUS workloads. skunkBat in deploy graphs. plasmidBin release binaries staged. V65c: Wave 67/68 Glacial Cutover — ironGate eukaryotic (13/13 NUCLEUS, Forgejo sync, membrane temporal.sync), post-primordial clean, dual-tower + Nest Atomic validated. S1 TLS OPERATIONAL. S4 BTSP pipeline wired (`s_btsp_auth_readiness`). 60 scenarios, 88 capabilities, zero debt. Composition vocabulary aligned with primalSpring Wave 67.
 
 ## What This Is
 
@@ -30,13 +30,13 @@ The runtime surface is **`healthspring_unibin`** (certify, validate, serve, stat
 ## Technical Facts
 
 - **Language**: 100% Rust, zero C dependencies (wgpu optional for GPU)
-- **Architecture**: Eukaryotic workspace layout — `certification/` (guideStone absorption), `composition/` (`HealthCompositionContext` over primalSpring `CompositionContext`), `validation/scenarios/` (57 scenarios / 8 tracks), `ipc/provenance/` (rhizocrypt, loamspine, sweetgrass), `fossilRecord/` (archived prokaryotic sources); 3 library crates + 95 experiment binaries
+- **Architecture**: Eukaryotic workspace layout — `certification/` (guideStone absorption), `composition/` (`HealthCompositionContext` over primalSpring `CompositionContext`), `validation/scenarios/` (60 scenarios / 8 tracks), `ipc/provenance/` (rhizocrypt, loamspine, sweetgrass), `fossilRecord/` (archived prokaryotic sources); 3 library crates + 95 experiment binaries
   - `healthspring-barracuda` — core science library (`default = []`, IPC-first; enable **`barracuda-lib`** for direct barraCuda crates + GPU library paths)
   - `healthspring-forge` — metalForge hardware dispatch
   - `healthspring-toadstool` — pipeline orchestration
 - **IPC**: JSON-RPC 2.0 over Unix domain sockets, 88 capabilities per `ALL_CAPABILITIES` in `capabilities.rs`; `normalize_method()` maps legacy-prefixed names before routing
 - **License**: AGPL-3.0-or-later (scyBorg trio)
-- **Tests**: 1,021 (878 lib + 9 doc + 20 integration/composition + 12 integration_wfdb + 6 integration_registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool)
+- **Tests**: 1,056 (913 lib + 9 doc + 20 integration/composition + 12 integration_wfdb + 6 integration_registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool)
 - **Coverage**: target 90% line (llvm-cov)
 - **Clippy**: 0 warnings, 0 errors (pedantic + nursery + doc-markdown, all promoted to error), workspace-level `[lints]`
 - **Validation harness**: `ValidationSink` trait (pluggable check output for experiments)

@@ -199,7 +199,7 @@ fn cholesky_solve(hmat: &[Vec<f64>], rhs: &[f64]) -> Vec<f64> {
     for row in 0..dim {
         let mut sum = rhs[row];
         for col in 0..row {
-            sum -= lower[row][col] * fwd[col];
+            sum = (-lower[row][col]).mul_add(fwd[col], sum);
         }
         fwd[row] = sum / lower[row][row];
     }
@@ -209,7 +209,7 @@ fn cholesky_solve(hmat: &[Vec<f64>], rhs: &[f64]) -> Vec<f64> {
     for row in (0..dim).rev() {
         let mut sum = fwd[row];
         for col in (row + 1)..dim {
-            sum -= lower[col][row] * result[col];
+            sum = (-lower[col][row]).mul_add(result[col], sum);
         }
         result[row] = sum / lower[row][row];
     }

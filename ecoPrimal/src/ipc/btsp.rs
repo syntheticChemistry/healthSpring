@@ -101,9 +101,7 @@ pub struct BtspCapabilities {
 /// Returns `Some(caps)` if the primal responded with BTSP support info,
 /// `None` if the primal does not support BTSP (error, method-not-found, or
 /// `server: false`).
-pub fn probe_btsp_capabilities(
-    socket_path: &std::path::Path,
-) -> Option<BtspCapabilities> {
+pub fn probe_btsp_capabilities(socket_path: &std::path::Path) -> Option<BtspCapabilities> {
     let params = serde_json::json!({});
     let response = crate::ipc::rpc::try_send(socket_path, "btsp.capabilities", &params).ok()?;
 

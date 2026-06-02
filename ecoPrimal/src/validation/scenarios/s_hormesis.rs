@@ -3,8 +3,8 @@
 use primalspring::composition::CompositionContext;
 use primalspring::validation::ValidationResult;
 
-use crate::toxicology;
 use crate::tolerances;
+use crate::toxicology;
 
 use super::registry::{Scenario, ScenarioMeta, Tier, Track};
 
@@ -50,7 +50,8 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
         &format!("r_stim={r_stim}"),
     );
 
-    let r_toxic = toxicology::biphasic_dose_response(ic50 * 5.0, baseline, s_max, k_stim, ic50, hill_n);
+    let r_toxic =
+        toxicology::biphasic_dose_response(ic50 * 5.0, baseline, s_max, k_stim, ic50, hill_n);
     v.check_bool(
         "toxic_zone_below_baseline",
         r_toxic < baseline,
@@ -59,9 +60,8 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
 
     v.section("Phase 1b: Optimum Search");
 
-    let (opt_dose, opt_fit) = toxicology::hormetic_optimum(
-        baseline, s_max, k_stim, ic50, hill_n, 300.0, 10_000,
-    );
+    let (opt_dose, opt_fit) =
+        toxicology::hormetic_optimum(baseline, s_max, k_stim, ic50, hill_n, 300.0, 10_000);
     v.check_bool(
         "optimum_dose_in_stimulatory_range",
         opt_dose > 0.0 && opt_dose < ic50,
@@ -73,7 +73,8 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
         &format!("opt_fit={opt_fit}"),
     );
 
-    let r_at_opt = toxicology::biphasic_dose_response(opt_dose, baseline, s_max, k_stim, ic50, hill_n);
+    let r_at_opt =
+        toxicology::biphasic_dose_response(opt_dose, baseline, s_max, k_stim, ic50, hill_n);
     v.check_abs_or_rel(
         "optimum_matches_biphasic_curve",
         r_at_opt,

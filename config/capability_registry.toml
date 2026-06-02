@@ -393,11 +393,11 @@ methods = [
     "primal.list",
 ]
 
-# ── Signal dispatch (primalSpring Wave 17 — Neural API Signal Elevation) ─
-# These are composite signals resolved by biomeOS graph execution via
-# ctx.dispatch("tier.name", params). They replace multi-call sequences.
+# ── Composition dispatch (primalSpring Wave 17+67 — Neural API Composition) ──
+# These are composite operations resolved by biomeOS graph execution via
+# CompositionContext::dispatch(). Wire method names preserved from Wave 17.
 
-[signals]
+[compositions]
 owner = "biomeos"
 locality = "consumed"
 methods = [

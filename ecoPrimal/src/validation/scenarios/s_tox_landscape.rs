@@ -3,8 +3,8 @@
 use primalspring::composition::CompositionContext;
 use primalspring::validation::ValidationResult;
 
-use crate::toxicology::{self, ToxicityModelParams};
 use crate::tolerances;
+use crate::toxicology::{self, ToxicityModelParams};
 
 use super::registry::{Scenario, ScenarioMeta, Tier, Track};
 
@@ -35,21 +35,35 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     };
 
     let low_dose = toxicology::compute_toxicity_landscape(
-        10.0, &[50.0, 100.0], &[0.5, 0.3], &[0.8, 0.6], &model,
+        10.0,
+        &[50.0, 100.0],
+        &[0.5, 0.3],
+        &[0.8, 0.6],
+        &model,
     );
     let high_dose = toxicology::compute_toxicity_landscape(
-        200.0, &[50.0, 100.0], &[0.5, 0.3], &[0.8, 0.6], &model,
+        200.0,
+        &[50.0, 100.0],
+        &[0.5, 0.3],
+        &[0.8, 0.6],
+        &model,
     );
 
     v.check_bool(
         "systemic_burden_increases_with_dose",
         high_dose.systemic_burden >= low_dose.systemic_burden - tolerances::MACHINE_EPSILON,
-        &format!("low={}, high={}", low_dose.systemic_burden, high_dose.systemic_burden),
+        &format!(
+            "low={}, high={}",
+            low_dose.systemic_burden, high_dose.systemic_burden
+        ),
     );
 
     v.check_bool(
         "ipr_bounded_by_tissue_count",
         low_dose.tox_ipr >= 1.0 && high_dose.tox_ipr >= 1.0,
-        &format!("ipr_low={}, ipr_high={}", low_dose.tox_ipr, high_dose.tox_ipr),
+        &format!(
+            "ipr_low={}, ipr_high={}",
+            low_dose.tox_ipr, high_dose.tox_ipr
+        ),
     );
 }

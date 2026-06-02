@@ -165,8 +165,13 @@ fn main() {
         "antibiotic_perturb_30d",
         || {
             std::hint::black_box(antibiotic_perturbation(&AntibioticSimConfig {
-                h0: 2.2, depth: 0.7, k_decline: 5.0, k_recovery: 0.1,
-                treatment_days: 5.0, total_days: 30.0, dt: 0.01,
+                h0: 2.2,
+                depth: 0.7,
+                k_decline: 5.0,
+                k_recovery: 0.1,
+                treatment_days: 5.0,
+                total_days: 30.0,
+                dt: 0.01,
             }));
         },
         N_ITER,
@@ -182,8 +187,13 @@ fn main() {
         "antibiotic_perturb_365d",
         || {
             std::hint::black_box(antibiotic_perturbation(&AntibioticSimConfig {
-                h0: 2.2, depth: 0.7, k_decline: 5.0, k_recovery: 0.1,
-                treatment_days: 5.0, total_days: 365.0, dt: 0.1,
+                h0: 2.2,
+                depth: 0.7,
+                k_decline: 5.0,
+                k_recovery: 0.1,
+                treatment_days: 5.0,
+                total_days: 365.0,
+                dt: 0.1,
             }));
         },
         N_ITER,
@@ -196,8 +206,13 @@ fn main() {
     benchmarks.push(result);
 
     let trajectory = antibiotic_perturbation(&AntibioticSimConfig {
-        h0: 2.2, depth: 0.7, k_decline: 5.0, k_recovery: 0.1,
-        treatment_days: 5.0, total_days: 30.0, dt: 0.01,
+        h0: 2.2,
+        depth: 0.7,
+        k_decline: 5.0,
+        k_recovery: 0.1,
+        treatment_days: 5.0,
+        total_days: 30.0,
+        dt: 0.01,
     });
     h.check_bool("antibiotic_perturbation_non_empty", !trajectory.is_empty());
     let (_, h_initial) = trajectory.first().copied().unwrap_or((0.0, 0.0));

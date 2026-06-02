@@ -266,15 +266,23 @@ pub fn generate_synthetic_ecg(
 
         for (i, sample) in ecg.iter_mut().enumerate() {
             let t = idx_to_f64(i) / fs;
-            *sample +=
-                0.15 * (-((t - (beat_time - 0.16)).powi(2)) / (2.0 * 0.01_f64.powi(2))).exp();
-            *sample -=
-                0.10 * (-((t - (beat_time - 0.04)).powi(2)) / (2.0 * 0.005_f64.powi(2))).exp();
-            *sample += 1.0 * (-((t - beat_time).powi(2)) / (2.0 * 0.008_f64.powi(2))).exp();
-            *sample -=
-                0.25 * (-((t - (beat_time + 0.04)).powi(2)) / (2.0 * 0.008_f64.powi(2))).exp();
-            *sample +=
-                0.30 * (-((t - (beat_time + 0.25)).powi(2)) / (2.0 * 0.04_f64.powi(2))).exp();
+            *sample = 0.15_f64.mul_add(
+                (-((t - (beat_time - 0.16)).powi(2)) / (2.0 * 0.01_f64.powi(2))).exp(),
+                *sample,
+            );
+            *sample = (-0.10_f64).mul_add(
+                (-((t - (beat_time - 0.04)).powi(2)) / (2.0 * 0.005_f64.powi(2))).exp(),
+                *sample,
+            );
+            *sample += (-((t - beat_time).powi(2)) / (2.0 * 0.008_f64.powi(2))).exp();
+            *sample = (-0.25_f64).mul_add(
+                (-((t - (beat_time + 0.04)).powi(2)) / (2.0 * 0.008_f64.powi(2))).exp(),
+                *sample,
+            );
+            *sample = 0.30_f64.mul_add(
+                (-((t - (beat_time + 0.25)).powi(2)) / (2.0 * 0.04_f64.powi(2))).exp(),
+                *sample,
+            );
         }
 
         rng_state = rng_state
@@ -290,7 +298,7 @@ pub fn generate_synthetic_ecg(
             let u1 = crate::rng::state_to_f64(rng_state);
             rng_state = crate::rng::lcg_step(rng_state);
             let u2 = crate::rng::state_to_f64(rng_state);
-            *sample += noise_std * crate::rng::box_muller(u1, u2);
+            *sample = noise_std.mul_add(crate::rng::box_muller(u1, u2), *sample);
         }
     }
 

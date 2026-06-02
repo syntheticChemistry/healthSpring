@@ -416,10 +416,16 @@ impl<'a> NestComposition<'a> {
             .unwrap_or("")
             .to_owned();
 
-        let filled = [&session_id, &content_hash, &merkle_signature, &commit_id, &braid_id]
-            .iter()
-            .filter(|s| !s.is_empty())
-            .count();
+        let filled = [
+            &session_id,
+            &content_hash,
+            &merkle_signature,
+            &commit_id,
+            &braid_id,
+        ]
+        .iter()
+        .filter(|s| !s.is_empty())
+        .count();
 
         let status = if filled == 5 {
             NestStatus::Complete

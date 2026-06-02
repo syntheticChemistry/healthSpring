@@ -15,8 +15,7 @@
 
 use healthspring_barracuda::microbiome::{pielou_evenness, shannon_index, simpson_index};
 use healthspring_barracuda::pkpd::{
-    DosingRegimen, auc_trapezoidal, hill_dose_response, pk_oral_one_compartment,
-    population_pk_cpu,
+    DosingRegimen, auc_trapezoidal, hill_dose_response, pk_oral_one_compartment, population_pk_cpu,
 };
 use healthspring_barracuda::validation::ValidationHarness;
 use serde::Serialize;
@@ -172,13 +171,24 @@ fn main() {
 
     let n500 = 500;
     let cl_500: Vec<f64> = (0..n500).map(|i| f64::from(i).mul_add(0.01, 8.0)).collect();
-    let vd_500: Vec<f64> = (0..n500).map(|i| f64::from(i).mul_add(0.05, 70.0)).collect();
-    let ka_500: Vec<f64> = (0..n500).map(|i| f64::from(i).mul_add(0.001, 1.2)).collect();
+    let vd_500: Vec<f64> = (0..n500)
+        .map(|i| f64::from(i).mul_add(0.05, 70.0))
+        .collect();
+    let ka_500: Vec<f64> = (0..n500)
+        .map(|i| f64::from(i).mul_add(0.001, 1.2))
+        .collect();
     let bench_result = bench(
         "population_montecarlo_500",
         || {
             std::hint::black_box(population_pk_cpu(
-                &cl_500, &vd_500, &ka_500, &DosingRegimen { dose_mg: 4.0, f_bioavail: 0.79 }, &times_pk,
+                &cl_500,
+                &vd_500,
+                &ka_500,
+                &DosingRegimen {
+                    dose_mg: 4.0,
+                    f_bioavail: 0.79,
+                },
+                &times_pk,
             ));
         },
         N_ITERATIONS.max(10) / 10,
@@ -191,7 +201,9 @@ fn main() {
     benchmarks.push(bench_result);
 
     let n5000 = 5_000;
-    let cl_5k: Vec<f64> = (0..n5000).map(|i| f64::from(i).mul_add(0.001, 8.0)).collect();
+    let cl_5k: Vec<f64> = (0..n5000)
+        .map(|i| f64::from(i).mul_add(0.001, 8.0))
+        .collect();
     let vd_5k: Vec<f64> = (0..n5000)
         .map(|i| f64::from(i).mul_add(0.005, 70.0))
         .collect();
@@ -202,7 +214,14 @@ fn main() {
         "population_montecarlo_5000",
         || {
             std::hint::black_box(population_pk_cpu(
-                &cl_5k, &vd_5k, &ka_5k, &DosingRegimen { dose_mg: 4.0, f_bioavail: 0.79 }, &times_pk,
+                &cl_5k,
+                &vd_5k,
+                &ka_5k,
+                &DosingRegimen {
+                    dose_mg: 4.0,
+                    f_bioavail: 0.79,
+                },
+                &times_pk,
             ));
         },
         N_ITERATIONS.max(20) / 20,

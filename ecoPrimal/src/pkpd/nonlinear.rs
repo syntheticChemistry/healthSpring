@@ -67,7 +67,7 @@ pub fn mm_pk_simulate(
 
     for _ in 0..n_steps {
         let elim_rate = params.vmax * c / (params.km + c);
-        c -= (elim_rate / params.vd) * dt;
+        c = (-(elim_rate / params.vd)).mul_add(dt, c);
         c = c.max(0.0);
         t += dt;
         times.push(t);

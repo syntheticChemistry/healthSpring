@@ -24,6 +24,7 @@ pub const ALL_CAPS: &[&str] = &[
     "bonding",
     "audit",
     "signal",
+    "composition",
     "certificate",
     "genetic",
     "fido2",
@@ -45,10 +46,10 @@ pub fn capability_to_primal(capability: &str) -> &'static str {
         "braid" | "attribution" => primal_names::SWEETGRASS,
         "inference" | "model" => primal_names::SQUIRREL,
         "visualization" => primal_names::PETALTONGUE,
-        "orchestration" | "lifecycle" | "signal" => primal_names::BIOMEOS,
-        "coordination" | "bonding" | "primal" => "primalspring",
+        "orchestration" | "lifecycle" | "signal" | "composition" => primal_names::BIOMEOS,
+        "coordination" | "bonding" | "primal" => primal_names::PRIMALSPRING,
         "audit" | "audit.log" | "defense" | "security.audit" => primal_names::SKUNKBAT,
-        "certificate" | "genetic" => "ecosystem",
+        "certificate" | "genetic" => primal_names::ECOSYSTEM,
         _ => "unknown",
     }
 }
@@ -72,10 +73,7 @@ mod tests {
     fn all_caps_has_no_duplicates() {
         let mut seen = std::collections::HashSet::new();
         for cap in ALL_CAPS {
-            assert!(
-                seen.insert(cap),
-                "ALL_CAPS contains duplicate: '{cap}'"
-            );
+            assert!(seen.insert(cap), "ALL_CAPS contains duplicate: '{cap}'");
         }
     }
 
@@ -89,7 +87,10 @@ mod tests {
         assert_eq!(capability_to_primal("crypto"), primal_names::BEARDOG);
         assert_eq!(capability_to_primal("fido2"), primal_names::BEARDOG);
         assert_eq!(capability_to_primal("discovery"), primal_names::SONGBIRD);
-        assert_eq!(capability_to_primal("net.discovery"), primal_names::SONGBIRD);
+        assert_eq!(
+            capability_to_primal("net.discovery"),
+            primal_names::SONGBIRD
+        );
         assert_eq!(capability_to_primal("storage"), primal_names::NESTGATE);
         assert_eq!(capability_to_primal("content"), primal_names::NESTGATE);
         assert_eq!(capability_to_primal("dag"), primal_names::RHIZOCRYPT);
@@ -98,22 +99,35 @@ mod tests {
         assert_eq!(capability_to_primal("spine"), primal_names::LOAMSPINE);
         assert_eq!(capability_to_primal("merkle"), primal_names::LOAMSPINE);
         assert_eq!(capability_to_primal("braid"), primal_names::SWEETGRASS);
-        assert_eq!(capability_to_primal("attribution"), primal_names::SWEETGRASS);
+        assert_eq!(
+            capability_to_primal("attribution"),
+            primal_names::SWEETGRASS
+        );
         assert_eq!(capability_to_primal("inference"), primal_names::SQUIRREL);
         assert_eq!(capability_to_primal("model"), primal_names::SQUIRREL);
-        assert_eq!(capability_to_primal("visualization"), primal_names::PETALTONGUE);
+        assert_eq!(
+            capability_to_primal("visualization"),
+            primal_names::PETALTONGUE
+        );
         assert_eq!(capability_to_primal("orchestration"), primal_names::BIOMEOS);
         assert_eq!(capability_to_primal("lifecycle"), primal_names::BIOMEOS);
         assert_eq!(capability_to_primal("signal"), primal_names::BIOMEOS);
-        assert_eq!(capability_to_primal("coordination"), "primalspring");
-        assert_eq!(capability_to_primal("bonding"), "primalspring");
-        assert_eq!(capability_to_primal("primal"), "primalspring");
+        assert_eq!(capability_to_primal("composition"), primal_names::BIOMEOS);
+        assert_eq!(
+            capability_to_primal("coordination"),
+            primal_names::PRIMALSPRING
+        );
+        assert_eq!(capability_to_primal("bonding"), primal_names::PRIMALSPRING);
+        assert_eq!(capability_to_primal("primal"), primal_names::PRIMALSPRING);
         assert_eq!(capability_to_primal("audit"), primal_names::SKUNKBAT);
         assert_eq!(capability_to_primal("audit.log"), primal_names::SKUNKBAT);
         assert_eq!(capability_to_primal("defense"), primal_names::SKUNKBAT);
-        assert_eq!(capability_to_primal("security.audit"), primal_names::SKUNKBAT);
-        assert_eq!(capability_to_primal("certificate"), "ecosystem");
-        assert_eq!(capability_to_primal("genetic"), "ecosystem");
+        assert_eq!(
+            capability_to_primal("security.audit"),
+            primal_names::SKUNKBAT
+        );
+        assert_eq!(capability_to_primal("certificate"), primal_names::ECOSYSTEM);
+        assert_eq!(capability_to_primal("genetic"), primal_names::ECOSYSTEM);
     }
 
     #[test]

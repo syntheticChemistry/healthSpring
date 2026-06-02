@@ -201,10 +201,7 @@ mod tests {
 
     use super::*;
 
-    fn run_and_assert_pass(
-        name: &str,
-        f: fn(&mut ValidationResult),
-    ) {
+    fn run_and_assert_pass(name: &str, f: fn(&mut ValidationResult)) {
         let mut v = ValidationResult::new(name);
         f(&mut v);
         assert!(

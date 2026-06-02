@@ -250,11 +250,7 @@ impl TowerAtomic {
         let params = serde_json::json!({
             "contract_id": contract_id,
         });
-        super::rpc::try_send(
-            &self.crypto_socket,
-            "crypto.contract.countersign",
-            &params,
-        )
+        super::rpc::try_send(&self.crypto_socket, "crypto.contract.countersign", &params)
     }
 
     /// Verify an ionic bond contract (dual-signature check).
@@ -269,8 +265,7 @@ impl TowerAtomic {
         let params = serde_json::json!({
             "contract_id": contract_id,
         });
-        let result =
-            super::rpc::try_send(&self.crypto_socket, "crypto.contract.verify", &params)?;
+        let result = super::rpc::try_send(&self.crypto_socket, "crypto.contract.verify", &params)?;
         Ok(result
             .get("valid")
             .and_then(serde_json::Value::as_bool)

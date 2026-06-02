@@ -188,7 +188,7 @@ fn simulate_from_model(
             for (ek, &ok) in new_eta.iter_mut().zip(result.omega_diag.iter()) {
                 let (z_val, new_st) = normal_sample(*rng);
                 *rng = new_st;
-                *ek += ok.sqrt() * z_val * 0.1;
+                *ek = (ok.sqrt() * z_val).mul_add(0.1, *ek);
             }
 
             let observations: Vec<f64> = subj

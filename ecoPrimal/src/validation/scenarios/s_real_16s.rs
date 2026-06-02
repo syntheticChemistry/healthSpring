@@ -33,12 +33,8 @@ pub fn SCENARIO() -> Scenario {
 fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     v.section("Phase 1: Structural — HMP reference community diversity");
 
-    let healthy_stool: Vec<f64> = vec![
-        0.25, 0.03, 0.15, 0.12, 0.08, 0.04, 0.01, 0.06, 0.10, 0.16,
-    ];
-    let ibd_stool: Vec<f64> = vec![
-        0.05, 0.01, 0.03, 0.02, 0.40, 0.20, 0.15, 0.02, 0.04, 0.08,
-    ];
+    let healthy_stool: Vec<f64> = vec![0.25, 0.03, 0.15, 0.12, 0.08, 0.04, 0.01, 0.06, 0.10, 0.16];
+    let ibd_stool: Vec<f64> = vec![0.05, 0.01, 0.03, 0.02, 0.40, 0.20, 0.15, 0.02, 0.04, 0.08];
 
     let h_healthy = microbiome::shannon_index(&healthy_stool);
     let h_ibd = microbiome::shannon_index(&ibd_stool);

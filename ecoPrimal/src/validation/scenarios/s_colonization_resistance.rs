@@ -52,8 +52,10 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
         &format!("CR={cr_ordered}"),
     );
 
-    let high_disorder = [5.0, 0.1, 4.0, 0.2, 3.5, 0.3, 4.5, 0.1, 5.0, 0.2,
-                         4.0, 0.3, 3.0, 0.1, 4.5, 0.2, 5.0, 0.3, 3.5, 0.1];
+    let high_disorder = [
+        5.0, 0.1, 4.0, 0.2, 3.5, 0.3, 4.5, 0.1, 5.0, 0.2, 4.0, 0.3, 3.0, 0.1, 4.5, 0.2, 5.0, 0.3,
+        3.5, 0.1,
+    ];
     let (_, evecs_disordered) = anderson::anderson_diagonalize(&high_disorder, 1.0);
     let ipr_dis = anderson::inverse_participation_ratio(&evecs_disordered[..20]);
     let xi_dis = anderson::localization_length_from_ipr(ipr_dis);

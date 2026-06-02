@@ -53,10 +53,7 @@ const fn tier_matches(scenario_tier: Tier, filter: &TierFilter) -> bool {
     }
 }
 
-pub fn cmd_list_scenarios(
-    tier_filter: Option<&TierFilter>,
-    track_filter: Option<&str>,
-) {
+pub fn cmd_list_scenarios(tier_filter: Option<&TierFilter>, track_filter: Option<&str>) {
     let registry = build_registry();
     let track_parsed = track_filter.and_then(parse_track);
 

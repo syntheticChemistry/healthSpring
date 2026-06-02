@@ -31,11 +31,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let dose = 2.0;
     let bw = 10.0;
     let c0 = canine::lokivetmab_pk(dose, bw, 0.0);
-    v.check_bool(
-        "lokivetmab_c0_positive",
-        c0 > 0.0,
-        &format!("c0={c0}"),
-    );
+    v.check_bool("lokivetmab_c0_positive", c0 > 0.0, &format!("c0={c0}"));
 
     let c_late = canine::lokivetmab_pk(dose, bw, 60.0);
     v.check_bool(

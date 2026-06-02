@@ -191,11 +191,7 @@ pub fn validate_btsp_escalation(ctx: &mut CompositionContext, v: &mut Validation
     for cap in &security_caps {
         match ctx.btsp_authenticated(cap) {
             Some(true) => {
-                v.check_bool(
-                    &format!("btsp.auth:{cap}"),
-                    true,
-                    "BTSP-authenticated",
-                );
+                v.check_bool(&format!("btsp.auth:{cap}"), true, "BTSP-authenticated");
                 authenticated_count += 1;
                 probed_count += 1;
             }
@@ -215,10 +211,7 @@ pub fn validate_btsp_escalation(ctx: &mut CompositionContext, v: &mut Validation
                 probed_count += 1;
             }
             None => {
-                v.check_skip(
-                    &format!("btsp.auth:{cap}"),
-                    "capability not discovered",
-                );
+                v.check_skip(&format!("btsp.auth:{cap}"), "capability not discovered");
             }
         }
     }
@@ -226,14 +219,19 @@ pub fn validate_btsp_escalation(ctx: &mut CompositionContext, v: &mut Validation
     v.check_bool(
         "btsp.escalation.probed",
         probed_count > 0,
-        &format!("{probed_count}/{} capabilities probed for BTSP", security_caps.len()),
+        &format!(
+            "{probed_count}/{} capabilities probed for BTSP",
+            security_caps.len()
+        ),
     );
 
     if family_seed_set {
         v.check_bool(
             "btsp.escalation.coverage",
             authenticated_count > 0,
-            &format!("{authenticated_count}/{probed_count} BTSP-authenticated (FAMILY_SEED active)"),
+            &format!(
+                "{authenticated_count}/{probed_count} BTSP-authenticated (FAMILY_SEED active)"
+            ),
         );
     } else {
         v.check_skip(

@@ -130,7 +130,9 @@ pub fn population_pk_cpu(
 
             let concs: Vec<f64> = times
                 .iter()
-                .map(|&t| pk_oral_one_compartment(regimen.dose_mg, regimen.f_bioavail, vd, ka, ke, t))
+                .map(|&t| {
+                    pk_oral_one_compartment(regimen.dose_mg, regimen.f_bioavail, vd, ka, ke, t)
+                })
                 .collect();
 
             let (cmax, tmax) = find_cmax_tmax(times, &concs);

@@ -18,7 +18,9 @@ fn platform_runtime_socket_dir_under_home(home: &str) -> PathBuf {
     let home = PathBuf::from(home);
     #[cfg(target_os = "macos")]
     {
-        home.join("Library").join("Caches").join(primal_names::BIOMEOS_DIR_NAME)
+        home.join("Library")
+            .join("Caches")
+            .join(primal_names::BIOMEOS_DIR_NAME)
     }
     #[cfg(not(target_os = "macos"))]
     {

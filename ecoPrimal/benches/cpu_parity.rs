@@ -177,8 +177,13 @@ fn bench_gut_serotonin(c: &mut Criterion) {
 fn bench_antibiotic_perturbation(c: &mut Criterion) {
     use healthspring_barracuda::microbiome;
     let cfg = microbiome::AntibioticSimConfig {
-        h0: 2.2, depth: 0.5, k_decline: 0.3, k_recovery: 0.1,
-        treatment_days: 7.0, total_days: 42.0, dt: 0.1,
+        h0: 2.2,
+        depth: 0.5,
+        k_decline: 0.3,
+        k_recovery: 0.1,
+        treatment_days: 7.0,
+        total_days: 42.0,
+        dt: 0.1,
     };
     c.bench_function("antibiotic_perturbation_42d", |b| {
         b.iter(|| microbiome::antibiotic_perturbation(black_box(&cfg)));

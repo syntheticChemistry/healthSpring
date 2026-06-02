@@ -27,12 +27,8 @@ pub fn SCENARIO() -> Scenario {
 fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     v.section("Phase 1: Structural — Pruritus Time Course");
 
-    let (times, vas) = canine::pruritus_time_course(
-        44.5,
-        CanineIl31Treatment::Oclacitinib,
-        168.0,
-        7,
-    );
+    let (times, vas) =
+        canine::pruritus_time_course(44.5, CanineIl31Treatment::Oclacitinib, 168.0, 7);
 
     v.check_bool(
         "time_course_correct_length",

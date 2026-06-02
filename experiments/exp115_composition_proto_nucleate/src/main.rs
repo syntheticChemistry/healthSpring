@@ -34,7 +34,10 @@ fn main() {
 
     let socket_dir = socket::resolve_socket_dir();
     let dir_str = socket_dir.to_string_lossy();
-    h.check_bool("Socket dir contains biomeos", dir_str.contains(primal_names::BIOMEOS_DIR_NAME));
+    h.check_bool(
+        "Socket dir contains biomeos",
+        dir_str.contains(primal_names::BIOMEOS_DIR_NAME),
+    );
 
     // ── Orchestrator socket resolution ──────────────────────────────
     let orch = socket::orchestrator_socket();

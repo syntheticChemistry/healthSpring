@@ -46,7 +46,10 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     );
 
     let (_, h_start) = trajectory[0];
-    let min_h = trajectory.iter().map(|(_, h)| *h).fold(f64::INFINITY, f64::min);
+    let min_h = trajectory
+        .iter()
+        .map(|(_, h)| *h)
+        .fold(f64::INFINITY, f64::min);
     v.check_bool(
         "diversity_crashes_below_initial",
         min_h < h_start,

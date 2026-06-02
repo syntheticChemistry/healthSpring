@@ -204,7 +204,7 @@ pub fn qs_profile(abundances: &[f64], qs_matrix: &QsGeneMatrix) -> QsProfile {
             for &d in &family_densities {
                 if d > 0.0 {
                     let p = d / sum;
-                    h -= p * p.ln();
+                    h = p.mul_add(-p.ln(), h);
                 }
             }
             h

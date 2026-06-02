@@ -29,11 +29,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     v.section("Phase 1: Structural — Population TRT Parameters");
 
     let (mu, sigma) = endocrine::lognormal_params(500.0, 0.3);
-    v.check_bool(
-        "lognormal_mu_positive",
-        mu > 0.0,
-        &format!("mu={mu}"),
-    );
+    v.check_bool("lognormal_mu_positive", mu > 0.0, &format!("mu={mu}"));
     v.check_bool(
         "lognormal_sigma_positive",
         sigma > 0.0,

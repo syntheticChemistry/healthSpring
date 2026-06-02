@@ -474,8 +474,13 @@ mod tests {
     #[test]
     fn antibiotic_perturbation_decline() {
         let cfg = super::AntibioticSimConfig {
-            h0: 2.2, depth: 0.5, k_decline: 0.3, k_recovery: 0.1,
-            treatment_days: 7.0, total_days: 21.0, dt: 0.1,
+            h0: 2.2,
+            depth: 0.5,
+            k_decline: 0.3,
+            k_recovery: 0.1,
+            treatment_days: 7.0,
+            total_days: 21.0,
+            dt: 0.1,
         };
         let result = super::antibiotic_perturbation(&cfg);
         assert!(result.len() > 1);
@@ -486,8 +491,13 @@ mod tests {
     #[test]
     fn antibiotic_perturbation_recovery() {
         let cfg = super::AntibioticSimConfig {
-            h0: 2.2, depth: 0.5, k_decline: 0.3, k_recovery: 0.1,
-            treatment_days: 7.0, total_days: 42.0, dt: 0.1,
+            h0: 2.2,
+            depth: 0.5,
+            k_decline: 0.3,
+            k_recovery: 0.1,
+            treatment_days: 7.0,
+            total_days: 42.0,
+            dt: 0.1,
         };
         let result = super::antibiotic_perturbation(&cfg);
         let h_final = match result.last() {

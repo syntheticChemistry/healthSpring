@@ -123,9 +123,9 @@ pub fn normalized_correlation(a: &[f64], b: &[f64]) -> f64 {
     for i in 0..n {
         let da = a[i] - mean_a;
         let db = b[i] - mean_b;
-        cov += da * db;
-        var_a += da * da;
-        var_b += db * db;
+        cov = da.mul_add(db, cov);
+        var_a = da.mul_add(da, var_a);
+        var_b = db.mul_add(db, var_b);
     }
 
     let denom = (var_a * var_b).sqrt();

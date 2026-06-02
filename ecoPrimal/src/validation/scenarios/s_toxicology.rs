@@ -36,13 +36,8 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     let sensitivities = [0.9, 0.3, 0.1, 0.05];
     let repair_caps = [0.2, 0.5, 0.8, 0.95];
 
-    let landscape = toxicology::compute_toxicity_landscape(
-        50.0,
-        &ic50s,
-        &sensitivities,
-        &repair_caps,
-        &model,
-    );
+    let landscape =
+        toxicology::compute_toxicity_landscape(50.0, &ic50s, &sensitivities, &repair_caps, &model);
 
     v.check_bool(
         "tox_landscape_tissue_count",
@@ -56,10 +51,7 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         &format!("systemic_burden={}", landscape.systemic_burden),
     );
 
-    #[expect(
-        clippy::cast_precision_loss,
-        reason = "small tissue count fits f64"
-    )]
+    #[expect(clippy::cast_precision_loss, reason = "small tissue count fits f64")]
     let n_tissues_f64 = landscape.n_tissues as f64;
     v.check_bool(
         "tox_ipr_bounded",

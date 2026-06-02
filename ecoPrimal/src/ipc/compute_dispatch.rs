@@ -166,7 +166,10 @@ pub fn validate_workload(workload_path: &str) -> Result<ValidationReport, Dispat
     .map_err(DispatchError::Send)?;
 
     Ok(ValidationReport {
-        valid: result.get("valid").and_then(serde_json::Value::as_bool).unwrap_or(false),
+        valid: result
+            .get("valid")
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(false),
         gpu_available: result
             .get("gpu_available")
             .and_then(serde_json::Value::as_bool)
@@ -183,12 +186,20 @@ pub fn validate_workload(workload_path: &str) -> Result<ValidationReport, Dispat
         warnings: result
             .get("warnings")
             .and_then(serde_json::Value::as_array)
-            .map(|arr| arr.iter().filter_map(|v| v.as_str().map(str::to_owned)).collect())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|v| v.as_str().map(str::to_owned))
+                    .collect()
+            })
             .unwrap_or_default(),
         required_capabilities: result
             .get("required_capabilities")
             .and_then(serde_json::Value::as_array)
-            .map(|arr| arr.iter().filter_map(|v| v.as_str().map(str::to_owned)).collect())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|v| v.as_str().map(str::to_owned))
+                    .collect()
+            })
             .unwrap_or_default(),
     })
 }

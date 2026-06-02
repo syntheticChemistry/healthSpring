@@ -34,7 +34,10 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     v.check_bool(
         "compounds_have_distinct_ic50_profiles",
         (ccg1423.rho_ic50_um - ccg203971.rho_ic50_um).abs() > tolerances::DIVISION_GUARD,
-        &format!("rho_ic50: {} vs {}", ccg1423.rho_ic50_um, ccg203971.rho_ic50_um),
+        &format!(
+            "rho_ic50: {} vs {}",
+            ccg1423.rho_ic50_um, ccg203971.rho_ic50_um
+        ),
     );
 
     let fi = fibrosis::fractional_inhibition(10.0, ccg1423.rho_ic50_um);

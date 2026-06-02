@@ -199,7 +199,11 @@ fn phase3_nestgate(v: &mut ValidationResult, ctx: &mut CompositionContext, state
                 .and_then(serde_json::Value::as_bool)
                 .unwrap_or(false)
         });
-        v.check_bool("nestgate_content_confirmed", exists, "stored content exists");
+        v.check_bool(
+            "nestgate_content_confirmed",
+            exists,
+            "stored content exists",
+        );
     }
 
     call_or_skip(
@@ -360,10 +364,7 @@ fn phase6_loamspine(
         v.check_bool(
             "loamspine_entry_id_nonempty",
             true,
-            &format!(
-                "entry: {}",
-                &state.entry_id[..state.entry_id.len().min(16)]
-            ),
+            &format!("entry: {}", &state.entry_id[..state.entry_id.len().min(16)]),
         );
     }
 }
@@ -499,7 +500,13 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     }
 
     let nest_caps = [
-        "crypto", "discovery", "audit", "storage", "dag", "commit", "braid",
+        "crypto",
+        "discovery",
+        "audit",
+        "storage",
+        "dag",
+        "commit",
+        "braid",
     ];
     let alive = validate_liveness(ctx, v, &nest_caps);
 

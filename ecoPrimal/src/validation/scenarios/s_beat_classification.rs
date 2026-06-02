@@ -54,9 +54,18 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     );
 
     let templates = vec![
-        BeatTemplate { class: BeatClass::Normal, waveform: waveform_normal.clone() },
-        BeatTemplate { class: BeatClass::Pvc, waveform: waveform_pvc },
-        BeatTemplate { class: BeatClass::Pac, waveform: waveform_premature_atrial },
+        BeatTemplate {
+            class: BeatClass::Normal,
+            waveform: waveform_normal.clone(),
+        },
+        BeatTemplate {
+            class: BeatClass::Pvc,
+            waveform: waveform_pvc,
+        },
+        BeatTemplate {
+            class: BeatClass::Pac,
+            waveform: waveform_premature_atrial,
+        },
     ];
 
     let (label, _) = classification::classify_beat(&waveform_normal, &templates, 0.9);

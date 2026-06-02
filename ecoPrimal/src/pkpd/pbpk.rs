@@ -122,7 +122,7 @@ pub fn pbpk_iv_simulate(
             let c_free = conc[i] / tissue.kp;
             let uptake = tissue.blood_flow_l_per_hr * (c_arterial - c_free) / tissue.volume_l;
             let elimination = tissue.clearance_l_per_hr * c_free / tissue.volume_l;
-            conc[i] += (uptake - elimination) * dt;
+            conc[i] = (uptake - elimination).mul_add(dt, conc[i]);
             if conc[i] < 0.0 {
                 conc[i] = 0.0;
             }
@@ -197,7 +197,7 @@ pub fn pbpk_iv_tissue_profiles(
                 let c_free = conc[i] / tissue.kp;
                 let uptake = tissue.blood_flow_l_per_hr * (c_arterial - c_free) / tissue.volume_l;
                 let elimination = tissue.clearance_l_per_hr * c_free / tissue.volume_l;
-                conc[i] += (uptake - elimination) * dt;
+                conc[i] = (uptake - elimination).mul_add(dt, conc[i]);
                 if conc[i] < 0.0 {
                     conc[i] = 0.0;
                 }

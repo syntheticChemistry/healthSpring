@@ -135,7 +135,10 @@ mod tests {
         let mut psi = vec![0.0; 10];
         psi[3] = 1.0;
         let ipr = inverse_participation_ratio(&psi);
-        assert!((ipr - 1.0).abs() < 1e-15, "perfectly localized IPR should be 1.0");
+        assert!(
+            (ipr - 1.0).abs() < 1e-15,
+            "perfectly localized IPR should be 1.0"
+        );
     }
 
     #[test]

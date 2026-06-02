@@ -31,7 +31,8 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     let canine_pk = Species::Canine.oclacitinib_pk();
     let human_pk = Species::Human.oclacitinib_pk();
 
-    let scaled = species_params::scale_across_species(&canine_pk, Species::Human, human_pk.body_weight_kg);
+    let scaled =
+        species_params::scale_across_species(&canine_pk, Species::Human, human_pk.body_weight_kg);
 
     v.check_bool(
         "scaled_cl_positive",
@@ -62,6 +63,9 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
         "scaling_preserves_ratio_order",
         (scaled.clearance_l_hr_kg - human_pk.clearance_l_hr_kg).abs()
             < tolerances::MACHINE_EPSILON + human_pk.clearance_l_hr_kg,
-        &format!("scaled_cl={}, expected_cl={}", scaled.clearance_l_hr_kg, human_pk.clearance_l_hr_kg),
+        &format!(
+            "scaled_cl={}, expected_cl={}",
+            scaled.clearance_l_hr_kg, human_pk.clearance_l_hr_kg
+        ),
     );
 }

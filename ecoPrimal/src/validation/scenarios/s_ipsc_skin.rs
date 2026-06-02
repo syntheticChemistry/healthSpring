@@ -61,9 +61,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     v.check_bool(
         "viability_decreases_with_dose",
         viab_low_dose > viab_mid_dose && viab_mid_dose > viab_high_dose,
-        &format!(
-            "low_dose={viab_low_dose:.4}, mid={viab_mid_dose:.4}, high={viab_high_dose:.4}"
-        ),
+        &format!("low_dose={viab_low_dose:.4}, mid={viab_mid_dose:.4}, high={viab_high_dose:.4}"),
     );
     v.check_abs_or_rel(
         "viability_at_ic50_is_50pct",

@@ -59,11 +59,7 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     );
 
     let auc = pkpd::pbpk_auc(&times, &venous);
-    v.check_bool(
-        "auc_positive",
-        auc > 0.0,
-        &format!("auc={auc}"),
-    );
+    v.check_bool("auc_positive", auc > 0.0, &format!("auc={auc}"));
 
     let mass_tol = tolerances::PBPK_MASS_CONSERVATION;
     v.check_bool(

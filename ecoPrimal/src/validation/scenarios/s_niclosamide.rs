@@ -63,14 +63,22 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
         .map(|&t| pkpd::pk_oral_one_compartment(t, dose, ka, ke, f_bio, vd))
         .collect();
 
-    v.check_bool("conc_at_t0_zero", concs[0] < tolerances::MACHINE_EPSILON, "");
+    v.check_bool(
+        "conc_at_t0_zero",
+        concs[0] < tolerances::MACHINE_EPSILON,
+        "",
+    );
 
     let peak_idx = concs
         .iter()
         .enumerate()
         .max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal))
         .map_or(0, |(i, _)| i);
-    v.check_bool("tmax_after_dosing", peak_idx > 0, &format!("tmax_idx={peak_idx}"));
+    v.check_bool(
+        "tmax_after_dosing",
+        peak_idx > 0,
+        &format!("tmax_idx={peak_idx}"),
+    );
 
     let auc = pkpd::auc_trapezoidal(&times, &concs);
     v.check_bool("auc_positive", auc > 0.0, &format!("AUC={auc:.4}"));
@@ -87,6 +95,9 @@ fn run(v: &mut ValidationResult, _ctx: &mut CompositionContext) {
     v.check_bool(
         "oral_auc_much_less_than_iv",
         oral_auc < iv_auc * 0.2,
-        &format!("oral={oral_auc:.2}, iv={iv_auc:.2}, ratio={:.3}", oral_auc / iv_auc),
+        &format!(
+            "oral={oral_auc:.2}, iv={iv_auc:.2}, ratio={:.3}",
+            oral_auc / iv_auc
+        ),
     );
 }

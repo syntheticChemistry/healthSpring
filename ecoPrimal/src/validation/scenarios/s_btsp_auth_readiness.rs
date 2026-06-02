@@ -58,8 +58,8 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
         "probe of nonexistent socket correctly returns None",
     );
 
-    let no_seed_no_upgrade = !crate::ipc::btsp::should_upgrade_btsp(nonexistent)
-        || std::env::var("FAMILY_SEED").is_ok();
+    let no_seed_no_upgrade =
+        !crate::ipc::btsp::should_upgrade_btsp(nonexistent) || std::env::var("FAMILY_SEED").is_ok();
     v.check_bool(
         "btsp.upgrade_guard",
         no_seed_no_upgrade,
@@ -101,10 +101,7 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
                 probed += 1;
             }
             None => {
-                v.check_skip(
-                    &format!("btsp.ctx_auth:{cap}"),
-                    "capability not discovered",
-                );
+                v.check_skip(&format!("btsp.ctx_auth:{cap}"), "capability not discovered");
             }
         }
     }
@@ -114,7 +111,10 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     v.check_bool(
         "btsp.s4_probe_coverage",
         probed > 0 || ctx.available_capabilities().is_empty(),
-        &format!("{probed}/{} security capabilities probed", security_caps.len()),
+        &format!(
+            "{probed}/{} security capabilities probed",
+            security_caps.len()
+        ),
     );
 
     if family_seed_set {
