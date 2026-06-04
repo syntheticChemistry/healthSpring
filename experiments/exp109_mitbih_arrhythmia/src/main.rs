@@ -41,12 +41,12 @@ fn normal_sinus_beat() -> Vec<f64> {
     // R: tall positive
     for (i, val) in beat.iter_mut().enumerate().skip(128).take(20) {
         let t = (f64::from(i as i32) - 138.0) / 4.0;
-        *val += 1.0 * (-0.5 * t * t).exp();
+        *val = 1.0_f64.mul_add((-0.5 * t * t).exp(), *val);
     }
     // S: negative deflection
     for (i, val) in beat.iter_mut().enumerate().skip(145).take(15) {
         let t = (f64::from(i as i32) - 152.0) / 3.0;
-        *val += -0.25 * (-0.5 * t * t).exp();
+        *val = (-0.25_f64).mul_add((-0.5 * t * t).exp(), *val);
     }
     // T wave (broad repolarization ~180-240 samples)
     for (i, val) in beat.iter_mut().enumerate().skip(180).take(60) {
@@ -72,11 +72,11 @@ fn pvc_beat() -> Vec<f64> {
     }
     for (i, val) in beat.iter_mut().enumerate().skip(120).take(50) {
         let t = (f64::from(i as i32) - 145.0) / 8.0;
-        *val += 0.8 * (-0.5 * t * t).exp();
+        *val = 0.8_f64.mul_add((-0.5 * t * t).exp(), *val);
     }
     for (i, val) in beat.iter_mut().enumerate().skip(160).take(35) {
         let t = (f64::from(i as i32) - 178.0) / 7.0;
-        *val += -0.4 * (-0.5 * t * t).exp();
+        *val = (-0.4_f64).mul_add((-0.5 * t * t).exp(), *val);
     }
     // Inverted T wave
     for (i, val) in beat.iter_mut().enumerate().skip(200).take(60) {
@@ -107,11 +107,11 @@ fn pac_beat() -> Vec<f64> {
     }
     for (i, val) in beat.iter_mut().enumerate().skip(120).take(25) {
         let t = (f64::from(i as i32) - 132.0) / 4.0;
-        *val += 0.95 * (-0.5 * t * t).exp();
+        *val = 0.95_f64.mul_add((-0.5 * t * t).exp(), *val);
     }
     for (i, val) in beat.iter_mut().enumerate().skip(140).take(15) {
         let t = (f64::from(i as i32) - 147.0) / 3.0;
-        *val += -0.2 * (-0.5 * t * t).exp();
+        *val = (-0.2_f64).mul_add((-0.5 * t * t).exp(), *val);
     }
     // T wave
     for (i, val) in beat.iter_mut().enumerate().skip(170).take(60) {
@@ -142,21 +142,21 @@ fn bbb_beat() -> Vec<f64> {
     }
     for (i, val) in beat.iter_mut().enumerate().skip(135).take(20) {
         let t = (f64::from(i as i32) - 145.0) / 4.0;
-        *val += 0.15 * (-0.5 * t * t).exp();
+        *val = 0.15_f64.mul_add((-0.5 * t * t).exp(), *val);
     }
     for (i, val) in beat.iter_mut().enumerate().skip(150).take(25) {
         let t = (f64::from(i as i32) - 162.0) / 5.0;
-        *val += 0.6 * (-0.5 * t * t).exp();
+        *val = 0.6_f64.mul_add((-0.5 * t * t).exp(), *val);
     }
     // S wave
     for (i, val) in beat.iter_mut().enumerate().skip(170).take(20) {
         let t = (f64::from(i as i32) - 180.0) / 4.0;
-        *val += -0.3 * (-0.5 * t * t).exp();
+        *val = (-0.3_f64).mul_add((-0.5 * t * t).exp(), *val);
     }
     // Broad T wave
     for (i, val) in beat.iter_mut().enumerate().skip(200).take(60) {
         let t = (f64::from(i as i32) - 230.0) / 15.0;
-        *val += 0.2 * (-0.5 * t * t).exp();
+        *val = 0.2_f64.mul_add((-0.5 * t * t).exp(), *val);
     }
     beat
 }
@@ -176,9 +176,9 @@ fn normalized_cross_correlation(a: &[f64], b: &[f64]) -> f64 {
     for i in 0..n {
         let da = a[i] - mean_a;
         let db = b[i] - mean_b;
-        num += da * db;
-        den_a += da * da;
-        den_b += db * db;
+        num = da.mul_add(db, num);
+        den_a = da.mul_add(da, den_a);
+        den_b = db.mul_add(db, den_b);
     }
     let den = (den_a * den_b).sqrt();
     if den < tolerances::MACHINE_EPSILON_STRICT {
