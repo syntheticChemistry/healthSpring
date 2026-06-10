@@ -5,8 +5,8 @@
 > Hand back to primalSpring for ecosystem-wide refinement.
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
-**Date**: 2026-05-29
-**healthSpring version**: V65a (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**, barraCuda **v0.4.0**, V65a: Wave 60 Eukaryotic Gate — BLAKE3 provenance backfill (62 files), sporePrint sovereign publish (SP-4), `bonding.*` protocol wired, registry 470+, 59 validation scenarios, 1,052 tests, all 7 deep debt categories zero, clippy zero)
+**Date**: 2026-06-10
+**healthSpring version**: V65d (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**, barraCuda **v0.4.0**, V65d: Wave 107 Forward Evolution — mesh topology + BTSP posture + cross-gate enclave + signal dispatch Phase 2b, 61 validation scenarios, 1,056 tests, all 7 deep debt categories zero, clippy zero)
 
 ---
 
@@ -859,7 +859,7 @@ primalSpring Wave 17 (451 methods, 41 scenarios): Neural API Signal Elevation sh
 | # | Gap | Source | Upstream Action |
 |---|-----|--------|-----------------|
 | 46 | Foundation Threads 3+8 expressions not in healthSpring workspace | Wave 17 directive | primalSpring: confirm sporeGarden Thread 3+8 structure; healthSpring contributes B5 lithoSpore module |
-| 47 | Signal dispatch live validation pending | Wave 17 adoption | healthSpring: run `s_nest_atomic` with biomeOS signal.dispatch to validate nest.store/nest.commit signal path |
+| 47 | Signal dispatch live validation pending | Wave 17 adoption | **RESOLVED V65d**: Phase 2b signal collapse added to `s_nest_atomic` — `ctx.dispatch("nest.store")` + `ctx.dispatch("nest.commit")` wired. SKIP when biomeOS orchestration unavailable, PASS when live. `HealthCompositionContext::dispatch()` wrapper added. |
 
 ### Deep Debt Re-Audit (V64p — May 16, 2026)
 
@@ -934,7 +934,7 @@ Post-Wave 20 comprehensive re-audit. **All 7 categories confirmed at zero debt.*
 | 19 | barraCuda: `stats.variance`, `stats.correlation` | — | **RESOLVED V57**: Sprint 44 added both; guideStone validates in Tier 2+3 | — |
 | 20 | BTSP production mode breaks IPC | primalSpring transport | **V57**: documented, `FAMILY_SEED` workaround | Negotiate BTSP capability |
 | 21 | Crypto probe schema mismatch | BearDog method spec | **V57**: documented, SKIPped in guideStone | Publish method signatures |
-| 22 | Missing socket discovery (DAG/AI/commit) | Ecosystem socket std | **V57**: documented, SKIPped in guideStone | Standardize capability sockets |
+| 22 | Missing socket discovery (DAG/AI/commit) | Ecosystem socket std | **V65d**: `s_cross_gate_enclave` Phase 3 tests `ipc.resolve` for dag/crypto/commit/storage. biomeOS v4.19 auto-register + songBird `ipc.resolve` should resolve. Awaiting live verification. | Verify auto-register coverage |
 | 23 | Provenance trio wire dispatch (`-32601`) | — | **RESOLVED V64j**: root cause was non-canonical method names; upstream aliases + local fixes | — |
 | 24 | Songbird crypto provider discovery | Songbird startup docs | **V58**: documented, symlink workaround | Document songbird startup deps |
 | 25 | petalTongue proprioception in server mode | petalTongue server | **V58**: documented, non-blocking | Add synthetic proprioception in server mode |
@@ -959,4 +959,4 @@ Post-Wave 20 comprehensive re-audit. **All 7 categories confirmed at zero debt.*
 | 44 | ports.env NICHE_HEALTHSPRING under-validates | infra/plasmidBin | **V64n**: documented | Sync with manifest niche |
 | 45 | sourDough shell script internalization | primals/sourDough | **V64n**: 15 scripts mapped | Map to sourdough v0.4.0+ |
 | 46 | Foundation Threads 3+8 expressions missing | Wave 17 directive | **V64o**: B5 lithoSpore candidate ready | Confirm sporeGarden structure |
-| 47 | Signal dispatch live validation | Wave 17 adoption | **V64o**: signal paths wired, pending live test | Run with biomeOS signal.dispatch |
+| 47 | Signal dispatch live validation | Wave 17 adoption | **RESOLVED V65d**: Phase 2b signal collapse in `s_nest_atomic` | Run with biomeOS orchestration |

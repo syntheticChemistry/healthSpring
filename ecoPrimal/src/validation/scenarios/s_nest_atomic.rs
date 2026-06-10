@@ -646,6 +646,93 @@ fn phase9_chain_audit(v: &mut ValidationResult, state: &ChainState) {
     }
 }
 
+fn phase2b_signal_collapse(
+    v: &mut ValidationResult,
+    ctx: &mut CompositionContext,
+    state: &mut ChainState,
+) -> bool {
+    v.section("Phase 2b: Signal Collapse (nest.store + nest.commit)");
+
+    if !ctx.has_capability("orchestration") {
+        v.check_skip(
+            "signal:orchestration",
+            "biomeOS orchestration not available — signal path requires biomeOS",
+        );
+        return false;
+    }
+
+    let store_params = serde_json::json!({
+        "experiment": "nest_atomic_validation",
+        "event": "clinical_data_ingest",
+        "content": sample_clinical_payload(),
+        "hash_algorithm": "blake3",
+    });
+
+    match ctx.dispatch("nest.store", &store_params) {
+        Ok(ref store_result) => {
+            v.check_bool("signal:nest_store", true, "nest.store dispatched via orchestration");
+            state.content_hash = extract_str(Some(store_result), &["content_hash", "hash"]);
+            state.session_id = extract_str(Some(store_result), &["session_id"]);
+            state.merkle_root = extract_str(Some(store_result), &["merkle_root"]);
+        }
+        Err(ref e) if e.is_connection_error() || e.is_method_not_found() => {
+            v.check_skip(
+                "signal:nest_store",
+                &format!("nest.store signal unavailable: {e}"),
+            );
+            return false;
+        }
+        Err(ref e) => {
+            v.check_bool(
+                "signal:nest_store",
+                false,
+                &format!("nest.store dispatch failed: {e}"),
+            );
+            return false;
+        }
+    }
+
+    let commit_params = serde_json::json!({
+        "session_id": state.session_id,
+        "experiment": "nest_atomic_validation",
+        "merkle_root": state.merkle_root,
+        "agents": [{
+            "did": "did:key:healthSpring",
+            "role": "author",
+            "contribution": 1.0
+        }],
+    });
+
+    match ctx.dispatch("nest.commit", &commit_params) {
+        Ok(ref commit_result) => {
+            v.check_bool(
+                "signal:nest_commit",
+                true,
+                "nest.commit dispatched via orchestration",
+            );
+            state.signature = extract_str(Some(commit_result), &["signature"]);
+            state.entry_id = extract_str(Some(commit_result), &["commit_id", "entry_id"]);
+            state.braid_id = extract_str(Some(commit_result), &["braid_id", "id"]);
+            true
+        }
+        Err(ref e) if e.is_connection_error() || e.is_method_not_found() => {
+            v.check_skip(
+                "signal:nest_commit",
+                &format!("nest.commit signal unavailable: {e}"),
+            );
+            false
+        }
+        Err(ref e) => {
+            v.check_bool(
+                "signal:nest_commit",
+                false,
+                &format!("nest.commit dispatch failed: {e}"),
+            );
+            false
+        }
+    }
+}
+
 fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     phase1_structural(v);
 
@@ -679,11 +766,17 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     }
 
     let mut state = ChainState::empty();
-    phase3_nestgate(v, ctx, &mut state);
-    phase4_rhizocrypt(v, ctx, &mut state);
-    phase5_beardog(v, ctx, &mut state);
-    phase6_loamspine(v, ctx, &mut state);
-    phase7_sweetgrass(v, ctx, &mut state);
+
+    let signal_ok = phase2b_signal_collapse(v, ctx, &mut state);
+
+    if !signal_ok {
+        phase3_nestgate(v, ctx, &mut state);
+        phase4_rhizocrypt(v, ctx, &mut state);
+        phase5_beardog(v, ctx, &mut state);
+        phase6_loamspine(v, ctx, &mut state);
+        phase7_sweetgrass(v, ctx, &mut state);
+    }
+
     phase8_tower_aux(v, ctx, &state);
     phase9_chain_audit(v, &state);
     phase10_btsp_posture(v, ctx);

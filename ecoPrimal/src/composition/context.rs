@@ -116,4 +116,21 @@ impl HealthCompositionContext {
     pub fn has_capability(&self, capability: &str) -> bool {
         self.inner.has_capability(capability)
     }
+
+    /// Dispatch a signal through biomeOS orchestration (`signal.dispatch`).
+    ///
+    /// Signal IDs use the `tier.name` convention (e.g. `nest.store`,
+    /// `nest.commit`). The orchestrator collapses multi-primal chains
+    /// into a single composed operation.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`IpcError`] if orchestration is unavailable or dispatch fails.
+    pub fn dispatch(
+        &mut self,
+        signal_id: &str,
+        params: &serde_json::Value,
+    ) -> Result<serde_json::Value, IpcError> {
+        self.inner.dispatch(signal_id, params)
+    }
 }
