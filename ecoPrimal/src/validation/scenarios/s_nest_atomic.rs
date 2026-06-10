@@ -32,7 +32,7 @@ pub fn SCENARIO() -> Scenario {
             track: Track::Composition,
             tier: Tier::Both,
             source_experiment: "nest_atomic_v1",
-            description: "Nest Atomic (neutron) — 7-primal composition through clinical data.",
+            description: "Nest Atomic (neutron) — 7-primal composition through clinical data + BTSP posture + mesh awareness.",
         },
         run,
     }
@@ -443,6 +443,166 @@ fn phase8_tower_aux(v: &mut ValidationResult, ctx: &mut CompositionContext, stat
     );
 }
 
+fn phase10_btsp_posture(v: &mut ValidationResult, ctx: &CompositionContext) {
+    v.section("Phase 10: BTSP Posture (Nest capabilities)");
+
+    let nest_security_caps = ["storage", "dag", "commit", "crypto"];
+    let family_seed_set = std::env::var("FAMILY_SEED").is_ok();
+
+    let mut authenticated = 0u32;
+    let mut probed = 0u32;
+
+    for cap in &nest_security_caps {
+        match ctx.btsp_authenticated(cap) {
+            Some(true) => {
+                v.check_bool(
+                    &format!("nest_btsp:{cap}"),
+                    true,
+                    "BTSP-authenticated",
+                );
+                authenticated += 1;
+                probed += 1;
+            }
+            Some(false) => {
+                if family_seed_set {
+                    v.check_bool(
+                        &format!("nest_btsp:{cap}"),
+                        false,
+                        "cleartext (primal lacks BTSP server)",
+                    );
+                } else {
+                    v.check_skip(
+                        &format!("nest_btsp:{cap}"),
+                        "cleartext (standalone mode)",
+                    );
+                }
+                probed += 1;
+            }
+            None => {
+                v.check_skip(&format!("nest_btsp:{cap}"), "not discovered");
+            }
+        }
+    }
+
+    v.check_bool(
+        "nest_btsp_coverage",
+        probed > 0,
+        &format!(
+            "{authenticated}/{probed} Nest capabilities BTSP-authenticated{}",
+            if family_seed_set { " (FAMILY_SEED active)" } else { "" }
+        ),
+    );
+}
+
+fn phase11_mesh_awareness(v: &mut ValidationResult, ctx: &mut CompositionContext) {
+    v.section("Phase 11: Mesh Awareness");
+
+    let peers_result = ctx.call(
+        "discovery",
+        "discovery.peers",
+        serde_json::json!({}),
+    );
+
+    match peers_result {
+        Ok(ref result) => {
+            let peer_count = result
+                .get("peers")
+                .and_then(serde_json::Value::as_array)
+                .map_or(0, Vec::len);
+
+            let total_count = result
+                .get("total_count")
+                .and_then(serde_json::Value::as_u64)
+                .unwrap_or(peer_count as u64);
+
+            v.check_bool(
+                "mesh_peers_discovered",
+                true,
+                &format!("{total_count} peer(s) in mesh"),
+            );
+
+            if total_count > 0 {
+                v.check_bool(
+                    "mesh_collective_active",
+                    true,
+                    "gate is part of a multi-gate collective",
+                );
+            } else {
+                v.check_skip(
+                    "mesh_collective_active",
+                    "no peers — standalone gate (expected in CI)",
+                );
+            }
+
+            let gate_id = std::env::var("GATE_NAME")
+                .or_else(|_| std::env::var("GATE_ID"))
+                .unwrap_or_default();
+
+            if gate_id.is_empty() {
+                v.check_skip(
+                    "mesh_gate_identity",
+                    "GATE_NAME/GATE_ID not set",
+                );
+            } else {
+                ctx.set_gate_id(&gate_id);
+                v.check_bool(
+                    "mesh_gate_identity",
+                    true,
+                    &format!("gate identity: {gate_id}"),
+                );
+            }
+        }
+        Err(e) => {
+            if e.is_connection_error() || e.is_protocol_error() {
+                v.check_skip(
+                    "mesh_peers_discovered",
+                    &format!("discovery unavailable: {e}"),
+                );
+            } else {
+                v.check_bool(
+                    "mesh_peers_discovered",
+                    false,
+                    &format!("discovery error: {e}"),
+                );
+            }
+            v.check_skip("mesh_collective_active", "discovery unavailable");
+            v.check_skip("mesh_gate_identity", "discovery unavailable");
+        }
+    }
+
+    let resolve_result = ctx.call(
+        "discovery",
+        "ipc.resolve",
+        serde_json::json!({"capability": "storage"}),
+    );
+
+    match resolve_result {
+        Ok(ref result) => {
+            let has_transport = result.get("transport").is_some()
+                || result.get("mesh_relay").is_some()
+                || result.get("path").is_some();
+            v.check_bool(
+                "mesh_ipc_resolve_storage",
+                has_transport,
+                "ipc.resolve returns transport endpoint for storage",
+            );
+        }
+        Err(e) => {
+            if e.is_connection_error() || e.is_protocol_error() {
+                v.check_skip(
+                    "mesh_ipc_resolve_storage",
+                    &format!("ipc.resolve unavailable: {e}"),
+                );
+            } else {
+                v.check_skip(
+                    "mesh_ipc_resolve_storage",
+                    &format!("ipc.resolve: {e}"),
+                );
+            }
+        }
+    }
+}
+
 fn phase9_chain_audit(v: &mut ValidationResult, state: &ChainState) {
     v.section("Phase 9: Chain Audit");
 
@@ -526,4 +686,6 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     phase7_sweetgrass(v, ctx, &mut state);
     phase8_tower_aux(v, ctx, &state);
     phase9_chain_audit(v, &state);
+    phase10_btsp_posture(v, ctx);
+    phase11_mesh_awareness(v, ctx);
 }

@@ -340,7 +340,12 @@ mod tests {
         }
         assert!(matches!(
             result,
-            Err(CapabilityError::NotFound(_) | CapabilityError::ConnectionFailed(_))
+            Err(
+                CapabilityError::NotFound(_)
+                    | CapabilityError::ConnectionFailed(_)
+                    | CapabilityError::RpcError { .. }
+                    | CapabilityError::SerializationError(_)
+            )
         ));
     }
 

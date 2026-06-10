@@ -4,6 +4,17 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V65d — June 10, 2026
+
+### Wave 107 — Forward Evolution: Cross-Gate Composition + Mesh Awareness
+
+- **`s_nest_atomic` deepened with BTSP posture + mesh awareness**: Phase 10 checks BTSP authentication state for Nest-critical capabilities (storage, dag, commit, crypto). Phase 11 builds mesh topology from `discovery.peers`, resolves gate identity from env, and verifies `ipc.resolve` transport endpoints. Extends the scenario from 9 to 11 phases without disrupting existing chain logic.
+- **New `s_cross_gate_enclave` scenario (61st total)**: Composition-track scenario exercising Wave 74-107 upstream mesh APIs. Phase 1: structural routing prerequisites + gate identity. Phase 2: build `MeshTopology` from `discovery.peers`, register gates. Phase 3: `ipc.resolve` transport resolution for enclave-critical capabilities. Phase 4: cross-gate readiness (reachable/unreachable capabilities, `resolve_cross_gate`). Phase 5: mesh-aware BTSP trust posture + discovery path completeness.
+- **Composition re-exports expanded**: `MeshTopology`, `GateNode`, `MeshRoute`, `DiscoveryPath`, `method_to_capability_domain`, `validate_parity_flex` now re-exported from `composition/mod.rs` for downstream use across healthSpring modules.
+- **Pre-existing test flake fixed**: `query_fails_without_songbird` now handles all `CapabilityError` variants (was missing `RpcError` and `SerializationError` — failed when live songbird returned non-`NotFound` errors).
+- **Scenario count 60 → 61**: New `s_cross_gate_enclave` registered in `registry.rs`, `mod.rs`.
+- **Deep debt audit**: zero TODO/FIXME/HACK, zero unsafe, zero `target/release/` for primals, all files under 700 lines. Ecosystem at PARITY via `membrane temporal.sync`.
+
 ## V65c — June 1, 2026
 
 ### Wave 67 — Glacial Cutover: S4 Auth Readiness

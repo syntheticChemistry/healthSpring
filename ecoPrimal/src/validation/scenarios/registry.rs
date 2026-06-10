@@ -120,5 +120,6 @@ pub fn build_registry() -> Vec<Scenario> {
         super::s_nucleus_parity::SCENARIO(),
         super::s_nest_atomic::SCENARIO(),
         super::s_btsp_auth_readiness::SCENARIO(),
+        super::s_cross_gate_enclave::SCENARIO(),
     ]
 }

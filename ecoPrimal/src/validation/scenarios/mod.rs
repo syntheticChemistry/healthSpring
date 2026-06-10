@@ -23,6 +23,7 @@ mod s_causal_simulation;
 mod s_colonization_resistance;
 mod s_composition_parity;
 mod s_compound_library;
+mod s_cross_gate_enclave;
 mod s_cross_species_pk;
 mod s_diabetes_trt;
 mod s_diversity_indices;

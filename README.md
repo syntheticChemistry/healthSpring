@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** June 1, 2026 (V65c)
+**Date:** June 10, 2026 (V65d)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V65c — **Wave 67 Glacial Cutover**. ironGate eukaryotic (13/13 NUCLEUS, temporal sync via `membrane temporal.sync`, Forgejo pull mirror). S4 auth readiness: BTSP escalation validation wired into certification + new `s_btsp_auth_readiness` scenario (60 scenarios total). `TowerAtomic::btsp_readiness()` probes Tower primals for BTSP server state. All clippy pedantic+nursery zero. All 7 deep debt categories zero. **1,056 tests** pass, 0 clippy warnings. guideStone **Level 5**. 470+-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.27**. Zero clippy, zero unsafe, zero TODO.
+**Status:** V65d — **Wave 107 Forward Evolution**. ironGate operational in 4-gate mesh collective (eastGate + golgiBody VPS + ironGate + southGate). Topology-aware routing LIVE. S1-S4 GRADUATED. Absorbed Wave 74-107 upstream APIs: `MeshTopology`, `DiscoveryPath`, `ipc.resolve`, `set_gate_id`. `s_nest_atomic` deepened with BTSP posture (Phase 10) + mesh awareness (Phase 11). New `s_cross_gate_enclave` scenario: mesh topology, transport resolution, cross-gate readiness, BTSP trust. Pre-existing test flake fixed (`query_fails_without_songbird`). 61 scenarios. Composition re-exports expanded for mesh + discovery. All clippy pedantic+nursery zero. All 7 deep debt categories zero. **1,056 tests** pass, 0 clippy warnings. guideStone **Level 5**. 470+-method registry. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.27**. Zero clippy, zero unsafe, zero TODO.
 
 ---
 
@@ -33,10 +33,10 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V65c** (Wave 67 Glacial Cutover: S4 BTSP auth readiness wired, 60 scenarios, `TowerAtomic::btsp_readiness()`, certification BTSP escalation) |
+| Version | **V65d** (Wave 107 Forward Evolution: mesh topology + BTSP posture + cross-gate enclave, 61 scenarios, pre-existing test flake fixed) |
 | **Total tests** | **1,056** (916 lib + 9 doc + 12 integration + 20 composition + 6 registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
-| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: **59** registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
+| Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: **61** registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
 | JSON-RPC capabilities | 88 (`ALL_CAPABILITIES` in `capabilities.rs`; 58 science + 30 infra — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |
 | Paper queue | **45/45 complete** (Tracks 1–7: 30 T1–T5 + 8 T6 + 7 T7) + **1 LTEE complete** (B5 Tier 0+1), 2 LTEE queued (E2, E4) |
 | Python baselines | **53 Python control scripts + 53 Jupyter notebooks** with structured provenance registry (**95+** provenance entries, 100% experiment coverage) |
