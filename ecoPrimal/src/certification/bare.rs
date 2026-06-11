@@ -256,4 +256,32 @@ mod tests {
             math_dispatch::TOTAL_COUNT
         );
     }
+
+    #[test]
+    fn health_response_schema_compliant() {
+        use primalspring::ipc::protocol::HealthResponse;
+
+        let response = serde_json::json!({
+            "status": "healthy",
+            "primal": crate::PRIMAL_NAME,
+            "version": env!("CARGO_PKG_VERSION"),
+            "uptime_s": 42_u64,
+        });
+        let missing = HealthResponse::validate(&response);
+        assert!(
+            missing.is_empty(),
+            "healthSpring health response missing HEALTH-01 fields: {missing:?}"
+        );
+    }
+
+    #[test]
+    fn health_response_primal_name_matches() {
+        assert_eq!(crate::PRIMAL_NAME, "healthspring");
+    }
+
+    #[test]
+    fn health_response_status_is_valid() {
+        use primalspring::ipc::protocol::HealthResponse;
+        assert!(HealthResponse::VALID_STATUSES.contains(&"healthy"));
+    }
 }

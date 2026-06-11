@@ -2,10 +2,10 @@
 
 **An ecoPrimals Spring** — species-agnostic health applications validating PK/PD, microbiome, biosignal, endocrine, comparative medicine, and drug discovery pipelines against Python baselines via Pure Rust + barraCuda GPU. Follows the **Write → Absorb → Lean** cycle adopted from wetSpring/hotSpring.
 
-**Date:** June 11, 2026 (V65f)
+**Date:** June 11, 2026 (V65g)
 **License:** scyBorg (AGPL-3.0-or-later code + ORC mechanics + CC-BY-SA 4.0 creative content)
 **MSRV:** 1.87
-**Status:** V65f — **Wave 109 guideStone Convergence**: HEALTH-01 response schema aligned (`uptime_s` standard field), 12 new unit tests for `certification/domain.rs` and `composition/context.rs`, **1,070 tests** pass. All health endpoints converged. guideStone **Level 5**. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.27**. Zero local debt.
+**Status:** V65g — **Wave 110 Last Mile**: Absorbed primalSpring Wave 109 `HealthResponse` schema self-validation (3 tests) + `PlatformCapabilities::detect()` auto-sensing on startup. HEALTH-01 compliance structurally verified. `--bind-mode` CLI flag added. **1,073 tests** pass. guideStone **Level 5**. ecoBin 0.9.0. barraCuda v0.4.0. primalSpring **v0.9.27**. Zero local debt.
 
 ---
 
@@ -33,8 +33,8 @@ See [wateringHole/SPRING_NICHE_SETUP_GUIDE.md](wateringHole/SPRING_NICHE_SETUP_G
 
 | Metric | Value |
 |--------|-------|
-| Version | **V65f** (Wave 109 guideStone Convergence: HEALTH-01 schema, 12 new unit tests, 1,070 tests) |
-| **Total tests** | **1,070** (930 lib + 9 doc + 12 integration + 20 composition + 6 registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool) |
+| Version | **V65g** (Wave 110 Last Mile: HealthResponse self-validation, PlatformCapabilities, 1,073 tests) |
+| **Total tests** | **1,073** (933 lib + 9 doc + 12 integration + 20 composition + 6 registry + 5 forge + 6 parity + 1 experiment + 33 metalforge + 51 toadstool) |
 | Experiments complete | 95 (83 science Tracks 1–9 + 12 composition Tier 3–5, exp112–123) |
 | Composition validation (Tier 3–5) | 12 experiments (exp112–123) — in-process dispatch, proto-nucleate, wire round-trip, deploy graph, live IPC parity, provenance trio, health probes, Level 5 parity, nucleus pipeline parity. **`validation/scenarios/`**: **61** registry scenarios (8 tracks). Certification absorbed legacy guidestone binary into **`certification/`**; prefer **`healthspring_unibin certify`**. |
 | JSON-RPC capabilities | 88 (`ALL_CAPABILITIES` in `capabilities.rs`; 58 science + 30 infra — `capability.list`, `health.*`, `identity.get`, `inference.*`, provenance, compute/data routing) |

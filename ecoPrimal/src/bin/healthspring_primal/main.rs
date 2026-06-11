@@ -52,12 +52,18 @@ enum Command {
         /// Optional TCP port for newline JSON-RPC listener
         #[arg(long)]
         port: Option<u16>,
+        /// Transport bind mode: `uds`, `tcp`, `dual`, `tcp_only`
+        #[arg(long)]
+        bind_mode: Option<String>,
     },
     /// Start the JSON-RPC 2.0 server (alias for `serve`)
     Server {
         /// Optional TCP port for newline JSON-RPC listener
         #[arg(long)]
         port: Option<u16>,
+        /// Transport bind mode: `uds`, `tcp`, `dual`, `tcp_only`
+        #[arg(long)]
+        bind_mode: Option<String>,
     },
     /// Print version information
     Version,
@@ -80,13 +86,28 @@ fn main() {
 
     let cli = Cli::parse();
 
-    match cli.command.unwrap_or(Command::Serve { port: None }) {
-        Command::Serve { port } | Command::Server { port } => {
+    match cli.command.unwrap_or(Command::Serve { port: None, bind_mode: None }) {
+        Command::Serve { port, bind_mode } | Command::Server { port, bind_mode } => {
             let tcp_port = port.or_else(|| {
                 std::env::var(healthspring_barracuda::env_keys::HEALTHSPRING_PORT)
                     .ok()
                     .and_then(|s| s.parse().ok())
             });
+
+            if let Some(ref mode) = bind_mode {
+                tracing::info!(bind_mode = %mode, "explicit bind mode from CLI");
+            } else {
+                let caps = primalspring::ipc::platform::PlatformCapabilities::detect();
+                let recommended = caps.recommended_bind_mode();
+                tracing::info!(
+                    uds = caps.uds_available,
+                    tcp = caps.tcp_available,
+                    abstract_sockets = caps.abstract_sockets,
+                    ?recommended,
+                    "platform capabilities detected"
+                );
+            }
+
             if let Err(e) = server::cmd_serve(tcp_port) {
                 tracing::error!("{e}");
                 std::process::exit(1);

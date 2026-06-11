@@ -4,6 +4,15 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V65g — June 11, 2026
+
+### Wave 110 — Last Mile Health: HealthResponse Schema + PlatformCapabilities
+
+- **HealthResponse self-validation**: Absorbed primalSpring Wave 109 `ipc::protocol::HealthResponse` schema. Three new tests in `certification/bare.rs` verify healthSpring's health response JSON structurally conforms to the HEALTH-01 standard (status, primal, version, uptime_s). Validates against `HealthResponse::validate()` and `VALID_STATUSES`.
+- **PlatformCapabilities auto-sensing**: `healthspring_primal serve` now calls `PlatformCapabilities::detect()` at startup, logging detected transport capabilities (UDS, TCP, abstract sockets) and the recommended bind mode. Replaces hardcoded transport assumptions.
+- **`--bind-mode` CLI flag**: Added to both `serve` and `server` subcommands for explicit transport override per the Stream 1 startup contract.
+- **Test count**: 1,070 → 1,073.
+
 ## V65f — June 11, 2026
 
 ### Wave 109 — guideStone Deployment Convergence
