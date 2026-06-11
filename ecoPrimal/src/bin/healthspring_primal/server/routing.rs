@@ -103,7 +103,7 @@ fn handle_mcp_tools_list() -> serde_json::Value {
 }
 
 fn handle_health(state: &PrimalState) -> serde_json::Value {
-    let uptime_secs = state.start_time.elapsed().as_secs();
+    let uptime = state.start_time.elapsed().as_secs();
     let requests = state.requests_served.load(Ordering::Relaxed);
     serde_json::json!({
         "healthy": true,
@@ -111,7 +111,7 @@ fn handle_health(state: &PrimalState) -> serde_json::Value {
         "primal": crate::capabilities::PRIMAL_NAME,
         "domain": crate::capabilities::PRIMAL_DOMAIN,
         "version": env!("CARGO_PKG_VERSION"),
-        "uptime_secs": uptime_secs,
+        "uptime_s": uptime,
         "requests_served": requests,
         "capabilities": crate::capabilities::ALL_CAPABILITIES,
         "backend": "cpu",
@@ -150,7 +150,7 @@ fn handle_composition_health(state: &PrimalState) -> serde_json::Value {
             "diagnostic", "clinical", "comparative", "discovery",
             "toxicology", "simulation"
         ],
-        "uptime_secs": state.start_time.elapsed().as_secs(),
+        "uptime_s": state.start_time.elapsed().as_secs(),
     })
 }
 
@@ -172,7 +172,7 @@ fn handle_readiness(state: &PrimalState) -> serde_json::Value {
         "primal": crate::capabilities::PRIMAL_NAME,
         "version": env!("CARGO_PKG_VERSION"),
         "domain": crate::capabilities::PRIMAL_DOMAIN,
-        "uptime_secs": state.start_time.elapsed().as_secs(),
+        "uptime_s": state.start_time.elapsed().as_secs(),
         "subsystems": {
             "science_dispatch": science_ok,
             "provenance_trio": provenance,
@@ -195,7 +195,7 @@ fn handle_health_check(state: &PrimalState) -> serde_json::Value {
         "primal": crate::capabilities::PRIMAL_NAME,
         "version": env!("CARGO_PKG_VERSION"),
         "domain": crate::capabilities::PRIMAL_DOMAIN,
-        "uptime_secs": state.start_time.elapsed().as_secs(),
+        "uptime_s": state.start_time.elapsed().as_secs(),
     })
 }
 
@@ -205,7 +205,7 @@ fn handle_health_monitor(state: &PrimalState) -> serde_json::Value {
         "primal": crate::capabilities::PRIMAL_NAME,
         "domain": crate::capabilities::PRIMAL_DOMAIN,
         "status": "healthy",
-        "uptime_seconds": state.start_time.elapsed().as_secs(),
+        "uptime_s": state.start_time.elapsed().as_secs(),
         "connections_served": state.requests_served.load(Ordering::Relaxed),
         "capabilities_registered": crate::capabilities::ALL_CAPABILITIES.len(),
     })

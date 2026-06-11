@@ -62,3 +62,41 @@ pub fn validate_domain_science(v: &mut ValidationResult) {
         &format!("got {bc_different}"),
     );
 }
+
+#[cfg(test)]
+mod tests {
+    use primalspring::validation::ValidationResult;
+
+    use super::*;
+
+    #[test]
+    fn domain_science_all_pass() {
+        let mut v = ValidationResult::new("domain_science");
+        validate_domain_science(&mut v);
+        assert!(
+            v.all_passed(),
+            "domain science: {}/{} passed",
+            v.passed,
+            v.passed + v.failed + v.skipped
+        );
+    }
+
+    #[test]
+    fn hill_at_ic50_is_half() {
+        let h = math_dispatch::hill(10.0, 10.0, 1.0);
+        assert!((h - 0.5).abs() < tolerances::MACHINE_EPSILON_STRICT);
+    }
+
+    #[test]
+    fn shannon_uniform_monotonic() {
+        let h4 = math_dispatch::shannon_from_frequencies(&[0.25, 0.25, 0.25, 0.25]);
+        let h2 = math_dispatch::shannon_from_frequencies(&[0.5, 0.5]);
+        assert!(h4 > h2);
+    }
+
+    #[test]
+    fn bray_curtis_identical_is_zero() {
+        let bc = math_dispatch::bray_curtis(&[1.0, 2.0, 3.0], &[1.0, 2.0, 3.0]);
+        assert!(bc.abs() < tolerances::MACHINE_EPSILON);
+    }
+}

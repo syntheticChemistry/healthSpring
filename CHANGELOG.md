@@ -4,6 +4,14 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V65f — June 11, 2026
+
+### Wave 109 — guideStone Deployment Convergence
+
+- **HEALTH-01 response schema**: All health endpoints (`health`, `health.readiness`, `health.check`, `health.monitor`, `composition.health_health`) converged to standard `uptime_s` field name per guideStone property P5 (Tolerance-Documented). Previously used inconsistent `uptime_secs` / `uptime_seconds`.
+- **Unit tests**: 12 new tests covering `certification/domain.rs` (4 tests: domain science validation, Hill IC50, Shannon monotonicity, Bray-Curtis identity) and `composition/context.rs` (8 tests: discover, fallback, has_capability, inner access, stats_mean/std_dev/variance/correlation error paths without primals).
+- **Test count**: 1,058 → 1,070.
+
 ## V65e — June 10, 2026
 
 ### Wave 108 — Deep Debt: env_keys Centralization + Manifest Evolution

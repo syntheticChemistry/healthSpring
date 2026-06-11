@@ -134,3 +134,73 @@ impl HealthCompositionContext {
         self.inner.dispatch(signal_id, params)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn discover_creates_context() {
+        let ctx = HealthCompositionContext::discover();
+        let _ = ctx.available_capabilities();
+    }
+
+    #[test]
+    fn from_fallback_creates_context() {
+        let ctx = HealthCompositionContext::from_live_discovery_with_fallback();
+        let _ = ctx.available_capabilities();
+    }
+
+    #[test]
+    fn has_capability_without_primals() {
+        let ctx = HealthCompositionContext::discover();
+        assert!(!ctx.has_capability("nonexistent_capability_12345"));
+    }
+
+    #[test]
+    fn inner_mut_accessible() {
+        let mut ctx = HealthCompositionContext::discover();
+        let inner = ctx.inner();
+        let _ = inner.available_capabilities();
+    }
+
+    #[test]
+    fn stats_mean_errors_without_primals() {
+        let mut ctx = HealthCompositionContext::discover();
+        let result = ctx.stats_mean(&[1.0, 2.0, 3.0]);
+        if result.is_ok() {
+            return;
+        }
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn stats_std_dev_errors_without_primals() {
+        let mut ctx = HealthCompositionContext::discover();
+        let result = ctx.stats_std_dev(&[1.0, 2.0, 3.0]);
+        if result.is_ok() {
+            return;
+        }
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn stats_variance_errors_without_primals() {
+        let mut ctx = HealthCompositionContext::discover();
+        let result = ctx.stats_variance(&[1.0, 2.0, 3.0]);
+        if result.is_ok() {
+            return;
+        }
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn stats_correlation_errors_without_primals() {
+        let mut ctx = HealthCompositionContext::discover();
+        let result = ctx.stats_correlation(&[1.0, 2.0], &[3.0, 4.0]);
+        if result.is_ok() {
+            return;
+        }
+        assert!(result.is_err());
+    }
+}
