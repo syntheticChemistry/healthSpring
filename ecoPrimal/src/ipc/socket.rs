@@ -11,6 +11,7 @@
 use std::path::PathBuf;
 
 use crate::PRIMAL_NAME;
+use crate::env_keys;
 use crate::ipc::rpc;
 use crate::primal_names;
 
@@ -41,10 +42,10 @@ fn platform_runtime_socket_dir_under_home(home: &str) -> PathBuf {
 ///    emitted because this is intended for development convenience only.
 #[must_use]
 pub fn resolve_socket_dir() -> PathBuf {
-    if let Ok(dir) = std::env::var("BIOMEOS_SOCKET_DIR") {
+    if let Ok(dir) = std::env::var(env_keys::BIOMEOS_SOCKET_DIR) {
         return PathBuf::from(dir);
     }
-    if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
+    if let Ok(runtime) = std::env::var(env_keys::XDG_RUNTIME_DIR) {
         return PathBuf::from(runtime).join(primal_names::BIOMEOS_DIR_NAME);
     }
     if let Ok(home) = std::env::var("HOME") {
@@ -64,13 +65,13 @@ pub fn resolve_socket_dir() -> PathBuf {
 /// for local development so sibling processes agree on a socket basename without extra setup.
 #[must_use]
 pub fn get_family_id() -> String {
-    std::env::var("HEALTHSPRING_FAMILY_ID").unwrap_or_else(|_| "default".to_owned())
+    std::env::var(env_keys::HEALTHSPRING_FAMILY_ID).unwrap_or_else(|_| "default".to_owned())
 }
 
 /// Full socket path for this primal instance.
 #[must_use]
 pub fn resolve_bind_path() -> PathBuf {
-    if let Ok(explicit) = std::env::var("HEALTHSPRING_SOCKET") {
+    if let Ok(explicit) = std::env::var(env_keys::HEALTHSPRING_SOCKET) {
         return PathBuf::from(explicit);
     }
     let dir = resolve_socket_dir();
@@ -84,7 +85,7 @@ const DEFAULT_ORCHESTRATOR_SOCKET: &str = "biomeOS.sock";
 /// Discover the orchestrator socket.
 #[must_use]
 pub fn orchestrator_socket() -> PathBuf {
-    let name = std::env::var("BIOMEOS_ORCHESTRATOR_SOCKET")
+    let name = std::env::var(env_keys::BIOMEOS_ORCHESTRATOR_SOCKET)
         .unwrap_or_else(|_| DEFAULT_ORCHESTRATOR_SOCKET.to_owned());
     resolve_socket_dir().join(name)
 }
@@ -94,7 +95,7 @@ pub fn orchestrator_socket() -> PathBuf {
 /// Used for `bonding.*` protocol and `coordination.*` methods.
 #[must_use]
 pub fn coordination_socket() -> PathBuf {
-    if let Ok(explicit) = std::env::var("PRIMALSPRING_SOCKET") {
+    if let Ok(explicit) = std::env::var(env_keys::PRIMALSPRING_SOCKET) {
         return PathBuf::from(explicit);
     }
     let dir = resolve_socket_dir();
@@ -152,7 +153,7 @@ pub fn discover_compute_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_COMPUTE_SOCKET") {
         return Some(path);
     }
-    if let Some(path) = std::env::var("HEALTHSPRING_COMPUTE_PRIMAL")
+    if let Some(path) = std::env::var(env_keys::HEALTHSPRING_COMPUTE_PRIMAL)
         .ok()
         .and_then(|name| discover_primal(&name))
     {
@@ -174,7 +175,7 @@ pub fn discover_data_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_DATA_SOCKET") {
         return Some(path);
     }
-    if let Some(path) = std::env::var("HEALTHSPRING_DATA_PRIMAL")
+    if let Some(path) = std::env::var(env_keys::HEALTHSPRING_DATA_PRIMAL)
         .ok()
         .and_then(|name| discover_primal(&name))
     {
@@ -196,7 +197,7 @@ pub fn discover_shader_compiler() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_SHADER_SOCKET") {
         return Some(path);
     }
-    if let Some(path) = std::env::var("HEALTHSPRING_SHADER_PRIMAL")
+    if let Some(path) = std::env::var(env_keys::HEALTHSPRING_SHADER_PRIMAL)
         .ok()
         .and_then(|name| discover_primal(&name))
     {
@@ -218,7 +219,7 @@ pub fn discover_inference_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_INFERENCE_SOCKET") {
         return Some(path);
     }
-    if let Some(path) = std::env::var("HEALTHSPRING_INFERENCE_PRIMAL")
+    if let Some(path) = std::env::var(env_keys::HEALTHSPRING_INFERENCE_PRIMAL)
         .ok()
         .and_then(|name| discover_primal(&name))
     {
@@ -238,7 +239,7 @@ pub fn discover_ephemeral_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_EPHEMERAL_SOCKET") {
         return Some(path);
     }
-    if let Some(path) = std::env::var("HEALTHSPRING_EPHEMERAL_PRIMAL")
+    if let Some(path) = std::env::var(env_keys::HEALTHSPRING_EPHEMERAL_PRIMAL)
         .ok()
         .and_then(|name| discover_primal(&name))
     {
@@ -258,7 +259,7 @@ pub fn discover_permanence_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_PERMANENCE_SOCKET") {
         return Some(path);
     }
-    if let Some(path) = std::env::var("HEALTHSPRING_PERMANENCE_PRIMAL")
+    if let Some(path) = std::env::var(env_keys::HEALTHSPRING_PERMANENCE_PRIMAL)
         .ok()
         .and_then(|name| discover_primal(&name))
     {
@@ -278,7 +279,7 @@ pub fn discover_attribution_primal() -> Option<PathBuf> {
     if let Some(path) = super::protocol::socket_from_env("HEALTHSPRING_ATTRIBUTION_SOCKET") {
         return Some(path);
     }
-    if let Some(path) = std::env::var("HEALTHSPRING_ATTRIBUTION_PRIMAL")
+    if let Some(path) = std::env::var(env_keys::HEALTHSPRING_ATTRIBUTION_PRIMAL)
         .ok()
         .and_then(|name| discover_primal(&name))
     {
@@ -391,7 +392,7 @@ fn probe_capability(socket_path: &std::path::Path, domain: &str) -> bool {
 /// Probe for a fallback registration primal.
 #[must_use]
 pub fn fallback_registration_primal() -> Option<String> {
-    std::env::var("BIOMEOS_FALLBACK_PRIMAL").ok()
+    std::env::var(env_keys::BIOMEOS_FALLBACK_PRIMAL).ok()
 }
 
 #[cfg(test)]
@@ -406,7 +407,7 @@ mod tests {
 
     #[test]
     fn family_id_defaults_to_default() {
-        if std::env::var("HEALTHSPRING_FAMILY_ID").is_err() {
+        if std::env::var(env_keys::HEALTHSPRING_FAMILY_ID).is_err() {
             assert_eq!(get_family_id(), "default");
         }
     }

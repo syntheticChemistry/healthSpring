@@ -6,7 +6,7 @@
 
 **Proto-nucleate**: `primalSpring/graphs/downstream/healthspring_enclave_proto_nucleate.toml`
 **Date**: 2026-06-10
-**healthSpring version**: V65d (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**, barraCuda **v0.4.0**, V65d: Wave 107 Forward Evolution — mesh topology + BTSP posture + cross-gate enclave + signal dispatch Phase 2b, 61 validation scenarios, 1,056 tests, all 7 deep debt categories zero, clippy zero)
+**healthSpring version**: V65e (ecoBin 0.9.0, guideStone Level 5 via **`healthspring_unibin certify`**, primalSpring **v0.9.27**, barraCuda **v0.4.0**, V65e: Wave 108 Deep Debt — env_keys centralization, manifest BLAKE3, 61 validation scenarios, 1,058 tests, all 7 deep debt categories zero, clippy zero)
 
 ---
 

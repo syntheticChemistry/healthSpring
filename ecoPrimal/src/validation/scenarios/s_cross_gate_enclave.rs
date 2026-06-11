@@ -65,9 +65,7 @@ fn phase1_structural(v: &mut ValidationResult) {
         "orchestration → biomeos",
     );
 
-    let gate_id = std::env::var("GATE_NAME")
-        .or_else(|_| std::env::var("GATE_ID"))
-        .unwrap_or_default();
+    let gate_id = crate::env_keys::gate_identity().unwrap_or_default();
 
     if gate_id.is_empty() {
         v.check_skip(
@@ -88,9 +86,7 @@ fn phase2_mesh_topology(v: &mut ValidationResult, ctx: &mut CompositionContext) 
 
     let mut topology = MeshTopology::new();
 
-    let gate_id = std::env::var("GATE_NAME")
-        .or_else(|_| std::env::var("GATE_ID"))
-        .unwrap_or_else(|_| "local".into());
+    let gate_id = crate::env_keys::gate_identity().unwrap_or_else(|| "local".into());
     topology.set_local_gate(&gate_id);
 
     let peers_result = call_or_skip(

@@ -54,7 +54,7 @@ impl PetalTonguePushClient {
     ///
     /// Returns `PushError::NotFound` if no visualization primal is found.
     pub fn discover() -> PushResult<Self> {
-        if let Ok(path) = std::env::var("PETALTONGUE_SOCKET") {
+        if let Ok(path) = std::env::var(crate::env_keys::PETALTONGUE_SOCKET) {
             let path = PathBuf::from(path);
             if path.exists() {
                 return Ok(Self { socket_path: path });
@@ -65,7 +65,7 @@ impl PetalTonguePushClient {
             return Ok(Self { socket_path: path });
         }
 
-        if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
+        if let Ok(runtime) = std::env::var(crate::env_keys::XDG_RUNTIME_DIR) {
             let runtime = PathBuf::from(runtime);
 
             let biomeos_dir = runtime.join(primal_names::BIOMEOS_DIR_NAME);

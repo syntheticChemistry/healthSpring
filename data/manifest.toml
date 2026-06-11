@@ -6,11 +6,12 @@
 # URLs, expected checksums, and license information. This manifest is the
 # single source of truth for data reproducibility.
 #
-# Checksums are populated after first download (sha256).
+# Checksums are populated after first download (sha256 + blake3).
+# BLAKE3 is the ecosystem standard; SHA-256 retained for upstream compatibility.
 # Size estimates are approximate pre-download values.
 
 [meta]
-last_updated = "2026-05-08"
+last_updated = "2026-06-10"
 maintainer = "ecoPrimals"
 # To populate sha256 checksums after download, run:
 #   python3 -c "import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())" <file>
@@ -37,6 +38,7 @@ output = "qs_gene_matrix.json"
 script = "fetch_qs_genes.py"
 tracks = [2, 6]
 sha256 = ""  # populated after first download
+blake3 = ""  # ecosystem standard; `b3sum <file>`
 
 # ---------------------------------------------------------------------------
 # Track 3: Biosignal — MIT-BIH Arrhythmia Database
@@ -60,7 +62,8 @@ size_estimate = "~100MB"
 output = "mitbih/"
 script = "fetch_mitbih.sh"
 tracks = [3]
-sha256 = ""  # populated after first download (directory hash); blake3 via fetch script stdout
+sha256 = ""  # populated after first download (directory hash)
+blake3 = ""  # `b3sum` over sorted file list
 
 # ---------------------------------------------------------------------------
 # Track 1 + 7: PK/PD + Drug Discovery — ChEMBL Hill Panel
@@ -80,7 +83,8 @@ size_estimate = "~200MB (API responses)"
 output = "chembl/"
 script = "fetch_chembl.sh"
 tracks = [1, 7]
-sha256 = ""  # populated after first download; blake3 via fetch script stdout
+sha256 = ""  # populated after first download
+blake3 = ""
 
 # ---------------------------------------------------------------------------
 # Track 2: Microbiome — HMP 16S Profiles (SRA run-info CSV via scripted fetch)
@@ -97,6 +101,7 @@ output = "hmp/"
 script = "fetch_hmp_16s.sh"
 tracks = [2]
 sha256 = ""
+blake3 = ""
 
 # ---------------------------------------------------------------------------
 # Track 4: Endocrinology — GEO Androgen Receptor Expression (scripted matrix fetch)
@@ -115,3 +120,4 @@ output = "geo/"
 script = "fetch_geo_ar.sh"
 tracks = [4]
 sha256 = ""
+blake3 = ""

@@ -4,6 +4,16 @@ All notable changes to healthSpring are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses internal versioning (V-series) for development milestones.
 
+## V65e — June 10, 2026
+
+### Wave 108 — Deep Debt: env_keys Centralization + Manifest Evolution
+
+- **`env_keys` module**: New centralized module (`env_keys.rs`) with compile-time constants for all 30+ environment variable names used across the codebase. Includes `gate_identity()` and `family_seed_active()` helpers. Eliminates bare string env var lookups — typos now caught at compile time.
+- **12 files rewired**: `ipc/socket.rs`, `ipc/btsp.rs`, `data/discovery.rs`, `data/provenance.rs`, `data/ncbi_http.rs`, `data/storage.rs`, `visualization/capabilities.rs`, `visualization/ipc_push/client.rs`, `certification/composition.rs`, `validation/scenarios/s_nest_atomic.rs`, `validation/scenarios/s_cross_gate_enclave.rs`, `validation/scenarios/s_btsp_auth_readiness.rs`, `bin/healthspring_primal/main.rs`.
+- **Data manifest**: Added BLAKE3 checksum fields alongside SHA-256 (ecosystem standard alignment). Updated manifest date.
+- **Test count**: 1,056 → 1,058 (+2 env_keys module tests).
+- **Zero remaining bare string env vars** for any key covered by `env_keys` constants.
+
 ## V65d — June 10, 2026
 
 ### Wave 107 — Forward Evolution: Cross-Gate Composition + Mesh Awareness

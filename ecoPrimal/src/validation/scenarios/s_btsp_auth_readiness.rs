@@ -59,7 +59,7 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     );
 
     let no_seed_no_upgrade =
-        !crate::ipc::btsp::should_upgrade_btsp(nonexistent) || std::env::var("FAMILY_SEED").is_ok();
+        !crate::ipc::btsp::should_upgrade_btsp(nonexistent) || crate::env_keys::family_seed_active();
     v.check_bool(
         "btsp.upgrade_guard",
         no_seed_no_upgrade,
@@ -69,7 +69,7 @@ fn run(v: &mut ValidationResult, ctx: &mut CompositionContext) {
     v.section("Phase 2: Composition BTSP State");
 
     let security_caps = ["security", "storage", "dag", "commit", "tensor"];
-    let family_seed_set = std::env::var("FAMILY_SEED").is_ok();
+    let family_seed_set = crate::env_keys::family_seed_active();
 
     let mut probed = 0u32;
     let mut authenticated = 0u32;

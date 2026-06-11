@@ -11,6 +11,8 @@
 
 use std::path::PathBuf;
 
+use crate::env_keys;
+
 /// Discover the `biomeOS` orchestrator socket.
 ///
 /// Search order:
@@ -20,7 +22,7 @@ use std::path::PathBuf;
 /// 4. `None` — `biomeOS` not available
 #[must_use]
 pub fn discover_biomeos_socket() -> Option<PathBuf> {
-    if let Ok(path) = std::env::var("BIOMEOS_SOCKET") {
+    if let Ok(path) = std::env::var(env_keys::BIOMEOS_SOCKET) {
         let p = PathBuf::from(path);
         if p.exists() {
             return Some(p);
@@ -43,7 +45,7 @@ pub fn discover_biomeos_socket() -> Option<PathBuf> {
 /// 3. `None` — no data provider available
 #[must_use]
 pub fn discover_data_provider_socket() -> Option<PathBuf> {
-    if let Ok(path) = std::env::var("HEALTHSPRING_DATA_SOCKET") {
+    if let Ok(path) = std::env::var(env_keys::HEALTHSPRING_DATA_SOCKET) {
         let p = PathBuf::from(path);
         if p.exists() {
             return Some(p);
@@ -56,7 +58,7 @@ pub fn discover_data_provider_socket() -> Option<PathBuf> {
 /// Returns `true` if the data provider is explicitly enabled via environment.
 #[must_use]
 pub fn is_enabled() -> bool {
-    std::env::var("HEALTHSPRING_DATA_PROVIDER").is_ok_and(|v| !v.is_empty())
+    std::env::var(env_keys::HEALTHSPRING_DATA_PROVIDER).is_ok_and(|v| !v.is_empty())
 }
 
 /// Discover NCBI API key from standard locations.
@@ -67,7 +69,7 @@ pub fn is_enabled() -> bool {
 /// 3. `~/.ncbi/api_key`
 #[must_use]
 pub fn discover_ncbi_api_key() -> Option<String> {
-    if let Ok(key) = std::env::var("NCBI_API_KEY") {
+    if let Ok(key) = std::env::var(env_keys::NCBI_API_KEY) {
         if !key.is_empty() {
             return Some(key);
         }
@@ -94,7 +96,7 @@ mod tests {
 
     #[test]
     fn is_enabled_default_false() {
-        if std::env::var("HEALTHSPRING_DATA_PROVIDER").is_err() {
+        if std::env::var(env_keys::HEALTHSPRING_DATA_PROVIDER).is_err() {
             assert!(!is_enabled());
         }
     }

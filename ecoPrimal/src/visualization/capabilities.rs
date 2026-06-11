@@ -197,7 +197,7 @@ fn discover_songbird() -> CapResult<PathBuf> {
 
     // XDG convention scan — Songbird is the discovery service, so we locate
     // it by well-known relative paths rather than capability probing.
-    if let Ok(runtime) = std::env::var("XDG_RUNTIME_DIR") {
+    if let Ok(runtime) = std::env::var(crate::env_keys::XDG_RUNTIME_DIR) {
         let runtime = PathBuf::from(runtime);
         if let Some(p) = primal_names::SONGBIRD_SOCKET_PATHS.iter().find_map(|rel| {
             let path = runtime.join(rel);

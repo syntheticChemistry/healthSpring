@@ -64,23 +64,23 @@ const DEFAULT_DATA_PROVIDER_PREFIX: &str = "neural-api";
 /// 2. `BIOMEOS_SOCKET_DIR/<prefix>-<family>.sock`
 /// 3. `XDG_RUNTIME_DIR/biomeos/<prefix>-<family>.sock`
 fn data_provider_socket_path() -> Option<PathBuf> {
-    let family_id = std::env::var("FAMILY_ID")
-        .or_else(|_| std::env::var("BIOMEOS_FAMILY_ID"))
+    let family_id = std::env::var(crate::env_keys::FAMILY_ID)
+        .or_else(|_| std::env::var(crate::env_keys::BIOMEOS_FAMILY_ID))
         .unwrap_or_else(|_| "default".to_string());
 
-    let prefix = std::env::var("DATA_PROVIDER_SOCK_PREFIX")
+    let prefix = std::env::var(crate::env_keys::DATA_PROVIDER_SOCK_PREFIX)
         .unwrap_or_else(|_| DEFAULT_DATA_PROVIDER_PREFIX.to_string());
 
     let sock_name = format!("{prefix}-{family_id}.sock");
 
     [
-        std::env::var("DATA_PROVIDER_SOCKET")
+        std::env::var(crate::env_keys::DATA_PROVIDER_SOCKET)
             .ok()
             .map(PathBuf::from),
-        std::env::var("BIOMEOS_SOCKET_DIR")
+        std::env::var(crate::env_keys::BIOMEOS_SOCKET_DIR)
             .ok()
             .map(|d| PathBuf::from(d).join(&sock_name)),
-        std::env::var("XDG_RUNTIME_DIR").ok().map(|d| {
+        std::env::var(crate::env_keys::XDG_RUNTIME_DIR).ok().map(|d| {
             PathBuf::from(d)
                 .join(crate::primal_names::BIOMEOS_DIR_NAME)
                 .join(&sock_name)

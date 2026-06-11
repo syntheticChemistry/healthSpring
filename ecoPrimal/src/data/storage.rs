@@ -41,7 +41,7 @@ pub fn qs_matrix_path() -> PathBuf {
     }
 
     // Cold storage fallback
-    if let Ok(cold) = std::env::var("HEALTHSPRING_COLD_STORAGE") {
+    if let Ok(cold) = std::env::var(crate::env_keys::HEALTHSPRING_COLD_STORAGE) {
         let cold_path = PathBuf::from(cold).join(QS_GENE_MATRIX_FILE);
         if cold_path.exists() {
             return cold_path;
@@ -53,7 +53,7 @@ pub fn qs_matrix_path() -> PathBuf {
 
 /// Resolve the data root directory.
 fn data_root() -> PathBuf {
-    if let Ok(root) = std::env::var("HEALTHSPRING_DATA_ROOT") {
+    if let Ok(root) = std::env::var(crate::env_keys::HEALTHSPRING_DATA_ROOT) {
         return PathBuf::from(root);
     }
 

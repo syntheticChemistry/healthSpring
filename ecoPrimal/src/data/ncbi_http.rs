@@ -16,12 +16,12 @@ const TOOL_NAME: &str = crate::PRIMAL_NAME;
 const TOOL_EMAIL: &str = "healthspring@ecoprimal.local";
 
 fn eutils_base() -> String {
-    std::env::var("HEALTHSPRING_NCBI_EUTILS_BASE")
+    std::env::var(crate::env_keys::HEALTHSPRING_NCBI_EUTILS_BASE)
         .unwrap_or_else(|_| DEFAULT_EUTILS_BASE.to_owned())
 }
 
 fn sra_run_info_base() -> String {
-    std::env::var("HEALTHSPRING_NCBI_SRA_BASE")
+    std::env::var(crate::env_keys::HEALTHSPRING_NCBI_SRA_BASE)
         .unwrap_or_else(|_| DEFAULT_SRA_RUN_INFO_BASE.to_owned())
 }
 

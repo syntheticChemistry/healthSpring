@@ -447,7 +447,7 @@ fn phase10_btsp_posture(v: &mut ValidationResult, ctx: &CompositionContext) {
     v.section("Phase 10: BTSP Posture (Nest capabilities)");
 
     let nest_security_caps = ["storage", "dag", "commit", "crypto"];
-    let family_seed_set = std::env::var("FAMILY_SEED").is_ok();
+    let family_seed_set = crate::env_keys::family_seed_active();
 
     let mut authenticated = 0u32;
     let mut probed = 0u32;
@@ -534,9 +534,7 @@ fn phase11_mesh_awareness(v: &mut ValidationResult, ctx: &mut CompositionContext
                 );
             }
 
-            let gate_id = std::env::var("GATE_NAME")
-                .or_else(|_| std::env::var("GATE_ID"))
-                .unwrap_or_default();
+            let gate_id = crate::env_keys::gate_identity().unwrap_or_default();
 
             if gate_id.is_empty() {
                 v.check_skip(

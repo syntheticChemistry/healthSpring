@@ -51,6 +51,7 @@ pub mod data;
 pub mod diagnostic;
 pub mod discovery;
 pub mod endocrine;
+pub mod env_keys;
 pub mod gpu;
 pub mod ipc;
 pub mod math_dispatch;

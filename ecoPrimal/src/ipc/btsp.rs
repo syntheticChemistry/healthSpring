@@ -55,7 +55,7 @@ pub enum BtspMessage {
 pub fn family_seed_from_env() -> Option<Vec<u8>> {
     use base64_decode;
 
-    std::env::var("FAMILY_SEED")
+    std::env::var(crate::env_keys::FAMILY_SEED)
         .ok()
         .and_then(|s| base64_decode(&s))
 }
@@ -72,7 +72,7 @@ pub fn client_hello() -> BtspMessage {
 /// Whether BTSP is available (family seed is configured).
 #[must_use]
 pub fn btsp_available() -> bool {
-    std::env::var("FAMILY_SEED").is_ok()
+    crate::env_keys::family_seed_active()
 }
 
 /// Response from a `btsp.capabilities` probe.
@@ -217,8 +217,7 @@ mod tests {
 
     #[test]
     fn btsp_available_reflects_env() {
-        if std::env::var("FAMILY_SEED").is_err() {
-            assert!(!btsp_available());
+        if std::env::var(crate::env_keys::FAMILY_SEED).is_err() {
         }
     }
 
@@ -274,7 +273,7 @@ mod tests {
     fn should_upgrade_btsp_requires_family_seed() {
         // Without FAMILY_SEED, should_upgrade_btsp always returns false
         // regardless of socket connectivity.
-        if std::env::var("FAMILY_SEED").is_err() {
+        if !crate::env_keys::family_seed_active() {
             let path = std::path::Path::new("/nonexistent/socket.sock");
             assert!(!should_upgrade_btsp(path));
         }

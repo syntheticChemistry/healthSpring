@@ -183,7 +183,7 @@ pub fn validate_manifest_capabilities(ctx: &mut CompositionContext, v: &mut Vali
 /// (security, storage, dag, commit) should be BTSP-authenticated.
 pub fn validate_btsp_escalation(ctx: &mut CompositionContext, v: &mut ValidationResult) {
     let security_caps = ["security", "storage", "dag", "commit", "tensor"];
-    let family_seed_set = std::env::var("FAMILY_SEED").is_ok();
+    let family_seed_set = crate::env_keys::family_seed_active();
 
     let mut authenticated_count = 0u32;
     let mut probed_count = 0u32;

@@ -83,7 +83,7 @@ fn main() {
     match cli.command.unwrap_or(Command::Serve { port: None }) {
         Command::Serve { port } | Command::Server { port } => {
             let tcp_port = port.or_else(|| {
-                std::env::var("HEALTHSPRING_PORT")
+                std::env::var(healthspring_barracuda::env_keys::HEALTHSPRING_PORT)
                     .ok()
                     .and_then(|s| s.parse().ok())
             });
