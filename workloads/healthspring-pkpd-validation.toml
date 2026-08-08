@@ -1,0 +1,35 @@
+# healthSpring — PK-PD drug interaction validation
+# Physiologically-based pharmacokinetics: compartmental ODE integration,
+# Hill equation dose-response, CYP450 inhibition/induction prediction.
+#
+# Compute ladder:
+#   Tier 0 (CPU): Compartmental ODE + Hill equation (RK4 integrator)
+#   Tier 1 (GPU): Population PK Monte Carlo via barraCuda
+#
+# Feeds lithoSpore clinical_pkpd module and foundation Thread 9 (pharmacology).
+
+[metadata]
+name = "healthspring-pkpd-validation"
+description = "Clinical PK-PD: PBPK compartmental ODE, Hill equation, CYP450 interactions"
+version = "0.1.0"
+spring = "healthSpring"
+compute_tier = "cpu"
+domain = "clinical-pharmacology"
+lithoSpore_module = "clinical_pkpd"
+
+[execution]
+type = "native"
+command = "$SPRINGS_ROOT/healthSpring/target/release/healthspring_unibin"
+args = ["validate", "--scenario", "pkpd-validation", "--format", "json"]
+working_dir = "$SPRINGS_ROOT/healthSpring"
+
+[output]
+format = "json"
+schema = "toadstool-validate-v1"
+
+[resources]
+max_memory_bytes = 2147483648
+max_cpu_percent = 50.0
+
+[security]
+isolation_level = "None"

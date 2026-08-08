@@ -1,0 +1,35 @@
+# healthSpring — Population PK Monte Carlo (GPU-accelerated)
+# Large-scale virtual population simulations for pharmacokinetic
+# variability: 10,000+ virtual patients, CYP polymorphism distributions,
+# body-weight / organ-volume allometry.
+#
+# Compute ladder:
+#   Tier 1 (GPU): barraCuda Monte Carlo kernel dispatched via toadStool.
+#
+# Prerequisites: Node Atomic running (toadstool + barracuda + coralreef)
+
+[metadata]
+name = "healthspring-population-pk-gpu"
+description = "Population PK: GPU Monte Carlo for 10k+ virtual patient simulations"
+version = "0.1.0"
+spring = "healthSpring"
+compute_tier = "gpu"
+domain = "population-pharmacokinetics"
+lithoSpore_module = "population_pk"
+
+[execution]
+type = "gpu"
+kernel = "population_pk_monte_carlo"
+shader_path = "$SPRINGS_ROOT/healthSpring/shaders/population_pk.wgsl"
+dispatch_size = [1024, 1, 1]
+
+[output]
+format = "json"
+schema = "toadstool-validate-v1"
+
+[resources]
+max_memory_bytes = 4294967296
+max_gpu_percent = 80.0
+
+[security]
+isolation_level = "None"

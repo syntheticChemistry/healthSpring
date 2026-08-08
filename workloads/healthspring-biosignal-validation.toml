@@ -1,0 +1,24 @@
+# healthSpring — biosignal processing validation
+# Pan-Tompkins QRS, HRV, PPG SpO2, EDA, arrhythmia classification, WFDB
+# Validates Tier 1 Rust vs Python parity for real-time biosignal pipeline
+
+[metadata]
+name = "healthspring-biosignal-validation"
+description = "Biosignal validation — Pan-Tompkins QRS, HRV metrics, PPG SpO2, EDA stress, arrhythmia classification"
+version = "0.1.0"
+
+[execution]
+type = "native"
+command = "$SPRINGS_ROOT/healthSpring/target/release/healthspring validate --track biosignal --format json"
+working_dir = "$SPRINGS_ROOT/healthSpring"
+
+[output]
+format = "json"
+schema = "toadstool-validate-v1"
+
+[resources]
+max_memory_bytes = 2147483648
+max_cpu_percent = 80.0
+
+[security]
+isolation_level = "None"

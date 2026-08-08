@@ -1,0 +1,20 @@
+# healthSpring — microbiome validation
+# Shannon, Simpson, Anderson gut lattice, colonization resistance, QS profiling
+# Validates diversity indices and ecological modeling against Python baselines
+
+[metadata]
+name = "healthspring-microbiome-validation"
+description = "Microbiome validation — Shannon/Simpson diversity, Anderson gut lattice, colonization resistance, SCFA, quorum sensing"
+version = "0.1.0"
+
+[execution]
+type = "native"
+command = "$SPRINGS_ROOT/healthSpring/target/release/healthspring validate --track microbiome"
+working_dir = "$SPRINGS_ROOT/healthSpring"
+
+[resources]
+max_memory_bytes = 2147483648
+max_cpu_percent = 80.0
+
+[security]
+isolation_level = "None"
